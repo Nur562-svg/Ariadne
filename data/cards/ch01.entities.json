@@ -1,0 +1,2614 @@
+{
+  "source": "data/chapters/ch01.blocks.json",
+  "book": "免疫学基础与病原生物学（第3版）",
+  "scope": "第一篇 免疫学基础 · 第一章 免疫学概述（书页1–9）+ 第二章 抗原（书页10–17）",
+  "pageNote": "page = 印刷书页码；physicalPage = page + 16",
+  "generated_by": "model-extraction (GLM) + 逐卡对照 OCR 原文校验页码；Nuradil 抽查 10 张见 data/qa/ch01-sample-10.md",
+  "cards": [
+    {
+      "id": "immunity",
+      "name_zh": "免疫",
+      "name_en": "immunity",
+      "aliases": [
+        "immunitas"
+      ],
+      "kind": "concept",
+      "one_liner": "机体识别“自己”与“非己”，对“自己”产生免疫耐受，对“非己”产生免疫应答并清除“非己”的生理功能",
+      "fields": [
+        {
+          "label": "词源",
+          "value": "英文 immunity 源于拉丁文 immunitas，原意免除劳役和税赋",
+          "cite": {
+            "page": 2,
+            "quote": "免疫的英文“immunity”源于拉丁文“immunitas”",
+            "verified": true
+          }
+        },
+        {
+          "label": "现代概念",
+          "value": "机体识别“自己”与“非己”，对“自己”产生免疫耐受，对“非己”产生免疫应答并清除“非己”的生理功能",
+          "cite": {
+            "page": 2,
+            "quote": "免疫的现代概念是机体识别“自己”与“非己”，对“自己”产生免疫耐受，对“非己”产生免疫应答并清除“非己”的生理功能。",
+            "verified": true
+          }
+        },
+        {
+          "label": "传统认识",
+          "value": "早期指机体对感染性疾病的抵抗力（抗感染免疫）",
+          "cite": {
+            "page": 2,
+            "quote": "则寓意机体对感染性疾病具有抵抗力",
+            "verified": true
+          }
+        },
+        {
+          "label": "自己/非己",
+          "value": "“非己”是免疫识别并排斥的物质；“自己”是免疫识别并耐受的物质",
+          "cite": {
+            "page": 2,
+            "quote": "“非己”是指免疫识别并排斥的物质",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "免疫应答",
+          "tip": "免疫是整体生理功能（概念）；免疫应答是一次识别+清除的动态过程"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immunity:1",
+          "prompt": "免疫的现代概念是什么？",
+          "answer": "免疫的现代概念是机体识别“自己”与“非己”，对“自己”产生免疫耐受，对“非己”产生免疫应答并清除“非己”的生理功能。",
+          "difficulty": "what",
+          "cite": {
+            "page": 2,
+            "quote": "免疫的现代概念是机体识别“自己”与“非己”，对“自己”产生免疫耐受，对“非己”产生免疫应答并清除“非己”的生理功能。",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:immunity:2",
+          "prompt": "为什么说免疫不只是“抗感染”？",
+          "answer": "因为免疫病理性损伤、移植物排斥和自身免疫耐受的发现表明：免疫还区分“自己”与“非己”并维持自身耐受，不只是清除病原体。",
+          "difficulty": "why",
+          "cite": {
+            "page": 2,
+            "quote": "免疫不仅是机体的抗感染作用",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 2,
+          "quote": "免疫的现代概念是机体识别“自己”与“非己”，对“自己”产生免疫耐受，对“非己”产生免疫应答并清除“非己”的生理功能。",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "immune-response",
+      "name_zh": "免疫应答",
+      "name_en": "immune response",
+      "kind": "process",
+      "one_liner": "免疫系统识别和清除“非己”物质的整个过程",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "免疫系统识别和清除“非己”物质的整个过程",
+          "cite": {
+            "page": 3,
+            "quote": "免疫系统识别和清除“非己”物质的整个过程",
+            "verified": true
+          }
+        },
+        {
+          "label": "两大类型",
+          "value": "根据应答效应差异分为固有免疫和适应性免疫",
+          "cite": {
+            "page": 3,
+            "quote": "免疫应答分为固有免疫和适应性免疫两大类型",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immune-response:1",
+          "prompt": "免疫应答按效应差异分哪两大类型？",
+          "answer": "固有免疫（先天性免疫）和适应性免疫（获得性免疫）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 3,
+            "quote": "分为固有免疫和适应性免疫两大类型",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 3,
+          "quote": "免疫系统识别和清除“非己”物质的整个过程",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "innate-immunity",
+      "name_zh": "固有免疫",
+      "name_en": "innate immunity",
+      "aliases": [
+        "先天性免疫",
+        "congenital immunity",
+        "非特异性免疫"
+      ],
+      "kind": "process",
+      "one_liner": "进化中形成的第一道防御，防御谱宽、无记忆性",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "生物在长期进化中逐渐形成的抵御病原体入侵的第一道防御机制，亦称先天性免疫",
+          "cite": {
+            "page": 3,
+            "quote": "固有免疫亦称先天性免疫（congenital immunity），是生物在长期进化中逐渐形成的抵御病原体入侵的第一道防御机制",
+            "verified": true
+          }
+        },
+        {
+          "label": "特点①防御谱宽",
+          "value": "经模式识别受体（PRR）结合病原体保守的 PAMP，对多种病原体广泛防御（特点起句在印刷页3，展开在页4）",
+          "cite": {
+            "page": 4,
+            "quote": "通过模式识别受体（pattern recognition receptor, PRR）或类似功能的受体结合结构保守的、特定的病原体相关分子模式",
+            "verified": true
+          }
+        },
+        {
+          "label": "特点②无记忆性",
+          "value": "应答模式和强度不随接触病原体次数而改变",
+          "cite": {
+            "page": 4,
+            "quote": "应答模式和强度不随接触病原体的次数而改变",
+            "verified": true
+          }
+        },
+        {
+          "label": "构成",
+          "value": "屏障系统、固有免疫细胞（单核/巨噬细胞、树突状细胞、NK 等）、固有免疫分子（补体、细胞因子、溶菌酶等）",
+          "cite": {
+            "page": 4,
+            "quote": "固有免疫系统包括屏障系统、固有免疫细胞和分子",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "适应性免疫",
+          "tip": "固有免疫快而广、无记忆；适应性免疫慢而特异、有记忆。固有免疫启动适应性免疫"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:innate-immunity:1",
+          "prompt": "固有免疫的两个主要特点是什么？",
+          "answer": "①防御谱宽：通过 PRR 识别多种病原体共有的 PAMP；②无记忆性：应答不随接触次数改变。",
+          "difficulty": "what",
+          "cite": {
+            "page": 3,
+            "quote": "主要特点是：①防御谱宽",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:innate-immunity:2",
+          "prompt": "为什么固有免疫对多种病原体都能起作用？",
+          "answer": "因为它识别的是结构保守、多种病原体共有的 PAMP（病原体相关分子模式），而非某一病原体的特异标志。",
+          "difficulty": "why",
+          "cite": {
+            "page": 4,
+            "quote": "结合结构保守的、特定的病原体相关分子模式",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 3,
+          "quote": "固有免疫亦称先天性免疫（congenital immunity），是生物在长期进化中逐渐形成的抵御病原体入侵的第一道防御机制",
+          "verified": true
+        },
+        {
+          "page": 3,
+          "quote": "主要特点是：①防御谱宽",
+          "verified": true
+        },
+        {
+          "page": 4,
+          "quote": "②无记忆性：应答模式和强度不随接触病原体的次数而改变",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "adaptive-immunity",
+      "name_zh": "适应性免疫",
+      "name_en": "adaptive immunity",
+      "aliases": [
+        "获得性免疫",
+        "acquired immunity",
+        "特异性免疫"
+      ],
+      "kind": "process",
+      "one_liner": "T/B 淋巴细胞受抗原刺激后活化增殖分化产生的特异应答",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "体内 T、B 淋巴细胞受“非己”抗原性物质刺激后活化、增殖、分化为效应细胞并产生生物学效应的全过程",
+          "cite": {
+            "page": 4,
+            "quote": "T、B淋巴细胞受到“非己”抗原性物质刺激后",
+            "verified": true
+          }
+        },
+        {
+          "label": "特点①特异性",
+          "value": "T/B 细胞以单一特异性的 TCR/BCR 精细识别特定抗原表位，效应仅针对该抗原",
+          "cite": {
+            "page": 4,
+            "quote": "具有单一特异性的抗原识别受体（TCR/BCR）",
+            "verified": true
+          }
+        },
+        {
+          "label": "特点②记忆性",
+          "value": "应答中产生记忆细胞，再次接触相同抗原时产生更快更强的效应",
+          "cite": {
+            "page": 4,
+            "quote": "产生比初次应答更快速、强烈的免疫效应",
+            "verified": true
+          }
+        },
+        {
+          "label": "两种形式",
+          "value": "T 细胞介导的细胞免疫；B 细胞介导的体液免疫",
+          "cite": {
+            "page": 4,
+            "quote": "T细胞介导的细胞免疫和B细胞介导的体液免疫",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:adaptive-immunity:1",
+          "prompt": "适应性免疫区别于固有免疫的两大特点？",
+          "answer": "特异性和记忆性。",
+          "difficulty": "what",
+          "cite": {
+            "page": 4,
+            "quote": "①特异性…②记忆性",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:adaptive-immunity:2",
+          "prompt": "再次免疫应答为什么比初次更快更强？",
+          "answer": "初次应答中产生了记忆性 T/B 细胞，再次接触相同抗原时记忆细胞迅速活化，产生比初次更快速、强烈的效应。",
+          "difficulty": "why",
+          "cite": {
+            "page": 4,
+            "quote": "可在再次接触相同抗原时，产生比初次应答更快速",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 4,
+          "quote": "T、B淋巴细胞受到“非己”抗原性物质刺激后",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "cellular-immunity",
+      "name_zh": "细胞免疫",
+      "name_en": "cellular immunity",
+      "kind": "process",
+      "one_liner": "T 细胞介导的适应性免疫，特征效应为特异性细胞毒作用",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "T 细胞介导的适应性免疫应答，以 T 细胞分化形成的效应 T 细胞主导",
+          "cite": {
+            "page": 4,
+            "quote": "以T细胞分化形成的效应T细胞主导",
+            "verified": true
+          }
+        },
+        {
+          "label": "特征性效应",
+          "value": "特异性细胞毒作用是最具特征性的效应",
+          "cite": {
+            "page": 4,
+            "quote": "特异性细胞毒作用是最具特征性的效应",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "体液免疫",
+          "tip": "细胞免疫由 T 细胞介导、产物是效应 T 细胞；体液免疫由 B 细胞介导、产物是抗体"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:cellular-immunity:1",
+          "prompt": "细胞免疫最具特征性的效应是什么？",
+          "answer": "特异性细胞毒作用（由 T 细胞分化形成的效应 T 细胞执行）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 4,
+            "quote": "特异性细胞毒作用是最具特征性的效应",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 4,
+          "quote": "T细胞介导的细胞免疫",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "humoral-immunity",
+      "name_zh": "体液免疫",
+      "name_en": "humoral immunity",
+      "kind": "process",
+      "one_liner": "B 细胞分化为浆细胞、分泌特异性抗体主导的适应性免疫",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "B 细胞介导的适应性免疫应答：B 细胞分化成浆细胞、分泌特异性抗体，抗体特异性结合抗原产生生物学效应",
+          "cite": {
+            "page": 4,
+            "quote": "B细胞分化成浆细胞、分泌产生的特异性抗体主导",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:humoral-immunity:1",
+          "prompt": "体液免疫的效应分子由哪种细胞产生？",
+          "answer": "B 细胞分化成的浆细胞分泌特异性抗体，由抗体发挥效应。",
+          "difficulty": "what",
+          "cite": {
+            "page": 4,
+            "quote": "B细胞分化成浆细胞、分泌产生的特异性抗体主导",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 4,
+          "quote": "B细胞介导的体液免疫",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "immune-system",
+      "name_zh": "免疫系统",
+      "name_en": "immune system",
+      "kind": "concept",
+      "one_liner": "执行免疫功能的物质基础：免疫器官和组织 + 免疫细胞 + 免疫分子",
+      "fields": [
+        {
+          "label": "组成",
+          "value": "免疫器官和组织、免疫细胞、免疫分子；按参与应答类型可人为分为固有免疫系统和适应性免疫系统",
+          "cite": {
+            "page": 4,
+            "quote": "免疫系统包括免疫器官和组织、免疫细胞和免疫分子",
+            "verified": true
+          }
+        },
+        {
+          "label": "调节网络",
+          "value": "与神经-内分泌系统形成调节网络，共同维持机体内环境相对稳定",
+          "cite": {
+            "page": 4,
+            "quote": "与神经-内分泌系统形成调节网络",
+            "verified": true
+          }
+        },
+        {
+          "label": "三大功能",
+          "value": "免疫防御、免疫自稳、免疫监视",
+          "cite": {
+            "page": 5,
+            "quote": "免疫防御、免疫自稳和免疫监视三大功能",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immune-system:1",
+          "prompt": "免疫系统由哪三部分组成？",
+          "answer": "免疫器官和组织、免疫细胞、免疫分子。",
+          "difficulty": "what",
+          "cite": {
+            "page": 4,
+            "quote": "包括免疫器官和组织、免疫细胞和免疫分子",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:immune-system:2",
+          "prompt": "免疫系统的三大功能是什么？",
+          "answer": "免疫防御、免疫自稳、免疫监视。",
+          "difficulty": "what",
+          "cite": {
+            "page": 5,
+            "quote": "免疫防御、免疫自稳和免疫监视三大功能",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 4,
+          "quote": "免疫系统是机体执行免疫功能的物质基础",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "barrier-system",
+      "name_zh": "屏障系统",
+      "name_en": "barrier system",
+      "kind": "structure",
+      "one_liner": "皮肤黏膜等的物理、化学、微生物屏障及血脑、胎盘屏障",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "机体特定部位的组织结构及其特有的物理、化学、生物学因素构成的防御结构",
+          "cite": {
+            "page": 4,
+            "quote": "物理、化学、生物学因素构成的防御结构",
+            "verified": true
+          }
+        },
+        {
+          "label": "皮肤黏膜屏障",
+          "value": "机械屏障（完整皮肤黏膜）+ 化学屏障（乳酸、不饱和脂肪酸、胃酸、溶菌酶、抗菌肽等）+ 微生物屏障（正常菌群拮抗）",
+          "cite": {
+            "page": 4,
+            "quote": "阻挡微生物的机械屏障",
+            "verified": true
+          }
+        },
+        {
+          "label": "其他屏障",
+          "value": "血脑屏障、胎盘屏障：阻止病原菌进入神经系统或胎儿体内",
+          "cite": {
+            "page": 4,
+            "quote": "阻止病原菌进入神经系统或胎儿体内",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:barrier-system:1",
+          "prompt": "皮肤黏膜屏障包含哪三重屏障？",
+          "answer": "机械屏障（结构完整）、化学屏障（分泌物中杀菌抑菌物质）、微生物屏障（正常菌群定植拮抗致病菌）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 4,
+            "quote": "机械屏障",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 4,
+          "quote": "血脑屏障、胎盘屏障",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "immune-defense",
+      "name_zh": "免疫防御",
+      "name_en": "immune defense",
+      "kind": "concept",
+      "one_liner": "防止病原体入侵并清除之；过低致反复感染，过强致超敏",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "机体防止外来病原体入侵、清除已入侵病原体及其他有害物质（如外毒素）的能力",
+          "cite": {
+            "page": 5,
+            "quote": "防止外来病原体的入侵，清除已入侵病原体",
+            "verified": true
+          }
+        },
+        {
+          "label": "功能异常",
+          "value": "过低或缺失→反复感染或免疫缺陷病；过强或持续过长→组织损伤，如超敏反应",
+          "cite": {
+            "page": 5,
+            "quote": "免疫防御应答过强或持续时间过长",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immune-defense:1",
+          "prompt": "免疫防御功能过强会导致什么？",
+          "answer": "机体组织损伤或功能异常，如超敏反应（过低则导致反复感染或免疫缺陷病）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 5,
+            "quote": "可导致机体组织损伤或功能异常，如超敏反应",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 5,
+          "quote": "免疫防御是指机体防止外来病原体的入侵",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "immune-homeostasis",
+      "name_zh": "免疫自稳",
+      "name_en": "immune homeostasis",
+      "kind": "concept",
+      "one_liner": "清除衰老损伤细胞并借耐受与调节维持内环境稳定",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "机体识别和清除损伤、衰老和死亡细胞，并通过免疫耐受和免疫调节维持内环境稳定的能力",
+          "cite": {
+            "page": 5,
+            "quote": "识别和清除损伤、衰老和死亡的细胞",
+            "verified": true
+          }
+        },
+        {
+          "label": "功能异常",
+          "value": "此功能异常可导致自身免疫病",
+          "cite": {
+            "page": 5,
+            "quote": "此功能异常可导致自身免疫病发生",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immune-homeostasis:1",
+          "prompt": "免疫自稳功能异常与哪类疾病相关？",
+          "answer": "自身免疫病。",
+          "difficulty": "what",
+          "cite": {
+            "page": 5,
+            "quote": "可导致自身免疫病发生",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 5,
+          "quote": "通过免疫耐受和免疫调节维持内环境稳定",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "immune-surveillance",
+      "name_zh": "免疫监视",
+      "name_en": "immune surveillance",
+      "kind": "concept",
+      "one_liner": "杀伤清除突变细胞和病毒感染细胞；异常易患肿瘤",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "机体杀伤和清除体内异常突变细胞和病毒感染细胞的能力",
+          "cite": {
+            "page": 5,
+            "quote": "杀伤和清除体内异常突变细胞和病毒感染细胞的能力",
+            "verified": true
+          }
+        },
+        {
+          "label": "功能异常",
+          "value": "异常则机体易罹患肿瘤或病毒持续感染",
+          "cite": {
+            "page": 5,
+            "quote": "易罹患肿瘤或病毒持续感染",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immune-surveillance:1",
+          "prompt": "免疫监视功能低下时机体易发生什么？",
+          "answer": "肿瘤或病毒持续感染。",
+          "difficulty": "what",
+          "cite": {
+            "page": 5,
+            "quote": "易罹患肿瘤或病毒持续感染",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 5,
+          "quote": "杀伤和清除体内异常突变细胞",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "central-immune-organ",
+      "name_zh": "中枢免疫器官",
+      "name_en": "central immune organ",
+      "aliases": [
+        "初级免疫器官"
+      ],
+      "kind": "structure",
+      "one_liner": "免疫细胞发生、分化、发育和成熟的场所：骨髓、胸腺（禽类含腔上囊）",
+      "fields": [
+        {
+          "label": "组成",
+          "value": "骨髓、胸腺、腔上囊（禽类）",
+          "cite": {
+            "page": 5,
+            "quote": "中枢免疫器官包括骨髓、胸腺、腔上囊（禽类）",
+            "verified": true
+          }
+        },
+        {
+          "label": "功能",
+          "value": "免疫细胞发生、分化、发育和成熟的场所",
+          "cite": {
+            "page": 5,
+            "quote": "是免疫细胞发生、分化、发育和成熟的场所",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "外周免疫器官",
+          "tip": "中枢管“生成与成熟”（骨髓、胸腺）；外周管“定居与应答”（淋巴结、脾、黏膜相关淋巴组织）"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:central-immune-organ:1",
+          "prompt": "人类的中枢免疫器官包括哪些？",
+          "answer": "骨髓和胸腺（腔上囊仅见于禽类）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 5,
+            "quote": "中枢免疫器官包括骨髓、胸腺、腔上囊（禽类）",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 5,
+          "quote": "是免疫细胞发生、分化、发育和成熟的场所",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "peripheral-immune-organ",
+      "name_zh": "外周免疫器官和组织",
+      "name_en": "peripheral immune organ",
+      "kind": "structure",
+      "one_liner": "成熟免疫细胞定居与适应性免疫应答发生的主要场所",
+      "fields": [
+        {
+          "label": "组成",
+          "value": "淋巴结、脾和黏膜/皮肤相关淋巴组织",
+          "cite": {
+            "page": 5,
+            "quote": "淋巴结、脾和黏膜/皮肤相关淋巴组织",
+            "verified": true
+          }
+        },
+        {
+          "label": "功能",
+          "value": "是成熟免疫细胞定居的部位，也是适应性免疫应答发生的主要场所",
+          "cite": {
+            "page": 5,
+            "quote": "也是适应性免疫应答发生的主要场所",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:peripheral-immune-organ:1",
+          "prompt": "适应性免疫应答发生的主要场所在哪里？",
+          "answer": "外周免疫器官和组织（淋巴结、脾、黏膜/皮肤相关淋巴组织）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 5,
+            "quote": "适应性免疫应答发生的主要场所",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 5,
+          "quote": "是成熟免疫细胞定居的部位",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "prr-pamp",
+      "name_zh": "模式识别受体与病原体相关分子模式",
+      "name_en": "PRR / PAMP",
+      "kind": "molecule",
+      "one_liner": "固有免疫细胞的 PRR 识别病原体保守的 PAMP，实现广谱防御",
+      "fields": [
+        {
+          "label": "PRR",
+          "value": "模式识别受体（pattern recognition receptor）：固有免疫细胞识别 PAMP 的受体",
+          "cite": {
+            "page": 4,
+            "quote": "模式识别受体（pattern recognition receptor, PRR）",
+            "verified": true
+          }
+        },
+        {
+          "label": "PAMP",
+          "value": "病原体相关分子模式：结构保守的特定病原体分子组分",
+          "cite": {
+            "page": 4,
+            "quote": "病原体相关分子模式（pathogen associated molecular pattern, PAMP）",
+            "verified": true
+          }
+        },
+        {
+          "label": "意义",
+          "value": "对拥有相同 PAMP 的多种病原体发挥广泛防御作用（固有免疫防御谱宽的结构基础）",
+          "cite": {
+            "page": 4,
+            "quote": "对拥有相同PAMP的多种病原体发挥广泛的防御作用",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:prr-pamp:1",
+          "prompt": "PRR 识别的对象是什么？有何特点？",
+          "answer": "PAMP（病原体相关分子模式）——结构保守、多种病原体共有的分子模式，因此固有免疫防御谱宽。",
+          "difficulty": "what",
+          "cite": {
+            "page": 4,
+            "quote": "结合结构保守的、特定的病原体相关分子模式",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 4,
+          "quote": "模式识别受体（pattern recognition receptor, PRR）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "clonal-selection",
+      "name_zh": "克隆选择学说",
+      "name_en": "clonal selection theory",
+      "kind": "concept",
+      "one_liner": "Burnet 1957 年提出，奠定免疫区分“自己/非己”的理论基础",
+      "fields": [
+        {
+          "label": "提出",
+          "value": "1957 年由 Burnet 提出",
+          "cite": {
+            "page": 6,
+            "quote": "1957年，由Burnet提出了克隆选择学说",
+            "verified": true
+          }
+        },
+        {
+          "label": "意义",
+          "value": "初步奠定了免疫区分“自己”与“非己”的理论基础",
+          "cite": {
+            "page": 6,
+            "quote": "初步奠定了免疫区分“自己”与“非己”的理论基础",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:clonal-selection:1",
+          "prompt": "克隆选择学说由谁在哪一年提出？",
+          "answer": "Burnet，1957 年。",
+          "difficulty": "what",
+          "cite": {
+            "page": 6,
+            "quote": "1957年，由Burnet提出了克隆选择学说",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 6,
+          "quote": "初步奠定了免疫区分“自己”与“非己”的理论基础",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "variolation",
+      "name_zh": "人痘接种法",
+      "name_en": "variolation",
+      "kind": "process",
+      "one_liner": "宋代开创的人工免疫预防先河，16 世纪明代广泛应用",
+      "fields": [
+        {
+          "label": "起源",
+          "value": "11 世纪宋代我国开始用人痘接种法预防天花，16 世纪明代广泛应用；18 世纪经中东传入欧洲",
+          "cite": {
+            "page": 3,
+            "quote": "11世纪的宋代，我国开始用人痘接种法预防天花",
+            "verified": true
+          }
+        },
+        {
+          "label": "痘苗演变",
+          "value": "时苗（现取痂）→种苗（接种发出之痘）→熟苗（传代六七代后毒力大减）",
+          "cite": {
+            "page": 3,
+            "quote": "反复接种传代六七代后毒力大大减低",
+            "verified": true
+          }
+        },
+        {
+          "label": "历史地位",
+          "value": "开创人工免疫预防之先河，对牛痘苗的发明有启迪作用",
+          "cite": {
+            "page": 3,
+            "quote": "开创了人工免疫预防之先河",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:variolation:1",
+          "prompt": "人痘接种法最早在我国哪个朝代开始应用？",
+          "answer": "11 世纪的宋代（16 世纪明代已广泛应用）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 3,
+            "quote": "11世纪的宋代，我国开始用人痘接种法预防天花",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 3,
+          "quote": "开创了人工免疫预防之先河",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "zhengqi-immunity",
+      "name_zh": "正气与免疫",
+      "name_en": "zhengqi and immunity",
+      "kind": "concept",
+      "one_liner": "中医正气涵盖免疫防御、自稳、监视三大功能；邪气类病原生物",
+      "fields": [
+        {
+          "label": "正气",
+          "value": "人体各种生理功能的总称，包括自我调节、适应环境、抗邪防病和康复自愈能力",
+          "cite": {
+            "page": 8,
+            "quote": "是人体各种生理功能的总称",
+            "verified": true
+          }
+        },
+        {
+          "label": "对应关系",
+          "value": "正气包括免疫防御、免疫自稳和免疫监视三大功能；正气存内，邪不可干",
+          "cite": {
+            "page": 8,
+            "quote": "正气包括人体免疫系统的免疫防御、免疫自稳和免疫监视三大功能",
+            "verified": true
+          }
+        },
+        {
+          "label": "邪气",
+          "value": "泛指各种致病因素（包括病原生物），有内邪与外邪之分",
+          "cite": {
+            "page": 8,
+            "quote": "泛指各种致病因素（包括病原生物）",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:zhengqi-immunity:1",
+          "prompt": "中医正气的抗邪防病能力大致对应免疫功能中的哪一项？",
+          "answer": "免疫防御功能（自我调节能力类似免疫自稳，协调脏腑经络气血能力类似免疫监视）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 8,
+            "quote": "正气的抗邪防病能力与免疫防御功能类似",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 8,
+          "quote": "免疫防御、免疫自稳和免疫监视三大功能",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "antigen",
+      "name_zh": "抗原",
+      "name_en": "antigen",
+      "aliases": [
+        "Ag"
+      ],
+      "kind": "concept",
+      "one_liner": "与 TCR/BCR 结合、刺激特异性免疫应答并与其产物特异结合的物质",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "能与 T 细胞受体（TCR）、B 细胞受体（BCR）结合，刺激机体免疫系统产生特异性免疫应答，并与相应免疫应答产物（效应T细胞/记忆性T细胞或抗体）发生特异性结合而发挥免疫效应的物质",
+          "cite": {
+            "page": 10,
+            "quote": "刺激机体免疫系统产生特异性免疫应答",
+            "verified": true
+          }
+        },
+        {
+          "label": "来源与化学本质",
+          "value": "可来自外界或自身；免疫细胞识别的抗原主要是蛋白质，也可以是多糖和核酸等",
+          "cite": {
+            "page": 10,
+            "quote": "主要是蛋白质，也可以识别多糖和核酸等",
+            "verified": true
+          }
+        },
+        {
+          "label": "相关概念",
+          "value": "超抗原、丝裂原、佐剂等可非特异性激活 T、B 细胞（不属于经典抗原的作用方式）",
+          "cite": {
+            "page": 10,
+            "quote": "超抗原、丝裂原、佐剂等可非特异性激活T、B细胞",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:antigen:1",
+          "prompt": "抗原的定义包含哪两个“结合”？",
+          "answer": "①与 TCR/BCR 结合，刺激免疫系统产生特异性免疫应答；②与相应应答产物（抗体或效应/记忆 T 细胞）发生特异性结合而发挥免疫效应。",
+          "difficulty": "what",
+          "cite": {
+            "page": 10,
+            "quote": "并与相应的免疫应答产物…发生特异性结合",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 10,
+          "quote": "刺激机体免疫系统产生特异性免疫应答",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "immunogenicity",
+      "name_zh": "免疫原性",
+      "name_en": "immunogenicity",
+      "kind": "concept",
+      "one_liner": "抗原刺激机体产生抗体或效应T/记忆性T细胞的能力",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "抗原能够刺激机体产生抗体或效应T细胞/记忆性T细胞的能力",
+          "cite": {
+            "page": 10,
+            "quote": "刺激机体产生抗体或效应T细胞/记忆性T细胞的能力",
+            "verified": true
+          }
+        },
+        {
+          "label": "决定因素（首要）",
+          "value": "异物性是决定免疫原性的首要条件",
+          "cite": {
+            "page": 10,
+            "quote": "异物性是决定抗原免疫原性的首要条件",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "免疫反应性",
+          "tip": "免疫原性=能不能“激起”应答（诱导产生）；免疫反应性=能不能“被结合”（与产物反应）"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immunogenicity:1",
+          "prompt": "什么是免疫原性？",
+          "answer": "抗原能够刺激机体产生抗体或效应T细胞/记忆性T细胞的能力。",
+          "difficulty": "what",
+          "cite": {
+            "page": 10,
+            "quote": "刺激机体产生抗体或效应T细胞/记忆性T细胞的能力",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 10,
+          "quote": "免疫原性（immunogenicity）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "immunoreactivity",
+      "name_zh": "免疫反应性",
+      "name_en": "immunoreactivity",
+      "aliases": [
+        "抗原性（反应性含义）"
+      ],
+      "kind": "concept",
+      "one_liner": "抗原与相应抗体或效应T细胞/记忆性T细胞特异性结合的能力",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "抗原与相应的抗体或效应T细胞/记忆性T细胞发生特异性结合的能力",
+          "cite": {
+            "page": 10,
+            "quote": "与相应的抗体或效应T细胞发生特异性结合的能力",
+            "verified": true
+          }
+        },
+        {
+          "label": "半抗原的关系",
+          "value": "半抗原仅具备免疫反应性而不具有免疫原性",
+          "cite": {
+            "page": 10,
+            "quote": "仅具备免疫反应性而不具有免疫原性的物质称半抗原",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immunoreactivity:1",
+          "prompt": "只有免疫反应性而没有免疫原性的物质叫什么？",
+          "answer": "半抗原（不完全抗原）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 10,
+            "quote": "仅具备免疫反应性而不具有免疫原性",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 10,
+          "quote": "免疫反应性（immunoreactivity）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "hapten",
+      "name_zh": "半抗原",
+      "name_en": "hapten",
+      "aliases": [
+        "不完全抗原",
+        "incomplete antigen"
+      ],
+      "kind": "molecule",
+      "one_liner": "仅具免疫反应性的小分子（<4kDa），结合载体后成完全抗原",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "仅具备免疫反应性而不具有免疫原性的物质，多为分子量小于 4kDa 的简单物质",
+          "cite": {
+            "page": 10,
+            "quote": "仅具备免疫反应性而不具有免疫原性的物质称半抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "载体",
+          "value": "半抗原若与载体（carrier）结合可成为完全抗原",
+          "cite": {
+            "page": 10,
+            "quote": "半抗原若与载体（carrier）结合可成为完全抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "对照",
+          "value": "完全抗原兼具免疫原性和免疫反应性，如大多数蛋白质分子",
+          "cite": {
+            "page": 10,
+            "quote": "凡具备上述2种特性的物质为完全抗原",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "完全抗原",
+          "tip": "完全抗原=免疫原性+免疫反应性（如蛋白质）；半抗原只有反应性，须借载体才有免疫原性"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:hapten:1",
+          "prompt": "半抗原如何变成完全抗原？",
+          "answer": "与载体（carrier）结合后获得免疫原性，成为完全抗原。",
+          "difficulty": "what",
+          "cite": {
+            "page": 10,
+            "quote": "半抗原若与载体结合可成为完全抗原",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:hapten:2",
+          "prompt": "为什么半抗原单独不能诱导抗体产生？",
+          "answer": "因为它只有免疫反应性、没有免疫原性——分子太小（<4kDa），无法有效刺激免疫应答，必须借助载体的帮助。",
+          "difficulty": "why",
+          "cite": {
+            "page": 10,
+            "quote": "分子量小于4kDa的物质",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 10,
+          "quote": "半抗原（hapten）或不完全抗原",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "foreignness",
+      "name_zh": "异物性",
+      "name_en": "foreignness",
+      "kind": "concept",
+      "one_liner": "决定免疫原性的首要条件：亲缘越远，免疫原性越强",
+      "fields": [
+        {
+          "label": "地位",
+          "value": "异物性是决定抗原免疫原性的首要条件",
+          "cite": {
+            "page": 10,
+            "quote": "异物性是决定抗原免疫原性的首要条件",
+            "verified": true
+          }
+        },
+        {
+          "label": "机制",
+          "value": "特异性免疫细胞在发育中对“自己”成分形成耐受，只能对胚胎期未与淋巴细胞充分接触过的抗原物质应答",
+          "cite": {
+            "page": 10,
+            "quote": "对在胚胎期未与淋巴细胞充分接触过的抗原物质应答",
+            "verified": true
+          }
+        },
+        {
+          "label": "规律",
+          "value": "抗原来源与宿主亲缘关系越远，异物性越强，免疫原性越强",
+          "cite": {
+            "page": 10,
+            "quote": "亲缘关系越远，异物性越强，免疫原性越强",
+            "verified": true
+          }
+        },
+        {
+          "label": "实例",
+          "value": "鸭卵蛋白对鸡是弱抗原、对哺乳动物是强抗原；猩猩组织成分对人是弱抗原；病原生物对人多为强抗原",
+          "cite": {
+            "page": 10,
+            "quote": "鸭卵蛋白对鸡是弱抗原，而对哺乳动物则是强抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "自身成分的异物化",
+          "value": "免疫隔离的自身成分（晶状体蛋白、脑组织）暴露后可被视为“异物”，是自身免疫病发生的重要原因之一",
+          "cite": {
+            "page": 10,
+            "quote": "晶状体蛋白、脑组织等，因某些原因暴露",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:foreignness:1",
+          "prompt": "决定抗原免疫原性的首要条件是什么？",
+          "answer": "异物性（与宿主亲缘关系越远，免疫原性越强）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 10,
+            "quote": "决定抗原免疫原性的首要条件",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:foreignness:2",
+          "prompt": "为什么晶状体蛋白暴露后会被当作抗原？",
+          "answer": "它处于免疫隔离状态、胚胎期未与淋巴细胞接触过（未建立耐受），暴露即被视为“异物”，可诱导自身免疫应答。",
+          "difficulty": "why",
+          "cite": {
+            "page": 10,
+            "quote": "可被机体免疫系统视为“异物”",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 10,
+          "quote": "异物性是决定抗原免疫原性的首要条件",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "antigenic-specificity",
+      "name_zh": "抗原特异性",
+      "name_en": "antigenic specificity",
+      "kind": "concept",
+      "one_liner": "抗原诱导特异应答并与产物专一结合的性质，结构基础是表位",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "抗原诱导机体产生特异性免疫应答并与免疫应答产物（抗体或效应T细胞/记忆性T细胞）专一结合的性质",
+          "cite": {
+            "page": 11,
+            "quote": "诱导机体产生特异性免疫应答并与免疫应答产物",
+            "verified": true
+          }
+        },
+        {
+          "label": "经典实验",
+          "value": "接种白喉类毒素仅诱导针对该毒素的抗体，此抗体仅与白喉毒素结合、不与破伤风毒素结合",
+          "cite": {
+            "page": 11,
+            "quote": "此抗体仅能与白喉毒素结合，不能与破伤风毒素结合",
+            "verified": true
+          }
+        },
+        {
+          "label": "结构基础",
+          "value": "抗原特异性的结构基础在于抗原表位",
+          "cite": {
+            "page": 11,
+            "quote": "抗原特异性的结构基础在于抗原表位",
+            "verified": true
+          }
+        },
+        {
+          "label": "意义",
+          "value": "是适应性免疫应答的重要特点，也是免疫学防治与诊断的理论依据",
+          "cite": {
+            "page": 11,
+            "quote": "也是免疫学防治与诊断的理论依据",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:antigenic-specificity:1",
+          "prompt": "抗原特异性的结构基础是什么？",
+          "answer": "抗原表位（抗原决定簇）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 11,
+            "quote": "结构基础在于抗原表位",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 11,
+          "quote": "抗原特异性的结构基础在于抗原表位",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "epitope",
+      "name_zh": "抗原表位",
+      "name_en": "epitope",
+      "aliases": [
+        "抗原决定簇",
+        "antigenic determinant"
+      ],
+      "kind": "structure",
+      "one_liner": "抗原分子中与 TCR/BCR 或抗体特异结合的特殊化学基团",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "抗原分子中能与淋巴细胞抗原受体或抗体特异性结合的特殊化学基团",
+          "cite": {
+            "page": 11,
+            "quote": "与淋巴细胞抗原受体或抗体特异性结合的特殊化学基团",
+            "verified": true
+          }
+        },
+        {
+          "label": "大小",
+          "value": "约由 5~17 个氨基酸残基组成，也可由 5~7 个多糖残基或核苷酸组成",
+          "cite": {
+            "page": 11,
+            "quote": "约由5~17个氨基酸残基组成",
+            "verified": true
+          }
+        },
+        {
+          "label": "意义",
+          "value": "决定抗原的特异性；既是被免疫细胞识别的结构，也是免疫反应特异性的结构基础",
+          "cite": {
+            "page": 11,
+            "quote": "抗原表位决定抗原的特异性",
+            "verified": true
+          }
+        },
+        {
+          "label": "抗原结合价",
+          "value": "抗原分子上能与抗体结合的表位数量称为抗原结合价（antigenic valence）；完全抗原一般呈多价",
+          "cite": {
+            "page": 11,
+            "quote": "能与抗体结合的表位数量称为抗原结合价",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:epitope:1",
+          "prompt": "抗原表位（抗原决定簇）是什么？",
+          "answer": "抗原分子中能与淋巴细胞抗原受体（TCR/BCR）或抗体特异性结合的特殊化学基团，约 5~17 个氨基酸残基大小。",
+          "difficulty": "what",
+          "cite": {
+            "page": 11,
+            "quote": "特异性结合的特殊化学基团",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:epitope:2",
+          "prompt": "什么叫抗原结合价？",
+          "answer": "抗原分子上能与抗体结合的表位数量；每一种半抗原相当于一个表位，完全抗原一般多价。",
+          "difficulty": "what",
+          "cite": {
+            "page": 11,
+            "quote": "表位数量称为抗原结合价",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 11,
+          "quote": "又称抗原决定簇（antigenic determinant）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "epitope-functional-vs-hidden",
+      "name_zh": "功能性表位与隐蔽性表位",
+      "name_en": "functional vs cryptic epitope",
+      "kind": "structure",
+      "one_liner": "表面易识别的表位 vs 分子内部无直接诱导功能的表位",
+      "fields": [
+        {
+          "label": "功能性表位",
+          "value": "位于抗原分子表面，易被相应淋巴细胞识别，具有易接近性，可直接诱导免疫应答",
+          "cite": {
+            "page": 11,
+            "quote": "前者位于抗原分子表面，易被相应的淋巴细胞识别",
+            "verified": true
+          }
+        },
+        {
+          "label": "隐蔽性表位",
+          "value": "位于抗原分子内部，无直接诱导免疫应答的功能",
+          "cite": {
+            "page": 12,
+            "quote": "后者位于抗原分子内部，无直接诱导免疫应答的功能",
+            "verified": true
+          }
+        },
+        {
+          "label": "转化",
+          "value": "理化因素处理抗原使其结构改变，隐蔽性表位可暴露成为新的有功能的表位",
+          "cite": {
+            "page": 12,
+            "quote": "隐蔽性表位可暴露成为新的有功能的表位",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:epitope-functional-vs-hidden:1",
+          "prompt": "隐蔽性表位在什么情况下会转变为功能性表位？",
+          "answer": "抗原经理化因素处理结构改变后，隐蔽性表位暴露成为新的有功能的表位（与修饰性自身抗原的形成相关）。",
+          "difficulty": "why",
+          "cite": {
+            "page": 12,
+            "quote": "可暴露成为新的有功能的表位",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 12,
+          "quote": "隐蔽性表位可暴露成为新的有功能的表位",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "epitope-linear-vs-conformational",
+      "name_zh": "连续表位与不连续表位",
+      "name_en": "linear vs conformational epitope",
+      "aliases": [
+        "顺序表位 / 构象表位"
+      ],
+      "kind": "structure",
+      "one_liner": "线性排列的氨基酸残基 vs 空间构象聚集的残基构成的表位",
+      "fields": [
+        {
+          "label": "连续表位",
+          "value": "由连续性、线性排列的氨基酸残基构成，又称线性表位、顺序表位",
+          "cite": {
+            "page": 12,
+            "quote": "由连续性、线性排列的氨基酸残基构成",
+            "verified": true
+          }
+        },
+        {
+          "label": "不连续表位",
+          "value": "由序列上不连续排列、空间上形成特定构象的氨基酸残基构成，又称构象表位",
+          "cite": {
+            "page": 12,
+            "quote": "空间上形成特定构象的氨基酸残基构成",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "T/B 细胞表位",
+          "tip": "按结构分→连续/不连续；按识别细胞分→T/B 细胞表位。T 细胞表位均为连续表位，B 细胞表位多为不连续表位"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:epitope-linear-vs-conformational:1",
+          "prompt": "构象表位的构成特点是什么？",
+          "answer": "由序列上不连续排列、但在空间上形成特定构象的氨基酸残基构成（又称不连续表位）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 12,
+            "quote": "序列上不连续排列、空间上形成特定构象",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 12,
+          "quote": "又称构象表位（conformational epitope）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "t-vs-b-epitope",
+      "name_zh": "T 细胞表位与 B 细胞表位",
+      "name_en": "T-cell vs B-cell epitope",
+      "kind": "structure",
+      "one_liner": "T 表位为连续多肽需提呈；B 表位多构象、位于表面直接识别",
+      "fields": [
+        {
+          "label": "T 细胞表位",
+          "value": "为可提呈的多肽（8~17 个氨基酸残基），结构上为连续表位，可存在于抗原分子的任何部位",
+          "cite": {
+            "page": 12,
+            "quote": "T细胞表位为可提呈的多肽（8~17个氨基酸残基）",
+            "verified": true
+          }
+        },
+        {
+          "label": "B 细胞表位",
+          "value": "可为多肽（5~15 个氨基酸残基）或多糖、核苷酸等非蛋白物质，结构上多为不连续表位，通常位于抗原分子表面",
+          "cite": {
+            "page": 12,
+            "quote": "通常位于抗原分子表面",
+            "verified": true
+          }
+        },
+        {
+          "label": "关键差别",
+          "value": "B 细胞表位可不经抗原提呈细胞加工和提呈而直接被 B 细胞识别；T 细胞表位须经提呈",
+          "cite": {
+            "page": 12,
+            "quote": "可不经抗原提呈细胞加工和提呈而直接被B细胞识别",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "连续/不连续表位",
+          "tip": "T 表位=连续、任何部位、需 MHC 提呈；B 表位=多为构象（不连续）、位于表面、直接识别"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:t-vs-b-epitope:1",
+          "prompt": "T 细胞表位和 B 细胞表位在大小和结构上有何不同？",
+          "answer": "T 细胞表位：8~17 个氨基酸的连续（线性）多肽；B 细胞表位：5~15 个氨基酸或多糖/核苷酸，多为不连续（构象）表位。",
+          "difficulty": "what",
+          "cite": {
+            "page": 12,
+            "quote": "8~17个氨基酸残基",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:t-vs-b-epitope:2",
+          "prompt": "为什么 B 细胞表位通常位于抗原分子表面？",
+          "answer": "因为 B 细胞（BCR）识别未经加工的天然抗原，表位须暴露在表面才可直接结合；T 细胞表位经提呈后识别，故可在分子任何部位。",
+          "difficulty": "why",
+          "cite": {
+            "page": 12,
+            "quote": "直接被B细胞识别",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 12,
+          "quote": "分别称为T细胞表位和B细胞表位",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "common-antigen",
+      "name_zh": "共同抗原",
+      "name_en": "common antigen",
+      "aliases": [
+        "交叉反应性抗原",
+        "cross reacting antigen"
+      ],
+      "kind": "concept",
+      "one_liner": "含有相同或相似抗原表位的不同抗原",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "不同抗原含有相同或相似的抗原表位（共同抗原表位），称共同抗原或交叉反应性抗原",
+          "cite": {
+            "page": 12,
+            "quote": "具有共同抗原表位的不同抗原称为共同抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "基础",
+          "value": "天然抗原由不同分子组成，同一分子又可带有多种不同抗原表位",
+          "cite": {
+            "page": 12,
+            "quote": "同一分子又可带有多种不同的抗原表位",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:common-antigen:1",
+          "prompt": "什么是共同抗原？",
+          "answer": "含有相同或相似抗原表位的不同抗原（又称交叉反应性抗原）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 12,
+            "quote": "具有共同抗原表位的不同抗原称为共同抗原",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 12,
+          "quote": "称为共同抗原（common antigen）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "cross-reaction",
+      "name_zh": "交叉反应",
+      "name_en": "cross reaction",
+      "kind": "process",
+      "one_liner": "抗体/效应淋巴细胞与含共同表位的其他抗原发生的反应",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "抗体或效应/记忆淋巴细胞可与具有共同表位的不同抗原发生反应，称为交叉反应",
+          "cite": {
+            "page": 12,
+            "quote": "可与具有共同表位的不同抗原发生反应，称为交叉反应",
+            "verified": true
+          }
+        },
+        {
+          "label": "实例机制",
+          "value": "甲、乙两菌含共同抗原表位（A 表位），甲菌刺激产生的 A 抗体可与乙菌中的 A 表位结合",
+          "cite": {
+            "page": 12,
+            "quote": "由甲菌刺激机体产生的A抗体可与乙菌中的A表位结合",
+            "verified": true
+          }
+        },
+        {
+          "label": "临床应用",
+          "value": "诊断立克次体感染时，因立克次体不能人工培养，可用有共同抗原的变形杆菌代替检测相应抗体",
+          "cite": {
+            "page": 12,
+            "quote": "可用与立克次体有共同抗原的变形杆菌代替",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "特异性",
+          "tip": "交叉反应不否定特异性：抗体仍是针对共同表位本身特异结合，只是不同抗原碰巧携带相同表位"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:cross-reaction:1",
+          "prompt": "交叉反应的定义是什么？",
+          "answer": "抗体或效应/记忆淋巴细胞与具有共同表位的不同抗原发生的反应。",
+          "difficulty": "what",
+          "cite": {
+            "page": 12,
+            "quote": "称为交叉反应（cross reaction）",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:cross-reaction:2",
+          "prompt": "临床上如何利用交叉反应诊断立克次体感染？",
+          "answer": "立克次体不能在人工培养基生长、不易获得抗原，用与其有共同抗原的变形杆菌代替，检测患者血清中相应抗体。",
+          "difficulty": "case",
+          "cite": {
+            "page": 12,
+            "quote": "可用与立克次体有共同抗原的变形杆菌代替",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 12,
+          "quote": "称为交叉反应（cross reaction）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "immunogenicity-factors-ag",
+      "name_zh": "影响免疫原性的因素（抗原方面）",
+      "name_en": "antigen-intrinsic factors of immunogenicity",
+      "kind": "concept",
+      "one_liner": "化学组成、分子量、结构复杂性、易接近性、物理状态五因素",
+      "fields": [
+        {
+          "label": "化学组成",
+          "value": "蛋白质类免疫原性强；多糖、多肽有一定免疫原性；核酸弱；脂类一般难以诱导免疫应答",
+          "cite": {
+            "page": 13,
+            "quote": "蛋白质类物质多具有较强的免疫原性",
+            "verified": true
+          }
+        },
+        {
+          "label": "分子量",
+          "value": "一般在 10kDa 以上；小于 10kDa 较弱，低于 4kDa 几乎无免疫原性；分子量越大表位越多越强",
+          "cite": {
+            "page": 13,
+            "quote": "分子量一般在10kDa以上",
+            "verified": true
+          }
+        },
+        {
+          "label": "结构复杂性",
+          "value": "明胶 100kDa 因仅由直链氨基酸组成而免疫原性弱；胰岛素仅 5.7kDa 因含芳香族氨基酸而免疫原性较强",
+          "cite": {
+            "page": 13,
+            "quote": "因其序列中含芳香族氨基酸，仍具有较强的免疫原性",
+            "verified": true
+          }
+        },
+        {
+          "label": "易接近性",
+          "value": "抗原表位与淋巴细胞表面抗原受体接近的难易程度（侧链位置影响）",
+          "cite": {
+            "page": 13,
+            "quote": "与相应淋巴细胞表面的抗原受体接近的难易程度",
+            "verified": true
+          }
+        },
+        {
+          "label": "物理状态",
+          "value": "颗粒性抗原强于可溶性抗原；聚合蛋白强于单体——可将弱抗原吸附于大颗粒表面增强",
+          "cite": {
+            "page": 13,
+            "quote": "颗粒性抗原的免疫原性强于可溶性抗原",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immunogenicity-factors-ag:1",
+          "prompt": "为什么分子量高达 100kDa 的明胶免疫原性弱？",
+          "answer": "因为它仅由直链氨基酸组成、结构简单，在体内易降解成低分子量物质——说明结构复杂性与分子量同样重要。",
+          "difficulty": "why",
+          "cite": {
+            "page": 13,
+            "quote": "明胶的分子量高达100kDa，但免疫原性弱或缺乏",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:immunogenicity-factors-ag:2",
+          "prompt": "分子量仅 5.7kDa 的胰岛素为何仍有较强免疫原性？",
+          "answer": "其序列中含有芳香族氨基酸等特殊化学基团，结构上弥补了分子量小的不足。",
+          "difficulty": "why",
+          "cite": {
+            "page": 13,
+            "quote": "胰岛素分子量仅5.7kDa",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:immunogenicity-factors-ag:3",
+          "prompt": "具有免疫原性的物质分子量一般在多少以上？",
+          "answer": "10kDa 以上（<10kDa 较弱，<4kDa 几乎无免疫原性）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 13,
+            "quote": "分子量一般在10kDa以上",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 13,
+          "quote": "分子量一般在10kDa以上",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "immunogenicity-factors-host-route",
+      "name_zh": "影响免疫原性的因素（宿主与途径）",
+      "name_en": "host and route factors of immunogenicity",
+      "kind": "concept",
+      "one_liner": "宿主受 MHC 遗传控制；途径由强到弱：皮内>皮下>肌内>腹腔>静脉",
+      "fields": [
+        {
+          "label": "遗传因素",
+          "value": "应答能力受遗传背景、特别是 MHC 的控制；如多糖抗原对人和小鼠有免疫原性，对豚鼠则无",
+          "cite": {
+            "page": 13,
+            "quote": "受遗传背景，特别是主要组织相容性复合体（MHC）的控制",
+            "verified": true
+          }
+        },
+        {
+          "label": "年龄等状态",
+          "value": "青壮年比幼年、老年应答强；新生动物/婴儿对多糖类抗原不应答，易发生细菌感染；营养不良、感染、应激、免疫抑制剂使应答减弱",
+          "cite": {
+            "page": 13,
+            "quote": "青壮年动物比幼年、老年动物具有更强的免疫应答",
+            "verified": true
+          }
+        },
+        {
+          "label": "进入途径",
+          "value": "由强到弱：皮内注射＞皮下注射＞肌内注射＞腹腔注射（限动物）＞静脉注射",
+          "cite": {
+            "page": 14,
+            "quote": "皮内注射、皮下注射、肌内注射、腹腔注射",
+            "verified": true
+          }
+        },
+        {
+          "label": "口服",
+          "value": "蛋白质抗原口服经消化道降解会导致免疫原性丧失",
+          "cite": {
+            "page": 14,
+            "quote": "口服经消化道降解会导致其免疫原性丧失",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:immunogenicity-factors-host-route:1",
+          "prompt": "抗原进入机体途径的免疫原性强弱顺序？",
+          "answer": "皮内注射 ＞ 皮下注射 ＞ 肌内注射 ＞ 腹腔注射（仅限动物）＞ 静脉注射。",
+          "difficulty": "what",
+          "cite": {
+            "page": 14,
+            "quote": "由强到弱依次",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:immunogenicity-factors-host-route:2",
+          "prompt": "为什么新生儿对多糖类抗原不应答、易发生细菌感染？",
+          "answer": "免疫系统发育未成熟，对多糖类抗原不能产生应答，而细菌荚膜多糖正是重要病原抗原。",
+          "difficulty": "why",
+          "cite": {
+            "page": 13,
+            "quote": "新生动物或婴儿对多糖类抗原不应答，易发生细菌感染",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 13,
+          "quote": "特别是主要组织相容性复合体（MHC）的控制",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "td-ag",
+      "name_zh": "T 细胞依赖性抗原",
+      "name_en": "T-dependent antigen",
+      "aliases": [
+        "TD-Ag",
+        "胸腺依赖性抗原",
+        "thymus dependent antigen"
+      ],
+      "kind": "concept",
+      "one_liner": "需 T 细胞辅助才能刺激 B 细胞产生抗体；绝大多数蛋白质抗原",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "有赖于 T 细胞辅助才能刺激 B 细胞产生抗体的抗原",
+          "cite": {
+            "page": 14,
+            "quote": "有赖于T细胞辅助才能刺激B细胞产生抗体的抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "常见种类",
+          "value": "绝大多数蛋白质抗原：病原微生物、血细胞、血清蛋白等",
+          "cite": {
+            "page": 14,
+            "quote": "如病原微生物、血细胞、血清蛋白等",
+            "verified": true
+          }
+        },
+        {
+          "label": "特点",
+          "value": "结构复杂、表位种类多（兼含 B 细胞表位和 T 细胞表位）；诱导 IgG 类抗体并发生类别转换；可诱导细胞免疫并形成免疫记忆",
+          "cite": {
+            "page": 14,
+            "quote": "主要为IgG类抗体；还可诱导细胞免疫，且形成免疫记忆",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "TI-Ag",
+          "tip": "TD-Ag：蛋白质、需T辅助、IgG+类别转换+记忆；TI-Ag：多糖、不需T、仅IgM、无转换无记忆"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:td-ag:1",
+          "prompt": "TD-Ag 诱导的抗体主要是哪类？",
+          "answer": "IgG（可发生类别转换），且形成免疫记忆、可诱导细胞免疫。",
+          "difficulty": "what",
+          "cite": {
+            "page": 14,
+            "quote": "主要为IgG类抗体",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 14,
+          "quote": "T细胞依赖性抗原（T-dependent antigen, TD-Ag）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "ti-ag",
+      "name_zh": "非 T 细胞依赖性抗原",
+      "name_en": "T-independent antigen",
+      "aliases": [
+        "TI-Ag",
+        "非胸腺依赖性抗原",
+        "thymus independent antigen"
+      ],
+      "kind": "concept",
+      "one_liner": "无须 T 细胞辅助即刺激 B 细胞产生抗体；多糖抗原为主",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "无须 T 细胞辅助即能刺激 B 细胞产生抗体的抗原",
+          "cite": {
+            "page": 14,
+            "quote": "无须T细胞辅助即能刺激B细胞产生抗体的抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "常见种类",
+          "value": "主要为多糖抗原：细菌脂多糖、肺炎球菌荚膜多糖等",
+          "cite": {
+            "page": 14,
+            "quote": "如细菌脂多糖、肺炎球菌荚膜多糖等",
+            "verified": true
+          }
+        },
+        {
+          "label": "特点",
+          "value": "结构简单、表位单一且多个重复排列的 B 细胞表位，可单独激活 B 细胞；仅诱导 IgM、不能类别转换；一般不诱导细胞免疫、无免疫记忆",
+          "cite": {
+            "page": 14,
+            "quote": "仅能诱导B细胞产生IgM类抗体，不能发生类别转换",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:ti-ag:1",
+          "prompt": "TI-Ag 诱导的抗体类别和记忆性如何？",
+          "answer": "仅产生 IgM 类抗体、不能发生类别转换，无免疫记忆，一般不诱导细胞免疫。",
+          "difficulty": "what",
+          "cite": {
+            "page": 14,
+            "quote": "仅能诱导B细胞产生IgM类抗体",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:ti-ag:2",
+          "prompt": "为什么 TI-Ag 无须 T 细胞辅助？",
+          "answer": "因其含多个重复排列的 B 细胞表位，可直接交联激活 B 细胞（BCR），无须 T 细胞辅助提供第二信号。",
+          "difficulty": "why",
+          "cite": {
+            "page": 14,
+            "quote": "含多个重复排列的B细胞表位，可单独激活B细胞",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 14,
+          "quote": "T-independent antigen, TI-Ag",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "xenoantigen",
+      "name_zh": "异种抗原",
+      "name_en": "xenoantigen",
+      "kind": "concept",
+      "one_liner": "来自其他物种的抗原；动物免疫血清兼具抗体与异种抗原两重性",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "对于宿主而言，来自于其他物种的抗原",
+          "cite": {
+            "page": 14,
+            "quote": "来自于其他物种的抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "常见种类",
+          "value": "病原生物及其代谢产物、植物蛋白、用于治疗的动物免疫血清、异种器官移植物等",
+          "cite": {
+            "page": 14,
+            "quote": "病原生物及其代谢产物、植物蛋白",
+            "verified": true
+          }
+        },
+        {
+          "label": "临床要点",
+          "value": "马抗蛇毒血清有两重性：既是抗体（中和毒素），对人体又是异种抗原（诱发抗马血清抗体，反复使用可致超敏反应）",
+          "cite": {
+            "page": 14,
+            "quote": "反复使用可能引起超敏反应",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:xenoantigen:1",
+          "prompt": "为什么马抗蛇毒血清反复使用可能引起超敏反应？",
+          "answer": "它对人体而言是异种抗原，可刺激机体产生抗马血清抗体，再次使用时抗原抗体反应引发超敏反应。",
+          "difficulty": "case",
+          "cite": {
+            "page": 14,
+            "quote": "刺激机体产生抗马血清抗体",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 14,
+          "quote": "异种抗原（xenoantigen）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "allogenic-antigen",
+      "name_zh": "同种异型抗原",
+      "name_en": "allogenic antigen",
+      "aliases": [
+        "同种异体抗原"
+      ],
+      "kind": "concept",
+      "one_liner": "同种属不同个体的特异性抗原：ABO、Rh 血型与 HLA",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "同一种属不同个体所具有的特异性抗原",
+          "cite": {
+            "page": 14,
+            "quote": "同一种属不同个体所具有的特异性抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "人类的代表",
+          "value": "血型抗原（ABO、Rh）和人类白细胞抗原（HLA）",
+          "cite": {
+            "page": 14,
+            "quote": "ABO血型、Rh血型",
+            "verified": true
+          }
+        },
+        {
+          "label": "临床意义",
+          "value": "HLA 是人体最复杂的同种异型抗原，不相匹配可导致同种移植排斥反应",
+          "cite": {
+            "page": 14,
+            "quote": "HLA不相匹配，可导致同种移植排斥反应",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "异种抗原",
+          "tip": "异种抗原跨物种（马血清对人）；同种异型抗原同种属不同个体（人对人的 ABO/HLA）"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:allogenic-antigen:1",
+          "prompt": "人体最复杂的同种异型抗原是什么？",
+          "answer": "HLA（人类白细胞抗原）；不匹配可致同种移植排斥反应。",
+          "difficulty": "what",
+          "cite": {
+            "page": 14,
+            "quote": "HLA是人体最复杂的同种异型抗原",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 14,
+          "quote": "同种异型抗原（allogenic antigen）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "autoantigen",
+      "name_zh": "自身抗原",
+      "name_en": "autoantigen",
+      "kind": "concept",
+      "one_liner": "诱导宿主自身免疫应答的自身成分：隐蔽性与修饰性两类",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "能诱导宿主自身产生特异性免疫应答的自身成分",
+          "cite": {
+            "page": 14,
+            "quote": "能诱导宿主自身产生特异性免疫应答的自身成分",
+            "verified": true
+          }
+        },
+        {
+          "label": "正常状态",
+          "value": "机体对自身正常组织细胞处于自身耐受，不产生免疫应答",
+          "cite": {
+            "page": 14,
+            "quote": "即处于自身耐受",
+            "verified": true
+          }
+        },
+        {
+          "label": "隐蔽性自身抗原",
+          "value": "胚胎期从未与自身淋巴细胞接触过的自身成分（晶状体蛋白、脑组织等），正常处于免疫隔离状态；释放后可诱导自身免疫应答",
+          "cite": {
+            "page": 14,
+            "quote": "（如晶状体蛋白、脑组织等）",
+            "verified": true
+          }
+        },
+        {
+          "label": "修饰性自身抗原",
+          "value": "免疫耐受的自身成分因感染、药物、烧伤、电离辐射等发生改变或被修饰，形成新抗原表位",
+          "cite": {
+            "page": 15,
+            "quote": "形成新的抗原表位，称为修饰性自身抗原",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:autoantigen:1",
+          "prompt": "自身抗原分哪两类？",
+          "answer": "隐蔽性自身抗原（免疫隔离成分释放，如晶状体蛋白）和修饰性自身抗原（自身成分被感染/药物/辐射等修饰形成新表位）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 15,
+            "quote": "称为修饰性自身抗原",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 14,
+          "quote": "自身抗原（autoantigen）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "heterophilic-antigen",
+      "name_zh": "异嗜性抗原",
+      "name_en": "heterophilic antigen",
+      "aliases": [
+        "Forssman 抗原"
+      ],
+      "kind": "concept",
+      "one_liner": "无种属特异性、存在于人/动/植/微生物间的共同抗原",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "一类无种属特异性，存在于人、动物、植物、微生物之间的共同抗原；最初由 Forssman 发现，又称 Forssman 抗原",
+          "cite": {
+            "page": 15,
+            "quote": "最初由Forssman发现，又称Forssman抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "致病实例①",
+          "value": "A 群溶血性链球菌 M 蛋白与人肾小球基膜及心肌组织有共同抗原→抗体交叉反应致肾小球肾炎或心肌炎",
+          "cite": {
+            "page": 15,
+            "quote": "M蛋白与人肾小球基膜及心肌组织间具有共同抗原",
+            "verified": true
+          }
+        },
+        {
+          "label": "致病实例②",
+          "value": "O14 型大肠埃希菌脂多糖与人结肠黏膜有共同抗原→溃疡性结肠炎",
+          "cite": {
+            "page": 15,
+            "quote": "脂多糖与人结肠黏膜具有共同抗原",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:heterophilic-antigen:1",
+          "prompt": "链球菌感染后为什么会发生肾小球肾炎？",
+          "answer": "A 群溶血性链球菌表面 M 蛋白与人肾小球基膜存在共同抗原（异嗜性抗原），抗链球菌抗体与肾组织交叉反应导致肾炎。",
+          "difficulty": "case",
+          "cite": {
+            "page": 15,
+            "quote": "导致肾小球肾炎或心肌炎",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:heterophilic-antigen:2",
+          "prompt": "异嗜性抗原与同种异型抗原如何区分？",
+          "answer": "异嗜性抗原无种属特异性，跨物种存在共同表位；同种异型抗原是同一种属内不同个体间的抗原差异。",
+          "difficulty": "what",
+          "cite": {
+            "page": 15,
+            "quote": "无种属特异性",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 15,
+          "quote": "又称Forssman抗原",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "superantigen",
+      "name_zh": "超抗原",
+      "name_en": "superantigen",
+      "aliases": [
+        "SAg"
+      ],
+      "kind": "molecule",
+      "one_liner": "极低浓度即激活大量 T/B 细胞克隆的非特异性刺激剂",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "只需极低浓度（1~10ng/ml）即能激活大量（2%~20%）T 细胞克隆或 B 细胞克隆、产生极强免疫效应的物质",
+          "cite": {
+            "page": 15,
+            "quote": "只需极低浓度（1~10ng/ml）即能激活大量",
+            "verified": true
+          }
+        },
+        {
+          "label": "对比",
+          "value": "普通抗原只能激活机体总 T 细胞克隆数的百万分之一至万分之一",
+          "cite": {
+            "page": 15,
+            "quote": "只能激活机体总T细胞克隆数的百万分之一至万分之一",
+            "verified": true
+          }
+        },
+        {
+          "label": "种类",
+          "value": "激活 T 细胞：金黄色葡萄球菌肠毒素 A~E（SEA~SEE）、表皮剥脱毒素等；激活 B 细胞：金黄色葡萄球菌 A 蛋白（SPA）、HIV gp120",
+          "cite": {
+            "page": 15,
+            "quote": "金黄色葡萄球菌肠毒素A~E",
+            "verified": true
+          }
+        },
+        {
+          "label": "作用机制（T 细胞）",
+          "value": "无须加工提呈，以完整蛋白形式：一端结合 TCR β 链 V 区外侧，另一端结合 MHC II 类分子非多态区外侧；不涉及 TCR 特异性识别、无 MHC 限制性",
+          "cite": {
+            "page": 15,
+            "quote": "与TCRβ链V区的外侧结合",
+            "verified": true
+          }
+        },
+        {
+          "label": "生物学意义",
+          "value": "大量促炎细胞因子→毒性休克综合征、多器官功能衰竭；激活自身反应性 T 细胞→自身免疫病；T 细胞过度激活耗竭→免疫抑制",
+          "cite": {
+            "page": 16,
+            "quote": "引起毒性休克综合征、多器官功能衰竭",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "普通抗原",
+          "tip": "普通抗原经 MHC 限制性提呈、激活特异克隆（1/10⁶~1/10⁴）；超抗原不加工、不识别特异表位、激活 2%~20% 克隆"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:superantigen:1",
+          "prompt": "超抗原激活 T 细胞为什么不受 MHC 限制？",
+          "answer": "它结合的是 MHC II 类分子非多态区外侧和 TCR β 链 V 区外侧，不经过抗原肽-多态区结合沟的特异性识别。",
+          "difficulty": "why",
+          "cite": {
+            "page": 15,
+            "quote": "MHC II类分子非多态区外侧",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:superantigen:2",
+          "prompt": "葡萄球菌肠毒素引起毒性休克综合征的机制是什么？",
+          "answer": "肠毒素作为超抗原大量激活 T 细胞，诱导产生大量促炎性细胞因子，引起毒性休克综合征甚至多器官功能衰竭。",
+          "difficulty": "case",
+          "cite": {
+            "page": 16,
+            "quote": "引起毒性休克综合征",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 15,
+          "quote": "超抗原（superantigen, SAg）",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "mitogen",
+      "name_zh": "丝裂原",
+      "name_en": "mitogen",
+      "aliases": [
+        "促有丝分裂原"
+      ],
+      "kind": "molecule",
+      "one_liner": "非特异性促使细胞有丝分裂增殖的多克隆激活物",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "一类可非特异性地促使细胞发生有丝分裂进而增殖的物质，是淋巴细胞多克隆激活物",
+          "cite": {
+            "page": 16,
+            "quote": "非特异性地促使细胞发生有丝分裂进而增殖",
+            "verified": true
+          }
+        },
+        {
+          "label": "T 细胞丝裂原",
+          "value": "伴刀豆球蛋白 A（ConA）、植物凝集素（PHA）——均为植物蛋白提取成分",
+          "cite": {
+            "page": 16,
+            "quote": "伴刀豆球蛋白A及植物凝集素",
+            "verified": true
+          }
+        },
+        {
+          "label": "B 细胞丝裂原",
+          "value": "金黄色葡萄球菌 A 蛋白（SPA）、脂多糖（LPS）",
+          "cite": {
+            "page": 16,
+            "quote": "金黄色葡萄球菌A蛋白（SPA）和脂多糖（LPS）",
+            "verified": true
+          }
+        },
+        {
+          "label": "T+B 细胞",
+          "value": "美洲商陆丝裂原（PWM）",
+          "cite": {
+            "page": 16,
+            "quote": "美洲商陆丝裂原（pokeweed mitogen, PWM）",
+            "verified": true
+          }
+        },
+        {
+          "label": "应用",
+          "value": "利用多克隆激活特性体外测定淋巴细胞活性，评估机体免疫功能状态",
+          "cite": {
+            "page": 16,
+            "quote": "广泛应用于体外测定淋巴细胞的活性",
+            "verified": true
+          }
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:mitogen:1",
+          "prompt": "分别激活 T、B 细胞的常用丝裂原有哪些？",
+          "answer": "T：ConA、PHA；B：SPA、LPS；T+B：PWM（美洲商陆丝裂原）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 16,
+            "quote": "ConA及植物凝集素",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 16,
+          "quote": "丝裂原（mitogen）亦称促有丝分裂原",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "adjuvant",
+      "name_zh": "佐剂",
+      "name_en": "adjuvant",
+      "aliases": [
+        "免疫佐剂",
+        "immunoadjuvant"
+      ],
+      "kind": "molecule",
+      "one_liner": "与抗原同注以增强免疫应答或改变应答类型的物质",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "预先或与抗原同时注入机体，能增强机体对该抗原的免疫应答或改变免疫应答类型的物质",
+          "cite": {
+            "page": 16,
+            "quote": "能增强机体对该抗原的免疫应答或改变免疫应答类型",
+            "verified": true
+          }
+        },
+        {
+          "label": "种类",
+          "value": "生物性佐剂（卡介苗、短小棒状杆菌、脂多糖、热激蛋白、细胞因子）；化合物佐剂（氢氧化铝、明矾等无机物；矿物油、羊毛脂、MDP、多聚肌胞苷酸、脂质体等）",
+          "cite": {
+            "page": 16,
+            "quote": "如卡介苗、短小棒状杆菌、脂多糖",
+            "verified": true
+          }
+        },
+        {
+          "label": "弗氏佐剂",
+          "value": "FIA=羊毛脂+液状石蜡（增强免疫原性）；FIA+卡介苗（或灭活结核杆菌）=FCA（还可改变应答类型，作用强但局部反应重，常用于动物实验）",
+          "cite": {
+            "page": 16,
+            "quote": "FIA是羊毛脂与液状石蜡的混合物",
+            "verified": true
+          }
+        },
+        {
+          "label": "人体可用",
+          "value": "氢氧化铝、明矾、多聚肌胞苷酸等",
+          "cite": {
+            "page": 16,
+            "quote": "可用于人体的佐剂有氢氧化铝、明矾",
+            "verified": true
+          }
+        },
+        {
+          "label": "作用机制",
+          "value": "①改变抗原物理性状，延长存留时间；②刺激单核/巨噬细胞，增强抗原处理提呈；③非特异性刺激淋巴细胞增殖分化",
+          "cite": {
+            "page": 16,
+            "quote": "延长抗原在体内存留的时间",
+            "verified": true
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "超抗原/丝裂原",
+          "tip": "三者都非特异激活：佐剂以“辅助增强对抗原的应答”为目的与抗原同用；超抗原/丝裂原是直接多克隆激活淋巴细胞本身"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch01:adjuvant:1",
+          "prompt": "弗氏完全佐剂（FCA）与弗氏不完全佐剂（FIA）的组成区别？",
+          "answer": "FIA 是羊毛脂与液状石蜡的混合物；在 FIA 中加入卡介苗或灭活结核杆菌即为 FCA。",
+          "difficulty": "what",
+          "cite": {
+            "page": 16,
+            "quote": "在FIA中加入卡介苗或灭活的结核杆菌，即成FCA",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:adjuvant:2",
+          "prompt": "为什么 FCA 常用于动物实验而不用于人体？",
+          "answer": "FCA 作用较强，注射局部易形成肉芽肿和持续性溃疡；人体可用的是氢氧化铝、明矾、多聚肌胞苷酸等。",
+          "difficulty": "case",
+          "cite": {
+            "page": 16,
+            "quote": "注射局部易形成肉芽肿和持续性溃疡",
+            "verified": true
+          }
+        },
+        {
+          "id": "ch01:adjuvant:3",
+          "prompt": "佐剂增强免疫应答的三大机制？",
+          "answer": "①改变抗原物理性状、延长体内存留；②刺激单核/巨噬细胞、增强处理和提呈；③非特异性刺激淋巴细胞增殖分化。",
+          "difficulty": "what",
+          "cite": {
+            "page": 16,
+            "quote": "增强其对抗原的处理和提呈能力",
+            "verified": true
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 16,
+          "quote": "称为佐剂（adjuvant）",
+          "verified": true
+        }
+      ]
+    }
+  ]
+}

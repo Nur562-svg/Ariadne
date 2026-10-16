@@ -1,0 +1,21 @@
+{
+  "$comment": "换章只改这里：physicalStart/physicalEnd 是 PDF 物理页；bookPage = 物理页 - pageOffset（印刷页码，用于 citation）",
+  "pdf": "data/raw/immunology-3rd.pdf",
+  "ocr": {
+    "engine": "apple-vision",
+    "dpi": 200,
+    "language": "zh-Hans",
+    "sidebarXCenter": 0.74,
+    "footerYCenter": 0.05,
+    "headerYCenter": 0.94
+  },
+  "chapters": [
+    {
+      "id": "ch01",
+      "title": "免疫学概述（第一章）与抗原（第二章）",
+      "physicalStart": 17,
+      "physicalEnd": 34,
+      "pageOffset": 16
+    }
+  ]
+}

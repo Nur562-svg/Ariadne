@@ -1,0 +1,157 @@
+#!/usr/bin/env node
+/**
+ * LLM 实体卡抽取（可重跑流水线；本次交付的 ch01.entities.json 由同 schema 人工复核产出）。
+ *
+ * 直连（勿 OpenRouter）：
+ *   GLM:      GLM_API_KEY=...  （默认 https://open.bigmodel.cn/api/paas/v4，模型 glm-4.6）
+ *   DeepSeek: DEEPSEEK_API_KEY=...（https://api.deepseek.com，模型 deepseek-chat）
+ *
+ * 用法：
+ *   pnpm extract -- ch01            # 重抽某章（写 data/cards/<id>.entities.json）
+ *   pnpm extract -- ch01 --dry      # 只打印 prompt/结果，不写文件
+ *
+ * Fail-closed 约束（脚本侧硬校验，模型侧 prompt 约束）：
+ *   - page 超出本章页码范围 → 置 null + verified:false（p.?）
+ *   - quote 超 30 字 → 截断
+ *   - one_liner 超 40 字 → 截断
+ */
+import fs from "node:fs";
+import path from "node:path";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { generateText } from "ai";
+
+const ROOT = path.resolve(import.meta.dirname, "..");
+const args = process.argv.slice(2);
+const dry = args.includes("--dry");
+const chapterId = args.find((a) => !a.startsWith("--"));
+if (!chapterId) {
+  console.error("usage: node scripts/extract_cards.mjs <chapterId> [--dry]");
+  process.exit(1);
+}
+
+const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, "config/chapter.json"), "utf8"));
+const ch = cfg.chapters.find((c) => c.id === chapterId);
+if (!ch) {
+  console.error(`chapter ${chapterId} not in config/chapter.json`);
+  process.exit(1);
+}
+
+const blocksDoc = JSON.parse(
+  fs.readFileSync(path.join(ROOT, "data/chapters", `${chapterId}.blocks.json`), "utf8"),
+);
+const pages = blocksDoc.pages.filter((p) => p.page != null && p.text.trim());
+const [bookStart, bookEnd] = blocksDoc.chapter.pages.book;
+
+// ---- provider：直连 GLM 或 DeepSeek ----
+const provider = process.env.DEEPSEEK_API_KEY
+  ? {
+      baseURL: "https://api.deepseek.com",
+      apiKey: process.env.DEEPSEEK_API_KEY,
+      model: process.env.DEEPSEEK_MODEL || "deepseek-chat",
+    }
+  : process.env.GLM_API_KEY
+    ? {
+        baseURL: process.env.GLM_BASE_URL || "https://open.bigmodel.cn/api/paas/v4",
+        apiKey: process.env.GLM_API_KEY,
+        model: process.env.GLM_MODEL || "glm-4.6",
+      }
+    : null;
+
+if (!provider) {
+  console.error("缺少 GLM_API_KEY 或 DEEPSEEK_API_KEY（直连，不经 OpenRouter）");
+  process.exit(1);
+}
+const client = createOpenAICompatible({ name: "ariadne", baseURL: provider.baseURL, apiKey: provider.apiKey });
+
+// ---- prompt（强制 JSON + fail-closed）----
+const SCHEMA_HINT = `{
+  "cards": [{
+    "id": "kebab-case-slug",
+    "name_zh": "", "name_en": "", "aliases": [],
+    "kind": "concept|structure|process|pathogen|cell|molecule|disease",
+    "one_liner": "≤40字",
+    "fields": [{"label":"","value":"","cite":{"page":N|null,"quote":"≤30字原文","verified":true|false}}],
+    "confusions": [{"vs":"","tip":""}],
+    "atoms": [{"id":"<chapterId>:<slug>:N","prompt":"可测问法","answer":"","difficulty":"what|why|case","cite":{...}}],
+    "cites": [{"page":N|null,"quote":"","verified":true|false}]
+  }]
+}`;
+
+function buildPrompt(chunk) {
+  return `你是医学教材知识卡编辑。从下面带印刷页码的教材原文中抽取实体卡（entity cards）。
+
+规则（必须遵守）：
+1. 只抽原文明确支持的事实。每张卡 ≥1 条 citation：page 用原文标注的印刷页码，quote 摘 ≤30 字原文。
+2. FAIL-CLOSED：不确定页码就填 null 且 verified:false；禁止编造页码或原文。
+3. 每张卡 1~3 个知识原子（可测单元：定义=what / 机制一步=why / 临床应用=case），原子 id 格式 "${chapterId}:<slug>:<序号>"。
+4. 易混概念写进 confusions（如 TD-Ag vs TI-Ag）。
+5. 不写诊断、不开处方；只做教材范围内的定义/机制。
+6. 只输出 JSON，不要多余文字。schema：
+${SCHEMA_HINT}
+
+原文（印刷页 p.${chunk[0].page}–p.${chunk[chunk.length - 1].page}）：
+${chunk.map((p) => `【p.${p.page}】\n${p.text}`).join("\n\n")}`;
+}
+
+// ---- fail-closed 后校验 ----
+function sanitizeCard(card) {
+  card.one_liner = (card.one_liner || "").slice(0, 40);
+  const fix = (c) => {
+    if (!c) return c;
+    if (c.page == null || c.page < bookStart || c.page > bookEnd) {
+      return { page: null, quote: c.quote?.slice(0, 30), verified: false };
+    }
+    return { page: c.page, quote: c.quote?.slice(0, 30), verified: !!c.verified };
+  };
+  card.fields = (card.fields || []).map((f) => ({ ...f, cite: fix(f.cite) }));
+  card.atoms = (card.atoms || []).map((a) => ({ ...a, cite: fix(a.cite) }));
+  card.cites = (card.cites || []).map(fix);
+  return card;
+}
+
+// ---- 分块调用（每块 ~4 页，保证页码定位精度）----
+const CHUNK = 4;
+const chunks = [];
+for (let i = 0; i < pages.length; i += CHUNK) chunks.push(pages.slice(i, i + CHUNK));
+
+const all = [];
+for (const [i, chunk] of chunks.entries()) {
+  process.stderr.write(`chunk ${i + 1}/${chunks.length} (p.${chunk[0].page}–p.${chunk.at(-1).page}) …\n`);
+  const { text } = await generateText({
+    model: client(provider.model),
+    prompt: buildPrompt(chunk),
+    temperature: 0.1,
+  });
+  const m = text.match(/\{[\s\S]*\}/);
+  if (!m) {
+    process.stderr.write(`  ! chunk ${i + 1} 未返回 JSON，跳过\n`);
+    continue;
+  }
+  let cards;
+  try {
+    cards = JSON.parse(m[0]).cards || [];
+  } catch {
+    process.stderr.write(`  ! chunk ${i + 1} JSON 解析失败，跳过\n`);
+    continue;
+  }
+  all.push(...cards.map(sanitizeCard));
+  process.stderr.write(`  + ${cards.length} cards\n`);
+}
+
+const doc = {
+  source: `data/chapters/${chapterId}.blocks.json`,
+  book: blocksDoc.book,
+  scope: `${ch.title}（书页 ${bookStart}–${bookEnd}）`,
+  pageNote: "page = 印刷书页码",
+  generated_by: `extract_cards.mjs · ${provider.model} · ${new Date().toISOString()}`,
+  cards: all,
+};
+
+if (dry) {
+  console.log(JSON.stringify(doc, null, 1));
+} else {
+  const out = path.join(ROOT, "data/cards", `${chapterId}.entities.json`);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.writeFileSync(out, JSON.stringify(doc, null, 1));
+  console.log(`wrote ${out} (${all.length} cards)`);
+}
