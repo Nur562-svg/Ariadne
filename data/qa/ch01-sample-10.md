@@ -28,3 +28,10 @@
 - `immunity`：把现代概念 citation quote 扩成完整原句（含“产生免疫应答并清除非己的生理功能”），one_liner/字段/原子答案对齐。
 - `innate-immunity`：补齐 p.3→p.4 跨页引用（定义与“防御谱宽”起句在 p.3，PRR/PAMP 与“无记忆性”在 p.4）。
 - 请 Nuradil 对这两张再过一眼；其余 8 张保持「对」。
+
+
+## 终验（Grok Bot · 2026-10-16 21:16）
+对照 `ch01.blocks.json` OCR：
+- `immunity`：**通过**（现代概念 quote/字段/原子均为完整原句，且均落在印刷页 2）
+- `innate-immunity`：**通过**（定义与「防御谱宽」起句 p.3；PRR/PAMP 与「无记忆性」p.4；跨页 cites 齐全）
+抽查最终：**10/10 可过**（原 8 对 + 上述 2 张已修正并机检）。
