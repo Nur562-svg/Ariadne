@@ -14,9 +14,12 @@ import type { EntityCard } from "@/lib/entities";
 export default function EntitySearch({
   cards,
   kindLabel,
+  activeKind,
 }: {
   cards: EntityCard[];
   kindLabel: Record<string, string>;
+  /** Current list kind filter (URL ?kind=); preserved on card → detail so back can restore it. */
+  activeKind?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
@@ -128,7 +131,11 @@ export default function EntitySearch({
           {hits.map((c) => (
             <li key={c.id}>
               <Link
-                href={`/entities/${c.id}`}
+                href={
+                  activeKind && activeKind !== "全部"
+                    ? `/entities/${c.id}?kind=${encodeURIComponent(activeKind)}`
+                    : `/entities/${c.id}`
+                }
                 className="block h-full rounded-lg border border-line bg-card p-5 no-underline transition-shadow hover:shadow-md"
               >
                 <div className="flex items-baseline justify-between gap-2">

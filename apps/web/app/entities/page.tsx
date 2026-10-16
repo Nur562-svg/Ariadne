@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { loadCards } from "@/lib/entities";
 import EntitySearch from "@/components/EntitySearch";
 
-const KINDS = ["全部", "concept", "structure", "process", "molecule"] as const;
+const KINDS = ["全部", "concept", "structure", "process", "molecule", "cell", "disease"] as const;
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -22,7 +22,7 @@ export default function EntitiesPage({
 }) {
   return (
     <main className="mx-auto max-w-5xl px-6 py-12 flex-1">
-      <h1 className="brand-rule pb-2 text-3xl font-bold">实体卡 · 免疫学概述 / 抗原</h1>
+      <h1 className="brand-rule pb-2 text-3xl font-bold">实体卡 · 免疫学概述 / 抗原 / 免疫器官与组织</h1>
       <Suspense fallback={<p className="mt-8 text-muted">加载中…</p>}>
         <EntityList searchParams={searchParams} />
       </Suspense>
@@ -54,7 +54,7 @@ async function EntityList({ searchParams }: { searchParams: Promise<{ kind?: str
         ))}
       </div>
 
-      <EntitySearch cards={cards} kindLabel={KIND_ZH} />
+      <EntitySearch cards={cards} kindLabel={KIND_ZH} activeKind={kind} />
     </>
   );
 }
