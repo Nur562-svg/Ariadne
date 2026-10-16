@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { loadCards } from "@/lib/entities";
+import EntitySearch from "@/components/EntitySearch";
 
 const KINDS = ["全部", "concept", "structure", "process", "molecule"] as const;
 
@@ -53,30 +54,7 @@ async function EntityList({ searchParams }: { searchParams: Promise<{ kind?: str
         ))}
       </div>
 
-      <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {cards.map((c) => (
-          <li key={c.id}>
-            <Link
-              href={`/entities/${c.id}`}
-              className="block h-full rounded-lg border border-line bg-card p-5 no-underline transition-shadow hover:shadow-md"
-            >
-              <div className="flex items-baseline justify-between gap-2">
-                <h2 className="text-lg font-semibold text-foreground">{c.name_zh}</h2>
-                <span className="mono shrink-0 rounded border border-line px-1.5 py-0.5 text-[11px] text-muted">
-                  {KIND_ZH[c.kind] ?? c.kind}
-                </span>
-              </div>
-              {c.name_en && <p className="mono mt-0.5 text-xs text-muted">{c.name_en}</p>}
-              <p className="mt-3 text-sm leading-6 text-foreground/85">{c.one_liner}</p>
-              <p className="mt-3 text-xs text-muted">
-                {c.atoms.length} 个原子 · 引自 p.
-                {[...new Set(c.cites.filter((x) => x.page != null).map((x) => x.page))].join(", p.")}
-                {c.cites.some((x) => x.page == null) ? " · 部分未验证 p.?" : ""}
-              </p>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <EntitySearch cards={cards} kindLabel={KIND_ZH} />
     </>
   );
 }
