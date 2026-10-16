@@ -1,0 +1,3639 @@
+{
+ "source": "data/chapters/ch03.blocks.json",
+ "book": "免疫学基础与病原生物学（第3版）",
+ "scope": "免疫器官与组织（第三章）（书页 18–23）",
+ "pageNote": "page = 印刷书页码",
+ "generated_by": "extract_cards.mjs · DeepSeek deepseek-chat（逐页 EXTRACT_CHUNK=1，两轮合并去重）· 全部 cites verified=false 待 Nuradil 抽查",
+ "cards": [
+  {
+   "id": "immune-organs-classification",
+   "name_zh": "免疫器官的分类",
+   "name_en": "Classification of Immune Organs",
+   "aliases": [
+    "中枢免疫器官",
+    "外周免疫器官"
+   ],
+   "kind": "concept",
+   "one_liner": "按功能分为中枢免疫器官和外周免疫器官与组织",
+   "fields": [
+    {
+     "label": "分类",
+     "value": "中枢免疫器官：骨髓、胸腺；外周免疫器官与组织：淋巴结、脾、黏膜相关淋巴组织等",
+     "cite": {
+      "page": 18,
+      "quote": "前者主要有骨髓和胸腺，后者主要有淋巴结、脾、黏膜相关淋巴组织",
+      "verified": false
+     }
+    },
+    {
+     "label": "联系",
+     "value": "通过血液循环及淋巴循环互相联系",
+     "cite": {
+      "page": 18,
+      "quote": "通过血液循环及淋巴循环互相联系",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:immune-organs-classification:1",
+     "prompt": "中枢免疫器官包括哪些？",
+     "answer": "骨髓和胸腺",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "前者主要有骨髓和胸腺",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:immune-organs-classification:2",
+     "prompt": "外周免疫器官与组织主要包括哪些？",
+     "answer": "淋巴结、脾、黏膜相关淋巴组织等",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "后者主要有淋巴结、脾、黏膜相关淋巴组织",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 18,
+     "quote": "前者主要有骨髓和胸腺，后者主要有淋巴结、脾、黏膜相关淋巴组织",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "central-immune-organ-definition",
+   "name_zh": "中枢免疫器官",
+   "name_en": "Central Immune Organs",
+   "aliases": [],
+   "kind": "concept",
+   "one_liner": "免疫细胞发生、分化、发育和成熟的场所",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "免疫细胞发生、分化、发育和成熟的场所",
+     "cite": {
+      "page": 18,
+      "quote": "中枢免疫器官是免疫细胞发生、分化、发育和成熟的场所",
+      "verified": false
+     }
+    },
+    {
+     "label": "组成",
+     "value": "人类和其他哺乳动物包括骨髓和胸腺",
+     "cite": {
+      "page": 18,
+      "quote": "包括骨髓和胸腺",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "外周免疫器官",
+     "tip": "中枢是免疫细胞发生、分化、发育和成熟的场所；外周是成熟免疫细胞定居并产生免疫应答的场所"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:central-immune-organ-definition:1",
+     "prompt": "中枢免疫器官的功能是什么？",
+     "answer": "免疫细胞发生、分化、发育和成熟的场所",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "中枢免疫器官是免疫细胞发生、分化、发育和成熟的场所",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 18,
+     "quote": "中枢免疫器官是免疫细胞发生、分化、发育和成熟的场所",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "bone-marrow-definition",
+   "name_zh": "骨髓",
+   "name_en": "Bone Marrow",
+   "aliases": [],
+   "kind": "structure",
+   "one_liner": "造血器官，各类血细胞和免疫细胞的发源地",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "造血器官，是各类血细胞和免疫细胞的发源地",
+     "cite": {
+      "page": 18,
+      "quote": "骨髓（bone marrow）是造血器官，是各类血细胞和免疫",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能定位",
+     "value": "人和其他哺乳动物B细胞发育成熟的场所",
+     "cite": {
+      "page": 18,
+      "quote": "也是人和其他哺乳动物B 细胞发育成熟的场所",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:bone-marrow-definition:1",
+     "prompt": "骨髓作为免疫器官的主要功能是什么？",
+     "answer": "造血器官，各类血细胞和免疫细胞的发源地，也是B细胞发育成熟的场所",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "是各类血细胞和免疫细胞的发源地",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 18,
+     "quote": "骨髓（bone marrow）是造血器官，是各类血细胞和免疫",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "bone-marrow-structure",
+   "name_zh": "骨髓的结构",
+   "name_en": "Structure of Bone Marrow",
+   "aliases": [
+    "红骨髓",
+    "黄骨髓"
+   ],
+   "kind": "structure",
+   "one_liner": "位于骨髓腔，分红骨髓和黄骨髓，红骨髓有活跃造血功能",
+   "fields": [
+    {
+     "label": "位置与分类",
+     "value": "位于骨髓腔内，分为红骨髓和黄骨髓",
+     "cite": {
+      "page": 18,
+      "quote": "骨髓位于骨髓腔内，分为红骨髓和黃骨髓",
+      "verified": false
+     }
+    },
+    {
+     "label": "红骨髓构成",
+     "value": "由造血组织和血窦构成，具有活跃的造血功能",
+     "cite": {
+      "page": 18,
+      "quote": "红骨髓由造血组织和血窦构成，具有活跃的造血功能",
+      "verified": false
+     }
+    },
+    {
+     "label": "造血组织构成",
+     "value": "由基质细胞和造血细胞构成",
+     "cite": {
+      "page": 18,
+      "quote": "造血组织由基质细胞和造血细胞构成",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "黄骨髓",
+     "tip": "红骨髓具有活跃造血功能；黄骨髓主要为脂肪组织（教材未展开）"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:bone-marrow-structure:1",
+     "prompt": "红骨髓由什么构成？",
+     "answer": "造血组织和血窦",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "红骨髓由造血组织和血窦构成",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:bone-marrow-structure:2",
+     "prompt": "造血组织由哪两类细胞构成？",
+     "answer": "基质细胞和造血细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "造血组织由基质细胞和造血细胞构成",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 18,
+     "quote": "骨髓位于骨髓腔内，分为红骨髓和黃骨髓",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "bone-marrow-stromal-cells",
+   "name_zh": "骨髓基质细胞",
+   "name_en": "Bone Marrow Stromal Cells",
+   "aliases": [],
+   "kind": "cell",
+   "one_liner": "与细胞因子共同为造血细胞分化发育提供微环境",
+   "fields": [
+    {
+     "label": "组成",
+     "value": "主要包含网状细胞、成纤维细胞、巨噬细胞、血管内皮细胞、脂肪细胞等",
+     "cite": {
+      "page": 18,
+      "quote": "基质细胞主要包含网状细胞、成纤维细胞、巨噬细胞、血管内皮细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "与其分泌的多种细胞因子为造血细胞的分化发育提供微环境",
+     "cite": {
+      "page": 18,
+      "quote": "为造血细胞的分化发育提供了微环境",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:bone-marrow-stromal-cells:1",
+     "prompt": "骨髓基质细胞的主要功能是什么？",
+     "answer": "与分泌的细胞因子共同为造血细胞分化发育提供微环境",
+     "difficulty": "why",
+     "cite": {
+      "page": 18,
+      "quote": "为造血细胞的分化发育提供了微环境",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 18,
+     "quote": "基质细胞主要包含网状细胞、成纤维细胞、巨噬细胞、血管内皮细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "hematopoietic-stem-cell",
+   "name_zh": "造血干细胞",
+   "name_en": "Hematopoietic Stem Cell (HSC)",
+   "aliases": [
+    "HSC"
+   ],
+   "kind": "cell",
+   "one_liner": "高度自我更新能力和多能分化潜能的造血前体细胞",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "具有高度自我更新能力和多能分化潜能的造血前体细胞",
+     "cite": {
+      "page": 18,
+      "quote": "是具有高度自我更新能力和多能分化潜能的造血前体细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "来源",
+     "value": "体内血细胞均由其分化而来",
+     "cite": {
+      "page": 18,
+      "quote": "体内血细胞均由其分化而来",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:hematopoietic-stem-cell:1",
+     "prompt": "造血干细胞的两个核心特性是什么？",
+     "answer": "高度自我更新能力和多能分化潜能",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "是具有高度自我更新能力和多能分化潜能的造血前体细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 18,
+     "quote": "骨髓造血干细胞（hematopoietic stem cel",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "hsc-differentiation",
+   "name_zh": "造血干细胞的分化",
+   "name_en": "HSC Differentiation",
+   "aliases": [
+    "髓样干细胞",
+    "淋巴样干细胞"
+   ],
+   "kind": "process",
+   "one_liner": "HSC分化为髓样干细胞和淋巴样干细胞",
+   "fields": [
+    {
+     "label": "第一步分化",
+     "value": "在骨髓微环境中，HSC可分化为髓样干细胞和淋巴样干细胞",
+     "cite": {
+      "page": 18,
+      "quote": "HSC可分化为髓样干细胞和淋巴样干细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "髓样干细胞去向",
+     "value": "进一步分化形成粒细胞、单核细胞、肥大细胞、红细胞、血小板和部分树突状细胞",
+     "cite": {
+      "page": 18,
+      "quote": "髓样干细胞进一步分化形成粒细胞、单核细胞、肥大细胞、红细胞、",
+      "verified": false
+     }
+    },
+    {
+     "label": "淋巴样干细胞去向",
+     "value": "分化为淋巴细胞（T细胞、B细胞、NK细胞）的前体细胞和部分树突状细胞",
+     "cite": {
+      "page": 18,
+      "quote": "淋巴样干细胞分化为淋巴细胞（T细胞、B 细胞、NK细胞）的前",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:hsc-differentiation:1",
+     "prompt": "造血干细胞首先分化为哪两类干细胞？",
+     "answer": "髓样干细胞和淋巴样干细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "HSC可分化为髓样干细胞和淋巴样干细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:hsc-differentiation:2",
+     "prompt": "髓样干细胞可进一步分化形成哪些细胞？",
+     "answer": "粒细胞、单核细胞、肥大细胞、红细胞、血小板和部分树突状细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "髓样干细胞进一步分化形成粒细胞、单核细胞、肥大细胞、红细胞、",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 18,
+     "quote": "HSC可分化为髓样干细胞和淋巴样干细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "bone-marrow-b-nk-maturation",
+   "name_zh": "骨髓是B细胞和NK细胞分化成熟的场所",
+   "name_en": "Bone Marrow as Maturation Site for B and NK Cells",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "淋巴样前体细胞在骨髓内分化为成熟B细胞或NK细胞",
+   "fields": [
+    {
+     "label": "T细胞前体去向",
+     "value": "一部分经血流进入胸腺，发育为成熟的T细胞",
+     "cite": {
+      "page": 18,
+      "quote": "一部分经血流进入胸腺，发育为成熟的T细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "B/NK细胞成熟",
+     "value": "另一部分在骨髓内继续分化为成熟的B细胞或NK细胞",
+     "cite": {
+      "page": 18,
+      "quote": "另一部分则在骨髓内继续分化为成熟的B细胞或NK细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "成熟后去向",
+     "value": "成熟的B细胞和NK细胞进入血液循环，最终定居在外周免疫器官",
+     "cite": {
+      "page": 18,
+      "quote": "成熟的B细胞和 NK细胞进入血液循环，最终定居在外周免疫器官",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "T细胞成熟场所",
+     "tip": "T细胞前体离开骨髓进入胸腺成熟；B细胞和NK细胞在骨髓内成熟"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:bone-marrow-b-nk-maturation:1",
+     "prompt": "B细胞和NK细胞在何处分化成熟？",
+     "answer": "骨髓",
+     "difficulty": "what",
+     "cite": {
+      "page": 18,
+      "quote": "另一部分则在骨髓内继续分化为成熟的B细胞或NK细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:bone-marrow-b-nk-maturation:2",
+     "prompt": "骨髓中淋巴样前体细胞中 destined 发育为T细胞的部分去向何处？",
+     "answer": "经血流进入胸腺，发育为成熟T细胞",
+     "difficulty": "why",
+     "cite": {
+      "page": 18,
+      "quote": "一部分经血流进入胸腺，发育为成熟的T细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 18,
+     "quote": "另一部分则在骨髓内继续分化为成熟的B细胞或NK细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "bone-marrow-antibody-source",
+   "name_zh": "骨髓作为抗体产生的重要场所",
+   "name_en": "Bone marrow as a major site of antibody production",
+   "aliases": [
+    "骨髓抗体来源"
+   ],
+   "kind": "process",
+   "one_liner": "记忆B细胞迁入骨髓分化为长寿浆细胞，持久产生血清抗体",
+   "fields": [
+    {
+     "label": "机制",
+     "value": "记忆B细胞在外周免疫器官受抗原再次刺激活化，经淋巴液和血液迁移至骨髓，分化为长寿浆细胞，持久产生大量抗体",
+     "cite": {
+      "page": 19,
+      "quote": "记忆B 细胞在外周免疫器官受抗原再次刺激而被活化",
+      "verified": false
+     }
+    },
+    {
+     "label": "意义",
+     "value": "骨髓是血清抗体的主要来源",
+     "cite": {
+      "page": 19,
+      "quote": "是血清抗体的主要来源",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:bone-marrow-antibody-source:1",
+     "prompt": "记忆B细胞再次受抗原刺激后迁移至何处分化为长寿浆细胞？",
+     "answer": "骨髓",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "迁移至骨髓，在此分化为长寿浆细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:bone-marrow-antibody-source:2",
+     "prompt": "血清抗体的主要来源是什么？",
+     "answer": "骨髓中长寿浆细胞持久产生的大量抗体",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "是血清抗体的主要来源",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "记忆B 细胞在外周免疫器官受抗原再次刺激而被活化",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "是血清抗体的主要来源",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "thymus-definition",
+   "name_zh": "胸腺",
+   "name_en": "Thymus",
+   "aliases": [],
+   "kind": "structure",
+   "one_liner": "T细胞分化、发育、成熟的场所",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "胸腺是T细胞分化、发育、成熟的场所",
+     "cite": {
+      "page": 19,
+      "quote": "胸腺（thymus）是T细胞分化、发育、成熟的场所",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:thymus-definition:1",
+     "prompt": "胸腺的主要功能是什么？",
+     "answer": "T细胞分化、发育、成熟的场所",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "胸腺（thymus）是T细胞分化、发育、成熟的场所",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "胸腺（thymus）是T细胞分化、发育、成熟的场所",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "thymus-age-changes",
+   "name_zh": "胸腺的年龄变化",
+   "name_en": "Age-related changes of thymus",
+   "aliases": [
+    "胸腺萎缩"
+   ],
+   "kind": "process",
+   "one_liner": "胸腺大小随年龄变化，青春期后逐渐萎缩，老年被脂肪组织取代",
+   "fields": [
+    {
+     "label": "新生期重量",
+     "value": "约15~20g",
+     "cite": {
+      "page": 19,
+      "quote": "新生期胸腺重量约15~20g",
+      "verified": false
+     }
+    },
+    {
+     "label": "青春期重量",
+     "value": "可达30~40g",
+     "cite": {
+      "page": 19,
+      "quote": "至青春期可达30~40g",
+      "verified": false
+     }
+    },
+    {
+     "label": "老年期变化",
+     "value": "明显缩小，大部分被脂肪组织取代，功能衰退",
+     "cite": {
+      "page": 19,
+      "quote": "老年期的胸腺明显缩小，大部分被脂肪组织取代，功能衰退",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:thymus-age-changes:1",
+     "prompt": "胸腺重量在哪个时期达到最大？",
+     "answer": "青春期（可达30~40g）",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "至青春期可达30~40g",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:thymus-age-changes:2",
+     "prompt": "老年期胸腺的主要变化是什么？",
+     "answer": "明显缩小，大部分被脂肪组织取代，功能衰退",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "老年期的胸腺明显缩小，大部分被脂肪组织取代，功能衰退",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "新生期胸腺重量约15~20g",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "至青春期可达30~40g",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "老年期的胸腺明显缩小，大部分被脂肪组织取代，功能衰退",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "thymus-structure",
+   "name_zh": "胸腺的结构",
+   "name_en": "Structure of thymus",
+   "aliases": [
+    "胸腺小叶"
+   ],
+   "kind": "structure",
+   "one_liner": "胸腺被膜分隔成小叶，小叶分外层皮质和内层髓质",
+   "fields": [
+    {
+     "label": "被膜",
+     "value": "胸腺表面有一层结缔组织被膜，深入实质分隔成若干胸腺小叶",
+     "cite": {
+      "page": 19,
+      "quote": "被膜深入胸腺实质将其分隔成若干胸腺小叶",
+      "verified": false
+     }
+    },
+    {
+     "label": "皮质与髓质",
+     "value": "小叶外层为皮质，内层为髓质，皮质与髓质交界处含大量血管",
+     "cite": {
+      "page": 19,
+      "quote": "外层皮质（cortex），内层 髓质（medulla）",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:thymus-structure:1",
+     "prompt": "胸腺小叶的外层和内层分别称为什么？",
+     "answer": "外层为皮质，内层为髓质",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "外层皮质（cortex），内层 髓质（medulla）",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:thymus-structure:2",
+     "prompt": "胸腺皮质与髓质交界处含有什么？",
+     "answer": "大量血管",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "皮质与髓质交界处含大量血管",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "被膜深入胸腺实质将其分隔成若干胸腺小叶",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "外层皮质（cortex），内层 髓质（medulla）",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "皮质与髓质交界处含大量血管",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "thymus-cell-composition",
+   "name_zh": "胸腺的细胞组成",
+   "name_en": "Cellular composition of thymus",
+   "aliases": [
+    "胸腺细胞",
+    "胸腺基质细胞"
+   ],
+   "kind": "cell",
+   "one_liner": "胸腺由胸腺细胞和胸腺基质细胞组成",
+   "fields": [
+    {
+     "label": "胸腺细胞",
+     "value": "即处于不同分化发育阶段的T细胞",
+     "cite": {
+      "page": 19,
+      "quote": "胸腺细胞即处于不同分化发育阶段的T细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "胸腺基质细胞",
+     "value": "主要包括胸腺上皮细胞、巨噬细胞和树突状细胞等",
+     "cite": {
+      "page": 19,
+      "quote": "胸腺基质细胞主要包括胸腺上皮细胞、巨噬细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:thymus-cell-composition:1",
+     "prompt": "胸腺细胞是什么？",
+     "answer": "处于不同分化发育阶段的T细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "胸腺细胞即处于不同分化发育阶段的T细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:thymus-cell-composition:2",
+     "prompt": "胸腺基质细胞主要包括哪些细胞？",
+     "answer": "胸腺上皮细胞、巨噬细胞和树突状细胞等",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "胸腺基质细胞主要包括胸腺上皮细胞、巨噬细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "胸腺细胞即处于不同分化发育阶段的T细胞",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "胸腺基质细胞主要包括胸腺上皮细胞、巨噬细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "thymocyte-maturation-location",
+   "name_zh": "胸腺细胞分化成熟的位置",
+   "name_en": "Location of thymocyte maturation",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "皮质内为未成熟T细胞，髓质内大多为成熟T细胞",
+   "fields": [
+    {
+     "label": "皮质",
+     "value": "皮质内胸腺细胞为未成熟T细胞",
+     "cite": {
+      "page": 19,
+      "quote": "皮质内胸腺细胞为未成熟T细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "髓质",
+     "value": "髓质内胸腺细胞大多为成熟T细胞",
+     "cite": {
+      "page": 19,
+      "quote": "髓质肉胸腺细胞大多为成熟T细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:thymocyte-maturation-location:1",
+     "prompt": "胸腺皮质内的胸腺细胞处于什么阶段？",
+     "answer": "未成熟T细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "皮质内胸腺细胞为未成熟T细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:thymocyte-maturation-location:2",
+     "prompt": "胸腺髓质内的胸腺细胞大多是什么细胞？",
+     "answer": "成熟T细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "髓质肉胸腺细胞大多为成熟T细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "皮质内胸腺细胞为未成熟T细胞",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "髓质肉胸腺细胞大多为成熟T细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "thymic-nurse-cell",
+   "name_zh": "抚育细胞",
+   "name_en": "Nurse cell",
+   "aliases": [],
+   "kind": "cell",
+   "one_liner": "位于皮质浅区的胸腺上皮细胞，产生激素和细胞因子促进胸腺细胞分化",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "位于皮质浅区内的胸腺上皮细胞也称抚育细胞",
+     "cite": {
+      "page": 19,
+      "quote": "位于皮质浅区内的也称抚育细胞（nurse cell）",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "可产生某些激素和细胞因子促进胸腺细胞的分化发育",
+     "cite": {
+      "page": 19,
+      "quote": "可产生某些激素和细胞因子促进胸腺细胞的分化发育",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:thymic-nurse-cell:1",
+     "prompt": "抚育细胞位于胸腺的哪个区域？",
+     "answer": "皮质浅区",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "位于皮质浅区内的也称抚育细胞（nurse cell）",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:thymic-nurse-cell:2",
+     "prompt": "抚育细胞的功能是什么？",
+     "answer": "产生某些激素和细胞因子促进胸腺细胞的分化发育",
+     "difficulty": "why",
+     "cite": {
+      "page": 19,
+      "quote": "可产生某些激素和细胞因子促进胸腺细胞的分化发育",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "位于皮质浅区内的也称抚育细胞（nurse cell）",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "可产生某些激素和细胞因子促进胸腺细胞的分化发育",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "hassall-corpuscle",
+   "name_zh": "胸腺小体",
+   "name_en": "Hassall's corpuscle",
+   "aliases": [
+    "哈索尔小体"
+   ],
+   "kind": "structure",
+   "one_liner": "正常发育胸腺髓质中可见的胸腺小体",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "正常发育的胸腺在髓质可见胸腺小体，又称哈索尔小体",
+     "cite": {
+      "page": 19,
+      "quote": "正常发育的胸腺在髓质可见胸腺小体，又称哈索尔小体",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:hassall-corpuscle:1",
+     "prompt": "胸腺小体位于胸腺的哪个区域？",
+     "answer": "髓质",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "正常发育的胸腺在髓质可见胸腺小体",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "正常发育的胸腺在髓质可见胸腺小体，又称哈索尔小体",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "thymic-microenvironment",
+   "name_zh": "胸腺微环境",
+   "name_en": "Thymic microenvironment",
+   "aliases": [],
+   "kind": "concept",
+   "one_liner": "由胸腺基质细胞、细胞外基质、胸腺激素和细胞因子构成，为T细胞分化成熟提供条件",
+   "fields": [
+    {
+     "label": "组成",
+     "value": "胸腺基质细胞、细胞外基质、胸腺激素和细胞因子等",
+     "cite": {
+      "page": 19,
+      "quote": "胸腺基质细胞、细胞外基质、胸腺激素和细胞因子等构成胸腺微环境",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "为T细胞的分化成熟提供必要的条件",
+     "cite": {
+      "page": 19,
+      "quote": "为T细胞的分化成熟提供必要的条件",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:thymic-microenvironment:1",
+     "prompt": "胸腺微环境由哪些成分构成？",
+     "answer": "胸腺基质细胞、细胞外基质、胸腺激素和细胞因子等",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "胸腺基质细胞、细胞外基质、胸腺激素和细胞因子等构成胸腺微环境",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:thymic-microenvironment:2",
+     "prompt": "胸腺微环境的作用是什么？",
+     "answer": "为T细胞的分化成熟提供必要的条件",
+     "difficulty": "why",
+     "cite": {
+      "page": 19,
+      "quote": "为T细胞的分化成熟提供必要的条件",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "胸腺基质细胞、细胞外基质、胸腺激素和细胞因子等构成胸腺微环境",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "为T细胞的分化成熟提供必要的条件",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "t-cell-development-thymus",
+   "name_zh": "T细胞在胸腺内的发育",
+   "name_en": "T cell development in thymus",
+   "aliases": [
+    "阳性选择",
+    "阴性选择"
+   ],
+   "kind": "process",
+   "one_liner": "T细胞前体经阳性选择和阴性选择，95%以上凋亡，不足5%成熟",
+   "fields": [
+    {
+     "label": "发育过程",
+     "value": "来自骨髓的T细胞前体迁移至胸腺成为胸腺细胞，经过阳性选择和阴性选择",
+     "cite": {
+      "page": 19,
+      "quote": "经过阳性选择和阴性选择",
+      "verified": false
+     }
+    },
+    {
+     "label": "结局",
+     "value": "95%以上发生凋亡，仅不足5%胸腺细胞分化成熟T细胞",
+     "cite": {
+      "page": 19,
+      "quote": "95% 以上发生调亡，仅不足5%胸腺细胞分化成熟T细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "成熟标志",
+     "value": "表达功能性TCR、获得MHC限制性和自身耐受性",
+     "cite": {
+      "page": 19,
+      "quote": "表达功能性 TCR、获得 MHC 限制性和自身耐受性",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:t-cell-development-thymus:1",
+     "prompt": "胸腺中T细胞发育经历哪两种选择？",
+     "answer": "阳性选择和阴性选择",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "经过阳性选择和阴性选择",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:t-cell-development-thymus:2",
+     "prompt": "胸腺中约多少比例的胸腺细胞发生凋亡？",
+     "answer": "95%以上",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "95% 以上发生调亡",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:t-cell-development-thymus:3",
+     "prompt": "成熟T细胞获得哪些特性？",
+     "answer": "表达功能性TCR、获得MHC限制性和自身耐受性",
+     "difficulty": "what",
+     "cite": {
+      "page": 19,
+      "quote": "表达功能性 TCR、获得 MHC 限制性和自身耐受性",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "经过阳性选择和阴性选择",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "95% 以上发生调亡，仅不足5%胸腺细胞分化成熟T细胞",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "表达功能性 TCR、获得 MHC 限制性和自身耐受性",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "thymus-immune-regulation",
+   "name_zh": "胸腺的免疫调节功能",
+   "name_en": "Immunoregulatory function of thymus",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "胸腺基质细胞产生肽类激素和细胞因子，调节胸腺细胞及外周免疫",
+   "fields": [
+    {
+     "label": "机制",
+     "value": "胸腺基质细胞可产生多种肽类激素和细胞因子",
+     "cite": {
+      "page": 19,
+      "quote": "胸腺基质细胞可产生多种肽类激素和细胞因子",
+      "verified": false
+     }
+    },
+    {
+     "label": "作用",
+     "value": "不仅促进胸腺细胞的分化成熟，而且对外周免疫器官和免疫细胞也有调节作用",
+     "cite": {
+      "page": 19,
+      "quote": "对外周免疫器官和免疫细胞也有调节作用",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:thymus-immune-regulation:1",
+     "prompt": "胸腺基质细胞产生的肽类激素和细胞因子有何作用？",
+     "answer": "促进胸腺细胞分化成熟，并调节外周免疫器官和免疫细胞",
+     "difficulty": "why",
+     "cite": {
+      "page": 19,
+      "quote": "对外周免疫器官和免疫细胞也有调节作用",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 19,
+     "quote": "胸腺基质细胞可产生多种肽类激素和细胞因子",
+     "verified": false
+    },
+    {
+     "page": 19,
+     "quote": "对外周免疫器官和免疫细胞也有调节作用",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "digeorge-syndrome",
+   "name_zh": "迪格奥尔格综合征",
+   "name_en": "DiGeorge syndrome",
+   "aliases": [
+    "第三、四咽囊综合征",
+    "无胸腺症"
+   ],
+   "kind": "disease",
+   "one_liner": "因胚胎第三、四咽囊发育障碍致胸腺发育不全的免疫缺陷病",
+   "fields": [
+    {
+     "label": "别名",
+     "value": "亦称“第三、四咽囊综合征”“无胸腺症”",
+     "cite": {
+      "page": 20,
+      "quote": "亦称“第三、四咽囊综合征”“无胸腺症”",
+      "verified": false
+     }
+    },
+    {
+     "label": "病因",
+     "value": "妊娠早期胚胎第三、四咽囊发育障碍，病因尚不明确",
+     "cite": {
+      "page": 20,
+      "quote": "因妊娠早期胚胎第三、四咽囊发育障碍",
+      "verified": false
+     }
+    },
+    {
+     "label": "受累器官",
+     "value": "胸腺、甲状旁腺、主动脉弓发育异常和面部器官畸形",
+     "cite": {
+      "page": 20,
+      "quote": "胸腺、甲状旁腺、主动脉弓发育异常和面部器官畸形",
+      "verified": false
+     }
+    },
+    {
+     "label": "免疫学表现",
+     "value": "胸腺发育不全致T细胞重度减少，B细胞和抗体水平正常或偏低",
+     "cite": {
+      "page": 20,
+      "quote": "患者T细胞重度减少，B细胞和抗体水平正常或偏低",
+      "verified": false
+     }
+    },
+    {
+     "label": "临床风险",
+     "value": "易被胞内寄生病原体感染；接种减毒活疫苗可致全身感染甚至死亡",
+     "cite": {
+      "page": 20,
+      "quote": "易被胞内寄生病原体感染",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "重症联合免疫缺陷（SCID）",
+     "tip": "DiGeorge以T细胞缺陷为主、B细胞和抗体水平正常或偏低，源于咽囊发育障碍"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:digeorge-syndrome:1",
+     "prompt": "迪格奥尔格综合征的别名是什么？",
+     "answer": "第三、四咽囊综合征、无胸腺症",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "亦称“第三、四咽囊综合征”“无胸腺症”",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:digeorge-syndrome:2",
+     "prompt": "迪格奥尔格综合征的胚胎学病因是什么？",
+     "answer": "妊娠早期胚胎第三、四咽囊发育障碍",
+     "difficulty": "why",
+     "cite": {
+      "page": 20,
+      "quote": "因妊娠早期胚胎第三、四咽囊发育障碍",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:digeorge-syndrome:3",
+     "prompt": "迪格奥尔格综合征患者为何易被胞内寄生病原体感染？",
+     "answer": "胸腺发育不全导致T细胞重度减少",
+     "difficulty": "why",
+     "cite": {
+      "page": 20,
+      "quote": "由于胸腺发育不全，患者T细胞重度减少",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "迪格奥尔格综合征（DiGeorge syndrome）",
+     "verified": false
+    },
+    {
+     "page": 20,
+     "quote": "导致源于第三、四咽囊的胸腺、甲状旁腺、主",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "thymus-self-tolerance",
+   "name_zh": "胸腺自身免疫耐受的建立与维持",
+   "name_en": "Thymic establishment of self-tolerance",
+   "aliases": [
+    "中枢免疫耐受"
+   ],
+   "kind": "process",
+   "one_liner": "胸腺通过阴性选择等建立自身耐受、维持免疫自稳",
+   "fields": [
+    {
+     "label": "机制",
+     "value": "胸腺通过对胸腺细胞的阴性选择等建立自身耐受及维持免疫自稳",
+     "cite": {
+      "page": 20,
+      "quote": "胸腺通过对胸腺细胞的阴性选择等，建立了自身耐受",
+      "verified": false
+     }
+    },
+    {
+     "label": "临床联系",
+     "value": "胸腺功能障碍不能清除自身反应性T细胞克隆，可导致自身免疫病",
+     "cite": {
+      "page": 20,
+      "quote": "则可导致自身免疫病的发生",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "外周耐受",
+     "tip": "此处为胸腺内阴性选择介导的中枢耐受"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:thymus-self-tolerance:1",
+     "prompt": "胸腺通过什么机制建立自身耐受？",
+     "answer": "阴性选择等",
+     "difficulty": "why",
+     "cite": {
+      "page": 20,
+      "quote": "胸腺通过对胸腺细胞的阴性选择等",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:thymus-self-tolerance:2",
+     "prompt": "胸腺功能障碍不能清除自身反应性T细胞克隆会导致什么？",
+     "answer": "自身免疫病",
+     "difficulty": "case",
+     "cite": {
+      "page": 20,
+      "quote": "则可导致自身免疫病的发生",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "3.自身免疫耐受的建立与维持",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "peripheral-lymphoid-organs",
+   "name_zh": "外周免疫器官与组织",
+   "name_en": "Peripheral lymphoid organs and tissues",
+   "aliases": [],
+   "kind": "concept",
+   "one_liner": "成熟T、B细胞定居及适应性免疫应答发生的主要场所",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "成熟T细胞、B细胞等免疫细胞定居的场所，也是适应性免疫应答发生的主要场所",
+     "cite": {
+      "page": 20,
+      "quote": "是成熟T细胞、B 细胞等免疫细胞定居的场所",
+      "verified": false
+     }
+    },
+    {
+     "label": "组成",
+     "value": "包括淋巴结、脾和黏膜相关淋巴组织等",
+     "cite": {
+      "page": 20,
+      "quote": "包括淋巴结、脾和黏膜相关淋巴组织等",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "中枢免疫器官",
+     "tip": "外周免疫器官是成熟免疫细胞定居和应答发生的场所，而非发育场所"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:peripheral-lymphoid-organs:1",
+     "prompt": "外周免疫器官与组织的功能是什么？",
+     "answer": "成熟T、B细胞定居场所，适应性免疫应答发生的主要场所",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "是成熟T细胞、B 细胞等免疫细胞定居的场所",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:peripheral-lymphoid-organs:2",
+     "prompt": "外周免疫器官与组织包括哪些？",
+     "answer": "淋巴结、脾和黏膜相关淋巴组织等",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "包括淋巴结、脾和黏膜相关淋巴组织等",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "第二节 外周免疫器官与组织",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "lymph-node",
+   "name_zh": "淋巴结",
+   "name_en": "Lymph node",
+   "aliases": [],
+   "kind": "structure",
+   "one_liner": "分布于非黏膜部位淋巴通道上的外周免疫器官，有500~600个",
+   "fields": [
+    {
+     "label": "分布",
+     "value": "广泛分布于全身非黏膜部位的淋巴通道上",
+     "cite": {
+      "page": 20,
+      "quote": "广泛分布于全身非黏膜部位的淋巴通道上",
+      "verified": false
+     }
+    },
+    {
+     "label": "数量",
+     "value": "有500~600个",
+     "cite": {
+      "page": 20,
+      "quote": "有500~600个",
+      "verified": false
+     }
+    },
+    {
+     "label": "被膜与小梁",
+     "value": "表面覆盖致密结缔组织被膜，被膜深入实质形成小梁",
+     "cite": {
+      "page": 20,
+      "quote": "被膜深入实质形成小梁",
+      "verified": false
+     }
+    },
+    {
+     "label": "实质分区",
+     "value": "分为皮质和髓质两部分",
+     "cite": {
+      "page": 20,
+      "quote": "淋巴结的实质分为皮质和髓质两部分",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "脾",
+     "tip": "淋巴结分布于非黏膜部位淋巴通道上；脾为血循环通路上的淋巴器官"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:lymph-node:1",
+     "prompt": "淋巴结的数量是多少？",
+     "answer": "500~600个",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "有500~600个",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymph-node:2",
+     "prompt": "淋巴结实质分为哪两部分？",
+     "answer": "皮质和髓质",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "淋巴结的实质分为皮质和髓质两部分",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymph-node:3",
+     "prompt": "淋巴结分布于何处？",
+     "answer": "全身非黏膜部位的淋巴通道上",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "广泛分布于全身非黏膜部位的淋巴通道上",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "一、淋巴结",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "lymph-node-cortex",
+   "name_zh": "淋巴结皮质",
+   "name_en": "Lymph node cortex",
+   "aliases": [],
+   "kind": "structure",
+   "one_liner": "位于被膜下，与免疫应答关系最密切，分浅皮质区和深皮质区",
+   "fields": [
+    {
+     "label": "位置",
+     "value": "位于被膜下",
+     "cite": {
+      "page": 20,
+      "quote": "位于被膜下",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能地位",
+     "value": "与免疫应答关系最为密切",
+     "cite": {
+      "page": 20,
+      "quote": "与免疫应答关系最为密切",
+      "verified": false
+     }
+    },
+    {
+     "label": "分区",
+     "value": "分为浅皮质区和深皮质区",
+     "cite": {
+      "page": 20,
+      "quote": "分为浅皮质区和深皮质区",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "髓质",
+     "tip": "皮质与免疫应答关系最密切，分浅、深皮质区；髓质为另一部分"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:lymph-node-cortex:1",
+     "prompt": "淋巴结皮质分为哪两个区？",
+     "answer": "浅皮质区和深皮质区",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "分为浅皮质区和深皮质区",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymph-node-cortex:2",
+     "prompt": "淋巴结皮质与免疫应答的关系如何？",
+     "answer": "与免疫应答关系最为密切",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "与免疫应答关系最为密切",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "1. 皮质 位于被膜下，与免疫应答关系",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "superficial-cortex",
+   "name_zh": "浅皮质区",
+   "name_en": "Superficial cortex",
+   "aliases": [
+    "非胸腺依赖区",
+    "thymus independent area"
+   ],
+   "kind": "structure",
+   "one_liner": "B细胞定居场所，又称非胸腺依赖区，含淋巴滤泡",
+   "fields": [
+    {
+     "label": "定居细胞",
+     "value": "B细胞定居的场所",
+     "cite": {
+      "page": 20,
+      "quote": "浅皮质区是B细胞定居的场所",
+      "verified": false
+     }
+    },
+    {
+     "label": "别名",
+     "value": "非胸腺依赖区（thymus independent area）",
+     "cite": {
+      "page": 20,
+      "quote": "又称为非胸腺依赖区",
+      "verified": false
+     }
+    },
+    {
+     "label": "结构",
+     "value": "大量B细胞聚集形成淋巴滤泡",
+     "cite": {
+      "page": 20,
+      "quote": "大量B 细胞聚集形成淋巴滤泡",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "深皮质区",
+     "tip": "浅皮质区为B细胞定居（非胸腺依赖区）；深皮质区为T细胞定居（胸腺依赖区）"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:superficial-cortex:1",
+     "prompt": "浅皮质区是什么细胞的定居场所？",
+     "answer": "B细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "浅皮质区是B细胞定居的场所",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:superficial-cortex:2",
+     "prompt": "浅皮质区的别名是什么？",
+     "answer": "非胸腺依赖区",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "又称为非胸腺依赖区",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "浅皮质区是B细胞定居的场所",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "primary-lymphoid-follicle",
+   "name_zh": "初级淋巴滤泡",
+   "name_en": "Primary lymphoid follicle",
+   "aliases": [],
+   "kind": "structure",
+   "one_liner": "未受抗原刺激、无生发中心、主要含成熟初始B细胞的淋巴滤泡",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "未受抗原刺激的淋巴滤泡，其内无生发中心",
+     "cite": {
+      "page": 20,
+      "quote": "未受抗原刺激的淋巴滤泡，其内无生发中心",
+      "verified": false
+     }
+    },
+    {
+     "label": "细胞组成",
+     "value": "主要含成熟的初始B细胞",
+     "cite": {
+      "page": 20,
+      "quote": "主要含成熟的初始B细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "次级淋巴滤泡",
+     "tip": "初级无生发中心、含初始B细胞；次级有生发中心、含增殖分化B细胞"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:primary-lymphoid-follicle:1",
+     "prompt": "初级淋巴滤泡的主要细胞成分是什么？",
+     "answer": "成熟的初始B细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "主要含成熟的初始B细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:primary-lymphoid-follicle:2",
+     "prompt": "初级淋巴滤泡有无生发中心？",
+     "answer": "无生发中心",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "其内无生发中心",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "称初级淋巴滤泡（primary",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "secondary-lymphoid-follicle",
+   "name_zh": "次级淋巴滤泡",
+   "name_en": "Secondary lymphoid follicle",
+   "aliases": [
+    "生发中心"
+   ],
+   "kind": "structure",
+   "one_liner": "受抗原刺激后出现生发中心、含大量增殖分化B细胞的淋巴滤泡",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "受抗原刺激的淋巴滤泡，出现生发中心",
+     "cite": {
+      "page": 20,
+      "quote": "受抗原刺激的淋巴滤泡，出现生发中心",
+      "verified": false
+     }
+    },
+    {
+     "label": "生发中心组成",
+     "value": "含大量增殖分化的B淋巴细胞",
+     "cite": {
+      "page": 20,
+      "quote": "含大量增殖分化的B淋巴细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "B细胞在生发中心分化浆细胞和记忆B细胞",
+     "cite": {
+      "page": 20,
+      "quote": "B 细胞在生发中心分化浆细胞和记忆B细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "初级淋巴滤泡",
+     "tip": "次级有生发中心，B细胞在此分化浆细胞和记忆B细胞"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:secondary-lymphoid-follicle:1",
+     "prompt": "次级淋巴滤泡的特征性结构是什么？",
+     "answer": "生发中心",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "出现生发中心（germinal center,GC）",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:secondary-lymphoid-follicle:2",
+     "prompt": "B细胞在生发中心分化为什么细胞？",
+     "answer": "浆细胞和记忆B细胞",
+     "difficulty": "why",
+     "cite": {
+      "page": 20,
+      "quote": "B 细胞在生发中心分化浆细胞和记忆B细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "称为次级淋巴滤泡",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "deep-cortex",
+   "name_zh": "深皮质区",
+   "name_en": "Deep cortex",
+   "aliases": [
+    "副皮质区",
+    "胸腺依赖区",
+    "thymus dependent area"
+   ],
+   "kind": "structure",
+   "one_liner": "位于浅皮质区与髓质之间，T细胞（主要CD4+T）定居的胸腺依赖区",
+   "fields": [
+    {
+     "label": "位置",
+     "value": "位于浅皮质区和髓质之间",
+     "cite": {
+      "page": 20,
+      "quote": "深皮质区位于浅皮质区和髓质之间",
+      "verified": false
+     }
+    },
+    {
+     "label": "别名",
+     "value": "又称副皮质区、胸腺依赖区",
+     "cite": {
+      "page": 20,
+      "quote": "又称为副皮质区",
+      "verified": false
+     }
+    },
+    {
+     "label": "定居细胞",
+     "value": "T细胞（主要是CD4+T细胞）定居的场所",
+     "cite": {
+      "page": 20,
+      "quote": "是T细胞（主要是CD4'T 细胞）定居的场所",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "浅皮质区",
+     "tip": "深皮质区为T细胞定居（胸腺依赖区）；浅皮质区为B细胞定居（非胸腺依赖区）"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:deep-cortex:1",
+     "prompt": "深皮质区是什么细胞的定居场所？",
+     "answer": "T细胞（主要是CD4+T细胞）",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "是T细胞（主要是CD4'T 细胞）定居的场所",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:deep-cortex:2",
+     "prompt": "深皮质区的两个别名是什么？",
+     "answer": "副皮质区、胸腺依赖区",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "又称为副皮质区",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "深皮质区位于浅皮质区和髓质之间",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "dendritic-cells-in-lymph-node",
+   "name_zh": "淋巴结中的树突状细胞",
+   "name_en": "Dendritic cells in lymph node",
+   "aliases": [
+    "滤泡树突状细胞",
+    "并指状树突细胞"
+   ],
+   "kind": "cell",
+   "one_liner": "存在于皮质两区的树突状细胞：滤泡内为滤泡树突状细胞，深皮质区为并指状树突细胞",
+   "fields": [
+    {
+     "label": "分布",
+     "value": "树突状细胞在浅皮质区和深皮质区中都存在",
+     "cite": {
+      "page": 20,
+      "quote": "树突状细胞在这两个区域中都存在",
+      "verified": false
+     }
+    },
+    {
+     "label": "滤泡内",
+     "value": "在滤泡中的称为滤泡树突状细胞",
+     "cite": {
+      "page": 20,
+      "quote": "在滤泡中的称为滤泡树突状细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "深皮质区",
+     "value": "在深皮质区的称为并指状树突细胞",
+     "cite": {
+      "page": 20,
+      "quote": "在深皮质区的称为并指状树突细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "滤泡树突状细胞 vs 并指状树突细胞",
+     "tip": "前者位于滤泡中，后者位于深皮质区"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:dendritic-cells-in-lymph-node:1",
+     "prompt": "淋巴结滤泡中的树突状细胞称为什么？",
+     "answer": "滤泡树突状细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "在滤泡中的称为滤泡树突状细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:dendritic-cells-in-lymph-node:2",
+     "prompt": "淋巴结深皮质区的树突状细胞称为什么？",
+     "answer": "并指状树突细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "在深皮质区的称为并指状树突细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "树突状细胞在这两个区域中都存在",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "hev",
+   "name_zh": "高内皮细胞小静脉",
+   "name_en": "High endothelial venule (HEV)",
+   "aliases": [
+    "毛细血管后微静脉"
+   ],
+   "kind": "structure",
+   "one_liner": "深皮质区内淋巴细胞由血进入淋巴结的通道，在淋巴细胞再循环中起重要作用",
+   "fields": [
+    {
+     "label": "别名",
+     "value": "也称毛细血管后微静脉",
+     "cite": {
+      "page": 20,
+      "quote": "也称高内皮细胞小静脉",
+      "verified": false
+     }
+    },
+    {
+     "label": "位置",
+     "value": "深皮质区内有许多毛细血管后微静脉",
+     "cite": {
+      "page": 20,
+      "quote": "深皮质区内有许多毛细血管后微静脉",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "随血液循环而来的淋巴细胞由此进入淋巴结，在淋巴细胞再循环中起重要作用",
+     "cite": {
+      "page": 20,
+      "quote": "故HEV 在淋巴细胞再循环中起重要作用",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "普通毛细血管后微静脉",
+     "tip": "HEV为特化的毛细血管后微静脉，是淋巴细胞进入淋巴结的门户"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:hev:1",
+     "prompt": "HEV的中文全称是什么？",
+     "answer": "高内皮细胞小静脉",
+     "difficulty": "what",
+     "cite": {
+      "page": 20,
+      "quote": "也称高内皮细胞小静脉",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:hev:2",
+     "prompt": "HEV在淋巴细胞再循环中的作用是什么？",
+     "answer": "淋巴细胞由此进入淋巴结，起重要作用",
+     "difficulty": "why",
+     "cite": {
+      "page": 20,
+      "quote": "故HEV 在淋巴细胞再循环中起重要作用",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 20,
+     "quote": "高内皮细胞小静脉",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "lymph-node-medulla",
+   "name_zh": "淋巴结髓质",
+   "name_en": "Medulla of lymph node",
+   "aliases": [
+    "髓索",
+    "髓窦"
+   ],
+   "kind": "structure",
+   "one_liner": "由髓索和髓窦组成，髓索以B细胞和浆细胞为主",
+   "fields": [
+    {
+     "label": "组成",
+     "value": "由髓索和髓窦组成",
+     "cite": {
+      "page": 21,
+      "quote": "髓质 由髓索和髓窦组成",
+      "verified": false
+     }
+    },
+    {
+     "label": "髓索细胞",
+     "value": "主要为B细胞和浆细胞，也含部分T细胞及巨噬细胞",
+     "cite": {
+      "page": 21,
+      "quote": "髓索内主要为B细胞和浆细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "髓窦功能",
+     "value": "富含巨噬细胞，有较强捕捉、清除病原体作用",
+     "cite": {
+      "page": 21,
+      "quote": "有较强的捕捉、清除病原体的作用",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "淋巴结皮质",
+     "tip": "皮质含浅层皮质（B细胞）与深皮质（T细胞、HEV）；髓质以髓索（B细胞/浆细胞）和髓窦为主"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:lymph-node-medulla:1",
+     "prompt": "淋巴结髓质由哪两部分组成？",
+     "answer": "髓索和髓窦",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "髓质 由髓索和髓窦组成",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymph-node-medulla:2",
+     "prompt": "髓索内主要含哪些细胞？",
+     "answer": "主要为B细胞和浆细胞，也含部分T细胞及巨噬细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "髓索内主要为B细胞和浆细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymph-node-medulla:3",
+     "prompt": "髓窦的主要功能是什么？",
+     "answer": "富含巨噬细胞，有较强捕捉、清除病原体的作用",
+     "difficulty": "why",
+     "cite": {
+      "page": 21,
+      "quote": "有较强的捕捉、清除病原体的作用",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 21,
+     "quote": "髓质 由髓索和髓窦组成",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "lymph-node-function",
+   "name_zh": "淋巴结的功能",
+   "name_en": "Functions of lymph node",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "T/B细胞定居、适应性免疫应答、淋巴细胞再循环、过滤淋巴液",
+   "fields": [
+    {
+     "label": "功能一",
+     "value": "成熟T细胞和B细胞的主要定居场所",
+     "cite": {
+      "page": 21,
+      "quote": "淋巴结是成熟T细胞和B细胞的主要定居场所",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能二",
+     "value": "对组织来源抗原产生应答的主要场所",
+     "cite": {
+      "page": 21,
+      "quote": "淋巴结是对组织来源的抗原产生应答的主要场所",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能三",
+     "value": "参与淋巴细胞再循环，深皮质区HEV起重要作用",
+     "cite": {
+      "page": 21,
+      "quote": "深皮质区的 HEV 在淋巴细胞再循环中起重要作用",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能四",
+     "value": "过滤淋巴液，防止病原体扩散",
+     "cite": {
+      "page": 21,
+      "quote": "发挥过滤淋巴液、防止病原体扩散的作用",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "脾的功能",
+     "tip": "淋巴结过滤淋巴液、对组织来源抗原应答；脾过滤血液、对血源性抗原应答"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:lymph-node-function:1",
+     "prompt": "淋巴结中T细胞和B细胞各占淋巴细胞总数的比例？",
+     "answer": "T细胞约75%，B细胞约25%",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "T细胞约占淋巴细胞总数的75%，B细胞约占 25%",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymph-node-function:2",
+     "prompt": "淋巴结中适应性免疫应答如何发生？",
+     "answer": "抗原提呈细胞携带或捕获抗原，加工处理后提呈给CD4+T细胞，T/B细胞活化增殖分化为效应T细胞或浆细胞",
+     "difficulty": "why",
+     "cite": {
+      "page": 21,
+      "quote": "并将抗原加工、处理后提呈给 CD4T 细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymph-node-function:3",
+     "prompt": "淋巴结过滤作用的机制是什么？",
+     "answer": "病原微生物及毒素随淋巴液进入局部引流淋巴结，被巨噬细胞吞噬或通过其他机制清除",
+     "difficulty": "why",
+     "cite": {
+      "page": 21,
+      "quote": "被 M中 吞噬或通过其他机制清除",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 21,
+     "quote": "淋巴结是成熟T细胞和B细胞的主要定居场所",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "lymphocyte-recruitment-hev",
+   "name_zh": "淋巴细胞再循环与HEV",
+   "name_en": "Lymphocyte recirculation and HEV",
+   "aliases": [
+    "高内皮微静脉"
+   ],
+   "kind": "process",
+   "one_liner": "血液中淋巴细胞穿过深皮质区HEV进入淋巴结，经输出淋巴管回血",
+   "fields": [
+    {
+     "label": "关键结构",
+     "value": "深皮质区的HEV（高内皮微静脉）",
+     "cite": {
+      "page": 21,
+      "quote": "深皮质区的 HEV 在淋巴细胞再循环中起重要作用",
+      "verified": false
+     }
+    },
+    {
+     "label": "循环路径",
+     "value": "血液淋巴细胞穿过HEV进入淋巴结实质，经输出淋巴管汇入胸导管，再经左锁骨下静脉回血",
+     "cite": {
+      "page": 21,
+      "quote": "经输出淋巴管汇入胸导管，再经左锁骨下静脉回到血液循环",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "脾的边缘区",
+     "tip": "HEV位于淋巴结深皮质区，介导淋巴细胞从血液进入淋巴结；脾边缘区是血液及淋巴细胞进出白髓的通道"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:lymphocyte-recruitment-hev:1",
+     "prompt": "淋巴细胞再循环中HEV位于淋巴结的哪个区域？",
+     "answer": "深皮质区",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "深皮质区的 HEV 在淋巴细胞再循环中起重要作用",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymphocyte-recruitment-hev:2",
+     "prompt": "淋巴细胞穿过HEV后经何途径回到血液循环？",
+     "answer": "经输出淋巴管汇入胸导管，再经左锁骨下静脉回到血液循环",
+     "difficulty": "why",
+     "cite": {
+      "page": 21,
+      "quote": "经输出淋巴管汇入胸导管，再经左锁骨下静脉回到血液循环",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 21,
+     "quote": "深皮质区的 HEV 在淋巴细胞再循环中起重要作用",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "spleen-structure",
+   "name_zh": "脾的结构",
+   "name_en": "Structure of spleen",
+   "aliases": [],
+   "kind": "structure",
+   "one_liner": "被膜下脾实质分白髓、红髓，交界处为边缘区",
+   "fields": [
+    {
+     "label": "被膜",
+     "value": "表面覆盖致密的结缔组织被膜",
+     "cite": {
+      "page": 21,
+      "quote": "脾表面覆盖致密的结缔组织被膜",
+      "verified": false
+     }
+    },
+    {
+     "label": "分部",
+     "value": "脾实质分为白髓和红髓，两者交界处称边缘区",
+     "cite": {
+      "page": 21,
+      "quote": "可分为白髓（white pulp）和红髓",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "淋巴结结构",
+     "tip": "脾无皮质/髓质之分，分白髓与红髓；淋巴结分皮质与髓质"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:spleen-structure:1",
+     "prompt": "脾实质分为哪两部分？",
+     "answer": "白髓和红髓",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "可分为白髓（white pulp）和红髓",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:spleen-structure:2",
+     "prompt": "白髓与红髓的交界处称什么？",
+     "answer": "边缘区",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "两者交界处称 边缘区",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 21,
+     "quote": "可分为白髓（white pulp）和红髓",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "spleen-white-pulp",
+   "name_zh": "脾白髓",
+   "name_en": "White pulp of spleen",
+   "aliases": [
+    "PALS",
+    "脾小结"
+   ],
+   "kind": "structure",
+   "one_liner": "淋巴细胞聚集区，含PALS（T细胞区）和淋巴滤泡（B细胞区）",
+   "fields": [
+    {
+     "label": "组成",
+     "value": "包括动脉周围淋巴鞘（PALS）和淋巴滤泡",
+     "cite": {
+      "page": 21,
+      "quote": "包括动脉周围淋巴鞘（periarterial lymphat",
+      "verified": false
+     }
+    },
+    {
+     "label": "PALS",
+     "value": "围绕中央动脉周围的弥散淋巴组织，是T细胞聚集区",
+     "cite": {
+      "page": 21,
+      "quote": "是T细胞聚集区",
+      "verified": false
+     }
+    },
+    {
+     "label": "淋巴滤泡",
+     "value": "也称脾小结，是B细胞聚集区",
+     "cite": {
+      "page": 21,
+      "quote": "淋巴滤泡也称为脾小结，是B细胞聚集区",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "淋巴结皮质",
+     "tip": "脾白髓PALS相当于淋巴结深皮质（T细胞区），脾淋巴滤泡相当于淋巴结浅层皮质（B细胞区）"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:spleen-white-pulp:1",
+     "prompt": "脾白髓由哪两部分组成？",
+     "answer": "动脉周围淋巴鞘（PALS）和淋巴滤泡",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "包括动脉周围淋巴鞘（periarterial lymphat",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:spleen-white-pulp:2",
+     "prompt": "脾白髓中T细胞聚集区是哪里？",
+     "answer": "动脉周围淋巴鞘（PALS）",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "是T细胞聚集区",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:spleen-white-pulp:3",
+     "prompt": "脾小结是什么细胞的聚集区？",
+     "answer": "B细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "淋巴滤泡也称为脾小结，是B细胞聚集区",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 21,
+     "quote": "是T细胞聚集区",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "spleen-red-pulp",
+   "name_zh": "脾红髓",
+   "name_en": "Red pulp of spleen",
+   "aliases": [
+    "脾索",
+    "脾窦"
+   ],
+   "kind": "structure",
+   "one_liner": "由脾索和脾窦构成，脾索是脾滤过血液的主要场所",
+   "fields": [
+    {
+     "label": "组成",
+     "value": "由脾索和脾窦构成",
+     "cite": {
+      "page": 21,
+      "quote": "由脾索和脾窦构成",
+      "verified": false
+     }
+    },
+    {
+     "label": "脾索",
+     "value": "血窦之间相互连接成网，含B细胞、浆细胞、巨噬细胞和DC，是脾滤过血液的主要场所",
+     "cite": {
+      "page": 21,
+      "quote": "是脾滤过血液的主要场所",
+      "verified": false
+     }
+    },
+    {
+     "label": "脾窦",
+     "value": "内是循环中的血液",
+     "cite": {
+      "page": 21,
+      "quote": "脾窦内是循环中的血液",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "脾白髓",
+     "tip": "白髓为淋巴细胞聚集区（PALS+淋巴滤泡）；红髓为脾索+脾窦，滤过血液"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:spleen-red-pulp:1",
+     "prompt": "脾红髓由什么构成？",
+     "answer": "脾索和脾窦",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "由脾索和脾窦构成",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:spleen-red-pulp:2",
+     "prompt": "脾滤过血液的主要场所在哪里？",
+     "answer": "脾索",
+     "difficulty": "why",
+     "cite": {
+      "page": 21,
+      "quote": "是脾滤过血液的主要场所",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:spleen-red-pulp:3",
+     "prompt": "脾索内含有哪些细胞？",
+     "answer": "B细胞、浆细胞、巨噬细胞和DC",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "索内含有B细胞、浆细胞、M和DC",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 21,
+     "quote": "由脾索和脾窦构成",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "spleen-marginal-zone",
+   "name_zh": "脾边缘区",
+   "name_en": "Marginal zone of spleen",
+   "aliases": [],
+   "kind": "structure",
+   "one_liner": "白髓与红髓交界处，血液及淋巴细胞进出白髓的重要通道",
+   "fields": [
+    {
+     "label": "位置",
+     "value": "白髓与红髓交界处",
+     "cite": {
+      "page": 21,
+      "quote": "两者交界处称 边缘区",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "血液及淋巴细胞进出的重要通道，T、B细胞进白髓都要通过边缘区",
+     "cite": {
+      "page": 21,
+      "quote": "血液循环中的T、B细胞进脾白髓时都要通过边缘区",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "淋巴结HEV",
+     "tip": "边缘区是脾内血液/淋巴细胞进出白髓的通道；HEV是淋巴结内淋巴细胞从血液进入实质的通道"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:spleen-marginal-zone:1",
+     "prompt": "脾边缘区位于何处？",
+     "answer": "白髓与红髓交界处",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "两者交界处称 边缘区",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:spleen-marginal-zone:2",
+     "prompt": "血液循环中的T、B细胞进入脾白髓需经过什么结构？",
+     "answer": "边缘区",
+     "difficulty": "why",
+     "cite": {
+      "page": 21,
+      "quote": "血液循环中的T、B细胞进脾白髓时都要通过边缘区",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 21,
+     "quote": "两者交界处称 边缘区",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "spleen-function",
+   "name_zh": "脾的功能",
+   "name_en": "Functions of spleen",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "人体最大免疫器官，成熟淋巴细胞定居场所，B细胞约60%、T细胞约40%",
+   "fields": [
+    {
+     "label": "地位",
+     "value": "人体最大的免疫器官，位于血液循环通路上",
+     "cite": {
+      "page": 21,
+      "quote": "脾（spleen）是人体最大的免疫器官",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "成熟淋巴细胞定居的场所",
+     "cite": {
+      "page": 21,
+      "quote": "脾是成熟淋巴细胞定居的场所",
+      "verified": false
+     }
+    },
+    {
+     "label": "细胞比例",
+     "value": "B细胞约占脾中淋巴细胞总数60%，T细胞约占40%",
+     "cite": {
+      "page": 21,
+      "quote": "B细胞约占脾中淋巴细胞总数的60%，T细胞约占 40%",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "淋巴结",
+     "tip": "脾是最大免疫器官、位于血液循环通路，B细胞占60%；淋巴结T细胞占75%、B细胞占25%"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:spleen-function:1",
+     "prompt": "人体最大的免疫器官是什么？",
+     "answer": "脾",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "脾（spleen）是人体最大的免疫器官",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:spleen-function:2",
+     "prompt": "脾中B细胞和T细胞各占淋巴细胞总数的比例？",
+     "answer": "B细胞约60%，T细胞约40%",
+     "difficulty": "what",
+     "cite": {
+      "page": 21,
+      "quote": "B细胞约占脾中淋巴细胞总数的60%，T细胞约占 40%",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 21,
+     "quote": "脾（spleen）是人体最大的免疫器官",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "spleen-adaptive-immune-site",
+   "name_zh": "脾——适应性免疫应答发生的场所",
+   "name_en": "Spleen as site of adaptive immune response",
+   "aliases": [
+    "脾免疫功能"
+   ],
+   "kind": "process",
+   "one_liner": "脾是对血源性抗原产生免疫应答的主要场所",
+   "fields": [
+    {
+     "label": "功能定位",
+     "value": "脾是对血源性抗原产生免疫应答的主要场所",
+     "cite": {
+      "page": 22,
+      "quote": "脾是对血源性抗原产生免疫应答的主要场所",
+      "verified": false
+     }
+    },
+    {
+     "label": "机制",
+     "value": "抗原经血液循环进入脾，刺激T、B细胞活化、增殖，分化为效应T细胞和浆细胞，浆细胞分泌抗体发挥免疫效应",
+     "cite": {
+      "page": 22,
+      "quote": "刺激T、B 细胞活化、增殖，分化为效应T细胞和浆细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:spleen-adaptive-immune-site:1",
+     "prompt": "脾是对哪类抗原产生免疫应答的主要场所？",
+     "answer": "血源性抗原",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "脾是对血源性抗原产生免疫应答的主要场所",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:spleen-adaptive-immune-site:2",
+     "prompt": "脾内抗原刺激T、B细胞后分化为哪些效应细胞？",
+     "answer": "效应T细胞和浆细胞",
+     "difficulty": "why",
+     "cite": {
+      "page": 22,
+      "quote": "分化为效应T细胞和浆细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "脾是对血源性抗原产生免疫应答的主要场所",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "spleen-bioactive-substances",
+   "name_zh": "脾合成生物活性物质",
+   "name_en": "Spleen synthesis of bioactive substances",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "脾可合成和分泌补体、干扰素等生物活性物质",
+   "fields": [
+    {
+     "label": "合成物质",
+     "value": "脾可合成和分泌某些生物活性物质，如补体、干扰素等",
+     "cite": {
+      "page": 22,
+      "quote": "如补体、干扰素等",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:spleen-bioactive-substances:1",
+     "prompt": "脾可合成和分泌哪些生物活性物质？",
+     "answer": "补体、干扰素等",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "如补体、干扰素等",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "脾可合成和分泌某些生物活性物质",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "spleen-filtration",
+   "name_zh": "脾的过滤作用",
+   "name_en": "Spleen filtration function",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "脾清除血液中病原体、衰老血细胞及免疫复合物",
+   "fields": [
+    {
+     "label": "过滤对象",
+     "value": "脾可清除血液中的病原体、衰老死亡的自身血细胞及免疫复合物等，使血液得到过滤净化",
+     "cite": {
+      "page": 22,
+      "quote": "清除血液中的病原体、衰老死亡的自身血细胞及免疫复合物",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:spleen-filtration:1",
+     "prompt": "脾的过滤作用可清除血液中的哪些物质？",
+     "answer": "病原体、衰老死亡的自身血细胞及免疫复合物等",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "清除血液中的病原体、衰老死亡的自身血细胞及免疫复合物",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "从而使血液得到过滤净化",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "malt-definition",
+   "name_zh": "黏膜相关淋巴组织（MALT）",
+   "name_en": "Mucosa-associated lymphoid tissue (MALT)",
+   "aliases": [
+    "黏膜免疫系统",
+    "MIS"
+   ],
+   "kind": "concept",
+   "one_liner": "胃肠道、呼吸道及泌尿生殖道黏膜的淋巴组织",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "主要指胃肠道、呼吸道及泌尿生殖道黏膜固有层和上皮细胞下散在的淋巴组织，以及器官化的带有生发中心的淋巴组织",
+     "cite": {
+      "page": 22,
+      "quote": "胃肠道、呼吸道及泌尿生殖道黏膜固有层和上皮细胞下散在的淋巴组",
+      "verified": false
+     }
+    },
+    {
+     "label": "别名",
+     "value": "也称黏膜免疫系统（mucosal immune system, MIS）",
+     "cite": {
+      "page": 22,
+      "quote": "也称黏膜免疫系统",
+      "verified": false
+     }
+    },
+    {
+     "label": "器官化淋巴组织举例",
+     "value": "扁桃体、小肠派尔集合淋巴结及阑尾等",
+     "cite": {
+      "page": 22,
+      "quote": "如扁桃体、小肠派尔集合淋巴结及阑尾等",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:malt-definition:1",
+     "prompt": "MALT的中文全称是什么？",
+     "answer": "黏膜相关淋巴组织",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "黏膜相关淋巴组织",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:malt-definition:2",
+     "prompt": "MALT主要分布于哪些黏膜部位？",
+     "answer": "胃肠道、呼吸道及泌尿生殖道黏膜",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "胃肠道、呼吸道及泌尿生殖道黏膜",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "黏膜相关淋巴组织（mucosa-associated lym",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "malt-barrier",
+   "name_zh": "MALT是机体重要的防御屏障",
+   "name_en": "MALT as important defense barrier",
+   "aliases": [],
+   "kind": "concept",
+   "one_liner": "黏膜是病原体侵入主要途径，MALT为重要防御屏障",
+   "fields": [
+    {
+     "label": "屏障意义",
+     "value": "黏膜是病原体等从外界侵入机体的主要途径；人体黏膜表面积约400m²，大量淋巴组织分布于黏膜系统，MALT是机体重要的防御屏障",
+     "cite": {
+      "page": 22,
+      "quote": "MALT 是机体重要的防御屏障",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:malt-barrier:1",
+     "prompt": "为什么MALT是机体重要的防御屏障？",
+     "answer": "黏膜是病原体侵入机体的主要途径，且黏膜表面积大、淋巴组织丰富",
+     "difficulty": "why",
+     "cite": {
+      "page": 22,
+      "quote": "黏膜是病原体等从外界侵人机体的主要途径",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "MALT 是机体重要的防御屏障",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "malt-composition",
+   "name_zh": "MALT的组成",
+   "name_en": "Composition of MALT",
+   "aliases": [
+    "GALT",
+    "NALT",
+    "BALT"
+   ],
+   "kind": "concept",
+   "one_liner": "包括GALT、鼻相关淋巴组织和支气管相关淋巴组织",
+   "fields": [
+    {
+     "label": "组成",
+     "value": "主要包括防御经肠道入侵病原体感染的肠相关淋巴组织、防御经空气传播病原体感染的鼻相关淋巴组织和支气管相关淋巴组织",
+     "cite": {
+      "page": 22,
+      "quote": "肠相关淋巴组织、防御经空气传播病原体感染的鼻相关淋巴组织和支",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:malt-composition:1",
+     "prompt": "MALT主要包括哪三部分？",
+     "answer": "肠相关淋巴组织、鼻相关淋巴组织和支气管相关淋巴组织",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "肠相关淋巴组织、防御经空气传播病原体感染的鼻相关淋巴组织和支",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "MALT 主要包括防御经肠道入侵病原体感染的肠相关淋巴组织",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "galt-composition",
+   "name_zh": "肠相关淋巴组织（GALT）",
+   "name_en": "Gut-associated lymphoid tissue (GALT)",
+   "aliases": [],
+   "kind": "concept",
+   "one_liner": "包括派尔集合淋巴结、孤立淋巴滤泡、阑尾等",
+   "fields": [
+    {
+     "label": "器官化淋巴组织",
+     "value": "包括派尔集合淋巴结、孤立淋巴滤泡、阑尾等器官化的淋巴组织",
+     "cite": {
+      "page": 22,
+      "quote": "包括派尔集合淋巴结、孤立淋巴滤泡、阑尾等器官化的淋巴组织",
+      "verified": false
+     }
+    },
+    {
+     "label": "弥散淋巴细胞",
+     "value": "肠道上皮细胞间淋巴细胞、固有层淋巴细胞（主要为效应T细胞和分泌抗体的浆细胞）等弥散的淋巴细胞",
+     "cite": {
+      "page": 22,
+      "quote": "肠道上皮细胞间淋巴细胞、固有层淋巴细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:galt-composition:1",
+     "prompt": "GALT中器官化的淋巴组织包括哪些？",
+     "answer": "派尔集合淋巴结、孤立淋巴滤泡、阑尾等",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "包括派尔集合淋巴结、孤立淋巴滤泡、阑尾等器官化的淋巴组织",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:galt-composition:2",
+     "prompt": "GALT固有层淋巴细胞主要是什么细胞？",
+     "answer": "效应T细胞和分泌抗体的浆细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "主要力效应T细胞和分泌抗体的浆细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "肠相关淋巴组织（gut-associated lymphoi",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "galt-inductive-effector-sites",
+   "name_zh": "GALT的诱导部位与效应部位",
+   "name_en": "Inductive and effector sites of GALT",
+   "aliases": [],
+   "kind": "concept",
+   "one_liner": "器官化淋巴组织为诱导部位，弥散淋巴细胞为效应部位",
+   "fields": [
+    {
+     "label": "诱导部位",
+     "value": "器官化淋巴组织是黏膜免疫应答发生的部位，T、B细胞在此识别抗原并增殖、分化效应细胞",
+     "cite": {
+      "page": 22,
+      "quote": "前者是黏膜免疫应答发生的部位",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应部位",
+     "value": "弥散的淋巴细胞所在部位为黏膜免疫应答的效应部位",
+     "cite": {
+      "page": 22,
+      "quote": "后者所在部位为黏膜免疫应答的效应部位",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:galt-inductive-effector-sites:1",
+     "prompt": "GALT中黏膜免疫应答发生的部位是哪里？",
+     "answer": "器官化的淋巴组织（如派尔集合淋巴结）",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "前者是黏膜免疫应答发生的部位",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:galt-inductive-effector-sites:2",
+     "prompt": "GALT中黏膜免疫应答的效应部位是哪里？",
+     "answer": "弥散的淋巴细胞所在部位（上皮细胞间和固有层）",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "后者所在部位为黏膜免疫应答的效应部位",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "前者是黏膜免疫应答发生的部位",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "malt-local-immune-response",
+   "name_zh": "MALT——黏膜局部免疫应答发生的场所",
+   "name_en": "MALT as site of local mucosal immune response",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "病原体突破黏膜屏障后启动局部固有免疫和适应性免疫",
+   "fields": [
+    {
+     "label": "机制",
+     "value": "病原体突破黏膜屏障进入机体后，黏膜固有层的Mφ、DC等固有免疫细胞迅速发生固有免疫应答，引起局部炎症反应，并启动黏膜局部适应性免疫应答，最终清除病原体",
+     "cite": {
+      "page": 22,
+      "quote": "迅速发生固有免疫应答，引起局部炎症反应",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:malt-local-immune-response:1",
+     "prompt": "病原体突破黏膜屏障后，黏膜固有层哪些细胞首先发生固有免疫应答？",
+     "answer": "Mφ、DC等固有免疫细胞",
+     "difficulty": "why",
+     "cite": {
+      "page": 22,
+      "quote": "黏膜固有层的M中.DC 等固有免疫细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "黏膜局部免疫应答发生的场所",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "malt-siga",
+   "name_zh": "MALT产生分泌型IgA（SIgA）",
+   "name_en": "MALT produces secretory IgA",
+   "aliases": [
+    "SIgA"
+   ],
+   "kind": "process",
+   "one_liner": "产生SIgA的浆细胞主要分布于MALT",
+   "fields": [
+    {
+     "label": "浆细胞分布",
+     "value": "产生分泌型IgA（SIgA）的浆细胞主要分布于MALT",
+     "cite": {
+      "page": 22,
+      "quote": "产生分泌型IgA（SIgA）的浆细胞主要分布于 MALT",
+      "verified": false
+     }
+    },
+    {
+     "label": "产生机制",
+     "value": "经口服的抗原被转运进入派尔集合淋巴结后，诱导B细胞应答，使之分化为浆细胞，并产生大量SIgA，经黏膜上皮细胞分泌至黏膜表面",
+     "cite": {
+      "page": 22,
+      "quote": "经黏膜上皮细胞分泌至黏膜表面",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:malt-siga:1",
+     "prompt": "产生SIgA的浆细胞主要分布于哪里？",
+     "answer": "MALT",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "产生分泌型IgA（SIgA）的浆细胞主要分布于 MALT",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:malt-siga:2",
+     "prompt": "口服抗原在派尔集合淋巴结诱导B细胞分化为浆细胞后产生什么抗体？",
+     "answer": "大量SIgA",
+     "difficulty": "case",
+     "cite": {
+      "page": 22,
+      "quote": "并产生大量 SIgA",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "产生分泌型IgA（SIgA）的浆细胞主要分布于 MALT",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "malt-commensal-tolerance",
+   "name_zh": "MALT对共生菌和食物低应答或免疫耐受",
+   "name_en": "MALT hyporesponsiveness/tolerance to commensals and food",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "黏膜免疫系统区分有害抗原与无害抗原",
+   "fields": [
+    {
+     "label": "共生菌",
+     "value": "肠道寄生上千种非致病微生物（大部分是细菌），称为共生菌，正常情况下对机体有益而无害",
+     "cite": {
+      "page": 22,
+      "quote": "称为共生菌",
+      "verified": false
+     }
+    },
+    {
+     "label": "机制",
+     "value": "黏膜免疫系统可区分有害病原体抗原及共生菌和食物来源的无害抗原，对前者发生有效应答，对后者产生低应答或耐受",
+     "cite": {
+      "page": 22,
+      "quote": "对前者发生有效应答，对后者产生低应答或耐受",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:malt-commensal-tolerance:1",
+     "prompt": "黏膜免疫系统对共生菌和食物抗原产生什么应答？",
+     "answer": "低应答或免疫耐受",
+     "difficulty": "why",
+     "cite": {
+      "page": 22,
+      "quote": "对后者产生低应答或耐受",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "对共生菌和食物低应答或免疫耐受",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "lymphocyte-homing",
+   "name_zh": "淋巴细胞归巢",
+   "name_en": "Lymphocyte homing",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "淋巴细胞选择性迁移并定居于特定区域或组织",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "血液中的淋巴细胞选择性趋向迁移并定居于外周免疫器官的特定区域或特定组织的过程",
+     "cite": {
+      "page": 22,
+      "quote": "血液中的淋巴细胞选择性趋向迁移并定居于外周免疫器官的特定区域",
+      "verified": false
+     }
+    },
+    {
+     "label": "举例",
+     "value": "产生SIgA的B细胞可定向分布于MALT",
+     "cite": {
+      "page": 22,
+      "quote": "产生SIgA的B细胞可定向分布于MALT",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "淋巴细胞再循环",
+     "tip": "归巢是单向选择性定居；再循环是血液、淋巴液、淋巴器官和组织间周而复始的循环"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:lymphocyte-homing:1",
+     "prompt": "淋巴细胞归巢的定义是什么？",
+     "answer": "血液中的淋巴细胞选择性趋向迁移并定居于外周免疫器官的特定区域或特定组织的过程",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "血液中的淋巴细胞选择性趋向迁移并定居于外周免疫器官的特定区域",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymphocyte-homing:2",
+     "prompt": "产生SIgA的B细胞定向分布于哪里？",
+     "answer": "MALT",
+     "difficulty": "case",
+     "cite": {
+      "page": 22,
+      "quote": "产生SIgA的B细胞可定向分布于MALT",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "淋巴细胞归巢（Iymphocyte homing）",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "lymphocyte-recirculation",
+   "name_zh": "淋巴细胞再循环",
+   "name_en": "Lymphocyte recirculation",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "成熟淋巴细胞在血液、淋巴液、淋巴器官和组织间循环",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "成熟的淋巴细胞在血液、淋巴液、淋巴器官和组织间周而复始循环的过程",
+     "cite": {
+      "page": 22,
+      "quote": "成熟的淋巴细胞在血液、淋巴液、淋巴器官和组织间周而复始循环的",
+      "verified": false
+     }
+    },
+    {
+     "label": "细胞比例",
+     "value": "参与再循环的淋巴细胞80%以上是T细胞，其次是B细胞",
+     "cite": {
+      "page": 22,
+      "quote": "参与再循环的淋巴细胞80%以上是T细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "淋巴细胞归巢",
+     "tip": "再循环是周而复始的循环过程；归巢是选择性定居于特定区域"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:lymphocyte-recirculation:1",
+     "prompt": "淋巴细胞再循环的定义是什么？",
+     "answer": "成熟的淋巴细胞在血液、淋巴液、淋巴器官和组织间周而复始循环的过程",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "成熟的淋巴细胞在血液、淋巴液、淋巴器官和组织间周而复始循环的",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:lymphocyte-recirculation:2",
+     "prompt": "参与再循环的淋巴细胞中占比80%以上的是哪类细胞？",
+     "answer": "T细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 22,
+      "quote": "参与再循环的淋巴细胞80%以上是T细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 22,
+     "quote": "淋巴细胞再循环（Iymphocyte recirculati",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "recirculation-significance",
+   "name_zh": "淋巴细胞再循环的意义",
+   "name_en": "Significance of Lymphocyte Recirculation",
+   "aliases": [],
+   "kind": "concept",
+   "one_liner": "使淋巴细胞合理分布、扩大免疫识别、整合全身免疫系统。",
+   "fields": [
+    {
+     "label": "意义①",
+     "value": "使淋巴细胞在全身合理分布，有助于增强机体免疫功能。",
+     "cite": {
+      "page": 23,
+      "quote": "使淋巴细胞在全身合理分布，有助于增强机体",
+      "verified": false
+     }
+    },
+    {
+     "label": "意义②",
+     "value": "增加淋巴细胞接触抗原的机会，扩大了免疫识别。",
+     "cite": {
+      "page": 23,
+      "quote": "增加淋巴细胞接触抗原的机会，扩大了免疫识别",
+      "verified": false
+     }
+    },
+    {
+     "label": "意义③",
+     "value": "使全身免疫器官组织成为一个有机联系的整体，并将免疫信息传递给全身各处的淋巴细胞和其他免疫细胞。",
+     "cite": {
+      "page": 23,
+      "quote": "使全身免疫器官组织成力一个有机联系的整体",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch03:recirculation-significance:1",
+     "prompt": "淋巴细胞再循环对免疫识别有何意义？",
+     "answer": "增加淋巴细胞接触抗原的机会，扩大免疫识别。",
+     "difficulty": "why",
+     "cite": {
+      "page": 23,
+      "quote": "增加淋巴细胞接触抗原的机会，扩大了免疫识别",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:recirculation-significance:2",
+     "prompt": "淋巴细胞再循环如何影响全身免疫器官组织的关系？",
+     "answer": "使全身免疫器官组织成为一个有机联系的整体，并将免疫信息传递给全身各处的淋巴细胞和其他免疫细胞。",
+     "difficulty": "why",
+     "cite": {
+      "page": 23,
+      "quote": "使全身免疫器官组织成力一个有机联系的整体",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:recirculation-significance:3",
+     "prompt": "淋巴细胞再循环对机体免疫应答的必要性是什么？",
+     "answer": "是维持机体正常免疫应答并发挥免疫功能的必要条件。",
+     "difficulty": "why",
+     "cite": {
+      "page": 23,
+      "quote": "是维持机体正常免疫应答并发挥免疫功能的必要条件",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 23,
+     "quote": "使淋巴细胞在全身合理分布，有助于增强机体",
+     "verified": false
+    },
+    {
+     "page": 23,
+     "quote": "增加淋巴细胞接触抗原的机会，扩大了免疫识别",
+     "verified": false
+    },
+    {
+     "page": 23,
+     "quote": "是维持机体正常免疫应答并发挥免疫功能的必要条件",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "central-vs-peripheral-immune-organs",
+   "name_zh": "中枢免疫器官与外周免疫器官",
+   "name_en": "Central vs Peripheral Immune Organs",
+   "aliases": [],
+   "kind": "concept",
+   "one_liner": "中枢免疫器官是免疫细胞发生成熟场所；外周是定居和应答部位。",
+   "fields": [
+    {
+     "label": "中枢免疫器官",
+     "value": "包括骨髓和胸腺，是免疫细胞发生、分化、发育和成熟的场所。骨髓是各种血细胞和免疫细胞的发源地，也是B细胞分化成熟的场所；胸腺是T细胞分化成熟的场所。",
+     "cite": {
+      "page": 23,
+      "quote": "中枢免疫器官包括骨髓和胸腺，是免疫细胞发生、分化、发育和成熟",
+      "verified": false
+     }
+    },
+    {
+     "label": "外周免疫器官与组织",
+     "value": "包括淋巴结、脾和黏膜相关淋巴组织，是成熟T细胞、B细胞等免疫细胞定居的场所，也是发生免疫应答的部位。",
+     "cite": {
+      "page": 23,
+      "quote": "外周免疫器官与组织包括淋巴结、牌和黏膜相关淋巴组织",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "中枢免疫器官 vs 外周免疫器官",
+     "tip": "中枢是免疫细胞发生、分化、成熟的场所；外周是成熟免疫细胞定居和发生免疫应答的部位。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:central-vs-peripheral-immune-organs:1",
+     "prompt": "中枢免疫器官包括哪些？其功能是什么？",
+     "answer": "包括骨髓和胸腺，是免疫细胞发生、分化、发育和成熟的场所。",
+     "difficulty": "what",
+     "cite": {
+      "page": 23,
+      "quote": "中枢免疫器官包括骨髓和胸腺，是免疫细胞发生、分化、发育和成熟",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:central-vs-peripheral-immune-organs:2",
+     "prompt": "B细胞和T细胞分别在何处分化成熟？",
+     "answer": "B细胞在骨髓分化成熟；T细胞在胸腺分化成熟。",
+     "difficulty": "what",
+     "cite": {
+      "page": 23,
+      "quote": "也是B细胞分化成熟的场所。胸腺是T细胞分化成熟的场所",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:central-vs-peripheral-immune-organs:3",
+     "prompt": "外周免疫器官与组织包括哪些？其功能是什么？",
+     "answer": "包括淋巴结、脾和黏膜相关淋巴组织，是成熟T细胞、B细胞等免疫细胞定居的场所，也是发生免疫应答的部位。",
+     "difficulty": "what",
+     "cite": {
+      "page": 23,
+      "quote": "外周免疫器官与组织包括淋巴结、牌和黏膜相关淋巴组织",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 23,
+     "quote": "中枢免疫器官包括骨髓和胸腺，是免疫细胞发生、分化、发育和成熟",
+     "verified": false
+    },
+    {
+     "page": 23,
+     "quote": "外周免疫器官与组织包括淋巴结、牌和黏膜相关淋巴组织",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "bone-marrow-thymus",
+   "name_zh": "骨髓与胸腺",
+   "name_en": "Bone Marrow and Thymus",
+   "aliases": [],
+   "kind": "structure",
+   "one_liner": "骨髓是血细胞和免疫细胞发源地及B细胞成熟场所；胸腺是T细胞成熟场所。",
+   "fields": [
+    {
+     "label": "骨髓",
+     "value": "既是各种血细胞和免疫细胞的发源地，也是B细胞分化成熟的场所。",
+     "cite": {
+      "page": 23,
+      "quote": "骨髓既是各种血细胞和免疫细胞的发源地，也是B细胞分化成熟的场",
+      "verified": false
+     }
+    },
+    {
+     "label": "胸腺",
+     "value": "是T细胞分化成熟的场所。",
+     "cite": {
+      "page": 23,
+      "quote": "胸腺是T细胞分化成熟的场所",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "骨髓 vs 胸腺",
+     "tip": "骨髓负责B细胞分化成熟；胸腺负责T细胞分化成熟。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch03:bone-marrow-thymus:1",
+     "prompt": "骨髓在免疫细胞发育中的两个主要作用是什么？",
+     "answer": "各种血细胞和免疫细胞的发源地；B细胞分化成熟的场所。",
+     "difficulty": "what",
+     "cite": {
+      "page": 23,
+      "quote": "骨髓既是各种血细胞和免疫细胞的发源地，也是B细胞分化成熟的场",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch03:bone-marrow-thymus:2",
+     "prompt": "胸腺的主要功能是什么？",
+     "answer": "T细胞分化成熟的场所。",
+     "difficulty": "what",
+     "cite": {
+      "page": 23,
+      "quote": "胸腺是T细胞分化成熟的场所",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 23,
+     "quote": "骨髓既是各种血细胞和免疫细胞的发源地，也是B细胞分化成熟的场",
+     "verified": false
+    },
+    {
+     "page": 23,
+     "quote": "胸腺是T细胞分化成熟的场所",
+     "verified": false
+    }
+   ]
+  }
+ ]
+}

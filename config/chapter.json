@@ -16,6 +16,20 @@
       "physicalStart": 17,
       "physicalEnd": 34,
       "pageOffset": 16
+    },
+    {
+      "id": "ch03",
+      "title": "免疫器官与组织（第三章）",
+      "physicalStart": 34,
+      "physicalEnd": 39,
+      "pageOffset": 16
+    },
+    {
+      "id": "ch04",
+      "title": "免疫分子（第四章）",
+      "physicalStart": 40,
+      "physicalEnd": 63,
+      "pageOffset": 16
     }
   ]
 }
