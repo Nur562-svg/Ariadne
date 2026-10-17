@@ -66,3 +66,15 @@ export function loadChapterPages(chapterId = "ch01"): ChapterDoc["pages"] {
   const doc = JSON.parse(fs.readFileSync(file, "utf8")) as ChapterDoc;
   return doc.pages ?? [];
 }
+
+/** 章节短标题（去掉「（第N章）」括注），用于 /entities 页头派生，不硬编码。 */
+export function loadChapterTitles(): string[] {
+  const file = path.join(repoRoot(), "config", "chapter.json");
+  if (!fs.existsSync(file)) return [];
+  const cfg = JSON.parse(fs.readFileSync(file, "utf8")) as {
+    chapters?: { title?: string }[];
+  };
+  return (cfg.chapters ?? [])
+    .map((c) => (c.title ?? "").replace(/（第[^）]*章）/g, ""))
+    .filter(Boolean);
+}

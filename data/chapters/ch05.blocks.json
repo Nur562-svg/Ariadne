@@ -1,0 +1,9182 @@
+{
+ "source": "data/raw/immunology-3rd.pdf",
+ "book": "免疫学基础与病原生物学（第3版）",
+ "chapter": {
+  "id": "ch05",
+  "title": "免疫细胞（第五章）",
+  "pages": {
+   "book": [
+    48,
+    63
+   ],
+   "physical": [
+    64,
+    79
+   ]
+  }
+ },
+ "ocr": {
+  "engine": "apple-vision",
+  "dpi": 200,
+  "language": "zh-Hans"
+ },
+ "pageOffset": 16,
+ "blocks": [
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.0338,
+    0.9011,
+    0.0783,
+    0.0161
+   ],
+   "text": "圓笔记栏",
+   "conf": 0.3
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.4651,
+    0.875,
+    0.1755,
+    0.0363
+   ],
+   "text": "第五章",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.4376,
+    0.8181,
+    0.2579,
+    0.0336
+   ],
+   "text": "免疫细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.0655,
+    0.7951,
+    0.0634,
+    0.0132
+   ],
+   "text": "PPT 课件",
+   "conf": 0.3
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.2219,
+    0.7295,
+    0.0805,
+    0.0149
+   ],
+   "text": "学习目标",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.2368,
+    0.6931,
+    0.6977,
+    0.0162
+   ],
+   "text": "通过本章的学习，掌握固有免疫细胞和适应性免疫细胞的组成，单核/ 巨噬细胞、",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1987,
+    0.6729,
+    0.7357,
+    0.0161
+   ],
+   "text": "树突状细胞及 NK 细胞的主要表面分子和免疫学功能，抗原提呈细胞的概念和组成，",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1966,
+    0.6526,
+    0.7357,
+    0.0176
+   ],
+   "text": "T、B 细胞的表面分子、亚群和功能；熟悉T细胞的分化发育，粒细胞和肥大细胞的免疫",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1987,
+    0.6322,
+    0.4292,
+    0.0175
+   ],
+   "text": "学功能；了解免疫细胞的来源，B细胞的分化发育。",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.2178,
+    0.5726,
+    0.7378,
+    0.0161
+   ],
+   "text": "免疫细胞通常指参与免疫应答或与免疫应答有关的细胞。本章按各类细胞在参与免",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.5509,
+    0.7844,
+    0.0174
+   ],
+   "text": "疫活动中的作用不同，将其分为固有免疫细胞和适应性免疫细胞2类，前者主要包括单核/",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.5305,
+    0.778,
+    0.0175
+   ],
+   "text": "巨噬细胞、树突状细胞、固有淋巴样细胞（NK细胞、ILC1、ILC2、ILC3）、固有样淋巴细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.5102,
+    0.7822,
+    0.0176
+   ],
+   "text": "（NK T细胞、y8T 细胞、B1细胞）、中性粒细胞、嗜酸性粒细胞、嗜碱性粒细胞、肥大细胞等；",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4897,
+    0.778,
+    0.0176
+   ],
+   "text": "后者为介导适应性免疫应答的细胞，即T细胞和B细胞。其中T、B细胞的表面有特异性",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4709,
+    0.778,
+    0.0161
+   ],
+   "text": "抗原受体，识别抗原后可发生克隆增殖、分化，故也称抗原特异性淋巴细胞或免疫活性细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.4506,
+    0.26,
+    0.0145
+   ],
+   "text": "（immune competent cell, ICC）。",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.3615,
+    0.3924,
+    0.4123,
+    0.0203
+   ],
+   "text": "第一节 免疫细胞的分化和发育",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.2178,
+    0.3488,
+    0.74,
+    0.0177
+   ],
+   "text": "骨髓多能造血干细胞（HSC）可分化为各类血细胞/免疫细胞，具有自我更新和发育分",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.3297,
+    0.778,
+    0.0162
+   ],
+   "text": "化2种潜能。HSC主要表达CD34和CD117，不表达各种成熟血细胞谱系相关的表面标",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.3081,
+    0.7801,
+    0.0176
+   ],
+   "text": "志。在骨髓微环境中，HSC可分化出髓样于细胞和淋巴样干细胞。髓样干细胞可进一步分",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.2876,
+    0.778,
+    0.0176
+   ],
+   "text": "化为巨核/成红祖细胞和粒/单核祖细胞2个群体，前者最终分化为血小板和红细胞，后者",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.2674,
+    0.7801,
+    0.0189
+   ],
+   "text": "最终分化为中性粒细胞、嗜酸性粒细胞、嗜碱性粒细胞、单核细胞和肥大细胞等。淋巴样",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.2471,
+    0.778,
+    0.0174
+   ],
+   "text": "干细胞可分化为始祖T细胞、始祖B 细胞和始祖 NK细胞，并分别在胸腺（T细胞）和骨髓",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.2267,
+    0.7801,
+    0.0175
+   ],
+   "text": "（B细胞和NK细胞）中发育成熟释放人血。树突状细胞既可来源于髓样干细胞，也可来源",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.2064,
+    0.2199,
+    0.0176
+   ],
+   "text": "于淋巴样干细胞（图5-1）。",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.2156,
+    0.1759,
+    0.1839,
+    0.0174
+   ],
+   "text": "一.髓系免疫细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.2199,
+    0.1468,
+    0.7378,
+    0.0176
+   ],
+   "text": "髓系免疫细胞来自于髓样干细胞，包括单核/巨噬细胞、中性粒细胞、嗜酸性粒细胞、嗜",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.1263,
+    0.389,
+    0.0161
+   ],
+   "text": "碱性粒细胞、肥大细胞、红细胞及树突状细胞。",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.1075,
+    0.3023,
+    0.0148
+   ],
+   "text": "（一）单核 /巨噬细胞的分化和发育",
+   "conf": 0.3
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.2199,
+    0.0856,
+    0.7378,
+    0.0176
+   ],
+   "text": "单核/巨噬细胞来源于骨髓的髓样干细胞，经单核母细胞、前单核细胞分化为成熟的单",
+   "conf": 1.0
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.0654,
+    0.778,
+    0.0175
+   ],
+   "text": "核细胞；其表面表达模式识别受体、MHCII 类分子等多种受体和膜分子。单核细胞离开骨",
+   "conf": 0.5
+  },
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "region": "footer",
+   "bbox": [
+    0.0909,
+    0.0276,
+    0.0233,
+    0.0118
+   ],
+   "text": "48",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.8939,
+    0.7844,
+    0.0175
+   ],
+   "text": "髓进入血液，在血液中仅存留12~24小时，再进入肝、脾、淋巴结及结缔组织等器官组织中，",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.8735,
+    0.7822,
+    0.0174
+   ],
+   "text": "并进一步分化为巨噬细胞（M中），其寿命可达数月以上。组织中的巨噬细胞因所在器官不",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.8532,
+    0.7822,
+    0.0175
+   ],
+   "text": "同及形态上呈现的差异而具有不同名称，如肝中的库普弗细胞（Kupffer cell）、肺泡中的尘细",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.8328,
+    0.5666,
+    0.0176
+   ],
+   "text": "胞（dust cell）、骨组织中的破骨细胞和神经组织中的小胶质细胞等。",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.5307,
+    0.7631,
+    0.0677,
+    0.0131
+   ],
+   "text": "红母细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6871,
+    0.7631,
+    0.0507,
+    0.0118
+   ],
+   "text": "红细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.3763,
+    0.731,
+    0.1226,
+    0.0134
+   ],
+   "text": "巨核/成红祖细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6913,
+    0.7193,
+    0.0507,
+    0.0134
+   ],
+   "text": "血小板",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.5306,
+    0.702,
+    0.0656,
+    0.0117
+   ],
+   "text": "巨核细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6744,
+    0.6701,
+    0.0846,
+    0.0131
+   ],
+   "text": "中性粒细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.2706,
+    0.67,
+    0.0825,
+    0.0132
+   ],
+   "text": "髓样干细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.666,
+    0.6249,
+    0.0994,
+    0.0132
+   ],
+   "text": "嗜酸性粒细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6638,
+    0.577,
+    0.0994,
+    0.0131
+   ],
+   "text": "嗜碱性粒细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.3784,
+    0.5725,
+    0.1121,
+    0.0134
+   ],
+   "text": "粒- 单核祖细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6828,
+    0.5304,
+    0.0677,
+    0.0119
+   ],
+   "text": "肥大细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.1205,
+    0.4956,
+    0.0825,
+    0.0132
+   ],
+   "text": "多能干细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6892,
+    0.4797,
+    0.0655,
+    0.0132
+   ],
+   "text": "巨噬细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.5327,
+    0.4795,
+    0.0678,
+    0.0133
+   ],
+   "text": "单核细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6807,
+    0.4256,
+    0.0827,
+    0.0137
+   ],
+   "text": "树突状细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6913,
+    0.3692,
+    0.0486,
+    0.0131
+   ],
+   "text": "T细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.4037,
+    0.3646,
+    0.0678,
+    0.0135
+   ],
+   "text": "祖T细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6892,
+    0.3212,
+    0.0507,
+    0.0118
+   ],
+   "text": "B细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.4016,
+    0.3195,
+    0.072,
+    0.0121
+   ],
+   "text": "祖B细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.2622,
+    0.2922,
+    0.0994,
+    0.0118
+   ],
+   "text": "淋巴样干细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.687,
+    0.2746,
+    0.0593,
+    0.0119
+   ],
+   "text": "NK 细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.3953,
+    0.2672,
+    0.0909,
+    0.0134
+   ],
+   "text": "NK 前体细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.6807,
+    0.2193,
+    0.0826,
+    0.0135
+   ],
+   "text": "树突状细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.2812,
+    0.1947,
+    0.0507,
+    0.0131
+   ],
+   "text": "图 5-1",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.3319,
+    0.1933,
+    0.2727,
+    0.0145
+   ],
+   "text": "骨髓多能造血干细胞的分化示意图",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.1584,
+    0.2262,
+    0.0145
+   ],
+   "text": "（二）粒细胞的分化和发育",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.1365,
+    0.7442,
+    0.0175
+   ],
+   "text": "粒细胞来自于粒-单祖细胞，依据其形态和胞质颗粒染色的不同分为中性粒细胞、嗜酸",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.1177,
+    0.7822,
+    0.0161
+   ],
+   "text": "性粒细胞、嗜碱性粒细胞3类。在骨髓微环境下，在粒细胞集落刺激因子的作用下分化出中",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.0529,
+    0.0958,
+    0.7801,
+    0.0176
+   ],
+   "text": "性粒细胞，从骨髓释放人血，存活期2~3天。粒-单祖细胞在GM-CSF、IL-3、IL-5、TGF-B等",
+   "conf": 0.5
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "main",
+   "bbox": [
+    0.0529,
+    0.077,
+    0.7104,
+    0.0175
+   ],
+   "text": "细胞因子的作用下分化为嗜酸性粒细胞或嗜碱性粒细胞，发育成熟，释放进入血液。",
+   "conf": 1.0
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "sidebar",
+   "bbox": [
+    0.8943,
+    0.9011,
+    0.0719,
+    0.0161
+   ],
+   "text": "笔记栏（",
+   "conf": 0.3
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "header",
+   "bbox": [
+    0.6681,
+    0.949,
+    0.1628,
+    0.0148
+   ],
+   "text": "第五章 免疫细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "region": "footer",
+   "bbox": [
+    0.8985,
+    0.0233,
+    0.0254,
+    0.0131
+   ],
+   "text": "49",
+   "conf": 1.0
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.0359,
+    0.901,
+    0.0761,
+    0.0176
+   ],
+   "text": "C笔记栏",
+   "conf": 0.3
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.8968,
+    0.2452,
+    0.0145
+   ],
+   "text": "（三）肥大细胞的分化和发育",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2156,
+    0.8763,
+    0.7357,
+    0.0161
+   ],
+   "text": "肥大细胞源于髓样干细胞，但从骨髓中释放的肥大细胞并未成熟，需要迁移到组织中",
+   "conf": 1.0
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.8547,
+    0.7801,
+    0.0177
+   ],
+   "text": "进一步分化发育成熟的肥大细胞。成熟的肥大细胞表面表达C3a/CSaR 和高亲和力IgE",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.8356,
+    0.4989,
+    0.0162
+   ],
+   "text": "FcR 等多种受体，胞质中具有含多种活性介质的粗大颗粒。",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.8154,
+    0.3066,
+    0.0145
+   ],
+   "text": "（四）红细胞和血小板的分化和发育",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.7935,
+    0.74,
+    0.0176
+   ],
+   "text": "髓样干细胞首先分化巨核/成红祖细胞，其在红细胞生成素（EPO）和干细胞因子",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.7733,
+    0.7822,
+    0.0175
+   ],
+   "text": "（SCF）的作用下经历原红细胞、早幼红细胞、中幼红细胞、晚幼红细胞，脱去胞核形成网织红",
+   "conf": 1.0
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.7527,
+    0.778,
+    0.0177
+   ],
+   "text": "细胞，进入血液最终发育为成熟的红细胞；或在血小板生成素（TPO）和其他细胞因子（如",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.7339,
+    0.7801,
+    0.0161
+   ],
+   "text": "1L-6、IL-11 等）的作用下形成巨核细胞，胞膜凹陷、分离脱落，释放进入血液循环成为血小",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.7151,
+    0.4355,
+    0.0148
+   ],
+   "text": "板。成熟的红细胞和血小板表面表达C3bR（CR1）。",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2178,
+    0.6817,
+    0.2008,
+    0.0174
+   ],
+   "text": "、淋巴系免疫细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.6541,
+    0.74,
+    0.0162
+   ],
+   "text": "淋巴样干细胞来自骨髓多能干细胞。由淋巴样干细胞分化的免疫细胞主要包括T细",
+   "conf": 1.0
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.6335,
+    0.3023,
+    0.0162
+   ],
+   "text": "胞、B细胞、NK 细胞和树突状细胞。",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.6134,
+    0.2643,
+    0.0146
+   ],
+   "text": "（一）T淋巴细胞的分化和发育",
+   "conf": 0.3
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.593,
+    0.74,
+    0.016
+   ],
+   "text": "T淋巴细胞（Tlymphocyte）简称T细胞，源于骨髓的淋巴样干细胞，在胸腺中发育",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.5726,
+    0.0507,
+    0.0161
+   ],
+   "text": "成熟。",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2156,
+    0.5523,
+    0.7378,
+    0.016
+   ],
+   "text": "在骨髓中形成的始祖T细胞随血液循环到达胸腺。胸腺是T细胞发育成熟的中枢免",
+   "conf": 1.0
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.5318,
+    0.7801,
+    0.0162
+   ],
+   "text": "疫器官。胸腺微环境为T细胞发育分化提供了条件。T细胞在发育分化过程中，其表型发",
+   "conf": 1.0
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.5116,
+    0.7801,
+    0.0175
+   ],
+   "text": "生一系列变化。根据细胞表型的变化，可将T细胞发育分成3个阶段：①双阴性期：初期T",
+   "conf": 1.0
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.4913,
+    0.7801,
+    0.0174
+   ],
+   "text": "细胞不表达CD4 和 CD8 分子，故称 CD4CD8 双阴性T细胞（CD4CD8 double-negative T",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.4709,
+    0.7801,
+    0.0161
+   ],
+   "text": "cell），又称 DN细胞。DN 细胞不表达TCR和CD3分子，也不具有抗原识别能力。②双阳",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.4506,
+    0.778,
+    0.0176
+   ],
+   "text": "性期：DN 细胞经TCRa 和 TCRB 基因重排，形成TCR，同时 CD4和 CD8分子基因活化并",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.4301,
+    0.778,
+    0.0161
+   ],
+   "text": "表达，形成 CD4CD8 双阳性T细胞（CD4CD8 double-positive T cell），又称 DP 细胞。③单阳",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.4099,
+    0.778,
+    0.0175
+   ],
+   "text": "性期：DP 细胞经阳性选择和阴性选择过程，分化发育为CD4'CD8或CD8\"CD4 T细胞，称",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.3893,
+    0.7463,
+    0.0176
+   ],
+   "text": "为单阳性T细胞（single positive T cell），又称SP细胞。SP 细胞继续发育为成熟T细胞。",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2156,
+    0.3692,
+    0.74,
+    0.0175
+   ],
+   "text": "1. T细胞受体（TCR）的发育 大多数成熟T细胞（95%以上）的TCR分子是由a和B",
+   "conf": 0.3
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.3488,
+    0.7801,
+    0.0177
+   ],
+   "text": "2条肽链组成的异二聚体，编码人 TCR a链和B链的基因分别定位于第14号和第7号染色",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.3284,
+    0.7801,
+    0.0175
+   ],
+   "text": "体。B链的基因重排与表达是这类T细胞发育过程中的关键所在，不成功则走向凋亡。成",
+   "conf": 1.0
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.3096,
+    0.778,
+    0.0161
+   ],
+   "text": "功表达B链可诱导、促进TCRa 链前体 pTa （gp33）和CD3的表达，并组成细胞表面的前受",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.2876,
+    0.7801,
+    0.0176
+   ],
+   "text": "体（pTCR）。其后，在增殖基础上，配合CD8与CD4表达，促进a链基因重排与表达，pTa",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.2688,
+    0.7801,
+    0.0161
+   ],
+   "text": "表达关闭，最后细胞表达功能性的aBTCR。TCR 的发育过程中，TCR 的基因重排使 TCR",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.2471,
+    0.7822,
+    0.0174
+   ],
+   "text": "具有高度的多样性，而一条染色体 TCR 基因的成功重排可抑制另一条染色体 TCR 的重排，",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.228,
+    0.7378,
+    0.0161
+   ],
+   "text": "称为等位基因排斥（allelic exclusion）现象，故每个T细胞克隆仅表达1 种特异性 TCR。",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.2078,
+    0.7421,
+    0.0162
+   ],
+   "text": "2. T细胞发育的阳性和阴性选择 DP 细胞须经历阳性选择和阴性选择，获得识别抗原",
+   "conf": 1.0
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.1873,
+    0.5941,
+    0.0162
+   ],
+   "text": "的MHC 限制性和自身耐受性，才能迁出胸腺并移居于外周免疫器官。",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.1671,
+    0.7421,
+    0.0161
+   ],
+   "text": "（1） 阳性选择（positive selection）：DP 细胞以功能性TCR 配合CD4或CD8与胸腺皮",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.1468,
+    0.7759,
+    0.016
+   ],
+   "text": "质上皮细胞表面的 MHC 分子相互结合，如果与自身抗原肽-MHC I类分子以适度亲和力",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.1263,
+    0.7801,
+    0.0161
+   ],
+   "text": "结合，CD8 表达增高，而CD4表达降低并丢失，最终分化CD8'T细胞；如果与自身抗原",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.1061,
+    0.778,
+    0.0162
+   ],
+   "text": "肽-MHC II类分子以适度亲和力结合，则最终分化力CD4T细胞。若DP细胞和自身抗原",
+   "conf": 0.3
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.0856,
+    0.778,
+    0.0162
+   ],
+   "text": "肽-MHC 分子不能结合或以高亲和力结合，则在胸腺皮质中发生细胞凋亡而被清除。阳性",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.0654,
+    0.6173,
+    0.0161
+   ],
+   "text": "选择使T细胞获得了抗原识别的 MHC 限制性，发育 SP 细胞（图5-2）。",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "header",
+   "bbox": [
+    0.1734,
+    0.9506,
+    0.1543,
+    0.0131
+   ],
+   "text": "第一篇 免疫学基础",
+   "conf": 0.5
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "region": "footer",
+   "bbox": [
+    0.0888,
+    0.0291,
+    0.0233,
+    0.0131
+   ],
+   "text": "50",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.3446,
+    0.9082,
+    0.0529,
+    0.0118
+   ],
+   "text": "阳性选择",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.6004,
+    0.9082,
+    0.055,
+    0.0118
+   ],
+   "text": "阴性选择",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.4672,
+    0.8983,
+    0.0719,
+    0.0118
+   ],
+   "text": "未成熟T细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.1226,
+    0.8576,
+    0.0381,
+    0.0104
+   ],
+   "text": "干细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.2896,
+    0.8517,
+    0.1142,
+    0.0104
+   ],
+   "text": "TCR与MHC II 类分子",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.5032,
+    0.8459,
+    0.093,
+    0.0087
+   ],
+   "text": "CD4*单阳性细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.2895,
+    0.8412,
+    0.0637,
+    0.0123
+   ],
+   "text": "适当识别K",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.1183,
+    0.8094,
+    0.0467,
+    0.0091
+   ],
+   "text": "祖T细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.3066,
+    0.7922,
+    0.0888,
+    0.0087
+   ],
+   "text": "TCR与MHCII类",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0803,
+    0.7878,
+    0.0254,
+    0.0103
+   ],
+   "text": "B链",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.3086,
+    0.7832,
+    0.0636,
+    0.0092
+   ],
+   "text": "分子不识别",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.4905,
+    0.7805,
+    0.0507,
+    0.0087
+   ],
+   "text": "细胞凋亡",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.4376,
+    0.7645,
+    0.0148,
+    0.0102
+   ],
+   "text": "皮",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.704,
+    0.7602,
+    0.0148,
+    0.0422
+   ],
+   "text": "树突状细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.1099,
+    0.7572,
+    0.0444,
+    0.0102
+   ],
+   "text": "前T细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.1078,
+    0.7441,
+    0.0635,
+    0.0104
+   ],
+   "text": "CD4 CD8",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.1965,
+    0.7439,
+    0.0594,
+    0.0108
+   ],
+   "text": "CD4*CD8*",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.4376,
+    0.7384,
+    0.0148,
+    0.0087
+   ],
+   "text": "细",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.6089,
+    0.7384,
+    0.1332,
+    0.0087
+   ],
+   "text": "TCR与自身肽-MHC分了",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.1036,
+    0.731,
+    0.0634,
+    0.009
+   ],
+   "text": "双阴性细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.1902,
+    0.731,
+    0.0635,
+    0.009
+   ],
+   "text": "双阳性细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.3108,
+    0.7296,
+    0.0909,
+    0.009
+   ],
+   "text": "TCR与MHCII类",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.611,
+    0.7282,
+    0.0761,
+    0.0087
+   ],
+   "text": "复合物强识别",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.3128,
+    0.7208,
+    0.0635,
+    0.0091
+   ],
+   "text": "分子强识别",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.4376,
+    0.7093,
+    0.0148,
+    0.0116
+   ],
+   "text": "胞",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.093,
+    0.7019,
+    0.0699,
+    0.009
+   ],
+   "text": "T TCR a B",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.1913,
+    0.7005,
+    0.0519,
+    0.0103
+   ],
+   "text": "TCRB链",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.1099,
+    0.6844,
+    0.1586,
+    0.0103
+   ],
+   "text": "CD4分子 MHCII类分子",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.2896,
+    0.6759,
+    0.1163,
+    0.0103
+   ],
+   "text": "TCR与MHCI类分子",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.5053,
+    0.6759,
+    0.093,
+    0.0103
+   ],
+   "text": "CD8'单阳性细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.667,
+    0.1924,
+    0.0118
+   ],
+   "text": "--CD8分了 JMIICI类分子",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.2833,
+    0.6656,
+    0.0655,
+    0.0103
+   ],
+   "text": "适当识别",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.4693,
+    0.6568,
+    0.0762,
+    0.0119
+   ],
+   "text": "未成熟T细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.2326,
+    0.6321,
+    0.4059,
+    0.0134
+   ],
+   "text": "图 5-2 T细胞在胸腺内的阳性选择和阴性选择示意图",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0803,
+    0.5958,
+    0.7463,
+    0.0176
+   ],
+   "text": "（2） 阴性选择（negative selection）：经阳性选择后的T细胞，其TCRap若在胸腺皮质与",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.5756,
+    0.7822,
+    0.0175
+   ],
+   "text": "髓质交界处及髓质区，能与树突状细胞、巨噬细胞表达的自身抗原肽-MHC 分子复合物结",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.5551,
+    0.7822,
+    0.0162
+   ],
+   "text": "合，则导致相应T细胞克隆凋亡，只有不能结合或结合亲和力很低的胸腺细胞才能继续发育",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.5349,
+    0.7822,
+    0.0161
+   ],
+   "text": "为成熟的SP细胞，此过程为T细胞发育的阴性选择。通过阴性选择，T细胞获得了对自身",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.5143,
+    0.2008,
+    0.0162
+   ],
+   "text": "抗原的耐受性（图5-2）。",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.4942,
+    0.74,
+    0.0161
+   ],
+   "text": "经过胸腺内的发育和选择后，仅少于5%的胸腺细胞在髓质区分化、发育为成熟T细",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.4738,
+    0.7822,
+    0.016
+   ],
+   "text": "胞，其特征为：①表达功能性 TCR；②CD4或CD8单阳性细胞；③获得抗原识别的MHC 限",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.4534,
+    0.5962,
+    0.0161
+   ],
+   "text": "制性；④获得自身耐受性。成熟T细胞离开胸腺，进人外周免疫器官。",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0825,
+    0.4346,
+    0.2262,
+    0.0145
+   ],
+   "text": "（二） B细胞的分化和发育",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.4127,
+    0.74,
+    0.0161
+   ],
+   "text": "B 淋巴细胞（B lymphocyte）简称B细胞，在骨髓中发育成熟。B细胞源于骨髓的淋巴",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.3924,
+    0.7822,
+    0.016
+   ],
+   "text": "样干细胞，在骨髓基质细胞及其产生的细胞因子和黏附因子的抚育下经过祖B细胞、前B",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.3706,
+    0.7822,
+    0.0175
+   ],
+   "text": "细胞、未成熟B细胞（表达完整BCR，即 mlgM；不表达 mlgD），最后发育为成熟B细胞（同",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.3517,
+    0.7822,
+    0.0162
+   ],
+   "text": "时表达 mIgM 和mlgD），离开骨髓进入血液和外周淋巴组织。B细胞在此发育成熟过程中",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.3312,
+    0.5159,
+    0.0161
+   ],
+   "text": "主要经历2个重要事件—BCR 的发育和自身耐受的形成。",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.311,
+    0.7421,
+    0.0162
+   ],
+   "text": "1. B细胞受体（BCR）的发育 BCR 的发育过程中进行 BCR 的基因重排，使其具有高",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.2905,
+    0.7822,
+    0.0176
+   ],
+   "text": "度的多样性。人类Ig 重链基因群位于第14号染色体长臂上，可变区由V、D和J3个基因",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.2703,
+    0.7801,
+    0.0175
+   ],
+   "text": "片段所组成，恒定区由C基因片段编码。人类轻链x 基因和入基因分别位于2号染色体短",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.25,
+    0.7822,
+    0.0174
+   ],
+   "text": "臂和22号染色体长臂上，其可变区由V、.J2个基因片段编码。重链、轻链每种基因分别由",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.2296,
+    0.7801,
+    0.0161
+   ],
+   "text": "多个基因片段组成，如重链V、D 和J分别拥有45个、23个和6个基因片段，轻链T、J、P",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.2093,
+    0.7822,
+    0.016
+   ],
+   "text": "和J分别拥有40个、5个、30个和4个基因片段。在B 细胞发育分化形成 BCR 的过程中，",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.1889,
+    0.7822,
+    0.0161
+   ],
+   "text": "需要在重组酶的作用下，随机挑选重链、轻链的1个V片段、1个D片段（轻链无D片段）和",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.1686,
+    0.7822,
+    0.016
+   ],
+   "text": "1个J片段重新排列在一起，组成一个V（D）J连接，形成具有抗原特异性的、完整的BCR编",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.1482,
+    0.7801,
+    0.0161
+   ],
+   "text": "码基因。也正是由于V、（D）、J基因片段数量较大，以及组合与连接的多样性等原因，奠定了",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.1279,
+    0.6871,
+    0.016
+   ],
+   "text": "BCR抗原识别的多样性，使B细胞可识别自然界中种类繁多的抗原表位（图5-3）。",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.1074,
+    0.7442,
+    0.0176
+   ],
+   "text": "2. B细胞发育过程中的阴性和阳性选择 B细胞的分化成熟与T细胞有一定相似性，",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.0872,
+    0.7822,
+    0.0175
+   ],
+   "text": "也经历类似阴性和阳性选择的过程，其阴性选择在中枢免疫器官完成并获得中枢免疫耐受，",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.0667,
+    0.5835,
+    0.0176
+   ],
+   "text": "但阳性选择在外周免疫器官生发中心完成，获得抗体亲和力的成熟。",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "sidebar",
+   "bbox": [
+    0.8879,
+    0.9113,
+    0.0719,
+    0.0145
+   ],
+   "text": "笔记栏（",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "sidebar",
+   "bbox": [
+    0.7188,
+    0.8459,
+    0.0613,
+    0.0087
+   ],
+   "text": "成熟CD4\"T",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "sidebar",
+   "bbox": [
+    0.7336,
+    0.8357,
+    0.0275,
+    0.009
+   ],
+   "text": "细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "sidebar",
+   "bbox": [
+    0.7505,
+    0.7775,
+    0.0486,
+    0.0103
+   ],
+   "text": "细胞凋亡",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "sidebar",
+   "bbox": [
+    0.7209,
+    0.6757,
+    0.0593,
+    0.0105
+   ],
+   "text": "成熟CD8T",
+   "conf": 0.3
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "sidebar",
+   "bbox": [
+    0.7336,
+    0.6642,
+    0.0296,
+    0.0117
+   ],
+   "text": "细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "header",
+   "bbox": [
+    0.6617,
+    0.9578,
+    0.1649,
+    0.0145
+   ],
+   "text": "第五章 免疫细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "region": "footer",
+   "bbox": [
+    0.8964,
+    0.0304,
+    0.0233,
+    0.0132
+   ],
+   "text": "51",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.0402,
+    0.9055,
+    0.074,
+    0.0161
+   ],
+   "text": "圓笔记栏",
+   "conf": 0.3
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.2789,
+    0.9035,
+    0.0596,
+    0.0127
+   ],
+   "text": "H链基因",
+   "conf": 0.3
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.3827,
+    0.8472,
+    0.0275,
+    0.0103
+   ],
+   "text": "（45）",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.4736,
+    0.8472,
+    0.0359,
+    0.0103
+   ],
+   "text": "（23）",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.2727,
+    0.8198,
+    0.0486,
+    0.0118
+   ],
+   "text": "DJ重排",
+   "conf": 0.3
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.2029,
+    0.7847,
+    0.0593,
+    0.0119
+   ],
+   "text": "基因重排",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.277,
+    0.766,
+    0.0571,
+    0.0102
+   ],
+   "text": "VDJ 重排",
+   "conf": 0.3
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.203,
+    0.7092,
+    0.074,
+    0.0117
+   ],
+   "text": "功能性基因",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.4863,
+    0.6904,
+    0.0846,
+    0.0087
+   ],
+   "text": "VHDHJH CA",
+   "conf": 0.3
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.203,
+    0.6657,
+    0.0761,
+    0.0117
+   ],
+   "text": "RNA（转录）",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.203,
+    0.6366,
+    0.129,
+    0.0103
+   ],
+   "text": "mRNA（转录后加工）",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.6934,
+    0.6321,
+    0.0656,
+    0.0091
+   ],
+   "text": "AAAAAAA",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.203,
+    0.6075,
+    0.1607,
+    0.0117
+   ],
+   "text": "H链（翻译和翻译后修饰）",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.389,
+    0.5797,
+    0.3552,
+    0.0148
+   ],
+   "text": "图 5-3 免疫球蛋白重链基因重排和表达示意图",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.26,
+    0.5609,
+    0.6131,
+    0.0161
+   ],
+   "text": "重链胚系基因经过重排先形成 D-J连接，然后发生V-DJ 连接，编码功能性V 区基因",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.5318,
+    0.7421,
+    0.0176
+   ],
+   "text": "（1）阴性选择：前B细胞在骨髓内分化为未成熟B细胞后，表面表达 mlgM，此时能识别",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.5116,
+    0.7759,
+    0.0175
+   ],
+   "text": "自身抗原的B细胞克隆，若其 BCR（mlgM）与骨髓中出现的自身抗原发生结合，则导致细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4913,
+    0.778,
+    0.0174
+   ],
+   "text": "调亡，由此清除自身反应性B 细胞克隆，B细胞获得自身耐受，类似T细胞成熟过程中的阴",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4722,
+    0.0719,
+    0.0161
+   ],
+   "text": "性选择。",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.4506,
+    0.7442,
+    0.0176
+   ],
+   "text": "（2）阳性选择：成熟B细胞离开骨髓进人外周免疫器官，在外周淋巴器官接受外来抗原",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4301,
+    0.778,
+    0.0176
+   ],
+   "text": "刺激进入分化增殖状态，发生体细胞突变，主要集中于V区CDR部位的基因序列的点突",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4099,
+    0.7801,
+    0.0175
+   ],
+   "text": "变。大部分B 细胞突变后不再与滤泡树突状细胞（FDC）表面的抗原结合，或亲和力下降，",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.3893,
+    0.7759,
+    0.0176
+   ],
+   "text": "而发生调亡；少部分B细胞经突变后，其BCR能更有效地与抗原结合，并通过细胞表面表",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.3705,
+    0.778,
+    0.0161
+   ],
+   "text": "达CD40与活化的滤泡辅助性T细胞（Tth）表面 CD40L结合使自身免于凋亡，可继续增殖",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.3503,
+    0.7801,
+    0.0162
+   ],
+   "text": "分化为浆细胞，此过程即为阳性选择。经阳性选择的细胞克隆或分化分泌高亲和力抗体",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.3297,
+    0.6237,
+    0.0176
+   ],
+   "text": "的长寿命浆细胞迁移至骨髓，或分化记忆 B 细胞定居于外周免疫器官。",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.3109,
+    0.2875,
+    0.0148
+   ],
+   "text": "（三）自然杀伤细胞的分化和发育",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.2199,
+    0.2892,
+    0.7357,
+    0.0177
+   ],
+   "text": "自然杀伤细胞（natural killer cell,NK cell）简称 NK 细胞，源于淋巴样干细胞，属于固有",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.2688,
+    0.7801,
+    0.0175
+   ],
+   "text": "淋巴样细胞。在骨髓微环境和细胞因子的作用下，经历原 NK细胞、前NK细胞、未成熟 NK",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.2485,
+    0.7822,
+    0.0176
+   ],
+   "text": "细胞，最终发育分化为成熟的NK细胞，释放进入血液。成熟的NK细胞主要分布于骨髓、",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.228,
+    0.7801,
+    0.0176
+   ],
+   "text": "外周血、肝、脾、肺和外周淋巴结；表面表达多种杀伤细胞激活性受体（KAR）、杀伤细胞抑制",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.2078,
+    0.2748,
+    0.0175
+   ],
+   "text": "性受体（KIR）及 IgG Fc受体等。",
+   "conf": 0.3
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.2178,
+    0.1773,
+    0.2516,
+    0.0176
+   ],
+   "text": "三.谱系交叉的免疫细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.2178,
+    0.1468,
+    0.7378,
+    0.0176
+   ],
+   "text": "树突状细胞（dendritic cell,DC） 来源复杂，部分来自于髓样干细胞，部分来自于淋巴",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.1277,
+    0.7822,
+    0.0162
+   ],
+   "text": "样干细胞。在未受到抗原刺激时，DC处于未成熟状态，高表达多种模式识别受体（TLR2、",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.1075,
+    0.7801,
+    0.0161
+   ],
+   "text": "TLR4、TLR5等），摄取和加工抗原能力较强，而抗原提呈能力较弱。未成熟 DC 在摄取抗原",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.0856,
+    0.778,
+    0.0176
+   ],
+   "text": "后离开炎症病灶开始迁移，在通过淋巴管或血液循环迁移到外周淋巴器官的过程中，树突状",
+   "conf": 1.0
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.0654,
+    0.7801,
+    0.0175
+   ],
+   "text": "细胞逐渐成熟，开始高表达 MHC II类分子和共刺激分子，具备高效抗原提呈和启动适应性",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "sidebar",
+   "bbox": [
+    0.8901,
+    0.8763,
+    0.0465,
+    0.0161
+   ],
+   "text": "=3",
+   "conf": 0.3
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "sidebar",
+   "bbox": [
+    0.7082,
+    0.6642,
+    0.0888,
+    0.0102
+   ],
+   "text": "-AAAAAAA",
+   "conf": 0.3
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "header",
+   "bbox": [
+    0.1776,
+    0.9534,
+    0.1522,
+    0.0132
+   ],
+   "text": "第一篇 免疫学基础",
+   "conf": 0.5
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "region": "footer",
+   "bbox": [
+    0.0909,
+    0.0305,
+    0.0233,
+    0.0117
+   ],
+   "text": "52",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.9011,
+    0.3932,
+    0.0161
+   ],
+   "text": "免疫应答能力，这个阶段的DC 也称成熟 DC。",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.2939,
+    0.8429,
+    0.296,
+    0.0219
+   ],
+   "text": "第二节 固有免疫细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.7994,
+    0.74,
+    0.0175
+   ],
+   "text": "随着免疫学研究的深人，特别是固有免疫的研究，对固有免疫细胞的家族成员有了新的",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.7789,
+    0.7844,
+    0.0176
+   ],
+   "text": "认识，除传统上的单核/巨噬细胞、树突状细胞、NK细胞、粒细胞与肥大细胞外，众多学者倾",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.7601,
+    0.7801,
+    0.0148
+   ],
+   "text": "向于将识别谱较窄、交叉面较宽的y8T 细胞、B1 细胞和 NK T细胞也列入固有免疫细胞家",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.7384,
+    0.3932,
+    0.016
+   ],
+   "text": "族。近年来，又发现了固有淋巴样细胞（ILC）。",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.7064,
+    0.2008,
+    0.0175
+   ],
+   "text": "一、单核/巨噬细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.6773,
+    0.74,
+    0.0161
+   ],
+   "text": "单核/ 巨噬细胞（monocyte/macrophage）由血液中单核细胞和组织器官中巨噬细胞所组",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.657,
+    0.7801,
+    0.0176
+   ],
+   "text": "成，表达特征性表面标志 CD14分子，并表达模式识别受体、MHC II /I类分子等多种类型",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.6365,
+    0.7801,
+    0.0175
+   ],
+   "text": "的受体/膜分子，胞质中富含溶酶体颗粒。单核/巨噬细胞具有很强的变形运动、吞噬杀伤",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.6163,
+    0.7822,
+    0.0176
+   ],
+   "text": "和抗原提呈能力，在固有免疫和适应性免疫应答中均具有重要作用。此外，活化的T细胞产",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.5958,
+    0.7844,
+    0.0176
+   ],
+   "text": "生的Thl 型细胞因子可激活单核/巨噬细胞，而显著增强其杀伤和清除病原微生物的功能，",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.5756,
+    0.7844,
+    0.0175
+   ],
+   "text": "参与适应性细胞免疫的效应阶段。单核细胞分化为巨噬细胞后，形态和功能均发生较大变",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.5551,
+    0.4609,
+    0.0162
+   ],
+   "text": "化，细胞体积增大，表面受体表达增多，功能更为复杂。",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0846,
+    0.5349,
+    0.2622,
+    0.0161
+   ],
+   "text": "（一）单核/巨噬细胞表面受体",
+   "conf": 0.3
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.5143,
+    0.2854,
+    0.0162
+   ],
+   "text": "单核/ 巨噬细胞可表达多种受体：",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.4942,
+    0.74,
+    0.0175
+   ],
+   "text": "1. 模式识别受体 如 Toll 样受体、甘露糖受体、清道夫受体等，通过这些受体，单核/巨",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.4738,
+    0.7822,
+    0.016
+   ],
+   "text": "噬细胞可识别病原体相关分子模式（PAMP）或损伤相关分子模式（DAMP），产生固有免疫应",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.4534,
+    0.6808,
+    0.0175
+   ],
+   "text": "答，有效地吞噬、杀伤、清除病原微生物及体内出现的衰老损伤、坏死、週亡细胞。",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.4331,
+    0.7442,
+    0.0176
+   ],
+   "text": "2. 调理性受体 如IgG Fc受体、C3b/C4b 受体，可在抗体或补体的作用下促进和激活",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0506,
+    0.4127,
+    0.2456,
+    0.0176
+   ],
+   "text": "单核/巨噬细胞的吞噬活性。",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.3908,
+    0.7442,
+    0.0192
+   ],
+   "text": "3. 细胞因子受体 如 MCP-IR、M-CSFR、GM-CSFR 等，在相应细胞因子的作用下，单",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.3706,
+    0.7378,
+    0.0175
+   ],
+   "text": "核/巨噬细胞趋化到炎症病灶处，活化并完成吞噬、杀伤消化、清除病原体的免疫作用。",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0846,
+    0.3517,
+    0.3044,
+    0.0145
+   ],
+   "text": "（二）单核/巨噬细胞的免疫学功能",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.3312,
+    0.7421,
+    0.0161
+   ],
+   "text": "单核/巨噬细胞具有重要的生物学作用，不仅参与固有免疫，而且也是适应性免疫应答",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0529,
+    0.311,
+    0.1691,
+    0.0162
+   ],
+   "text": "中的一类重要细胞。",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.2922,
+    0.7421,
+    0.0145
+   ],
+   "text": "1. 吞噬杀伤病原体 单核/巨噬细胞的胞质溶酶体中含有氧依赖和非氧依赖2种杀",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.2703,
+    0.7865,
+    0.0161
+   ],
+   "text": "菌系统及多种水解酶。当病原微生物侵入机体后，在激发适应性免疫应答以前即可被单核/",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0529,
+    0.25,
+    0.5687,
+    0.0174
+   ],
+   "text": "巨噬细胞吞噬、消化清除，这是机体固有免疫防御机制的重要环节。",
+   "conf": 1.0
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.2282,
+    0.7442,
+    0.0175
+   ],
+   "text": "2. 清除损伤、衰老细胞及肿瘤细胞 单核/巨噬细胞可清除损伤、变性和衰老细胞；在",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.2077,
+    0.7822,
+    0.0176
+   ],
+   "text": "Thl 细胞的作用及LPS或IFN-Y等细胞因子的刺激下活化，可有效杀伤胞内寄生菌和肿瘤",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.1889,
+    0.7822,
+    0.0161
+   ],
+   "text": "细胞；可通过 ADCC 杀伤病毒感染细胞和肿瘤细胞，故单核/吞噬细胞又被称机体的清",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.1686,
+    0.1691,
+    0.016
+   ],
+   "text": "道夫（详见第六章）。",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.1482,
+    0.7442,
+    0.0161
+   ],
+   "text": "3. 抗原提呈 巨噬细胞可经吞噬、胞饮或受体介导的胞吞作用等方式摄取抗原，将抗",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.1279,
+    0.7822,
+    0.016
+   ],
+   "text": "原加工处理，在IFN-y等细胞因子作用下，巨噬细胞表达 MHC II/I类分子和共刺激分子的",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.1074,
+    0.7822,
+    0.0161
+   ],
+   "text": "水平显著提高，将处理的抗原以抗原肽-MHC 分子复合物的形式提呈给效应T细胞/记忆",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.0872,
+    0.3129,
+    0.0162
+   ],
+   "text": "性T细胞，发挥专职性 APC的作用。",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.0654,
+    0.7463,
+    0.0175
+   ],
+   "text": "4. 免疫调节 活化的巨噬细胞可以分泌多种细胞因子参与免疫调节。如分泌的IL-1、",
+   "conf": 0.5
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "sidebar",
+   "bbox": [
+    0.8943,
+    0.9055,
+    0.0803,
+    0.022
+   ],
+   "text": "笔记栏③",
+   "conf": 0.3
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "header",
+   "bbox": [
+    0.6681,
+    0.9564,
+    0.1628,
+    0.0145
+   ],
+   "text": "第五章 免疫细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "region": "footer",
+   "bbox": [
+    0.8985,
+    0.0291,
+    0.0254,
+    0.0117
+   ],
+   "text": "53",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.0296,
+    0.9055,
+    0.0803,
+    0.0206
+   ],
+   "text": "©笔记栏",
+   "conf": 0.3
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.8983,
+    0.7801,
+    0.0162
+   ],
+   "text": "IFN-Y可以上调 APC表达 MHC 分子，TNF-a 可促进细胞毒性T细胞的活化和分化，IL-12、",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.8777,
+    0.6744,
+    0.0177
+   ],
+   "text": "IL-18 可激活 NK细胞，IL-10可抑制单核/巨噬细胞和NK 细胞的过度激活等。",
+   "conf": 0.3
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.8472,
+    0.1607,
+    0.0193
+   ],
+   "text": "二、树突状细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.8168,
+    0.74,
+    0.0175
+   ],
+   "text": "1973年，Steinman 和 Cohn 在小鼠脾内发现具有树枝状突起的独特形态的细胞，并将其",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.7965,
+    0.778,
+    0.0176
+   ],
+   "text": "命名树突状细胞（dendritic cell, DC）。DC 的主要功能是高效摄取、加工和提呈抗原，启动",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.776,
+    0.7822,
+    0.0176
+   ],
+   "text": "适应性免疫，是机体功能最强的抗原提呈细胞。目前已了解到 DC 在免疫细胞的分化成熟、",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.7558,
+    0.649,
+    0.0175
+   ],
+   "text": "抗原特异性识别、适应性免疫应答启动、免疫记忆维持等方面起着关键作用。",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2051,
+    0.7397,
+    0.3066,
+    0.0148
+   ],
+   "text": "（一）树突状细胞的亚群及其膜分子",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.7151,
+    0.7378,
+    0.0175
+   ],
+   "text": "DC 依据其抗原摄取和提呈能力的不同分为未成熟 DC 和成熟 DC2个细胞表型，其",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.6962,
+    0.778,
+    0.0175
+   ],
+   "text": "细胞表面膜分子也不相同：①未成熟 DC高表达PRR、IgG Fe 受体、C3b受体和趋化因子受",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.6742,
+    0.7781,
+    0.0191
+   ],
+   "text": "体，低表达 MHC II类分子和共刺激分子，具有强的摄取、加工处理抗原的能力，但提呈抗原",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.6555,
+    0.778,
+    0.0175
+   ],
+   "text": "能力弱；②成熟 DC 是皮肤、黏膜等组织器官中未成熟 DC 在摄取抗原后开始分化成熟，其",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.6352,
+    0.778,
+    0.0176
+   ],
+   "text": "MHC II 类分子、共刺激分子和黏附分子等与刺激T细胞活化有关的膜分子表达显著提高，",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.6147,
+    0.778,
+    0.0176
+   ],
+   "text": "而与其摄取抗原有关的PRR、IgG Fe 受体和C3b受体等表达显著减弱。正常情况下，绝大",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.5945,
+    0.2008,
+    0.0162
+   ],
+   "text": "多数DC 为非成熟 DC。",
+   "conf": 0.3
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2051,
+    0.577,
+    0.2664,
+    0.0145
+   ],
+   "text": "（二）树突状细胞的免疫学功能",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.5538,
+    0.7378,
+    0.0175
+   ],
+   "text": "1. 抗原提呈和免疫激活作用 DC通过胞饮、吞噬、受体介导的内吞等方式有效摄",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.5334,
+    0.778,
+    0.0176
+   ],
+   "text": "取抗原，并进行加工处理，形成抗原肽-MHC II类分子复合物。DC将抗原肽提呈给相应",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.513,
+    0.7801,
+    0.0175
+   ],
+   "text": "的CD4T细胞，产生T细胞第一活化信号；此外，成熟 DC还可以通过其高表达的CD80、",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.4942,
+    0.778,
+    0.0161
+   ],
+   "text": "CD86等共刺激分子，为T细胞活化提供第二活化信号。DC 是专职性APC 中唯一能直接",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.4738,
+    0.2178,
+    0.016
+   ],
+   "text": "激活初始T细胞的 APC。",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.4534,
+    0.74,
+    0.0161
+   ],
+   "text": "2. 参与中枢和外周免疫耐受的诱导与维持 胸腺 DC 参与T细胞的阴性选择过程，通",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.4331,
+    0.778,
+    0.016
+   ],
+   "text": "过删除自身反应性T细胞克隆参与中枢免疫耐受的诱导。未成熟 DC 不表达共刺激分子，",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.4126,
+    0.778,
+    0.0161
+   ],
+   "text": "可诱导T细胞失能；还可诱生调节性T细胞而抑制效应T细胞的活化与增殖，参与外周免",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.3924,
+    0.1903,
+    0.0162
+   ],
+   "text": "疫耐受的诱导和维持。",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.3721,
+    0.7421,
+    0.016
+   ],
+   "text": "3. 免疫调节作用 DC能分泌多种细胞因子和趋化因子，通过直接或间接作用的方式，",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.3517,
+    0.3996,
+    0.0175
+   ],
+   "text": "调节其他免疫细胞的分化、发育及活化等功能。",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.3198,
+    0.3023,
+    0.0203
+   ],
+   "text": "三、参与固有免疫的淋巴细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.2907,
+    0.5159,
+    0.0175
+   ],
+   "text": "包括 NK细胞、NKT细胞、y8T细胞、B1细胞和 ILC细胞等。",
+   "conf": 0.3
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2072,
+    0.2717,
+    0.1206,
+    0.0147
+   ],
+   "text": "（一） NK细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.25,
+    0.7378,
+    0.0175
+   ],
+   "text": "NK 细胞是一群缺乏特异性抗原识别受体的淋巴细胞，因其具有细胞毒效应，无须抗原",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.2297,
+    0.7801,
+    0.0177
+   ],
+   "text": "致敏就能自发地杀伤靶细胞而得名。NK细胞与T、B细胞不同，不表达 TCR、BCR 及 CD4",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.2092,
+    0.5877,
+    0.0175
+   ],
+   "text": "和CD8分子。目前，将CD3 CD56*CD16*作为人类 NK 细胞的标志。",
+   "conf": 0.3
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.1904,
+    0.74,
+    0.0161
+   ],
+   "text": "1. NK 细胞的表面受体 NK细胞表达多种膜受体，包括：①自然杀伤细胞受体（natural",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.1701,
+    0.778,
+    0.016
+   ],
+   "text": "killer cell receptor, NKR）； ② IgG Fe 受体（FcyR II, CD16）；③多种趋化和活化相关的细胞因",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.1496,
+    0.778,
+    0.0161
+   ],
+   "text": "子受体等。NK 细胞通过其表面受体与相应配体结合发挥趋化、激活/抑制效应，或调节其",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1711,
+    0.1288,
+    0.0934,
+    0.0171
+   ],
+   "text": "杀伤活性。",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.1089,
+    0.7421,
+    0.0161
+   ],
+   "text": "NKR 已发现十几种，按胞外区结构特征可区分为免疫球蛋白样受体（immunoglobulin-",
+   "conf": 1.0
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.0887,
+    0.7801,
+    0.0162
+   ],
+   "text": "like receptor）和凝集素样受体（lectin-like receptor）；按配体不同可区分为识别 MHC I类分",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.0668,
+    0.7801,
+    0.0175
+   ],
+   "text": "子和识别非 MHCI类分子的受体。习惯上多根据功能分为2类：①杀伤细胞激活性受体",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "header",
+   "bbox": [
+    0.1712,
+    0.9534,
+    0.1522,
+    0.0148
+   ],
+   "text": "第一篇 免疫学基础",
+   "conf": 0.5
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "region": "footer",
+   "bbox": [
+    0.0825,
+    0.0318,
+    0.0254,
+    0.0118
+   ],
+   "text": "54",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8983,
+    0.7844,
+    0.0176
+   ],
+   "text": "（killer activation receptor, KAR）：可激活 NK 细胞杀伤作用，其胞内段带有免疫受体酪氨酸",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.8765,
+    0.7822,
+    0.0175
+   ],
+   "text": "激活模体（ITAM，又称免疫受体酪氨酸激活基序）。天然细胞毒性受体（natural cytotoxicity",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8576,
+    0.7865,
+    0.0162
+   ],
+   "text": "receptor, NCR）家族是重要的KAR，它们与靶细胞表面相应配体结合，使胞内段的ITAM",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.8371,
+    0.7822,
+    0.0161
+   ],
+   "text": "磷酸化，启动激活信号，产生杀伤效应。②杀伤细胞抑制性受体（killer inhibitory receptor，",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.8169,
+    0.7822,
+    0.0162
+   ],
+   "text": "KIR）：能抑制 NK细胞杀伤作用，其胞内段带有免疫受体酪氨酸抑制模体（ITIM，又称免疫",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.7963,
+    0.7801,
+    0.0176
+   ],
+   "text": "受体酪氨酸抑制基序）。KIR与靶细胞表面自身 MHCI类分子结合，使ITIM 磷酸化，启动",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.7762,
+    0.3235,
+    0.0161
+   ],
+   "text": "杀伤抑制信号，阻断杀伤信号的传递。",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.093,
+    0.731,
+    0.0846,
+    0.0161
+   ],
+   "text": "知识链接",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.3277,
+    0.6961,
+    0.2241,
+    0.0176
+   ],
+   "text": "活化性受体和抑制性受体",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.1099,
+    0.6744,
+    0.6977,
+    0.016
+   ],
+   "text": "活化性受体与抑制性受体双重调节机制是机体调控免疫应答的普遍方式。活",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.654,
+    0.74,
+    0.0161
+   ],
+   "text": "化性受体分子胞内段带有免疫受体酪氨酸激活模体（immunoreceptor tyrosine-based",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0677,
+    0.6337,
+    0.7421,
+    0.0176
+   ],
+   "text": "activation motif, ITAM），其典型基本结构为 YxxL/V（Y 为酪氨酸，LNV 为亮氨酸/ 缬氨酸，",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0677,
+    0.6132,
+    0.74,
+    0.0161
+   ],
+   "text": "x 代表任意氨基酸）。在受到刺激时，募集活化蛋白酪氨酸激酶（PTK），使YxxI/V 中的",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.59,
+    0.74,
+    0.0206
+   ],
+   "text": "酪氨酸发生磷酸化，借此可结合带 SH，结构域的下游激酶（如PTK）分子或连接蛋白，",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.5725,
+    0.3214,
+    0.0161
+   ],
+   "text": "形成级联反应，进行活化信号的转导。",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.1099,
+    0.5523,
+    0.7019,
+    0.0162
+   ],
+   "text": "抑制性受体分子胞内段带有免疫受体酪氨酸抑制模体（immunoreceptor tyrosine-",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0677,
+    0.5318,
+    0.74,
+    0.0162
+   ],
+   "text": "based inhibitory motif, ITIM），其典型基本结构为 I/Vx YxxL（I为异亮氨酸）。ITIM 中供",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0677,
+    0.5102,
+    0.74,
+    0.0176
+   ],
+   "text": "SH，识别的YxxL虽然可与 ITAM 中的YxxL 相同，但其酪氨酸残基一侧相隔1个氨基",
+   "conf": 0.3
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.4884,
+    0.7378,
+    0.0189
+   ],
+   "text": "酸处为异亮氨酸或缬氨酸等疏水性氨基酸，这仅能募集并活化带有 SH，结构域的蛋白",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.4709,
+    0.7378,
+    0.0161
+   ],
+   "text": "酪氨酸磷酸酶（PTP）。活化的PTP能够使磷酸化酪氨酸残基脱磷酸化，因此阻断了由",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.4506,
+    0.444,
+    0.016
+   ],
+   "text": "PTK 参与的激活信号转导通路，发挥负向调节作用。",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.3894,
+    0.74,
+    0.0161
+   ],
+   "text": "宿主组织细胞表面均表达自身 MHC I类分子，正常情况下 KIR 介导的抑制性作用占",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.3692,
+    0.7801,
+    0.016
+   ],
+   "text": "主导地位，表现为NK细胞失活，对自身组织细胞产生耐受；病毒感染细胞和肿瘤细胞表面",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.3487,
+    0.7822,
+    0.0161
+   ],
+   "text": "MHC I类分子表达减少、缺失或结构发生改变，KIR 的识别受阻，有利于 NK 细胞对靶细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.3285,
+    0.7822,
+    0.0189
+   ],
+   "text": "的杀伤效应（图5-4）。此即NK 细胞识别假说——“丧失自我”学说。NKG2D 和 NCR 都",
+   "conf": 0.3
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.308,
+    0.7822,
+    0.0162
+   ],
+   "text": "属于 KAR，前者可与乳腺癌、结肠癌、肺癌等上皮肿瘤细胞表面高表达的MHC I类链相关",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.2878,
+    0.7822,
+    0.0161
+   ],
+   "text": "的 A/B 分子（MIC A/B）结合，后者则与肿瘤细胞、病毒感染细胞以及多种病原体表面配体",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.2672,
+    0.6131,
+    0.0162
+   ],
+   "text": "（已了解到的有关配体复杂、多样）结合；从而启动 NK 细胞的杀伤活性。",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.2471,
+    0.7442,
+    0.0175
+   ],
+   "text": "2. NK 细胞杀伤靶细胞的机制 NK 细胞通过上述杀伤细胞激活性受体或IgG Fe受",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.2267,
+    0.7822,
+    0.0177
+   ],
+   "text": "体与相应配体结合活化后，主要通过以下途径杀伤靶细胞：①穿孔素/颗粒酶途径：穿孔素",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.2077,
+    0.3552,
+    0.0161
+   ],
+   "text": "可在靶细胞膜上形成多聚穿孔素“孔道”",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.3975,
+    0.2064,
+    0.4334,
+    0.0189
+   ],
+   "text": "’，颗粒酶通过“孔道”进入细胞内激活凋亡相关的",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.186,
+    0.7822,
+    0.016
+   ],
+   "text": "酶系统诱导靶细胞凋亡；②Fas 与FasL 途径：活化的 NK细胞可高表达FasL，与靶细胞表",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.1656,
+    0.7822,
+    0.0161
+   ],
+   "text": "面的相应受体 Fas结合后导致靶细胞凋亡；③TNF-a/TNF-a 受体途径：TNF-a 与靶细胞表",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.1453,
+    0.7822,
+    0.016
+   ],
+   "text": "面 TNF-a受体结合，导致胞浆内的死亡结构域（DD）集聚成簇，诱导细胞发生调亡；④通过",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.1249,
+    0.2706,
+    0.0161
+   ],
+   "text": "ADCC 杀伤靶细胞（见第四章）。",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.1061,
+    0.7421,
+    0.0148
+   ],
+   "text": "3. NK细胞的功能 NK细胞主要通过其细胞毒作用及分泌细胞因子发挥生物学效",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.0842,
+    0.7801,
+    0.0161
+   ],
+   "text": "应。①抗感染作用：NK细胞在早期抗感染中发挥重要作用。在病毒感染后 2~3天，NK细",
+   "conf": 0.5
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.064,
+    0.7801,
+    0.0175
+   ],
+   "text": "胞聚集到感染灶，经细胞因子活化后，溶解破坏感染细胞；同时，NK 细胞分泌细胞因子，通",
+   "conf": 1.0
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "sidebar",
+   "bbox": [
+    0.8922,
+    0.9041,
+    0.0803,
+    0.0203
+   ],
+   "text": "笔记栏Q）",
+   "conf": 0.3
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "header",
+   "bbox": [
+    0.666,
+    0.9534,
+    0.1628,
+    0.0148
+   ],
+   "text": "第五章 免疫细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "region": "footer",
+   "bbox": [
+    0.8964,
+    0.026,
+    0.0233,
+    0.0134
+   ],
+   "text": "55",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.0232,
+    0.9039,
+    0.0741,
+    0.0162
+   ],
+   "text": "圓笔记栏",
+   "conf": 0.3
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.8968,
+    0.7801,
+    0.0176
+   ],
+   "text": "过干扰病毒复制和活化吞噬细胞，扩大和增强机体抗感染免疫能力。②抗肿瘤作用：NK 细",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.8777,
+    0.7801,
+    0.0162
+   ],
+   "text": "胞可通过多种途径杀伤肿瘤细胞，无须抗原预先刺激，是机体抗肿瘤的第一线细胞。③免疫",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.8561,
+    0.778,
+    0.0176
+   ],
+   "text": "调节作用：NK细胞通过分泌IFN-Y、IL-2 和 TNF 等细胞因子发挥免疫调节作用，增强机体",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.8372,
+    0.2896,
+    0.016
+   ],
+   "text": "早期抗感染效应和免疫监视功能。",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.3488,
+    0.8051,
+    0.2008,
+    0.0132
+   ],
+   "text": "活化性受体 活化性受体配基",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.2939,
+    0.7034,
+    0.0529,
+    0.0117
+   ],
+   "text": "NK细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.5391,
+    0.7034,
+    0.0486,
+    0.0117
+   ],
+   "text": "靶细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.3509,
+    0.6859,
+    0.0783,
+    0.0133
+   ],
+   "text": "抑制性受体",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.4397,
+    0.6859,
+    0.0994,
+    0.0133
+   ],
+   "text": "MHC-I 类分子",
+   "conf": 0.3
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.2981,
+    0.5609,
+    0.0529,
+    0.0132
+   ],
+   "text": "NK细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.5433,
+    0.5609,
+    0.0486,
+    0.0132
+   ],
+   "text": "靶细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.334,
+    0.5363,
+    0.4334,
+    0.0148
+   ],
+   "text": "图5-4 NK 细胞通过 KAR/KIR 杀伤靶细胞的机制示意图",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1966,
+    0.4955,
+    0.1395,
+    0.0132
+   ],
+   "text": "（二） NKT细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.2008,
+    0.4738,
+    0.74,
+    0.016
+   ],
+   "text": "NK T 细胞即自然杀伤T细胞（natural killer T cell），是既表达 NK 细胞表面标志 CD56",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.452,
+    0.778,
+    0.0175
+   ],
+   "text": "也表达T细胞表面标志 TCRaB-CD3复合体的一类T细胞亚群。NK T细胞具有固有免疫",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.4331,
+    0.7801,
+    0.016
+   ],
+   "text": "细胞的特征：①表面的TCRap较外周血中T细胞表面的TCR 密度低、且缺乏多样性；②不",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.4126,
+    0.778,
+    0.0161
+   ],
+   "text": "能识别 MHC 分子提呈的抗原肽，仅接受靶细胞 CD1分子提呈的磷脂和糖脂类抗原，从而",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.3924,
+    0.778,
+    0.0162
+   ],
+   "text": "直接活化、迅速产生应答；③活化的 NKT细胞通过穿孔素/颗粒酶和 Fas/FasL 途径导致病",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.3721,
+    0.7801,
+    0.0174
+   ],
+   "text": "毒感染细胞或肿瘤细胞调亡，也可通过分泌 IL-4、IFN-y等细胞因子参与免疫调节；④不形",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.3517,
+    0.778,
+    0.0175
+   ],
+   "text": "成免疫记忆。NK T细胞主要分布在骨髓、肝和胸腺，少量存在于淋巴结、脾和血液，在机体",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.3314,
+    0.3742,
+    0.019
+   ],
+   "text": "抗病毒感染和抗肿瘤免疫中发挥重要作用。",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1987,
+    0.3107,
+    0.1333,
+    0.0166
+   ],
+   "text": "（三） y6T 细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.2008,
+    0.2907,
+    0.74,
+    0.0175
+   ],
+   "text": "Y6T 细胞的TCR 由y和。链组成，缺乏多样性，其 TCR 不接受MHC 分子提呈的抗原",
+   "conf": 0.3
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.2702,
+    0.778,
+    0.0162
+   ],
+   "text": "肽，可直接识别：①肿瘤细胞表面 MIC A/B 分子；②细胞表面表达的病毒蛋白；③感染细胞表",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.25,
+    0.778,
+    0.0175
+   ],
+   "text": "达的热激蛋白；④CDI 分子提呈的磷脂和糖脂类抗原。活化的y8T细胞通过释放穿孔素/颗",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.2297,
+    0.7801,
+    0.016
+   ],
+   "text": "粒酶、TNF-B及通过Fas/FasL 途径导致病毒感染细胞或肿瘤细胞凋亡；也可通过分泌1L-17、",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.2092,
+    0.7801,
+    0.0175
+   ],
+   "text": "IFN-Y 和 TNF-a等细胞因子介导炎症反应，参与免疫调节。y&T 细胞是早期抗感染、抗肿瘤",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.189,
+    0.5497,
+    0.0176
+   ],
+   "text": "免疫的主要效应细胞，属于固有免疫应答细胞，不形成免疫记忆。",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1987,
+    0.1698,
+    0.1164,
+    0.015
+   ],
+   "text": "（四）B1细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.203,
+    0.1483,
+    0.74,
+    0.0175
+   ],
+   "text": "B1 细胞由胎肝和成人骨髓产生，具有自我更新能力，表达CD5分子和 BCR（mlgM），其",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.1277,
+    0.778,
+    0.0177
+   ],
+   "text": "BCR 缺乏多样性，可直接生成和分泌能结合细菌表面多糖类和某些抗原的天然抗体。接受",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.1075,
+    0.7801,
+    0.0175
+   ],
+   "text": "抗原刺激后，B1细胞所产生的应答表现出如下特征：①在48 小时内即可产生以IgM为主、",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.0872,
+    0.778,
+    0.0176
+   ],
+   "text": "具有泛特异性的低亲和力抗体；②不发生Ig类别转换；③不形成免疫记忆。由于B1 细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.0668,
+    0.7801,
+    0.0175
+   ],
+   "text": "在B2细胞产生抗体之前发挥效应，产生的抗体具有多反应性，所以在机体抗感染早期及维",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "sidebar",
+   "bbox": [
+    0.7463,
+    0.5624,
+    0.0783,
+    0.0133
+   ],
+   "text": "靶细胞凋亡",
+   "conf": 1.0
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "header",
+   "bbox": [
+    0.1607,
+    0.9534,
+    0.1522,
+    0.0132
+   ],
+   "text": "第一篇 免疫学基础",
+   "conf": 0.5
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "region": "footer",
+   "bbox": [
+    0.0761,
+    0.0305,
+    0.0233,
+    0.0117
+   ],
+   "text": "56",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8983,
+    0.3129,
+    0.0176
+   ],
+   "text": "护自身免疫稳定方面具有重要作用。",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0803,
+    0.8791,
+    0.186,
+    0.0162
+   ],
+   "text": "（五）固有淋巴样细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.8576,
+    0.74,
+    0.0162
+   ],
+   "text": "固有淋巴样细胞（innate lymphoid cell, ILC）是近年发现并新定义的一类细胞，包括",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8371,
+    0.7822,
+    0.0161
+   ],
+   "text": "ILC1、ILC2和IC3三个亚群。NK细胞也归属于固有淋巴样细胞。IC不表达特异性/泛",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8169,
+    0.7822,
+    0.0175
+   ],
+   "text": "特异性抗原受体，其活化不依赖于对抗原的识别。ILC通过表面受体接受病原体感染后免",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.7963,
+    0.7844,
+    0.0192
+   ],
+   "text": "疫细胞或组织细胞分泌的细胞因子刺激而激活，并通过分泌不同的细胞因子参与机体抗感",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.7762,
+    0.3721,
+    0.0175
+   ],
+   "text": "染免疫、过敏性炎症反应、组织修复等过程。",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0846,
+    0.7442,
+    0.2304,
+    0.019
+   ],
+   "text": "四、粒细胞和肥大细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0803,
+    0.7166,
+    0.1078,
+    0.0145
+   ],
+   "text": "（一）粒细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0846,
+    0.6947,
+    0.5243,
+    0.0161
+   ],
+   "text": "粒细胞包括中性粒细胞、嗜酸性粒细胞和嗜碱性粒细胞3类。",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0846,
+    0.6744,
+    0.7421,
+    0.016
+   ],
+   "text": "1. 中性粒细胞 中性粒细胞（neutrophil）占血液白细胞总数的60%~70%，血液中存活",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.654,
+    0.7865,
+    0.0175
+   ],
+   "text": "期为2~3天。中性粒细胞表面具有模式识别受体（甘露糖受体、清道夫受体和 Toll 样受体）、",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.6337,
+    0.7822,
+    0.0176
+   ],
+   "text": "趋化因子受体（IL-8R、CSaR）、调理性受体（IgG FcR、C3bR）等多种膜分子。胞质颗粒中富含",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.6132,
+    0.7822,
+    0.0176
+   ],
+   "text": "髓过氧化物酶、酸性/碱性磷酸酶、溶菌酶等多种具有杀伤、消化作用的酶类；具有巨噬细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.593,
+    0.7801,
+    0.0175
+   ],
+   "text": "的氧依赖和非氧依赖2个杀菌系统及其不具备的髓过氧化物酶（myeloperoxidase, MPO）杀",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.5712,
+    0.7801,
+    0.0175
+   ],
+   "text": "菌系统。中性粒细胞有很强的趋化运动和吞噬杀菌能力，并可通过ADCC 杀伤病原体感染",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.5522,
+    0.11,
+    0.0163
+   ],
+   "text": "的组织细胞。",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0846,
+    0.5318,
+    0.7421,
+    0.0162
+   ],
+   "text": "2. 嗜酸性粒细胞 嗜酸性粒细胞（eosinophil）在外周血中含量较少，占白细胞总数的",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.5116,
+    0.7822,
+    0.0161
+   ],
+   "text": "1%~3%。嗜酸性粒细胞表面表达嗜酸性粒细胞趋化因子受体（ECFR）、IL-3R、IL-5R 和血小",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.4913,
+    0.7822,
+    0.016
+   ],
+   "text": "板活化因子受体等。嗜酸性粒细胞具有一定的吞噬、杀菌能力，活化后可释放其胞浆内嗜酸",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.4709,
+    0.7822,
+    0.0161
+   ],
+   "text": "性颗粒。嗜酸性颗粒内主要有碱性蛋白、嗜酸性粒细胞过氧化物酶、嗜酸性粒细胞阳性离子",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.449,
+    0.7822,
+    0.0176
+   ],
+   "text": "蛋白、芳基硫酸酯酶等，并可通过脱颗粒释放组胺酶、白三烯、前列腺素 D，等炎症介质。嗜",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.4302,
+    0.7822,
+    0.0175
+   ],
+   "text": "酸性粒细胞主要分布于呼吸道、消化道和泌尿生殖道黏膜上皮结缔组织中，参与抗寄生虫感",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.4099,
+    0.2622,
+    0.016
+   ],
+   "text": "染免疫、免疫调节和超敏反应。",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0846,
+    0.3894,
+    0.7442,
+    0.0161
+   ],
+   "text": "3. 嗜碱性粒细胞 嗜碱性粒细胞（basophil）主要存在于血液中，占白细胞总数的",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.3692,
+    0.7822,
+    0.016
+   ],
+   "text": "0.2%。嗜碱性粒细胞表面表达趋化性受体（IL-8R、MCP-IR）和高亲和力IgE Fc 受体，胞浆",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.3474,
+    0.7822,
+    0.0175
+   ],
+   "text": "中含有大量嗜碱性颗粒，无吞噬功能。在炎症发生过程中或变应原与致敏嗜碱性粒细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.327,
+    0.7844,
+    0.0176
+   ],
+   "text": "表面IgE结合后，可使其脱颗粒，释放组胺、5- 羟色胺、嗜酸性粒细胞趋化因子（eosinophil",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.3066,
+    0.7844,
+    0.0175
+   ],
+   "text": "chemotactic factor, ECF）及白三烯、前列腺素 D2、血小板活化因子等一系列新合成的炎症介",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.2878,
+    0.4715,
+    0.0161
+   ],
+   "text": "质，参与炎症反应、抗寄生虫感染免疫和I型超敏反应。",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0825,
+    0.2689,
+    0.1268,
+    0.0131
+   ],
+   "text": "（二）肥大细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.2471,
+    0.7421,
+    0.0161
+   ],
+   "text": "肥大细胞（mast cell）主要分布于皮肤、呼吸道、胃肠道、泌尿生殖道及各器官结缔组织",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.2252,
+    0.7822,
+    0.0176
+   ],
+   "text": "中，其表面具有模式识别受体（如 TLR）、过敏毒素 C3a/CSa 受体和高亲和力IgE Fc受体，胞",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.2049,
+    0.7822,
+    0.0175
+   ],
+   "text": "浆中含有大量嗜碱性颗粒。肥大细胞无吞噬和杀伤病原体的功能，但可通过上述受体与相",
+   "conf": 1.0
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.1844,
+    0.7865,
+    0.0176
+   ],
+   "text": "应配体结合而被激活，脱颗粒释放一系列炎症介质（如组胺、5-羟色胺、白三烯、前列腺素D2",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.1642,
+    0.778,
+    0.0175
+   ],
+   "text": "等）和细胞因子（IL-1、IL-4、IL-8、TNF 等），引起炎症反应，参与抗感染免疫和I型超敏反应。",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.2918,
+    0.1074,
+    0.296,
+    0.0206
+   ],
+   "text": "第三节 抗原提呈细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.064,
+    0.7421,
+    0.0175
+   ],
+   "text": "抗原提呈细胞（antigen-presenting cell, APC）是指能够摄取、加工抗原，并将抗原肽提呈",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "sidebar",
+   "bbox": [
+    0.8879,
+    0.9055,
+    0.0782,
+    0.0189
+   ],
+   "text": "笔记栏⑥",
+   "conf": 0.3
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "header",
+   "bbox": [
+    0.6638,
+    0.9548,
+    0.1628,
+    0.0134
+   ],
+   "text": "第五章 免疫细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "region": "footer",
+   "bbox": [
+    0.8964,
+    0.026,
+    0.0233,
+    0.0134
+   ],
+   "text": "57",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.0169,
+    0.9026,
+    0.0782,
+    0.0176
+   ],
+   "text": "®笔记栏",
+   "conf": 0.3
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.8968,
+    0.778,
+    0.016
+   ],
+   "text": "给T细胞的一类免疫细胞，在机体的免疫识别、免疫应答与免疫调节中具有重要作用。根据",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.8763,
+    0.5645,
+    0.0161
+   ],
+   "text": "其表面 MHC II类分子表达和功能的差异，可将 APC 分为两大类。",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1987,
+    0.8561,
+    0.74,
+    0.0162
+   ],
+   "text": "1. 专职性 APC 专职性 APC （professional APC）包括树突状细胞、巨噬细胞和B 细胞，",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.8356,
+    0.778,
+    0.0162
+   ],
+   "text": "可组成型表达 MHC II 类分子和T细胞活化的共刺激分子；具有较强的摄取、加工处理及提",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.8154,
+    0.7696,
+    0.0161
+   ],
+   "text": "呈抗原的能力，通过 MHC II类分子结合抗原肽并提呈给CD4'T细胞，进一步促进其活化。",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1966,
+    0.7935,
+    0.74,
+    0.0176
+   ],
+   "text": "2. 非专职性 APC 非专职性 APC（non-professional APC）主要包括内皮细胞、成纤维细",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.7746,
+    0.778,
+    0.0161
+   ],
+   "text": "胞、上皮细胞等。在正常条件下不表达MHC II类分子，但在炎症过程中或 IFN-Y等细胞因",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.7527,
+    0.4947,
+    0.0177
+   ],
+   "text": "子的作用下，也可表达 MHC II类分子并处理和提呈抗原。",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1987,
+    0.7355,
+    0.7378,
+    0.016
+   ],
+   "text": "表达 MHC I类分子的细胞均能将内源性蛋白抗原加工抗原肽-MHC I类分子复合",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.7137,
+    0.7696,
+    0.0175
+   ],
+   "text": "物，提呈给CD8'T细胞而被其识别和杀伤，通常将此类细胞称力靶细胞，属于广义的APC。",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.3869,
+    0.6568,
+    0.3235,
+    0.022
+   ],
+   "text": "第四节 适应性免疫细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1987,
+    0.6134,
+    0.7378,
+    0.0161
+   ],
+   "text": "适应性免疫细胞是指表面具有高度抗原特异性的抗原识别受体（TCR/BCR），介导适",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.593,
+    0.7759,
+    0.016
+   ],
+   "text": "应性免疫应答的一类细胞，主要包括T淋巴细胞（简称T细胞）和B淋巴细胞（简称B细",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.5726,
+    0.0782,
+    0.0161
+   ],
+   "text": "胞）2类。",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.2002,
+    0.5395,
+    0.1116,
+    0.0202
+   ],
+   "text": "一、T细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1987,
+    0.513,
+    0.74,
+    0.0161
+   ],
+   "text": "T细胞表面具有 TCR-CD3复合体、CD4/CD8 分子、共刺激分子及细胞因子受体等多种",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1586,
+    0.4913,
+    0.7801,
+    0.0174
+   ],
+   "text": "特征性表面膜分子。根据T细胞表面膜分子及其功能的不同，T细胞分为若干个亚群，介",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.4709,
+    0.6089,
+    0.0175
+   ],
+   "text": "导、辅助或调节免疫应答，相互协同完成免疫功能以维护机体生理平衡。",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1945,
+    0.4534,
+    0.2051,
+    0.0148
+   ],
+   "text": "（一）T细胞的表面分子",
+   "conf": 0.3
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.2008,
+    0.4301,
+    0.7378,
+    0.0176
+   ],
+   "text": "T细胞表面分子是T细胞识别抗原，与其他免疫细胞相互作用以及接受信号刺激并产",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.4113,
+    0.482,
+    0.0161
+   ],
+   "text": "生应答的物质基础，也是鉴别和分离T细胞的重要依据。",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1987,
+    0.391,
+    0.74,
+    0.016
+   ],
+   "text": "1. TCR-CD3复合体 TCR-CD3是由T细胞受体（T cell receptor, TCR）与CD3分子以",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.3705,
+    0.778,
+    0.0176
+   ],
+   "text": "非共价键结合形成的一个稳定的功能复合体（图5-5）。TCR 特异性识别抗原产生的信号借",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.3503,
+    0.2579,
+    0.0162
+   ],
+   "text": "助CD3分子转导进入细胞内。",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.2008,
+    0.3297,
+    0.74,
+    0.0176
+   ],
+   "text": "TCR 为T细胞特异性识别抗原的受体，是由2条肽链以二硫键连接形成的异二聚体。",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.3096,
+    0.4059,
+    0.0161
+   ],
+   "text": "除少数T细胞（约占5%）的TCR分子由Y和6",
+   "conf": 0.3
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.2892,
+    0.4038,
+    0.0177
+   ],
+   "text": "链组成外，大多数T细胞的 TCR 分子都由 a和",
+   "conf": 0.3
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.2688,
+    0.4038,
+    0.0175
+   ],
+   "text": "B2条肽链组成。2条肽链都有胞外区、跨膜区",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.6068,
+    0.266,
+    0.0275,
+    0.0118
+   ],
+   "text": "V区",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.6829,
+    0.2544,
+    0.0296,
+    0.0087
+   ],
+   "text": "CD3",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.2485,
+    0.4038,
+    0.0176
+   ],
+   "text": "及胞浆区。胞外区包括可变区（V区）及恒定区",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1583,
+    0.2276,
+    0.4107,
+    0.021
+   ],
+   "text": "（C区）。TCR 基因重排后的组合可形成约1016",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.6068,
+    0.2122,
+    0.0275,
+    0.0118
+   ],
+   "text": "C区",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.2078,
+    0.4059,
+    0.0175
+   ],
+   "text": "种不同特异性的TCR 分子，可识别环境中多种",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.1873,
+    0.4038,
+    0.0177
+   ],
+   "text": "多样的抗原。TCR 不能直接识别抗原表位，仅",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.5792,
+    0.1714,
+    0.0593,
+    0.0118
+   ],
+   "text": "T细胞膜",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.1685,
+    0.4038,
+    0.0176
+   ],
+   "text": "能识别 APC或靶细胞表面与 MHC 分子结合的",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.1468,
+    0.4059,
+    0.0176
+   ],
+   "text": "抗原肽（pMHC），这也是T细胞与B细胞识别",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.1263,
+    0.1924,
+    0.0161
+   ],
+   "text": "抗原的主要不同之处。",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.6554,
+    0.1235,
+    0.0444,
+    0.0102
+   ],
+   "text": "ITAMs",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.2008,
+    0.1061,
+    0.3679,
+    0.0176
+   ],
+   "text": "CD3表达于所有成熟T细胞表面，是由Y、",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1607,
+    0.0856,
+    0.4059,
+    0.0176
+   ],
+   "text": "8.8 和n5种肽链两两结合组成的二聚体分",
+   "conf": 0.3
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "main",
+   "bbox": [
+    0.1628,
+    0.0654,
+    0.4038,
+    0.0175
+   ],
+   "text": "子，由胞外区、跨膜区和胞浆区组成。胞浆区含",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "sidebar",
+   "bbox": [
+    0.7484,
+    0.3095,
+    0.0635,
+    0.0119
+   ],
+   "text": "抗原识别",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "sidebar",
+   "bbox": [
+    0.8749,
+    0.2993,
+    0.0511,
+    0.0076
+   ],
+   "text": "CDR1~3",
+   "conf": 0.3
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "sidebar",
+   "bbox": [
+    0.8626,
+    0.2791,
+    0.0402,
+    0.0087
+   ],
+   "text": "•TCR",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "sidebar",
+   "bbox": [
+    0.8541,
+    0.2544,
+    0.0275,
+    0.0073
+   ],
+   "text": "CD3",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "sidebar",
+   "bbox": [
+    0.8013,
+    0.2253,
+    0.0127,
+    0.0087
+   ],
+   "text": "B",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "sidebar",
+   "bbox": [
+    0.814,
+    0.0988,
+    0.0634,
+    0.0118
+   ],
+   "text": "信号传导",
+   "conf": 1.0
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "sidebar",
+   "bbox": [
+    0.6279,
+    0.0726,
+    0.2516,
+    0.0132
+   ],
+   "text": "图 5-5 TCR-CD3 复合体示意图",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "header",
+   "bbox": [
+    0.1586,
+    0.952,
+    0.1522,
+    0.0131
+   ],
+   "text": "第一篇 免疫学基础",
+   "conf": 0.5
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "region": "footer",
+   "bbox": [
+    0.074,
+    0.0291,
+    0.0233,
+    0.0117
+   ],
+   "text": "58",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0529,
+    0.8939,
+    0.7844,
+    0.0161
+   ],
+   "text": "有免疫受体酪氨酸激活模体（ITAM）。ITAM 的酪氨酸磷酸化可活化相关激酶，传导细胞",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.055,
+    0.872,
+    0.7822,
+    0.0176
+   ],
+   "text": "活化信号。CD3具有稳定TCR结构和传递抗原识别信号的作用，但并不参与抗原识别",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.055,
+    0.8517,
+    0.0529,
+    0.0162
+   ],
+   "text": "过程。",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.093,
+    0.8312,
+    0.7421,
+    0.0176
+   ],
+   "text": "2. 共受体 CD4 和CD8都是 TCR的共受体（co-receptor），但分别表达在不同的T细",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.055,
+    0.811,
+    0.7822,
+    0.0175
+   ],
+   "text": "胞亚群上。CD4分子是一种单链糖蛋白，其胞外区有4个Ig 样结构域，远端的2个结构域",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.055,
+    0.7922,
+    0.7822,
+    0.0176
+   ],
+   "text": "能与 MHC II 类分子的B2结构域结合；CD8分子是由a和B肽链组成的异二聚体，其o和",
+   "conf": 0.3
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0529,
+    0.7703,
+    0.7844,
+    0.0175
+   ],
+   "text": "B肽链的胞外区各含1个Ig样结构域，能与MIHC I类分子的as结构域结合。CD4和CD8",
+   "conf": 0.3
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.055,
+    0.7498,
+    0.7822,
+    0.0177
+   ],
+   "text": "分子可增强T细胞与 APC或靶细胞之间的作用，并促进CD3的ITAM 酪氨酸磷酸化，参与",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.055,
+    0.7296,
+    0.5899,
+    0.0175
+   ],
+   "text": "活化信号的转导。CD4也是人类免疫缺陷病毒（HIV）gP120的受体。",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0951,
+    0.7108,
+    0.7442,
+    0.0162
+   ],
+   "text": "3. 共刺激分子 T细胞的活化需要双信号刺激，不仅需要由TCR-CD3复合分子提供",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.6889,
+    0.7822,
+    0.0175
+   ],
+   "text": "的起始信号（第一活化信号），还必须有共刺激信号（costimulatory signal）（第二活化信号）。T",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.055,
+    0.6686,
+    0.7822,
+    0.0176
+   ],
+   "text": "细胞膜上有多种分子与共刺激信号的产生有关，如CD28、LFA-2及CD2分子等，这些分子",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.055,
+    0.6482,
+    0.1734,
+    0.0175
+   ],
+   "text": "被称为共刺激分子。",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.093,
+    0.6294,
+    0.7442,
+    0.0161
+   ],
+   "text": "（1）CD28：可表达于90%CD4'T细胞及50%CD8T细胞。它是二硫键连接的同源二聚",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.609,
+    0.7822,
+    0.016
+   ],
+   "text": "体分子，属Ig超家族。在抗原诱导的T细胞活化中，CD28与CD80（B7-1）、CD86（B7-1）结",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.5886,
+    0.7484,
+    0.0161
+   ],
+   "text": "合，为T细胞提供活化的第二信号，刺激T细胞合成IL-2，并促进T细胞的增殖和分化。",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.093,
+    0.5683,
+    0.7463,
+    0.016
+   ],
+   "text": "（2）CD154：即CD40配体（CD40L），主要表达于活化的T细胞。与B细胞表面相应受",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.5479,
+    0.7822,
+    0.0161
+   ],
+   "text": "体 CD40结合，可调节B 细胞的活化，产生双向效应：一方面为B细胞活化提供共刺激信",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0592,
+    0.526,
+    0.7801,
+    0.0176
+   ],
+   "text": "号，另一方面可通过增强作为 APC的B细胞上B7分子表达及分泌T细胞分化相关的细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.5072,
+    0.2939,
+    0.0161
+   ],
+   "text": "因子而进一步促进T细胞的活化。",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.093,
+    0.4855,
+    0.7463,
+    0.0174
+   ],
+   "text": "（3）CD2：又称淋巴细胞功能相关抗原2（LFA-2），表达于95%成熟T细胞，其配体为",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.4664,
+    0.7822,
+    0.0161
+   ],
+   "text": "APC或靶细胞上的CDS8 分子。CD2与相应配体的相互作用可加强T细胞与 APC 或靶细",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0592,
+    0.4462,
+    0.5137,
+    0.0175
+   ],
+   "text": "胞间的黏附，为T细胞提供协同刺激作用，促进T细胞活化。",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0951,
+    0.4257,
+    0.7442,
+    0.0176
+   ],
+   "text": "4. 负调节分子 负调节分子在限制过度应答及某些免疫现象中有重要作用，其中最重",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.4055,
+    0.7822,
+    0.0161
+   ],
+   "text": "要的是细胞毒性T细胞活化抗原-4（CTL activation antigen-4,CTLA-4） 和程序性细胞死亡",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.385,
+    0.7822,
+    0.0162
+   ],
+   "text": "蛋白-1（programmed cell death 1,PD-1）。CTLA-4即 CD152，其结构上和CD28分子高度",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0592,
+    0.3634,
+    0.7801,
+    0.0176
+   ],
+   "text": "同源，是由2条肽链经二硫键连接的同源二聚体，主要表达于活化的CD4T 细胞及 CD8\"1",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.3429,
+    0.7822,
+    0.0176
+   ],
+   "text": "细胞，配体也是B7 分子（CD80/CD86），但是其亲和力显著高于CD28与B7的亲和力。与",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0571,
+    0.3241,
+    0.7844,
+    0.0161
+   ],
+   "text": "CD28 的作用相反，因CTLA-4的胞浆区有免疫受体酪氨酸抑制模体（ITIM），CTLA-4与B7",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0592,
+    0.3038,
+    0.7822,
+    0.016
+   ],
+   "text": "分子结合，可向活化的T细胞传递抑制信号，下调或终止T细胞活化，限制免疫应答启动阶",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0592,
+    0.2833,
+    0.7822,
+    0.0161
+   ],
+   "text": "段的强度，避免失控。PD-1即 CD279，也是带胞浆区 ITIM 的一种免疫球蛋白超家族跨膜",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0592,
+    0.2631,
+    0.7822,
+    0.0176
+   ],
+   "text": "糖蛋白，可被诱导性地表达在活化的T细胞、B细胞、NK细胞、单核细胞和树突状细胞等表",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0613,
+    0.2413,
+    0.7801,
+    0.0189
+   ],
+   "text": "面，其配体 PD-LI （CD274）和 PD-L2（CD273）也属B7家族。二者结合对活化的细胞产生",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0592,
+    0.2224,
+    0.7801,
+    0.0162
+   ],
+   "text": "抑制作用，在免疫应答过程中发挥限制作用。机体不少细胞（包括肿瘤细胞）表达PD-L，医",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0613,
+    0.2005,
+    0.7822,
+    0.0175
+   ],
+   "text": "此PD-1 也在使自身细胞及肿瘤细胞免受免疫攻击中起着重要的作用。此外，细胞毒性T",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0613,
+    0.1802,
+    0.463,
+    0.0176
+   ],
+   "text": "细胞（CTL）也表达类似 NK细胞的抑制性受体（KIR）。",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0994,
+    0.1598,
+    0.7442,
+    0.0175
+   ],
+   "text": "5.细胞因子受体 多种细胞因子通过与T细胞表面相应受体（IL-IR、IL-2R、IL-4R、",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0613,
+    0.1395,
+    0.7801,
+    0.0176
+   ],
+   "text": "IL-6R 及IL-7R 等）结合而参与调节T细胞活化、增殖和分化。静止和活化的T细胞表面细",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0613,
+    0.1206,
+    0.7822,
+    0.016
+   ],
+   "text": "胞因子受体的种类、密度及亲和力差别很大。例如：静止T细胞仅表达低亲和力的IL-2R，",
+   "conf": 1.0
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0613,
+    0.1003,
+    0.7801,
+    0.0161
+   ],
+   "text": "而活化T细胞可表达高亲和力IL-2R，因此激活的T细胞能接受较低水平1L-2的刺激而",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0613,
+    0.0799,
+    0.0507,
+    0.016
+   ],
+   "text": "增殖",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "main",
+   "bbox": [
+    0.0994,
+    0.0595,
+    0.7442,
+    0.0175
+   ],
+   "text": "6. 丝裂原结合分子 常用的诱导T细胞发生增殖的丝裂原有伴刀豆球蛋白A",
+   "conf": 0.5
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "sidebar",
+   "bbox": [
+    0.8985,
+    0.9011,
+    0.0761,
+    0.0148
+   ],
+   "text": "笔记栏C",
+   "conf": 0.3
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "header",
+   "bbox": [
+    0.6744,
+    0.949,
+    0.1628,
+    0.0148
+   ],
+   "text": "第五章 免疫细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "region": "footer",
+   "bbox": [
+    0.9091,
+    0.0233,
+    0.0233,
+    0.0117
+   ],
+   "text": "59",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.0338,
+    0.9026,
+    0.0803,
+    0.0145
+   ],
+   "text": "C 笔记栏",
+   "conf": 0.3
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.8952,
+    0.7822,
+    0.0162
+   ],
+   "text": "（ConA）、植物凝集素（PHA）和美洲商陆丝裂原（PWM）。这些丝裂原可与T细胞膜表面的丝",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.875,
+    0.778,
+    0.0175
+   ],
+   "text": "裂原结合分子结合，刺激T淋巴细胞增殖。此外，T细胞膜上可表达特定类型的Fe受体、补",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.8547,
+    0.778,
+    0.016
+   ],
+   "text": "体受体和 MHCI类分子，活化的T细胞还可表达MHC II类分子。除上述与免疫活动有",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.8342,
+    0.778,
+    0.0175
+   ],
+   "text": "关的膜分子外，T细胞表面还具有多种内分泌激素、神经递质和神经肽等的受体，与机体神",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.814,
+    0.2833,
+    0.016
+   ],
+   "text": "经-内分泌- 免疫网络调节有关。",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.7951,
+    0.203,
+    0.0145
+   ],
+   "text": "（二）T细胞亚群与功能",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.7733,
+    0.74,
+    0.0162
+   ],
+   "text": "T细胞是高度异质性的群体。按其表面表达的膜分子类型及生物学作用的差别，T细",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.7527,
+    0.7801,
+    0.0177
+   ],
+   "text": "胞可划分为不同类别和亚群（subpopulation）。①根据在应答过程所处阶段和状态的不同分",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.7325,
+    0.7801,
+    0.0175
+   ],
+   "text": "为初始T细胞（naive T cell）、效应T细胞（effector T cell, Teff）和记忆性T细胞（memory T",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.7122,
+    0.7801,
+    0.0176
+   ],
+   "text": "cell, Tm cell）；②根据TCR类型不同分为 aBT 细胞和 y8T 细胞；③根据是否表达CD4或",
+   "conf": 0.3
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.6931,
+    0.7801,
+    0.0162
+   ],
+   "text": "CD8 分子分为 CD4'T 细胞和 CD8'T 细胞；④根据功能不同分为辅助性T细胞（helper T",
+   "conf": 0.3
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.6729,
+    0.7801,
+    0.0161
+   ],
+   "text": "cell, Th cell）、细胞毒性T细胞 （cytotoxic T cell,CTL 或 Tc cell）和调节性T细胞（regulatory",
+   "conf": 0.3
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1754,
+    0.6509,
+    0.1376,
+    0.018
+   ],
+   "text": "Tcell,Treg）等。",
+   "conf": 0.3
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2156,
+    0.6322,
+    0.3805,
+    0.0161
+   ],
+   "text": "1. 初始T细胞、效应T细胞和记忆性T细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.6119,
+    0.7421,
+    0.016
+   ],
+   "text": "（1）初始T细胞：是指从未接受过抗原刺激的成熟T细胞。T细胞发育成熟后离开胸",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.5914,
+    0.778,
+    0.0162
+   ],
+   "text": "腺，迁移到外周淋巴组织或器官，在没有接触到任何抗原刺激时处于相对静止状态，表达",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1755,
+    0.5712,
+    0.7801,
+    0.0161
+   ],
+   "text": "CD45RA 和高水平的L- 选择素（CD62L），参与淋巴细胞再循环。初始T细胞在外周免疫器",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.5509,
+    0.6025,
+    0.016
+   ],
+   "text": "官内接受抗原刺激而活化，并最终分化效应T细胞和记忆性T细胞。",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.5305,
+    0.7421,
+    0.0175
+   ],
+   "text": "（2）效应T细胞：为由初始T细胞分化而来的具有免疫效应功能的T细胞，表达高水",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.5102,
+    0.778,
+    0.0176
+   ],
+   "text": "平、高亲和力1L-2受体，还表达黏附分子（整合素和CD44）和 CD45RO。效应T细胞与初",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4897,
+    0.5307,
+    0.0176
+   ],
+   "text": "始T细胞不同，不再循环至淋巴结，而是向外周炎症组织迁移。",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.4695,
+    0.7421,
+    0.0175
+   ],
+   "text": "（3）记忆性T细胞：可由效应T细胞分化而来，也可由初始T细胞受抗原刺激后分化而",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4489,
+    0.778,
+    0.0176
+   ],
+   "text": "来，是维持机体免疫记忆的细胞，可存活数年甚至几十年。记忆性T 细胞可再次接受相同抗",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4288,
+    0.778,
+    0.0175
+   ],
+   "text": "原刺激后迅速活化，并分化为效应T细胞。记忆性T细胞表达 CD45RO 和 CD44，参与淋巴",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.4084,
+    0.7801,
+    0.0176
+   ],
+   "text": "细胞再循环。在缺乏抗原等刺激的情况下，记忆性T细胞可以长期存活，通过自发增殖维持",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1775,
+    0.3894,
+    0.11,
+    0.0163
+   ],
+   "text": "在一定水平。",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2156,
+    0.3692,
+    0.74,
+    0.0161
+   ],
+   "text": "2. aBT 细胞和y8T细胞 根据表达的TCR类型，T细胞可分为TCRapT 细胞和",
+   "conf": 0.3
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.3488,
+    0.778,
+    0.016
+   ],
+   "text": "TCRy8T 细胞，分别简称 aBT 细胞及yOT 细胞。在外周血中，aBT 细胞占成熟T细胞的",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.3284,
+    0.778,
+    0.0175
+   ],
+   "text": "95%以上，主要CD4*或CD8*单阳性，即一般所说的T细胞，是适应性免疫应答的主要",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.3081,
+    0.778,
+    0.016
+   ],
+   "text": "细胞。YT 细胞主要分布在皮肤和黏膜上皮层中，表型多为CD4 CD8，部分细胞可为CD8*",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.2876,
+    0.3319,
+    0.0161
+   ],
+   "text": "单阳性。y6T 细胞发挥固有免疫功能。",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2178,
+    0.2674,
+    0.74,
+    0.0162
+   ],
+   "text": "3. CD4'T细胞和 CD8'T细胞 根据T细胞表面CD 分子表型的不同，可将成熟的T",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.2471,
+    0.7801,
+    0.016
+   ],
+   "text": "细胞分CD4'T细胞和CD8T细胞。CD4'T 细胞识别由13~17个氨基酸残基组成的外源",
+   "conf": 0.3
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.2267,
+    0.7801,
+    0.0161
+   ],
+   "text": "性抗原肽，其识别、活化过程受 MHCII 类分子的限制，活化后分化的效应细胞主要为辅助",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.2064,
+    0.7801,
+    0.016
+   ],
+   "text": "性T细胞；而CD8'T细胞识别由 8~10个氨基酸残基组成的内源性抗原肽，受MHCI类分",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.1859,
+    0.778,
+    0.0176
+   ],
+   "text": "子的限制，活化后分化的效应细胞主要为细胞毒性T细胞，具有细胞毒作用，可特异性杀伤",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.1657,
+    0.0719,
+    0.0162
+   ],
+   "text": "靶细胞。",
+   "conf": 1.0
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2178,
+    0.1452,
+    0.6448,
+    0.0176
+   ],
+   "text": "4. 辅助性T细胞（Th细胞）、细胞毒性T细胞（CTL）和调节性T细胞（Treg）",
+   "conf": 0.3
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.2156,
+    0.125,
+    0.7421,
+    0.0175
+   ],
+   "text": "（1）Th 细胞：多CD4'T细胞。未受抗原刺激的初始CD4'T 细胞为ThO 细胞，在不同",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1776,
+    0.1047,
+    0.7822,
+    0.016
+   ],
+   "text": "抗原刺激下及不同细胞因子的作用下，ThO细胞向不同的Th细胞亚群分化。① Th1 细胞：",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.0842,
+    0.7801,
+    0.0175
+   ],
+   "text": "分泌 IFN-Y、IL-2和 TNF-a/p 等类型的细胞因子，激活巨噬细胞，辅助CTL 的活化和增殖，",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "main",
+   "bbox": [
+    0.1797,
+    0.064,
+    0.778,
+    0.0176
+   ],
+   "text": "增强 NK细胞的杀伤活性，发挥细胞免疫效应；所分泌的某些细胞因子可抑制Th2细胞的",
+   "conf": 0.5
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "header",
+   "bbox": [
+    0.1755,
+    0.9489,
+    0.1543,
+    0.0148
+   ],
+   "text": "第一篇 免疫学基础",
+   "conf": 0.3
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "region": "footer",
+   "bbox": [
+    0.093,
+    0.0276,
+    0.0233,
+    0.0132
+   ],
+   "text": "60",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8924,
+    0.7822,
+    0.016
+   ],
+   "text": "活化及其生物学效应。②Th2 细胞：分泌 IL-4、IL-5、IL-13和IL-10等类型的细胞因子，辅",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.872,
+    0.7822,
+    0.0161
+   ],
+   "text": "助B 细胞增殖并产生不同类别的抗体；所分泌的某些细胞因子可抑制 Thl细胞的活化及",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8517,
+    0.7822,
+    0.0162
+   ],
+   "text": "效应作用。③Th17细胞：以分泌1L-17、I-21、IL-22等细胞因子为特征，可刺激多种细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8312,
+    0.7822,
+    0.0176
+   ],
+   "text": "产生1L-6、IL-1、TNF、GM-CSF 等前炎症因子，在炎症形成过程中起主导作用。其增殖依赖",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.811,
+    0.7801,
+    0.0175
+   ],
+   "text": "于巨噬细胞所分泌的IL.-23，但受 Th1、Th2型细胞因子的抑制。④Tfh：滤泡辅助性T细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0423,
+    0.7905,
+    0.7844,
+    0.0176
+   ],
+   "text": "（follicular helper T cell,Tth） 是一种存在于外周免疫器官淋巴滤泡的CD4T细胞，其分泌的",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.7703,
+    0.7844,
+    0.0175
+   ],
+   "text": "IL-21 在促进B细胞分化浆细胞、产生抗体和Ig类别转换中发挥作用，是辅助B细胞应",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.75,
+    0.7822,
+    0.016
+   ],
+   "text": "答的关键细胞。⑤Th9细胞：以分泌 1L-9为特征，在过敏性疾病、抗寄生虫感染和自身免疫",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.7296,
+    0.7822,
+    0.0161
+   ],
+   "text": "病中发挥重要作用。⑥ Th22细胞：是一群以 IL-17A IL-22 IFNy为特征的CD4T 细胞，表",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.7093,
+    0.7801,
+    0.016
+   ],
+   "text": "达趋化因子受体CCR4、CCR6 和 CCR10，通过分泌IL-22、IL-13和 TNF-a参与上皮细胞的",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.6889,
+    0.2326,
+    0.0161
+   ],
+   "text": "生理功能和炎性病理过程。",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0825,
+    0.6686,
+    0.7463,
+    0.0176
+   ],
+   "text": "（2） CTL：多为CD8'T 细胞，经抗原受体介导产生特异性细胞毒作用，其机制为：①分泌",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.6482,
+    0.7822,
+    0.0175
+   ],
+   "text": "穿孔素（perforin）及颗粒酶（granzyme）介导靶细胞裂解或调亡；②分泌 TNF-~与靶细胞表",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.6279,
+    0.7801,
+    0.0176
+   ],
+   "text": "面的TNF 受体（TNFR）结合，启动靶细胞凋亡；③通过高表达 FasL 导致 Fas 阳性的靶细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.6074,
+    0.0507,
+    0.0161
+   ],
+   "text": "凋亡。",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0846,
+    0.5872,
+    0.7463,
+    0.0175
+   ],
+   "text": "（3） Treg：通常所称 Treg 是指CD4\"CD25'Foxp3*的T细胞，具有抑制性免疫调节功能。",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.5667,
+    0.7822,
+    0.0162
+   ],
+   "text": "在胸腺形成的称为天然调节性T细胞（nTreg），在自身免疫耐受中起重要作用；外周由初始",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.5465,
+    0.7822,
+    0.0162
+   ],
+   "text": "T细胞分化形成的称为诱导性调节性T细胞（iTreg），可抑制性调节其他效应T细胞的活化",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.526,
+    0.7801,
+    0.0162
+   ],
+   "text": "与增殖。其调节机制主要与细胞间直接接触、分泌抑制性细胞因子、诱导T细胞表面负调节",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.5058,
+    0.2812,
+    0.0161
+   ],
+   "text": "分子表达及调控 APC 作用有关。",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.4738,
+    0.1099,
+    0.0177
+   ],
+   "text": "B细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.4448,
+    0.7442,
+    0.0176
+   ],
+   "text": "B 细胞表达 BCR-CD79a/b 复合体、共受体、共刺激分子、MHC II /I类分子及细胞因子",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.4257,
+    0.2537,
+    0.0162
+   ],
+   "text": "受体等多种细胞表面膜分子。",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0825,
+    0.4055,
+    0.2072,
+    0.0145
+   ],
+   "text": "（一） B 细胞的表面分子",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.3836,
+    0.7442,
+    0.0175
+   ],
+   "text": "B 细胞表面的膜分子，也是B细胞的标志性分子。这些分子在B 细胞识别抗原、活化",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.3634,
+    0.3615,
+    0.0176
+   ],
+   "text": "增殖、分化及产生抗体等方面有重要作用。",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.3445,
+    0.389,
+    0.0145
+   ],
+   "text": "1. BCR-CD79a/b复合体 BCR-CD79a/b复",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.3227,
+    0.4355,
+    0.0175
+   ],
+   "text": "合体是由 B 细胞受体（BCR）与 CD79a/b （Iga/Igp）",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0484,
+    0.3017,
+    0.2204,
+    0.0182
+   ],
+   "text": "分子两部分组成（图5-6）。",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0867,
+    0.2833,
+    0.3932,
+    0.0161
+   ],
+   "text": "（1） BCR：即膜表面免疫球蛋白 （surface membrane",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.5539,
+    0.2747,
+    0.0338,
+    0.0118
+   ],
+   "text": "轻链",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0464,
+    0.2598,
+    0.4338,
+    0.0208
+   ],
+   "text": "immunoglobulin, mlg），为单体，胞外V区能特异",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.5539,
+    0.2471,
+    0.0338,
+    0.0131
+   ],
+   "text": "重链",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.2413,
+    0.4313,
+    0.0175
+   ],
+   "text": "性结合抗原表位，但胞质区很短，不能传递抗原刺",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.7145,
+    0.2236,
+    0.0509,
+    0.0106
+   ],
+   "text": "Igo IgB",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.5602,
+    0.2223,
+    0.0529,
+    0.0117
+   ],
+   "text": "IgB Iga",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.2209,
+    0.4313,
+    0.0177
+   ],
+   "text": "激信号到细胞内。不同发育分化阶段的B细胞，",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.2005,
+    0.4313,
+    0.0175
+   ],
+   "text": "构成BCR的mlg类别各异，未成熟B细胞表达",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.5476,
+    0.1875,
+    0.0127,
+    0.0305
+   ],
+   "text": "CD79b",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.6131,
+    0.1875,
+    0.0148,
+    0.0291
+   ],
+   "text": "CD79a",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.1802,
+    0.4313,
+    0.0176
+   ],
+   "text": "mlgM，成熟 B 细胞同时表达 mIgM 和 mIgD，活化",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.1598,
+    0.4313,
+    0.0161
+   ],
+   "text": "和记忆B 细胞 mlgD 表达消失。BCR具有高度的",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.1395,
+    0.3996,
+    0.016
+   ],
+   "text": "多样性，可直接识别具有天然构象的抗原分子。",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.6237,
+    0.1321,
+    0.0782,
+    0.009
+   ],
+   "text": "—ITAM一",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0846,
+    0.1191,
+    0.3953,
+    0.0161
+   ],
+   "text": "（2）CD79a/b：也称 Iga（CD79a）、IgB（CD79b）。",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.1003,
+    0.4292,
+    0.0161
+   ],
+   "text": "两者形成二聚体，其胞浆区含有 ITAM，可将 BCR",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.6279,
+    0.0916,
+    0.0634,
+    0.0118
+   ],
+   "text": "传导信号",
+   "conf": 1.0
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.0783,
+    0.4313,
+    0.0176
+   ],
+   "text": "胞外 V 区结合抗原的刺激信号传递到细胞内，为",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.0486,
+    0.0581,
+    0.2326,
+    0.0175
+   ],
+   "text": "B 细胞提供第一活化信号。",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "main",
+   "bbox": [
+    0.5201,
+    0.0581,
+    0.2918,
+    0.0131
+   ],
+   "text": "图5-6 BCR-CD79a/b 复合体示意图",
+   "conf": 0.5
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "sidebar",
+   "bbox": [
+    0.8898,
+    0.899,
+    0.0767,
+    0.0174
+   ],
+   "text": "笔记栏（",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "header",
+   "bbox": [
+    0.6638,
+    0.9476,
+    0.1649,
+    0.0148
+   ],
+   "text": "第五章 免疫细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "region": "footer",
+   "bbox": [
+    0.8964,
+    0.0218,
+    0.0233,
+    0.0118
+   ],
+   "text": "61",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.0296,
+    0.8996,
+    0.0782,
+    0.0175
+   ],
+   "text": "C笔记栏",
+   "conf": 0.3
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2072,
+    0.8938,
+    0.74,
+    0.0175
+   ],
+   "text": "2.共受体 CD19、CD21 和 CD81 以非共价键形成复合体，称为B细胞共受体。CD19",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.8735,
+    0.7759,
+    0.0176
+   ],
+   "text": "是一种跨膜蛋白，其胞浆区可传导活化信号；CD21 是补体C3d受体（CR2），也是EB 病毒的",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.167,
+    0.853,
+    0.5433,
+    0.0176
+   ],
+   "text": "受体，可显著增强 BCR识别抗原的信号传导，促进B细胞活化。",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2072,
+    0.8342,
+    0.74,
+    0.0161
+   ],
+   "text": "3. 共刺激分子 B 细胞表面的共刺激分子为B 细胞和T细胞活化提供必要的第二信",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.8138,
+    0.1185,
+    0.0163
+   ],
+   "text": "号，主要包括：",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2051,
+    0.7921,
+    0.7421,
+    0.0175
+   ],
+   "text": "（1）CD40：是B细胞表面最重要的共刺激分子，其配体为表达于活化T细胞表面的",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.167,
+    0.7718,
+    0.7801,
+    0.0176
+   ],
+   "text": "CD154（CD40L）。Th 细胞活化后，CD40L 表达上调，与CD40相互作用，提供B细胞活化的",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.7527,
+    0.091,
+    0.0163
+   ],
+   "text": "第二信号。",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2051,
+    0.7325,
+    0.7421,
+    0.0161
+   ],
+   "text": "（2） CD80/CD86：高表达在活化的B细胞表面，是T细胞CD28 和CD152的配体，",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.7122,
+    0.7801,
+    0.0176
+   ],
+   "text": "B7分子（CD80/CD86）与CD28 相互作用，为T细胞的活化提供第二信号；B7分子（CD80/",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.6918,
+    0.4271,
+    0.0175
+   ],
+   "text": "CD86）与 CD152相互作用，则可抑制T细胞活化。",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.6729,
+    0.1268,
+    0.0146
+   ],
+   "text": "4. 负调节分子",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2072,
+    0.651,
+    0.74,
+    0.0176
+   ],
+   "text": "（1）CD22：胞内段含有ITIM,B 细胞活化导致ITIM 磷酸化，可对B细胞活化产生负调",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.6308,
+    0.0719,
+    0.0175
+   ],
+   "text": "节作用。",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2051,
+    0.6105,
+    0.7442,
+    0.0174
+   ],
+   "text": "（2） CD32（FcyR II B）：为一种IgG Fc 受体，胞内段含有ITIM，其作用是介导抑制信号，",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.5901,
+    0.315,
+    0.0175
+   ],
+   "text": "进而抑制B 细胞的分化和抗体生成。",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2051,
+    0.5698,
+    0.7421,
+    0.0176
+   ],
+   "text": "（3）CD279（PD-1）：活化B细胞表达，结合配体后抑制B细胞增殖和分化，参与免疫耐",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.5493,
+    0.4292,
+    0.0176
+   ],
+   "text": "受；CD279 缺陷可出现狼疮样病变及血清Ig增多。",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.5305,
+    0.7378,
+    0.0161
+   ],
+   "text": "5. 细胞因子受体 B 细胞表面表达IL-IR、IL-2R、IL-4R、IL-5R、IL-6R、IL-7R 及 IFN-YR",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.5102,
+    0.7104,
+    0.016
+   ],
+   "text": "等多种细胞因子受体，与相应细胞因子结合而参与或调节 B 细胞活化、增殖和分化。",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2072,
+    0.4897,
+    0.74,
+    0.0161
+   ],
+   "text": "6. 丝裂原结合分子 B细胞表面具有多种丝裂原结合分子，可以与相应丝裂原结",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.468,
+    0.778,
+    0.0176
+   ],
+   "text": "合，激活B细胞，使其增殖分化为淋巴母细胞。常见的B细胞丝裂原有美洲商陆丝裂原",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.167,
+    0.4489,
+    0.4884,
+    0.0162
+   ],
+   "text": "（PWM）、脂多糖（LPS）、金黄色葡萄球菌 A蛋白（SPA）等。",
+   "conf": 0.3
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2093,
+    0.4288,
+    0.7378,
+    0.0161
+   ],
+   "text": "7. MHC 分子 成熟B细胞可表达高密度的MHCI类和 MHC II类分子。在发育前",
+   "conf": 0.3
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1691,
+    0.4084,
+    0.7801,
+    0.016
+   ],
+   "text": "期，B 细胞已表达 MHC II类分子，活化后表达明显增多。它的主要作用是提呈抗原肽，与T",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.388,
+    0.778,
+    0.0175
+   ],
+   "text": "细胞 TCR结合，为T细胞提供第一活化信号。活化的Th 细胞表达 CD40L 等共刺激分子，",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.3692,
+    0.611,
+    0.0161
+   ],
+   "text": "与B 细胞表面 CD40等共刺激分子结合使得B 细胞获得第二活化信号。",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.3472,
+    0.6364,
+    0.0176
+   ],
+   "text": "此外，B细胞还表达补体受体 CR1、CR2及 FcaR等免疫球蛋白的Fc受体。",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2051,
+    0.327,
+    0.2262,
+    0.0162
+   ],
+   "text": "（二） B 细胞亚群及其功能",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.3081,
+    0.7378,
+    0.016
+   ],
+   "text": "1. B1 细胞和B2细胞 根据B细胞是否表达CD5 分子，通常把B细胞分B1 细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.167,
+    0.2863,
+    0.7822,
+    0.0175
+   ],
+   "text": "（CD5*，主要参与固有免疫）和B2细胞（CD5，主要参与适应性免疫）。B2细胞的主要功能",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.266,
+    0.7759,
+    0.0176
+   ],
+   "text": "为：①产生抗体：B2细胞主要识别蛋白质抗原，是参与B细胞介导的适应性免疫应答的主",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.2471,
+    0.778,
+    0.016
+   ],
+   "text": "要细胞。B2细胞受特异性抗原刺激后，需在T细胞的辅助下，大量增殖，形成生发中心，并经",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.2267,
+    0.778,
+    0.0161
+   ],
+   "text": "历类别转换、体细胞高频突变和亲和力成熟，最终分化浆细胞，产生高亲和性抗体。②提呈",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.2047,
+    0.778,
+    0.0176
+   ],
+   "text": "抗原：B2 细胞是专职 APC，具有抗原提呈功能，可借其BCR结合特异性抗原表位，经抗原内",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.1859,
+    0.778,
+    0.0161
+   ],
+   "text": "化、加工和处理，以抗原肽-MHC 分子复合物形式提呈给效应T细胞/记忆性T细胞。③分",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1712,
+    0.1657,
+    0.723,
+    0.0162
+   ],
+   "text": "泌细胞因子：活化的B细胞还可产生多种细胞因子，参与免疫调节、炎症反应等过程。",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2114,
+    0.1452,
+    0.74,
+    0.0176
+   ],
+   "text": "2. 抗体产生性B 细胞和调节性B 细胞 根据生物学功能可分为抗体产生性B细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.125,
+    0.778,
+    0.0161
+   ],
+   "text": "和调节性B细胞。前者主要功能产生抗体、提呈抗原和分泌细胞因子等；后者通过产生",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.1047,
+    0.778,
+    0.016
+   ],
+   "text": "IL-10、TGF-B 等抑制性细胞因子或细胞膜分子来间接或直接抑制其他免疫细胞的功能，发",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.1734,
+    0.0828,
+    0.1522,
+    0.0175
+   ],
+   "text": "挥免疫调节作用。",
+   "conf": 1.0
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "main",
+   "bbox": [
+    0.2135,
+    0.064,
+    0.7378,
+    0.016
+   ],
+   "text": "3. 初始B 细胞、效应B 细胞（浆细胞）和记忆B 细胞 根据激活状态可分为初始B细",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "header",
+   "bbox": [
+    0.1691,
+    0.9489,
+    0.1543,
+    0.0134
+   ],
+   "text": "第一篇 免疫学基础",
+   "conf": 0.5
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "region": "footer",
+   "bbox": [
+    0.0867,
+    0.0276,
+    0.0233,
+    0.0118
+   ],
+   "text": "62",
+   "conf": 1.0
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8953,
+    0.7844,
+    0.0175
+   ],
+   "text": "胞、效应B细胞（浆细胞）和记忆B细胞。初始B 细胞，即未经抗原激活的B细胞，经抗原",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.875,
+    0.7822,
+    0.0176
+   ],
+   "text": "激活分化为浆细胞并产生抗体参与免疫应答。受抗原刺激的B细胞除分化成浆细胞外，尚",
+   "conf": 1.0
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0465,
+    0.8545,
+    0.7844,
+    0.0176
+   ],
+   "text": "有部分分化为记忆 B 细胞（memory B cell,Bm cell），大部分Bm 细胞进入血液参与再循环。",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0444,
+    0.8343,
+    0.7104,
+    0.0175
+   ],
+   "text": "Bm 细胞不产生Ig，但再次与同一抗原相遇时可迅速活化，产生大量抗原特异性Ig。",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0909,
+    0.7906,
+    0.0825,
+    0.0147
+   ],
+   "text": "学习小结",
+   "conf": 1.0
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.1099,
+    0.7529,
+    0.6998,
+    0.0175
+   ],
+   "text": "免疫细胞分为固有免疫细胞和适应性免疫细胞。固有免疫细胞主要包括单核1",
+   "conf": 1.0
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.7326,
+    0.7357,
+    0.0174
+   ],
+   "text": "巨噬细胞、树突状细胞、固有淋巴样细胞（NK 细胞、ILC1,ILC2、ILC3）、固有样淋巴细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0634,
+    0.7122,
+    0.7421,
+    0.0175
+   ],
+   "text": "（NK T细胞、Y8T细胞、BI细胞）、中性粒细胞、嗜酸性粒细胞、嗜碱性粒细胞、肥大细胞",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.6919,
+    0.7357,
+    0.0176
+   ],
+   "text": "等。适应性免疫细胞包括T细胞和B细胞。抗原提呈细胞（APC）是连接固有免疫和",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.6714,
+    0.6744,
+    0.0175
+   ],
+   "text": "适应性免疫的重要细胞，专职 APC 包括单核/巨噬细胞、树突状细胞和B细胞。",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.1078,
+    0.6526,
+    0.7019,
+    0.0161
+   ],
+   "text": "T细胞表面重要的膜分子包括TCR-CD3复合物、CD4和CD8、CD28、CD154、CD2、",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0677,
+    0.6321,
+    0.7378,
+    0.0177
+   ],
+   "text": "CTLA-4、PD-1 等多种受体。根据功能不同，T细胞可分为 CD4* 辅助性T细胞（Th细",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.6119,
+    0.74,
+    0.0161
+   ],
+   "text": "胞）、CD8*细胞毒性T细胞（CTL）和调节性T细胞（Treg）。Thl细胞分泌IL-2、IFN-Y、",
+   "conf": 0.3
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0677,
+    0.5916,
+    0.74,
+    0.016
+   ],
+   "text": "TNF-a等细胞因子介导细胞免疫应答，Th2细胞分泌1L-4、IL-5等细胞因子辅助体液",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.5712,
+    0.0529,
+    0.0148
+   ],
+   "text": "免疫。",
+   "conf": 1.0
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.1099,
+    0.5509,
+    0.6998,
+    0.016
+   ],
+   "text": "B细胞表面重要的膜分子包括BCR-CD79alb复合物、CD40、CD80/86、CD22、",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0677,
+    0.5291,
+    0.74,
+    0.0175
+   ],
+   "text": "FcyR II、CD19/CD21/CD81/CD225以及多种受体。根据CD5的表达，B细胞可分为BI",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0698,
+    0.5085,
+    0.6385,
+    0.0177
+   ],
+   "text": "细胞和 B2细胞；根据功能，B细胞分为初始B细胞、浆细胞和记忆B细胞。",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.4141,
+    0.1163,
+    0.0176
+   ],
+   "text": "复习思考题",
+   "conf": 1.0
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.3866,
+    0.74,
+    0.0176
+   ],
+   "text": "1.请列举T，B淋巴细胞的主要表面分子，并试述这些表面分子在T、B细胞免疫应答中",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0507,
+    0.3662,
+    0.0698,
+    0.0176
+   ],
+   "text": "的作用。",
+   "conf": 1.0
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "main",
+   "bbox": [
+    0.0888,
+    0.3459,
+    0.6237,
+    0.0175
+   ],
+   "text": "2. 试述T、B 淋巴细胞之间及T、B淋巴细胞与其他免疫细胞之间的联系。",
+   "conf": 0.5
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "sidebar",
+   "bbox": [
+    0.8922,
+    0.9024,
+    0.0782,
+    0.0206
+   ],
+   "text": "笔记栏國",
+   "conf": 0.3
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "sidebar",
+   "bbox": [
+    0.6512,
+    0.4506,
+    0.1818,
+    0.0145
+   ],
+   "text": "•（邝枣园 史丽云）",
+   "conf": 0.3
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "sidebar",
+   "bbox": [
+    0.8837,
+    0.3517,
+    0.0465,
+    0.0131
+   ],
+   "text": "扫一扫",
+   "conf": 1.0
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "sidebar",
+   "bbox": [
+    0.8837,
+    0.3357,
+    0.0465,
+    0.0148
+   ],
+   "text": "测一测",
+   "conf": 1.0
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "header",
+   "bbox": [
+    0.6638,
+    0.952,
+    0.1649,
+    0.0131
+   ],
+   "text": "第五章免疫细胞",
+   "conf": 0.3
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "region": "footer",
+   "bbox": [
+    0.8964,
+    0.026,
+    0.0254,
+    0.0118
+   ],
+   "text": "63",
+   "conf": 1.0
+  }
+ ],
+ "pages": [
+  {
+   "page": 48,
+   "physicalPage": 64,
+   "text": "圓笔记栏\n第五章\n免疫细胞\nPPT 课件\n学习目标\n通过本章的学习，掌握固有免疫细胞和适应性免疫细胞的组成，单核/ 巨噬细胞、\n树突状细胞及 NK 细胞的主要表面分子和免疫学功能，抗原提呈细胞的概念和组成，\nT、B 细胞的表面分子、亚群和功能；熟悉T细胞的分化发育，粒细胞和肥大细胞的免疫\n学功能；了解免疫细胞的来源，B细胞的分化发育。\n免疫细胞通常指参与免疫应答或与免疫应答有关的细胞。本章按各类细胞在参与免\n疫活动中的作用不同，将其分为固有免疫细胞和适应性免疫细胞2类，前者主要包括单核/\n巨噬细胞、树突状细胞、固有淋巴样细胞（NK细胞、ILC1、ILC2、ILC3）、固有样淋巴细胞\n（NK T细胞、y8T 细胞、B1细胞）、中性粒细胞、嗜酸性粒细胞、嗜碱性粒细胞、肥大细胞等；\n后者为介导适应性免疫应答的细胞，即T细胞和B细胞。其中T、B细胞的表面有特异性\n抗原受体，识别抗原后可发生克隆增殖、分化，故也称抗原特异性淋巴细胞或免疫活性细胞\n（immune competent cell, ICC）。\n第一节 免疫细胞的分化和发育\n骨髓多能造血干细胞（HSC）可分化为各类血细胞/免疫细胞，具有自我更新和发育分\n化2种潜能。HSC主要表达CD34和CD117，不表达各种成熟血细胞谱系相关的表面标\n志。在骨髓微环境中，HSC可分化出髓样于细胞和淋巴样干细胞。髓样干细胞可进一步分\n化为巨核/成红祖细胞和粒/单核祖细胞2个群体，前者最终分化为血小板和红细胞，后者\n最终分化为中性粒细胞、嗜酸性粒细胞、嗜碱性粒细胞、单核细胞和肥大细胞等。淋巴样\n干细胞可分化为始祖T细胞、始祖B 细胞和始祖 NK细胞，并分别在胸腺（T细胞）和骨髓\n（B细胞和NK细胞）中发育成熟释放人血。树突状细胞既可来源于髓样干细胞，也可来源\n于淋巴样干细胞（图5-1）。\n一.髓系免疫细胞\n髓系免疫细胞来自于髓样干细胞，包括单核/巨噬细胞、中性粒细胞、嗜酸性粒细胞、嗜\n碱性粒细胞、肥大细胞、红细胞及树突状细胞。\n（一）单核 /巨噬细胞的分化和发育\n单核/巨噬细胞来源于骨髓的髓样干细胞，经单核母细胞、前单核细胞分化为成熟的单\n核细胞；其表面表达模式识别受体、MHCII 类分子等多种受体和膜分子。单核细胞离开骨"
+  },
+  {
+   "page": 49,
+   "physicalPage": 65,
+   "text": "髓进入血液，在血液中仅存留12~24小时，再进入肝、脾、淋巴结及结缔组织等器官组织中，\n并进一步分化为巨噬细胞（M中），其寿命可达数月以上。组织中的巨噬细胞因所在器官不\n同及形态上呈现的差异而具有不同名称，如肝中的库普弗细胞（Kupffer cell）、肺泡中的尘细\n胞（dust cell）、骨组织中的破骨细胞和神经组织中的小胶质细胞等。\n红母细胞\n红细胞\n巨核/成红祖细胞\n血小板\n巨核细胞\n中性粒细胞\n髓样干细胞\n嗜酸性粒细胞\n嗜碱性粒细胞\n粒- 单核祖细胞\n肥大细胞\n多能干细胞\n巨噬细胞\n单核细胞\n树突状细胞\nT细胞\n祖T细胞\nB细胞\n祖B细胞\n淋巴样干细胞\nNK 细胞\nNK 前体细胞\n树突状细胞\n图 5-1\n骨髓多能造血干细胞的分化示意图\n（二）粒细胞的分化和发育\n粒细胞来自于粒-单祖细胞，依据其形态和胞质颗粒染色的不同分为中性粒细胞、嗜酸\n性粒细胞、嗜碱性粒细胞3类。在骨髓微环境下，在粒细胞集落刺激因子的作用下分化出中\n性粒细胞，从骨髓释放人血，存活期2~3天。粒-单祖细胞在GM-CSF、IL-3、IL-5、TGF-B等\n细胞因子的作用下分化为嗜酸性粒细胞或嗜碱性粒细胞，发育成熟，释放进入血液。"
+  },
+  {
+   "page": 50,
+   "physicalPage": 66,
+   "text": "C笔记栏\n（三）肥大细胞的分化和发育\n肥大细胞源于髓样干细胞，但从骨髓中释放的肥大细胞并未成熟，需要迁移到组织中\n进一步分化发育成熟的肥大细胞。成熟的肥大细胞表面表达C3a/CSaR 和高亲和力IgE\nFcR 等多种受体，胞质中具有含多种活性介质的粗大颗粒。\n（四）红细胞和血小板的分化和发育\n髓样干细胞首先分化巨核/成红祖细胞，其在红细胞生成素（EPO）和干细胞因子\n（SCF）的作用下经历原红细胞、早幼红细胞、中幼红细胞、晚幼红细胞，脱去胞核形成网织红\n细胞，进入血液最终发育为成熟的红细胞；或在血小板生成素（TPO）和其他细胞因子（如\n1L-6、IL-11 等）的作用下形成巨核细胞，胞膜凹陷、分离脱落，释放进入血液循环成为血小\n板。成熟的红细胞和血小板表面表达C3bR（CR1）。\n、淋巴系免疫细胞\n淋巴样干细胞来自骨髓多能干细胞。由淋巴样干细胞分化的免疫细胞主要包括T细\n胞、B细胞、NK 细胞和树突状细胞。\n（一）T淋巴细胞的分化和发育\nT淋巴细胞（Tlymphocyte）简称T细胞，源于骨髓的淋巴样干细胞，在胸腺中发育\n成熟。\n在骨髓中形成的始祖T细胞随血液循环到达胸腺。胸腺是T细胞发育成熟的中枢免\n疫器官。胸腺微环境为T细胞发育分化提供了条件。T细胞在发育分化过程中，其表型发\n生一系列变化。根据细胞表型的变化，可将T细胞发育分成3个阶段：①双阴性期：初期T\n细胞不表达CD4 和 CD8 分子，故称 CD4CD8 双阴性T细胞（CD4CD8 double-negative T\ncell），又称 DN细胞。DN 细胞不表达TCR和CD3分子，也不具有抗原识别能力。②双阳\n性期：DN 细胞经TCRa 和 TCRB 基因重排，形成TCR，同时 CD4和 CD8分子基因活化并\n表达，形成 CD4CD8 双阳性T细胞（CD4CD8 double-positive T cell），又称 DP 细胞。③单阳\n性期：DP 细胞经阳性选择和阴性选择过程，分化发育为CD4'CD8或CD8\"CD4 T细胞，称\n为单阳性T细胞（single positive T cell），又称SP细胞。SP 细胞继续发育为成熟T细胞。\n1. T细胞受体（TCR）的发育 大多数成熟T细胞（95%以上）的TCR分子是由a和B\n2条肽链组成的异二聚体，编码人 TCR a链和B链的基因分别定位于第14号和第7号染色\n体。B链的基因重排与表达是这类T细胞发育过程中的关键所在，不成功则走向凋亡。成\n功表达B链可诱导、促进TCRa 链前体 pTa （gp33）和CD3的表达，并组成细胞表面的前受\n体（pTCR）。其后，在增殖基础上，配合CD8与CD4表达，促进a链基因重排与表达，pTa\n表达关闭，最后细胞表达功能性的aBTCR。TCR 的发育过程中，TCR 的基因重排使 TCR\n具有高度的多样性，而一条染色体 TCR 基因的成功重排可抑制另一条染色体 TCR 的重排，\n称为等位基因排斥（allelic exclusion）现象，故每个T细胞克隆仅表达1 种特异性 TCR。\n2. T细胞发育的阳性和阴性选择 DP 细胞须经历阳性选择和阴性选择，获得识别抗原\n的MHC 限制性和自身耐受性，才能迁出胸腺并移居于外周免疫器官。\n（1） 阳性选择（positive selection）：DP 细胞以功能性TCR 配合CD4或CD8与胸腺皮\n质上皮细胞表面的 MHC 分子相互结合，如果与自身抗原肽-MHC I类分子以适度亲和力\n结合，CD8 表达增高，而CD4表达降低并丢失，最终分化CD8'T细胞；如果与自身抗原\n肽-MHC II类分子以适度亲和力结合，则最终分化力CD4T细胞。若DP细胞和自身抗原\n肽-MHC 分子不能结合或以高亲和力结合，则在胸腺皮质中发生细胞凋亡而被清除。阳性\n选择使T细胞获得了抗原识别的 MHC 限制性，发育 SP 细胞（图5-2）。"
+  },
+  {
+   "page": 51,
+   "physicalPage": 67,
+   "text": "阳性选择\n阴性选择\n未成熟T细胞\n干细胞\nTCR与MHC II 类分子\nCD4*单阳性细胞\n适当识别K\n祖T细胞\nTCR与MHCII类\nB链\n分子不识别\n细胞凋亡\n皮\n树突状细胞\n前T细胞\nCD4 CD8\nCD4*CD8*\n细\nTCR与自身肽-MHC分了\n双阴性细胞\n双阳性细胞\nTCR与MHCII类\n复合物强识别\n分子强识别\n胞\nT TCR a B\nTCRB链\nCD4分子 MHCII类分子\nTCR与MHCI类分子\nCD8'单阳性细胞\n--CD8分了 JMIICI类分子\n适当识别\n未成熟T细胞\n图 5-2 T细胞在胸腺内的阳性选择和阴性选择示意图\n（2） 阴性选择（negative selection）：经阳性选择后的T细胞，其TCRap若在胸腺皮质与\n髓质交界处及髓质区，能与树突状细胞、巨噬细胞表达的自身抗原肽-MHC 分子复合物结\n合，则导致相应T细胞克隆凋亡，只有不能结合或结合亲和力很低的胸腺细胞才能继续发育\n为成熟的SP细胞，此过程为T细胞发育的阴性选择。通过阴性选择，T细胞获得了对自身\n抗原的耐受性（图5-2）。\n经过胸腺内的发育和选择后，仅少于5%的胸腺细胞在髓质区分化、发育为成熟T细\n胞，其特征为：①表达功能性 TCR；②CD4或CD8单阳性细胞；③获得抗原识别的MHC 限\n制性；④获得自身耐受性。成熟T细胞离开胸腺，进人外周免疫器官。\n（二） B细胞的分化和发育\nB 淋巴细胞（B lymphocyte）简称B细胞，在骨髓中发育成熟。B细胞源于骨髓的淋巴\n样干细胞，在骨髓基质细胞及其产生的细胞因子和黏附因子的抚育下经过祖B细胞、前B\n细胞、未成熟B细胞（表达完整BCR，即 mlgM；不表达 mlgD），最后发育为成熟B细胞（同\n时表达 mIgM 和mlgD），离开骨髓进入血液和外周淋巴组织。B细胞在此发育成熟过程中\n主要经历2个重要事件—BCR 的发育和自身耐受的形成。\n1. B细胞受体（BCR）的发育 BCR 的发育过程中进行 BCR 的基因重排，使其具有高\n度的多样性。人类Ig 重链基因群位于第14号染色体长臂上，可变区由V、D和J3个基因\n片段所组成，恒定区由C基因片段编码。人类轻链x 基因和入基因分别位于2号染色体短\n臂和22号染色体长臂上，其可变区由V、.J2个基因片段编码。重链、轻链每种基因分别由\n多个基因片段组成，如重链V、D 和J分别拥有45个、23个和6个基因片段，轻链T、J、P\n和J分别拥有40个、5个、30个和4个基因片段。在B 细胞发育分化形成 BCR 的过程中，\n需要在重组酶的作用下，随机挑选重链、轻链的1个V片段、1个D片段（轻链无D片段）和\n1个J片段重新排列在一起，组成一个V（D）J连接，形成具有抗原特异性的、完整的BCR编\n码基因。也正是由于V、（D）、J基因片段数量较大，以及组合与连接的多样性等原因，奠定了\nBCR抗原识别的多样性，使B细胞可识别自然界中种类繁多的抗原表位（图5-3）。\n2. B细胞发育过程中的阴性和阳性选择 B细胞的分化成熟与T细胞有一定相似性，\n也经历类似阴性和阳性选择的过程，其阴性选择在中枢免疫器官完成并获得中枢免疫耐受，\n但阳性选择在外周免疫器官生发中心完成，获得抗体亲和力的成熟。"
+  },
+  {
+   "page": 52,
+   "physicalPage": 68,
+   "text": "圓笔记栏\nH链基因\n（45）\n（23）\nDJ重排\n基因重排\nVDJ 重排\n功能性基因\nVHDHJH CA\nRNA（转录）\nmRNA（转录后加工）\nAAAAAAA\nH链（翻译和翻译后修饰）\n图 5-3 免疫球蛋白重链基因重排和表达示意图\n重链胚系基因经过重排先形成 D-J连接，然后发生V-DJ 连接，编码功能性V 区基因\n（1）阴性选择：前B细胞在骨髓内分化为未成熟B细胞后，表面表达 mlgM，此时能识别\n自身抗原的B细胞克隆，若其 BCR（mlgM）与骨髓中出现的自身抗原发生结合，则导致细胞\n调亡，由此清除自身反应性B 细胞克隆，B细胞获得自身耐受，类似T细胞成熟过程中的阴\n性选择。\n（2）阳性选择：成熟B细胞离开骨髓进人外周免疫器官，在外周淋巴器官接受外来抗原\n刺激进入分化增殖状态，发生体细胞突变，主要集中于V区CDR部位的基因序列的点突\n变。大部分B 细胞突变后不再与滤泡树突状细胞（FDC）表面的抗原结合，或亲和力下降，\n而发生调亡；少部分B细胞经突变后，其BCR能更有效地与抗原结合，并通过细胞表面表\n达CD40与活化的滤泡辅助性T细胞（Tth）表面 CD40L结合使自身免于凋亡，可继续增殖\n分化为浆细胞，此过程即为阳性选择。经阳性选择的细胞克隆或分化分泌高亲和力抗体\n的长寿命浆细胞迁移至骨髓，或分化记忆 B 细胞定居于外周免疫器官。\n（三）自然杀伤细胞的分化和发育\n自然杀伤细胞（natural killer cell,NK cell）简称 NK 细胞，源于淋巴样干细胞，属于固有\n淋巴样细胞。在骨髓微环境和细胞因子的作用下，经历原 NK细胞、前NK细胞、未成熟 NK\n细胞，最终发育分化为成熟的NK细胞，释放进入血液。成熟的NK细胞主要分布于骨髓、\n外周血、肝、脾、肺和外周淋巴结；表面表达多种杀伤细胞激活性受体（KAR）、杀伤细胞抑制\n性受体（KIR）及 IgG Fc受体等。\n三.谱系交叉的免疫细胞\n树突状细胞（dendritic cell,DC） 来源复杂，部分来自于髓样干细胞，部分来自于淋巴\n样干细胞。在未受到抗原刺激时，DC处于未成熟状态，高表达多种模式识别受体（TLR2、\nTLR4、TLR5等），摄取和加工抗原能力较强，而抗原提呈能力较弱。未成熟 DC 在摄取抗原\n后离开炎症病灶开始迁移，在通过淋巴管或血液循环迁移到外周淋巴器官的过程中，树突状\n细胞逐渐成熟，开始高表达 MHC II类分子和共刺激分子，具备高效抗原提呈和启动适应性"
+  },
+  {
+   "page": 53,
+   "physicalPage": 69,
+   "text": "免疫应答能力，这个阶段的DC 也称成熟 DC。\n第二节 固有免疫细胞\n随着免疫学研究的深人，特别是固有免疫的研究，对固有免疫细胞的家族成员有了新的\n认识，除传统上的单核/巨噬细胞、树突状细胞、NK细胞、粒细胞与肥大细胞外，众多学者倾\n向于将识别谱较窄、交叉面较宽的y8T 细胞、B1 细胞和 NK T细胞也列入固有免疫细胞家\n族。近年来，又发现了固有淋巴样细胞（ILC）。\n一、单核/巨噬细胞\n单核/ 巨噬细胞（monocyte/macrophage）由血液中单核细胞和组织器官中巨噬细胞所组\n成，表达特征性表面标志 CD14分子，并表达模式识别受体、MHC II /I类分子等多种类型\n的受体/膜分子，胞质中富含溶酶体颗粒。单核/巨噬细胞具有很强的变形运动、吞噬杀伤\n和抗原提呈能力，在固有免疫和适应性免疫应答中均具有重要作用。此外，活化的T细胞产\n生的Thl 型细胞因子可激活单核/巨噬细胞，而显著增强其杀伤和清除病原微生物的功能，\n参与适应性细胞免疫的效应阶段。单核细胞分化为巨噬细胞后，形态和功能均发生较大变\n化，细胞体积增大，表面受体表达增多，功能更为复杂。\n（一）单核/巨噬细胞表面受体\n单核/ 巨噬细胞可表达多种受体：\n1. 模式识别受体 如 Toll 样受体、甘露糖受体、清道夫受体等，通过这些受体，单核/巨\n噬细胞可识别病原体相关分子模式（PAMP）或损伤相关分子模式（DAMP），产生固有免疫应\n答，有效地吞噬、杀伤、清除病原微生物及体内出现的衰老损伤、坏死、週亡细胞。\n2. 调理性受体 如IgG Fc受体、C3b/C4b 受体，可在抗体或补体的作用下促进和激活\n单核/巨噬细胞的吞噬活性。\n3. 细胞因子受体 如 MCP-IR、M-CSFR、GM-CSFR 等，在相应细胞因子的作用下，单\n核/巨噬细胞趋化到炎症病灶处，活化并完成吞噬、杀伤消化、清除病原体的免疫作用。\n（二）单核/巨噬细胞的免疫学功能\n单核/巨噬细胞具有重要的生物学作用，不仅参与固有免疫，而且也是适应性免疫应答\n中的一类重要细胞。\n1. 吞噬杀伤病原体 单核/巨噬细胞的胞质溶酶体中含有氧依赖和非氧依赖2种杀\n菌系统及多种水解酶。当病原微生物侵入机体后，在激发适应性免疫应答以前即可被单核/\n巨噬细胞吞噬、消化清除，这是机体固有免疫防御机制的重要环节。\n2. 清除损伤、衰老细胞及肿瘤细胞 单核/巨噬细胞可清除损伤、变性和衰老细胞；在\nThl 细胞的作用及LPS或IFN-Y等细胞因子的刺激下活化，可有效杀伤胞内寄生菌和肿瘤\n细胞；可通过 ADCC 杀伤病毒感染细胞和肿瘤细胞，故单核/吞噬细胞又被称机体的清\n道夫（详见第六章）。\n3. 抗原提呈 巨噬细胞可经吞噬、胞饮或受体介导的胞吞作用等方式摄取抗原，将抗\n原加工处理，在IFN-y等细胞因子作用下，巨噬细胞表达 MHC II/I类分子和共刺激分子的\n水平显著提高，将处理的抗原以抗原肽-MHC 分子复合物的形式提呈给效应T细胞/记忆\n性T细胞，发挥专职性 APC的作用。\n4. 免疫调节 活化的巨噬细胞可以分泌多种细胞因子参与免疫调节。如分泌的IL-1、"
+  },
+  {
+   "page": 54,
+   "physicalPage": 70,
+   "text": "©笔记栏\nIFN-Y可以上调 APC表达 MHC 分子，TNF-a 可促进细胞毒性T细胞的活化和分化，IL-12、\nIL-18 可激活 NK细胞，IL-10可抑制单核/巨噬细胞和NK 细胞的过度激活等。\n二、树突状细胞\n1973年，Steinman 和 Cohn 在小鼠脾内发现具有树枝状突起的独特形态的细胞，并将其\n命名树突状细胞（dendritic cell, DC）。DC 的主要功能是高效摄取、加工和提呈抗原，启动\n适应性免疫，是机体功能最强的抗原提呈细胞。目前已了解到 DC 在免疫细胞的分化成熟、\n抗原特异性识别、适应性免疫应答启动、免疫记忆维持等方面起着关键作用。\n（一）树突状细胞的亚群及其膜分子\nDC 依据其抗原摄取和提呈能力的不同分为未成熟 DC 和成熟 DC2个细胞表型，其\n细胞表面膜分子也不相同：①未成熟 DC高表达PRR、IgG Fe 受体、C3b受体和趋化因子受\n体，低表达 MHC II类分子和共刺激分子，具有强的摄取、加工处理抗原的能力，但提呈抗原\n能力弱；②成熟 DC 是皮肤、黏膜等组织器官中未成熟 DC 在摄取抗原后开始分化成熟，其\nMHC II 类分子、共刺激分子和黏附分子等与刺激T细胞活化有关的膜分子表达显著提高，\n而与其摄取抗原有关的PRR、IgG Fe 受体和C3b受体等表达显著减弱。正常情况下，绝大\n多数DC 为非成熟 DC。\n（二）树突状细胞的免疫学功能\n1. 抗原提呈和免疫激活作用 DC通过胞饮、吞噬、受体介导的内吞等方式有效摄\n取抗原，并进行加工处理，形成抗原肽-MHC II类分子复合物。DC将抗原肽提呈给相应\n的CD4T细胞，产生T细胞第一活化信号；此外，成熟 DC还可以通过其高表达的CD80、\nCD86等共刺激分子，为T细胞活化提供第二活化信号。DC 是专职性APC 中唯一能直接\n激活初始T细胞的 APC。\n2. 参与中枢和外周免疫耐受的诱导与维持 胸腺 DC 参与T细胞的阴性选择过程，通\n过删除自身反应性T细胞克隆参与中枢免疫耐受的诱导。未成熟 DC 不表达共刺激分子，\n可诱导T细胞失能；还可诱生调节性T细胞而抑制效应T细胞的活化与增殖，参与外周免\n疫耐受的诱导和维持。\n3. 免疫调节作用 DC能分泌多种细胞因子和趋化因子，通过直接或间接作用的方式，\n调节其他免疫细胞的分化、发育及活化等功能。\n三、参与固有免疫的淋巴细胞\n包括 NK细胞、NKT细胞、y8T细胞、B1细胞和 ILC细胞等。\n（一） NK细胞\nNK 细胞是一群缺乏特异性抗原识别受体的淋巴细胞，因其具有细胞毒效应，无须抗原\n致敏就能自发地杀伤靶细胞而得名。NK细胞与T、B细胞不同，不表达 TCR、BCR 及 CD4\n和CD8分子。目前，将CD3 CD56*CD16*作为人类 NK 细胞的标志。\n1. NK 细胞的表面受体 NK细胞表达多种膜受体，包括：①自然杀伤细胞受体（natural\nkiller cell receptor, NKR）； ② IgG Fe 受体（FcyR II, CD16）；③多种趋化和活化相关的细胞因\n子受体等。NK 细胞通过其表面受体与相应配体结合发挥趋化、激活/抑制效应，或调节其\n杀伤活性。\nNKR 已发现十几种，按胞外区结构特征可区分为免疫球蛋白样受体（immunoglobulin-\nlike receptor）和凝集素样受体（lectin-like receptor）；按配体不同可区分为识别 MHC I类分\n子和识别非 MHCI类分子的受体。习惯上多根据功能分为2类：①杀伤细胞激活性受体"
+  },
+  {
+   "page": 55,
+   "physicalPage": 71,
+   "text": "（killer activation receptor, KAR）：可激活 NK 细胞杀伤作用，其胞内段带有免疫受体酪氨酸\n激活模体（ITAM，又称免疫受体酪氨酸激活基序）。天然细胞毒性受体（natural cytotoxicity\nreceptor, NCR）家族是重要的KAR，它们与靶细胞表面相应配体结合，使胞内段的ITAM\n磷酸化，启动激活信号，产生杀伤效应。②杀伤细胞抑制性受体（killer inhibitory receptor，\nKIR）：能抑制 NK细胞杀伤作用，其胞内段带有免疫受体酪氨酸抑制模体（ITIM，又称免疫\n受体酪氨酸抑制基序）。KIR与靶细胞表面自身 MHCI类分子结合，使ITIM 磷酸化，启动\n杀伤抑制信号，阻断杀伤信号的传递。\n知识链接\n活化性受体和抑制性受体\n活化性受体与抑制性受体双重调节机制是机体调控免疫应答的普遍方式。活\n化性受体分子胞内段带有免疫受体酪氨酸激活模体（immunoreceptor tyrosine-based\nactivation motif, ITAM），其典型基本结构为 YxxL/V（Y 为酪氨酸，LNV 为亮氨酸/ 缬氨酸，\nx 代表任意氨基酸）。在受到刺激时，募集活化蛋白酪氨酸激酶（PTK），使YxxI/V 中的\n酪氨酸发生磷酸化，借此可结合带 SH，结构域的下游激酶（如PTK）分子或连接蛋白，\n形成级联反应，进行活化信号的转导。\n抑制性受体分子胞内段带有免疫受体酪氨酸抑制模体（immunoreceptor tyrosine-\nbased inhibitory motif, ITIM），其典型基本结构为 I/Vx YxxL（I为异亮氨酸）。ITIM 中供\nSH，识别的YxxL虽然可与 ITAM 中的YxxL 相同，但其酪氨酸残基一侧相隔1个氨基\n酸处为异亮氨酸或缬氨酸等疏水性氨基酸，这仅能募集并活化带有 SH，结构域的蛋白\n酪氨酸磷酸酶（PTP）。活化的PTP能够使磷酸化酪氨酸残基脱磷酸化，因此阻断了由\nPTK 参与的激活信号转导通路，发挥负向调节作用。\n宿主组织细胞表面均表达自身 MHC I类分子，正常情况下 KIR 介导的抑制性作用占\n主导地位，表现为NK细胞失活，对自身组织细胞产生耐受；病毒感染细胞和肿瘤细胞表面\nMHC I类分子表达减少、缺失或结构发生改变，KIR 的识别受阻，有利于 NK 细胞对靶细胞\n的杀伤效应（图5-4）。此即NK 细胞识别假说——“丧失自我”学说。NKG2D 和 NCR 都\n属于 KAR，前者可与乳腺癌、结肠癌、肺癌等上皮肿瘤细胞表面高表达的MHC I类链相关\n的 A/B 分子（MIC A/B）结合，后者则与肿瘤细胞、病毒感染细胞以及多种病原体表面配体\n（已了解到的有关配体复杂、多样）结合；从而启动 NK 细胞的杀伤活性。\n2. NK 细胞杀伤靶细胞的机制 NK 细胞通过上述杀伤细胞激活性受体或IgG Fe受\n体与相应配体结合活化后，主要通过以下途径杀伤靶细胞：①穿孔素/颗粒酶途径：穿孔素\n可在靶细胞膜上形成多聚穿孔素“孔道”\n’，颗粒酶通过“孔道”进入细胞内激活凋亡相关的\n酶系统诱导靶细胞凋亡；②Fas 与FasL 途径：活化的 NK细胞可高表达FasL，与靶细胞表\n面的相应受体 Fas结合后导致靶细胞凋亡；③TNF-a/TNF-a 受体途径：TNF-a 与靶细胞表\n面 TNF-a受体结合，导致胞浆内的死亡结构域（DD）集聚成簇，诱导细胞发生调亡；④通过\nADCC 杀伤靶细胞（见第四章）。\n3. NK细胞的功能 NK细胞主要通过其细胞毒作用及分泌细胞因子发挥生物学效\n应。①抗感染作用：NK细胞在早期抗感染中发挥重要作用。在病毒感染后 2~3天，NK细\n胞聚集到感染灶，经细胞因子活化后，溶解破坏感染细胞；同时，NK 细胞分泌细胞因子，通"
+  },
+  {
+   "page": 56,
+   "physicalPage": 72,
+   "text": "圓笔记栏\n过干扰病毒复制和活化吞噬细胞，扩大和增强机体抗感染免疫能力。②抗肿瘤作用：NK 细\n胞可通过多种途径杀伤肿瘤细胞，无须抗原预先刺激，是机体抗肿瘤的第一线细胞。③免疫\n调节作用：NK细胞通过分泌IFN-Y、IL-2 和 TNF 等细胞因子发挥免疫调节作用，增强机体\n早期抗感染效应和免疫监视功能。\n活化性受体 活化性受体配基\nNK细胞\n靶细胞\n抑制性受体\nMHC-I 类分子\nNK细胞\n靶细胞\n图5-4 NK 细胞通过 KAR/KIR 杀伤靶细胞的机制示意图\n（二） NKT细胞\nNK T 细胞即自然杀伤T细胞（natural killer T cell），是既表达 NK 细胞表面标志 CD56\n也表达T细胞表面标志 TCRaB-CD3复合体的一类T细胞亚群。NK T细胞具有固有免疫\n细胞的特征：①表面的TCRap较外周血中T细胞表面的TCR 密度低、且缺乏多样性；②不\n能识别 MHC 分子提呈的抗原肽，仅接受靶细胞 CD1分子提呈的磷脂和糖脂类抗原，从而\n直接活化、迅速产生应答；③活化的 NKT细胞通过穿孔素/颗粒酶和 Fas/FasL 途径导致病\n毒感染细胞或肿瘤细胞调亡，也可通过分泌 IL-4、IFN-y等细胞因子参与免疫调节；④不形\n成免疫记忆。NK T细胞主要分布在骨髓、肝和胸腺，少量存在于淋巴结、脾和血液，在机体\n抗病毒感染和抗肿瘤免疫中发挥重要作用。\n（三） y6T 细胞\nY6T 细胞的TCR 由y和。链组成，缺乏多样性，其 TCR 不接受MHC 分子提呈的抗原\n肽，可直接识别：①肿瘤细胞表面 MIC A/B 分子；②细胞表面表达的病毒蛋白；③感染细胞表\n达的热激蛋白；④CDI 分子提呈的磷脂和糖脂类抗原。活化的y8T细胞通过释放穿孔素/颗\n粒酶、TNF-B及通过Fas/FasL 途径导致病毒感染细胞或肿瘤细胞凋亡；也可通过分泌1L-17、\nIFN-Y 和 TNF-a等细胞因子介导炎症反应，参与免疫调节。y&T 细胞是早期抗感染、抗肿瘤\n免疫的主要效应细胞，属于固有免疫应答细胞，不形成免疫记忆。\n（四）B1细胞\nB1 细胞由胎肝和成人骨髓产生，具有自我更新能力，表达CD5分子和 BCR（mlgM），其\nBCR 缺乏多样性，可直接生成和分泌能结合细菌表面多糖类和某些抗原的天然抗体。接受\n抗原刺激后，B1细胞所产生的应答表现出如下特征：①在48 小时内即可产生以IgM为主、\n具有泛特异性的低亲和力抗体；②不发生Ig类别转换；③不形成免疫记忆。由于B1 细胞\n在B2细胞产生抗体之前发挥效应，产生的抗体具有多反应性，所以在机体抗感染早期及维"
+  },
+  {
+   "page": 57,
+   "physicalPage": 73,
+   "text": "护自身免疫稳定方面具有重要作用。\n（五）固有淋巴样细胞\n固有淋巴样细胞（innate lymphoid cell, ILC）是近年发现并新定义的一类细胞，包括\nILC1、ILC2和IC3三个亚群。NK细胞也归属于固有淋巴样细胞。IC不表达特异性/泛\n特异性抗原受体，其活化不依赖于对抗原的识别。ILC通过表面受体接受病原体感染后免\n疫细胞或组织细胞分泌的细胞因子刺激而激活，并通过分泌不同的细胞因子参与机体抗感\n染免疫、过敏性炎症反应、组织修复等过程。\n四、粒细胞和肥大细胞\n（一）粒细胞\n粒细胞包括中性粒细胞、嗜酸性粒细胞和嗜碱性粒细胞3类。\n1. 中性粒细胞 中性粒细胞（neutrophil）占血液白细胞总数的60%~70%，血液中存活\n期为2~3天。中性粒细胞表面具有模式识别受体（甘露糖受体、清道夫受体和 Toll 样受体）、\n趋化因子受体（IL-8R、CSaR）、调理性受体（IgG FcR、C3bR）等多种膜分子。胞质颗粒中富含\n髓过氧化物酶、酸性/碱性磷酸酶、溶菌酶等多种具有杀伤、消化作用的酶类；具有巨噬细胞\n的氧依赖和非氧依赖2个杀菌系统及其不具备的髓过氧化物酶（myeloperoxidase, MPO）杀\n菌系统。中性粒细胞有很强的趋化运动和吞噬杀菌能力，并可通过ADCC 杀伤病原体感染\n的组织细胞。\n2. 嗜酸性粒细胞 嗜酸性粒细胞（eosinophil）在外周血中含量较少，占白细胞总数的\n1%~3%。嗜酸性粒细胞表面表达嗜酸性粒细胞趋化因子受体（ECFR）、IL-3R、IL-5R 和血小\n板活化因子受体等。嗜酸性粒细胞具有一定的吞噬、杀菌能力，活化后可释放其胞浆内嗜酸\n性颗粒。嗜酸性颗粒内主要有碱性蛋白、嗜酸性粒细胞过氧化物酶、嗜酸性粒细胞阳性离子\n蛋白、芳基硫酸酯酶等，并可通过脱颗粒释放组胺酶、白三烯、前列腺素 D，等炎症介质。嗜\n酸性粒细胞主要分布于呼吸道、消化道和泌尿生殖道黏膜上皮结缔组织中，参与抗寄生虫感\n染免疫、免疫调节和超敏反应。\n3. 嗜碱性粒细胞 嗜碱性粒细胞（basophil）主要存在于血液中，占白细胞总数的\n0.2%。嗜碱性粒细胞表面表达趋化性受体（IL-8R、MCP-IR）和高亲和力IgE Fc 受体，胞浆\n中含有大量嗜碱性颗粒，无吞噬功能。在炎症发生过程中或变应原与致敏嗜碱性粒细胞\n表面IgE结合后，可使其脱颗粒，释放组胺、5- 羟色胺、嗜酸性粒细胞趋化因子（eosinophil\nchemotactic factor, ECF）及白三烯、前列腺素 D2、血小板活化因子等一系列新合成的炎症介\n质，参与炎症反应、抗寄生虫感染免疫和I型超敏反应。\n（二）肥大细胞\n肥大细胞（mast cell）主要分布于皮肤、呼吸道、胃肠道、泌尿生殖道及各器官结缔组织\n中，其表面具有模式识别受体（如 TLR）、过敏毒素 C3a/CSa 受体和高亲和力IgE Fc受体，胞\n浆中含有大量嗜碱性颗粒。肥大细胞无吞噬和杀伤病原体的功能，但可通过上述受体与相\n应配体结合而被激活，脱颗粒释放一系列炎症介质（如组胺、5-羟色胺、白三烯、前列腺素D2\n等）和细胞因子（IL-1、IL-4、IL-8、TNF 等），引起炎症反应，参与抗感染免疫和I型超敏反应。\n第三节 抗原提呈细胞\n抗原提呈细胞（antigen-presenting cell, APC）是指能够摄取、加工抗原，并将抗原肽提呈"
+  },
+  {
+   "page": 58,
+   "physicalPage": 74,
+   "text": "®笔记栏\n给T细胞的一类免疫细胞，在机体的免疫识别、免疫应答与免疫调节中具有重要作用。根据\n其表面 MHC II类分子表达和功能的差异，可将 APC 分为两大类。\n1. 专职性 APC 专职性 APC （professional APC）包括树突状细胞、巨噬细胞和B 细胞，\n可组成型表达 MHC II 类分子和T细胞活化的共刺激分子；具有较强的摄取、加工处理及提\n呈抗原的能力，通过 MHC II类分子结合抗原肽并提呈给CD4'T细胞，进一步促进其活化。\n2. 非专职性 APC 非专职性 APC（non-professional APC）主要包括内皮细胞、成纤维细\n胞、上皮细胞等。在正常条件下不表达MHC II类分子，但在炎症过程中或 IFN-Y等细胞因\n子的作用下，也可表达 MHC II类分子并处理和提呈抗原。\n表达 MHC I类分子的细胞均能将内源性蛋白抗原加工抗原肽-MHC I类分子复合\n物，提呈给CD8'T细胞而被其识别和杀伤，通常将此类细胞称力靶细胞，属于广义的APC。\n第四节 适应性免疫细胞\n适应性免疫细胞是指表面具有高度抗原特异性的抗原识别受体（TCR/BCR），介导适\n应性免疫应答的一类细胞，主要包括T淋巴细胞（简称T细胞）和B淋巴细胞（简称B细\n胞）2类。\n一、T细胞\nT细胞表面具有 TCR-CD3复合体、CD4/CD8 分子、共刺激分子及细胞因子受体等多种\n特征性表面膜分子。根据T细胞表面膜分子及其功能的不同，T细胞分为若干个亚群，介\n导、辅助或调节免疫应答，相互协同完成免疫功能以维护机体生理平衡。\n（一）T细胞的表面分子\nT细胞表面分子是T细胞识别抗原，与其他免疫细胞相互作用以及接受信号刺激并产\n生应答的物质基础，也是鉴别和分离T细胞的重要依据。\n1. TCR-CD3复合体 TCR-CD3是由T细胞受体（T cell receptor, TCR）与CD3分子以\n非共价键结合形成的一个稳定的功能复合体（图5-5）。TCR 特异性识别抗原产生的信号借\n助CD3分子转导进入细胞内。\nTCR 为T细胞特异性识别抗原的受体，是由2条肽链以二硫键连接形成的异二聚体。\n除少数T细胞（约占5%）的TCR分子由Y和6\n链组成外，大多数T细胞的 TCR 分子都由 a和\nB2条肽链组成。2条肽链都有胞外区、跨膜区\nV区\nCD3\n及胞浆区。胞外区包括可变区（V区）及恒定区\n（C区）。TCR 基因重排后的组合可形成约1016\nC区\n种不同特异性的TCR 分子，可识别环境中多种\n多样的抗原。TCR 不能直接识别抗原表位，仅\nT细胞膜\n能识别 APC或靶细胞表面与 MHC 分子结合的\n抗原肽（pMHC），这也是T细胞与B细胞识别\n抗原的主要不同之处。\nITAMs\nCD3表达于所有成熟T细胞表面，是由Y、\n8.8 和n5种肽链两两结合组成的二聚体分\n子，由胞外区、跨膜区和胞浆区组成。胞浆区含"
+  },
+  {
+   "page": 59,
+   "physicalPage": 75,
+   "text": "有免疫受体酪氨酸激活模体（ITAM）。ITAM 的酪氨酸磷酸化可活化相关激酶，传导细胞\n活化信号。CD3具有稳定TCR结构和传递抗原识别信号的作用，但并不参与抗原识别\n过程。\n2. 共受体 CD4 和CD8都是 TCR的共受体（co-receptor），但分别表达在不同的T细\n胞亚群上。CD4分子是一种单链糖蛋白，其胞外区有4个Ig 样结构域，远端的2个结构域\n能与 MHC II 类分子的B2结构域结合；CD8分子是由a和B肽链组成的异二聚体，其o和\nB肽链的胞外区各含1个Ig样结构域，能与MIHC I类分子的as结构域结合。CD4和CD8\n分子可增强T细胞与 APC或靶细胞之间的作用，并促进CD3的ITAM 酪氨酸磷酸化，参与\n活化信号的转导。CD4也是人类免疫缺陷病毒（HIV）gP120的受体。\n3. 共刺激分子 T细胞的活化需要双信号刺激，不仅需要由TCR-CD3复合分子提供\n的起始信号（第一活化信号），还必须有共刺激信号（costimulatory signal）（第二活化信号）。T\n细胞膜上有多种分子与共刺激信号的产生有关，如CD28、LFA-2及CD2分子等，这些分子\n被称为共刺激分子。\n（1）CD28：可表达于90%CD4'T细胞及50%CD8T细胞。它是二硫键连接的同源二聚\n体分子，属Ig超家族。在抗原诱导的T细胞活化中，CD28与CD80（B7-1）、CD86（B7-1）结\n合，为T细胞提供活化的第二信号，刺激T细胞合成IL-2，并促进T细胞的增殖和分化。\n（2）CD154：即CD40配体（CD40L），主要表达于活化的T细胞。与B细胞表面相应受\n体 CD40结合，可调节B 细胞的活化，产生双向效应：一方面为B细胞活化提供共刺激信\n号，另一方面可通过增强作为 APC的B细胞上B7分子表达及分泌T细胞分化相关的细胞\n因子而进一步促进T细胞的活化。\n（3）CD2：又称淋巴细胞功能相关抗原2（LFA-2），表达于95%成熟T细胞，其配体为\nAPC或靶细胞上的CDS8 分子。CD2与相应配体的相互作用可加强T细胞与 APC 或靶细\n胞间的黏附，为T细胞提供协同刺激作用，促进T细胞活化。\n4. 负调节分子 负调节分子在限制过度应答及某些免疫现象中有重要作用，其中最重\n要的是细胞毒性T细胞活化抗原-4（CTL activation antigen-4,CTLA-4） 和程序性细胞死亡\n蛋白-1（programmed cell death 1,PD-1）。CTLA-4即 CD152，其结构上和CD28分子高度\n同源，是由2条肽链经二硫键连接的同源二聚体，主要表达于活化的CD4T 细胞及 CD8\"1\n细胞，配体也是B7 分子（CD80/CD86），但是其亲和力显著高于CD28与B7的亲和力。与\nCD28 的作用相反，因CTLA-4的胞浆区有免疫受体酪氨酸抑制模体（ITIM），CTLA-4与B7\n分子结合，可向活化的T细胞传递抑制信号，下调或终止T细胞活化，限制免疫应答启动阶\n段的强度，避免失控。PD-1即 CD279，也是带胞浆区 ITIM 的一种免疫球蛋白超家族跨膜\n糖蛋白，可被诱导性地表达在活化的T细胞、B细胞、NK细胞、单核细胞和树突状细胞等表\n面，其配体 PD-LI （CD274）和 PD-L2（CD273）也属B7家族。二者结合对活化的细胞产生\n抑制作用，在免疫应答过程中发挥限制作用。机体不少细胞（包括肿瘤细胞）表达PD-L，医\n此PD-1 也在使自身细胞及肿瘤细胞免受免疫攻击中起着重要的作用。此外，细胞毒性T\n细胞（CTL）也表达类似 NK细胞的抑制性受体（KIR）。\n5.细胞因子受体 多种细胞因子通过与T细胞表面相应受体（IL-IR、IL-2R、IL-4R、\nIL-6R 及IL-7R 等）结合而参与调节T细胞活化、增殖和分化。静止和活化的T细胞表面细\n胞因子受体的种类、密度及亲和力差别很大。例如：静止T细胞仅表达低亲和力的IL-2R，\n而活化T细胞可表达高亲和力IL-2R，因此激活的T细胞能接受较低水平1L-2的刺激而\n增殖\n6. 丝裂原结合分子 常用的诱导T细胞发生增殖的丝裂原有伴刀豆球蛋白A"
+  },
+  {
+   "page": 60,
+   "physicalPage": 76,
+   "text": "C 笔记栏\n（ConA）、植物凝集素（PHA）和美洲商陆丝裂原（PWM）。这些丝裂原可与T细胞膜表面的丝\n裂原结合分子结合，刺激T淋巴细胞增殖。此外，T细胞膜上可表达特定类型的Fe受体、补\n体受体和 MHCI类分子，活化的T细胞还可表达MHC II类分子。除上述与免疫活动有\n关的膜分子外，T细胞表面还具有多种内分泌激素、神经递质和神经肽等的受体，与机体神\n经-内分泌- 免疫网络调节有关。\n（二）T细胞亚群与功能\nT细胞是高度异质性的群体。按其表面表达的膜分子类型及生物学作用的差别，T细\n胞可划分为不同类别和亚群（subpopulation）。①根据在应答过程所处阶段和状态的不同分\n为初始T细胞（naive T cell）、效应T细胞（effector T cell, Teff）和记忆性T细胞（memory T\ncell, Tm cell）；②根据TCR类型不同分为 aBT 细胞和 y8T 细胞；③根据是否表达CD4或\nCD8 分子分为 CD4'T 细胞和 CD8'T 细胞；④根据功能不同分为辅助性T细胞（helper T\ncell, Th cell）、细胞毒性T细胞 （cytotoxic T cell,CTL 或 Tc cell）和调节性T细胞（regulatory\nTcell,Treg）等。\n1. 初始T细胞、效应T细胞和记忆性T细胞\n（1）初始T细胞：是指从未接受过抗原刺激的成熟T细胞。T细胞发育成熟后离开胸\n腺，迁移到外周淋巴组织或器官，在没有接触到任何抗原刺激时处于相对静止状态，表达\nCD45RA 和高水平的L- 选择素（CD62L），参与淋巴细胞再循环。初始T细胞在外周免疫器\n官内接受抗原刺激而活化，并最终分化效应T细胞和记忆性T细胞。\n（2）效应T细胞：为由初始T细胞分化而来的具有免疫效应功能的T细胞，表达高水\n平、高亲和力1L-2受体，还表达黏附分子（整合素和CD44）和 CD45RO。效应T细胞与初\n始T细胞不同，不再循环至淋巴结，而是向外周炎症组织迁移。\n（3）记忆性T细胞：可由效应T细胞分化而来，也可由初始T细胞受抗原刺激后分化而\n来，是维持机体免疫记忆的细胞，可存活数年甚至几十年。记忆性T 细胞可再次接受相同抗\n原刺激后迅速活化，并分化为效应T细胞。记忆性T细胞表达 CD45RO 和 CD44，参与淋巴\n细胞再循环。在缺乏抗原等刺激的情况下，记忆性T细胞可以长期存活，通过自发增殖维持\n在一定水平。\n2. aBT 细胞和y8T细胞 根据表达的TCR类型，T细胞可分为TCRapT 细胞和\nTCRy8T 细胞，分别简称 aBT 细胞及yOT 细胞。在外周血中，aBT 细胞占成熟T细胞的\n95%以上，主要CD4*或CD8*单阳性，即一般所说的T细胞，是适应性免疫应答的主要\n细胞。YT 细胞主要分布在皮肤和黏膜上皮层中，表型多为CD4 CD8，部分细胞可为CD8*\n单阳性。y6T 细胞发挥固有免疫功能。\n3. CD4'T细胞和 CD8'T细胞 根据T细胞表面CD 分子表型的不同，可将成熟的T\n细胞分CD4'T细胞和CD8T细胞。CD4'T 细胞识别由13~17个氨基酸残基组成的外源\n性抗原肽，其识别、活化过程受 MHCII 类分子的限制，活化后分化的效应细胞主要为辅助\n性T细胞；而CD8'T细胞识别由 8~10个氨基酸残基组成的内源性抗原肽，受MHCI类分\n子的限制，活化后分化的效应细胞主要为细胞毒性T细胞，具有细胞毒作用，可特异性杀伤\n靶细胞。\n4. 辅助性T细胞（Th细胞）、细胞毒性T细胞（CTL）和调节性T细胞（Treg）\n（1）Th 细胞：多CD4'T细胞。未受抗原刺激的初始CD4'T 细胞为ThO 细胞，在不同\n抗原刺激下及不同细胞因子的作用下，ThO细胞向不同的Th细胞亚群分化。① Th1 细胞：\n分泌 IFN-Y、IL-2和 TNF-a/p 等类型的细胞因子，激活巨噬细胞，辅助CTL 的活化和增殖，\n增强 NK细胞的杀伤活性，发挥细胞免疫效应；所分泌的某些细胞因子可抑制Th2细胞的"
+  },
+  {
+   "page": 61,
+   "physicalPage": 77,
+   "text": "活化及其生物学效应。②Th2 细胞：分泌 IL-4、IL-5、IL-13和IL-10等类型的细胞因子，辅\n助B 细胞增殖并产生不同类别的抗体；所分泌的某些细胞因子可抑制 Thl细胞的活化及\n效应作用。③Th17细胞：以分泌1L-17、I-21、IL-22等细胞因子为特征，可刺激多种细胞\n产生1L-6、IL-1、TNF、GM-CSF 等前炎症因子，在炎症形成过程中起主导作用。其增殖依赖\n于巨噬细胞所分泌的IL.-23，但受 Th1、Th2型细胞因子的抑制。④Tfh：滤泡辅助性T细胞\n（follicular helper T cell,Tth） 是一种存在于外周免疫器官淋巴滤泡的CD4T细胞，其分泌的\nIL-21 在促进B细胞分化浆细胞、产生抗体和Ig类别转换中发挥作用，是辅助B细胞应\n答的关键细胞。⑤Th9细胞：以分泌 1L-9为特征，在过敏性疾病、抗寄生虫感染和自身免疫\n病中发挥重要作用。⑥ Th22细胞：是一群以 IL-17A IL-22 IFNy为特征的CD4T 细胞，表\n达趋化因子受体CCR4、CCR6 和 CCR10，通过分泌IL-22、IL-13和 TNF-a参与上皮细胞的\n生理功能和炎性病理过程。\n（2） CTL：多为CD8'T 细胞，经抗原受体介导产生特异性细胞毒作用，其机制为：①分泌\n穿孔素（perforin）及颗粒酶（granzyme）介导靶细胞裂解或调亡；②分泌 TNF-~与靶细胞表\n面的TNF 受体（TNFR）结合，启动靶细胞凋亡；③通过高表达 FasL 导致 Fas 阳性的靶细胞\n凋亡。\n（3） Treg：通常所称 Treg 是指CD4\"CD25'Foxp3*的T细胞，具有抑制性免疫调节功能。\n在胸腺形成的称为天然调节性T细胞（nTreg），在自身免疫耐受中起重要作用；外周由初始\nT细胞分化形成的称为诱导性调节性T细胞（iTreg），可抑制性调节其他效应T细胞的活化\n与增殖。其调节机制主要与细胞间直接接触、分泌抑制性细胞因子、诱导T细胞表面负调节\n分子表达及调控 APC 作用有关。\nB细胞\nB 细胞表达 BCR-CD79a/b 复合体、共受体、共刺激分子、MHC II /I类分子及细胞因子\n受体等多种细胞表面膜分子。\n（一） B 细胞的表面分子\nB 细胞表面的膜分子，也是B细胞的标志性分子。这些分子在B 细胞识别抗原、活化\n增殖、分化及产生抗体等方面有重要作用。\n1. BCR-CD79a/b复合体 BCR-CD79a/b复\n合体是由 B 细胞受体（BCR）与 CD79a/b （Iga/Igp）\n分子两部分组成（图5-6）。\n（1） BCR：即膜表面免疫球蛋白 （surface membrane\n轻链\nimmunoglobulin, mlg），为单体，胞外V区能特异\n重链\n性结合抗原表位，但胞质区很短，不能传递抗原刺\nIgo IgB\nIgB Iga\n激信号到细胞内。不同发育分化阶段的B细胞，\n构成BCR的mlg类别各异，未成熟B细胞表达\nCD79b\nCD79a\nmlgM，成熟 B 细胞同时表达 mIgM 和 mIgD，活化\n和记忆B 细胞 mlgD 表达消失。BCR具有高度的\n多样性，可直接识别具有天然构象的抗原分子。\n—ITAM一\n（2）CD79a/b：也称 Iga（CD79a）、IgB（CD79b）。\n两者形成二聚体，其胞浆区含有 ITAM，可将 BCR\n传导信号\n胞外 V 区结合抗原的刺激信号传递到细胞内，为\nB 细胞提供第一活化信号。\n图5-6 BCR-CD79a/b 复合体示意图"
+  },
+  {
+   "page": 62,
+   "physicalPage": 78,
+   "text": "C笔记栏\n2.共受体 CD19、CD21 和 CD81 以非共价键形成复合体，称为B细胞共受体。CD19\n是一种跨膜蛋白，其胞浆区可传导活化信号；CD21 是补体C3d受体（CR2），也是EB 病毒的\n受体，可显著增强 BCR识别抗原的信号传导，促进B细胞活化。\n3. 共刺激分子 B 细胞表面的共刺激分子为B 细胞和T细胞活化提供必要的第二信\n号，主要包括：\n（1）CD40：是B细胞表面最重要的共刺激分子，其配体为表达于活化T细胞表面的\nCD154（CD40L）。Th 细胞活化后，CD40L 表达上调，与CD40相互作用，提供B细胞活化的\n第二信号。\n（2） CD80/CD86：高表达在活化的B细胞表面，是T细胞CD28 和CD152的配体，\nB7分子（CD80/CD86）与CD28 相互作用，为T细胞的活化提供第二信号；B7分子（CD80/\nCD86）与 CD152相互作用，则可抑制T细胞活化。\n4. 负调节分子\n（1）CD22：胞内段含有ITIM,B 细胞活化导致ITIM 磷酸化，可对B细胞活化产生负调\n节作用。\n（2） CD32（FcyR II B）：为一种IgG Fc 受体，胞内段含有ITIM，其作用是介导抑制信号，\n进而抑制B 细胞的分化和抗体生成。\n（3）CD279（PD-1）：活化B细胞表达，结合配体后抑制B细胞增殖和分化，参与免疫耐\n受；CD279 缺陷可出现狼疮样病变及血清Ig增多。\n5. 细胞因子受体 B 细胞表面表达IL-IR、IL-2R、IL-4R、IL-5R、IL-6R、IL-7R 及 IFN-YR\n等多种细胞因子受体，与相应细胞因子结合而参与或调节 B 细胞活化、增殖和分化。\n6. 丝裂原结合分子 B细胞表面具有多种丝裂原结合分子，可以与相应丝裂原结\n合，激活B细胞，使其增殖分化为淋巴母细胞。常见的B细胞丝裂原有美洲商陆丝裂原\n（PWM）、脂多糖（LPS）、金黄色葡萄球菌 A蛋白（SPA）等。\n7. MHC 分子 成熟B细胞可表达高密度的MHCI类和 MHC II类分子。在发育前\n期，B 细胞已表达 MHC II类分子，活化后表达明显增多。它的主要作用是提呈抗原肽，与T\n细胞 TCR结合，为T细胞提供第一活化信号。活化的Th 细胞表达 CD40L 等共刺激分子，\n与B 细胞表面 CD40等共刺激分子结合使得B 细胞获得第二活化信号。\n此外，B细胞还表达补体受体 CR1、CR2及 FcaR等免疫球蛋白的Fc受体。\n（二） B 细胞亚群及其功能\n1. B1 细胞和B2细胞 根据B细胞是否表达CD5 分子，通常把B细胞分B1 细胞\n（CD5*，主要参与固有免疫）和B2细胞（CD5，主要参与适应性免疫）。B2细胞的主要功能\n为：①产生抗体：B2细胞主要识别蛋白质抗原，是参与B细胞介导的适应性免疫应答的主\n要细胞。B2细胞受特异性抗原刺激后，需在T细胞的辅助下，大量增殖，形成生发中心，并经\n历类别转换、体细胞高频突变和亲和力成熟，最终分化浆细胞，产生高亲和性抗体。②提呈\n抗原：B2 细胞是专职 APC，具有抗原提呈功能，可借其BCR结合特异性抗原表位，经抗原内\n化、加工和处理，以抗原肽-MHC 分子复合物形式提呈给效应T细胞/记忆性T细胞。③分\n泌细胞因子：活化的B细胞还可产生多种细胞因子，参与免疫调节、炎症反应等过程。\n2. 抗体产生性B 细胞和调节性B 细胞 根据生物学功能可分为抗体产生性B细胞\n和调节性B细胞。前者主要功能产生抗体、提呈抗原和分泌细胞因子等；后者通过产生\nIL-10、TGF-B 等抑制性细胞因子或细胞膜分子来间接或直接抑制其他免疫细胞的功能，发\n挥免疫调节作用。\n3. 初始B 细胞、效应B 细胞（浆细胞）和记忆B 细胞 根据激活状态可分为初始B细"
+  },
+  {
+   "page": 63,
+   "physicalPage": 79,
+   "text": "胞、效应B细胞（浆细胞）和记忆B细胞。初始B 细胞，即未经抗原激活的B细胞，经抗原\n激活分化为浆细胞并产生抗体参与免疫应答。受抗原刺激的B细胞除分化成浆细胞外，尚\n有部分分化为记忆 B 细胞（memory B cell,Bm cell），大部分Bm 细胞进入血液参与再循环。\nBm 细胞不产生Ig，但再次与同一抗原相遇时可迅速活化，产生大量抗原特异性Ig。\n学习小结\n免疫细胞分为固有免疫细胞和适应性免疫细胞。固有免疫细胞主要包括单核1\n巨噬细胞、树突状细胞、固有淋巴样细胞（NK 细胞、ILC1,ILC2、ILC3）、固有样淋巴细胞\n（NK T细胞、Y8T细胞、BI细胞）、中性粒细胞、嗜酸性粒细胞、嗜碱性粒细胞、肥大细胞\n等。适应性免疫细胞包括T细胞和B细胞。抗原提呈细胞（APC）是连接固有免疫和\n适应性免疫的重要细胞，专职 APC 包括单核/巨噬细胞、树突状细胞和B细胞。\nT细胞表面重要的膜分子包括TCR-CD3复合物、CD4和CD8、CD28、CD154、CD2、\nCTLA-4、PD-1 等多种受体。根据功能不同，T细胞可分为 CD4* 辅助性T细胞（Th细\n胞）、CD8*细胞毒性T细胞（CTL）和调节性T细胞（Treg）。Thl细胞分泌IL-2、IFN-Y、\nTNF-a等细胞因子介导细胞免疫应答，Th2细胞分泌1L-4、IL-5等细胞因子辅助体液\n免疫。\nB细胞表面重要的膜分子包括BCR-CD79alb复合物、CD40、CD80/86、CD22、\nFcyR II、CD19/CD21/CD81/CD225以及多种受体。根据CD5的表达，B细胞可分为BI\n细胞和 B2细胞；根据功能，B细胞分为初始B细胞、浆细胞和记忆B细胞。\n复习思考题\n1.请列举T，B淋巴细胞的主要表面分子，并试述这些表面分子在T、B细胞免疫应答中\n的作用。\n2. 试述T、B 淋巴细胞之间及T、B淋巴细胞与其他免疫细胞之间的联系。"
+  }
+ ]
+}
