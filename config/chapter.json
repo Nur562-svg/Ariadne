@@ -44,6 +44,13 @@
       "physicalStart": 80,
       "physicalEnd": 93,
       "pageOffset": 16
+    },
+    {
+      "id": "ch07",
+      "title": "免疫病理（第七章）",
+      "physicalStart": 94,
+      "physicalEnd": 105,
+      "pageOffset": 16
     }
   ]
 }

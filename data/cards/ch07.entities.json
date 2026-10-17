@@ -1,0 +1,6599 @@
+{
+  "source": "data/chapters/ch07.blocks.json",
+  "book": "免疫学基础与病原生物学（第3版）",
+  "scope": "免疫病理（第七章）（书页 78–89）",
+  "pageNote": "page = 印刷书页码",
+  "generated_by": "extract_cards.mjs · DeepSeek deepseek-chat（逐页 CHUNK=1）· name_zh 近重复已合并 · 全部 cites verified=false 待 Nuradil 抽查",
+  "cards": [
+    {
+      "id": "hypersensitivity",
+      "name_zh": "超敏反应",
+      "name_en": "Hypersensitivity",
+      "aliases": [
+        "变态反应",
+        "allergy"
+      ],
+      "kind": "concept",
+      "one_liner": "再次或持续接触相同抗原所致的免疫应答，引起功能紊乱和/或组织损伤",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "机体再次或持续接触相同抗原所致的生理功能紊乱和/或组织细胞损伤为主的免疫应答",
+          "cite": {
+            "page": 78,
+            "quote": "再次或持续接触相同抗原所致的生理功能紊乱",
+            "verified": false
+          }
+        },
+        {
+          "label": "别名",
+          "value": "又称变态反应（allergy）",
+          "cite": {
+            "page": 78,
+            "quote": "又称变态反应（allergy）",
+            "verified": false
+          }
+        },
+        {
+          "label": "分型依据",
+          "value": "根据发生机制和临床特点分为4型",
+          "cite": {
+            "page": 78,
+            "quote": "根据发生机制和临床特点，将超敏反应分为4型",
+            "verified": false
+          }
+        },
+        {
+          "label": "分型原则",
+          "value": "按发生机制分4型；I~III型以体液免疫为主，IV型以细胞免疫为主",
+          "cite": {
+            "page": 89,
+            "quote": "超敏反应按发生机制可分4型",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "正常免疫应答",
+          "tip": "正常免疫维持内环境稳定、防御感染；超敏反应是功能异常导致的病症"
+        },
+        {
+          "vs": "自身免疫病",
+          "tip": "超敏反应针对外来或改变抗原的过度应答；自身免疫病针对自身成分的持久应答"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:hypersensitivity:1",
+          "prompt": "超敏反应的定义是什么？",
+          "answer": "机体再次或持续接触相同抗原所致的生理功能紊乱和/或组织细胞损伤为主的免疫应答",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "再次或持续接触相同抗原所致的生理功能紊乱",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:hypersensitivity:2",
+          "prompt": "超敏反应根据什么分为4型？",
+          "answer": "根据发生机制和临床特点",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "根据发生机制和临床特点，将超敏反应分为4型",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:hypersensitivity:3",
+          "prompt": "超敏反应按发生机制分为几型？",
+          "answer": "4型",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "超敏反应按发生机制可分4型",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:hypersensitivity:4",
+          "prompt": "哪几型超敏反应以体液免疫为主？",
+          "answer": "I、II、III型",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "1~\"型以体液免疫为主",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 78,
+          "quote": "再次或持续接触相同抗原所致的生理功能紊乱",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "超敏反应按发生机制可分4型",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "type-i-hypersensitivity",
+      "name_zh": "I型超敏反应",
+      "name_en": "Type I hypersensitivity",
+      "aliases": [
+        "速发型超敏反应",
+        "过敏反应",
+        "anaphylaxis",
+        "IgE介导型"
+      ],
+      "kind": "process",
+      "one_liner": "IgE介导、发生快、多为可逆性功能紊乱、有明显个体差异和遗传倾向",
+      "fields": [
+        {
+          "label": "别名",
+          "value": "又称过敏反应（anaphylaxis）或速发型超敏反应",
+          "cite": {
+            "page": 78,
+            "quote": "又称过敏反应（anaphylaxis）或速发型超敏反应",
+            "verified": false
+          }
+        },
+        {
+          "label": "介导抗体",
+          "value": "主要由抗体IgE介导",
+          "cite": {
+            "page": 78,
+            "quote": "主要由抗体IgE介导",
+            "verified": false
+          }
+        },
+        {
+          "label": "主要特征",
+          "value": "①发生快；②多见生理功能紊乱，一般可逆；③具有明显的个体差异和遗传倾向",
+          "cite": {
+            "page": 78,
+            "quote": "①发生快；②多见生理功能紊乱，一般可逆",
+            "verified": false
+          }
+        },
+        {
+          "label": "定义",
+          "value": "变应原刺激机体产生特异性IgE，IgE结合肥大细胞/嗜碱性粒细胞FcεRI致敏，再次接触变应原发生桥联而脱颗粒释放介质",
+          "cite": {
+            "page": 79,
+            "quote": "I 型超敏反应的发生过程可分为3个阶段",
+            "verified": false
+          }
+        },
+        {
+          "label": "三阶段",
+          "value": "致敏阶段、发敏阶段、效应阶段",
+          "cite": {
+            "page": 79,
+            "quote": "致敏阶段、发敏阶段和效应阶段",
+            "verified": false
+          }
+        },
+        {
+          "label": "遗传背景",
+          "value": "多基因遗传病，相关基因包括HLA、IL-4、IL-4R、IL-13及FcεRI基因",
+          "cite": {
+            "page": 79,
+            "quote": "1型超敏反应为多基因遗传病",
+            "verified": false
+          }
+        },
+        {
+          "label": "效应细胞",
+          "value": "肥大细胞和嗜碱性粒细胞",
+          "cite": {
+            "page": 89,
+            "quote": "I型由IgE与肥大细胞和嗜碱性粒细胞引起",
+            "verified": false
+          }
+        },
+        {
+          "label": "效应分子",
+          "value": "IgE",
+          "cite": {
+            "page": 89,
+            "quote": "I型由IgE与肥大细胞和嗜碱性粒细胞引起",
+            "verified": false
+          }
+        },
+        {
+          "label": "效应细胞",
+          "value": "肥大细胞、嗜碱性粒细胞（介质释放）；嗜酸性粒细胞参与迟发相",
+          "cite": {
+            "page": 80,
+            "quote": "以嗜酸性粒细胞、中性粒细胞、嗜碱性粒细胞等浸润为特征",
+            "verified": false
+          }
+        },
+        {
+          "label": "速发相反应",
+          "value": "再次接触相同变应原后十几分钟内发作、迅速消退，主要由组胺、前列腺素等引起生理功能紊乱，严重可致过敏性休克",
+          "cite": {
+            "page": 80,
+            "quote": "于再次接触相同变应原后十几分钟内发作、且迅速消退",
+            "verified": false
+          }
+        },
+        {
+          "label": "迟发相反应",
+          "value": "再次接触变应原4~6小时后发作并持续24小时以上，以嗜酸性粒细胞、中性粒细胞、嗜碱性粒细胞浸润为特征的炎症反应，可致组织损伤",
+          "cite": {
+            "page": 80,
+            "quote": "于再次接触相同变应原4~6小时后发作并持续24小时以上",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "II型超敏反应",
+          "tip": "I型由IgE介导；II型为细胞毒型，由抗体介导细胞损伤"
+        },
+        {
+          "vs": "IV型超敏反应",
+          "tip": "I型由抗体IgE介导；IV型由效应T细胞介导"
+        },
+        {
+          "vs": "III型超敏反应",
+          "tip": "I型为速发型，III型为免疫复合物沉积型"
+        },
+        {
+          "vs": "类过敏反应",
+          "tip": "I型超敏反应依赖IgE，类过敏反应不依赖IgE"
+        },
+        {
+          "vs": "Ⅱ型超敏反应",
+          "tip": "Ⅰ型由IgE介导、肥大细胞/嗜碱性粒细胞释放介质；Ⅱ型由IgG/IgM介导、针对细胞表面抗原，经补体或ADCC损伤细胞。"
+        },
+        {
+          "vs": "Ⅲ型超敏反应",
+          "tip": "Ⅰ型为IgE-肥大细胞机制；Ⅲ型为可溶性免疫复合物沉积所致。"
+        },
+        {
+          "vs": "Ⅳ型超敏反应",
+          "tip": "Ⅰ型为抗体（IgE）介导的速发反应；Ⅳ型为T细胞介导的迟发型反应。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:type-i-hypersensitivity:1",
+          "prompt": "I型超敏反应主要由哪种抗体介导？",
+          "answer": "IgE",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "主要由抗体IgE介导",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-hypersensitivity:2",
+          "prompt": "I型超敏反应的三大主要特征是什么？",
+          "answer": "发生快；多见生理功能紊乱，一般可逆；具有明显的个体差异和遗传倾向",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "①发生快；②多见生理功能紊乱，一般可逆",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-hypersensitivity:3",
+          "prompt": "I型超敏反应发生过程分为哪三个阶段？",
+          "answer": "致敏阶段、发敏阶段、效应阶段",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "致敏阶段、发敏阶段和效应阶段",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-hypersensitivity:4",
+          "prompt": "I型超敏反应致敏阶段的关键事件是什么？",
+          "answer": "变应原诱导B细胞产生特异性IgE，IgE与肥大细胞和嗜碱性粒细胞表面FcεRI结合",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "IgE 与肥大细胞和嗜碱性粒细胞表面的FcRI结合",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-hypersensitivity:5",
+          "prompt": "I型超敏反应发敏阶段为何需要变应原再次进入？",
+          "answer": "单个IgE结合FcεRI不能激活细胞，需相邻2个以上IgE与FcεRI交联才能启动活化信号",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "相邻的2个或2个以上的IgE",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-hypersensitivity:6",
+          "prompt": "I型超敏反应主要由哪类抗体介导？",
+          "answer": "IgE",
+          "difficulty": "what",
+          "cite": {
+            "page": 81,
+            "quote": "IgE",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-hypersensitivity:7",
+          "prompt": "I型超敏反应由哪类抗体和哪两类细胞介导？",
+          "answer": "IgE；肥大细胞和嗜碱性粒细胞",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "I型由IgE与肥大细胞和嗜碱性粒细胞引起",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-hypersensitivity:8",
+          "prompt": "Ⅰ型超敏反应速发相反应的发生时相和主要介质是什么？",
+          "answer": "再次接触相同变应原后十几分钟内发作、迅速消退，主要由组胺、前列腺素等引起。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "于再次接触相同变应原后十几分钟内发作、且迅速消退",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-hypersensitivity:9",
+          "prompt": "Ⅰ型超敏反应迟发相反应的发生时相和浸润细胞特征是什么？",
+          "answer": "再次接触变应原4~6小时后发作并持续24小时以上，以嗜酸性粒细胞、中性粒细胞、嗜碱性粒细胞浸润为特征的炎症反应。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "于再次接触相同变应原4~6小时后发作并持续24小时以上",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 78,
+          "quote": "主要由抗体IgE介导",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "I 型超敏反应的发生过程可分为3个阶段",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "致敏阶段、发敏阶段和效应阶段",
+          "verified": false
+        },
+        {
+          "page": 81,
+          "quote": "I型超敏反应",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "I型由IgE与肥大细胞和嗜碱性粒细胞引起",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "于再次接触相同变应原后十几分钟内发作、且迅速消退",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "于再次接触相同变应原4~6小时后发作并持续24小时以上",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "allergen",
+      "name_zh": "变应原",
+      "name_en": "Allergen",
+      "aliases": [],
+      "kind": "molecule",
+      "one_liner": "引起I型超敏反应的抗原物质，包括吸入性、食入性和药物性",
+      "fields": [
+        {
+          "label": "常见类型",
+          "value": "①吸入性变应原（花粉、尘螨、真菌菌丝及孢子、动物皮毛等）；②食入性变应原（动物蛋白或部分肽类物质）；③药物性变应原（青霉素、磺胺、普鲁卡因和有机碘等）",
+          "cite": {
+            "page": 78,
+            "quote": "如花粉、尘螨、真菌",
+            "verified": false
+          }
+        },
+        {
+          "label": "药物性变应原特点",
+          "value": "属小分子半抗原物质，进入机体后与某些蛋白结合形成完全抗原，成为变应原",
+          "cite": {
+            "page": 78,
+            "quote": "属小分子半抗原物质",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "完全抗原",
+          "tip": "药物性变应原多为半抗原，需与蛋白结合后才成为完全抗原"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:allergen:1",
+          "prompt": "临床常见的变应原分为哪三类？",
+          "answer": "吸入性变应原、食入性变应原、药物性变应原",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "如花粉、尘螨、真菌",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:allergen:2",
+          "prompt": "药物性变应原（如青霉素）属于什么性质物质？",
+          "answer": "小分子半抗原，进入机体后与蛋白结合形成完全抗原",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "属小分子半抗原物质",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 78,
+          "quote": "如花粉、尘螨、真菌",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "ige",
+      "name_zh": "IgE",
+      "name_en": "Immunoglobulin E",
+      "aliases": [],
+      "kind": "molecule",
+      "one_liner": "I型超敏反应的主要介导抗体，通过Fc片段与肥大细胞/嗜碱性粒细胞FcεRI结合致",
+      "fields": [
+        {
+          "label": "血清含量",
+          "value": "正常人血清中IgE含量极低（<50μg/ml）；过敏患者体内可异常增高（可达1000μg/ml）",
+          "cite": {
+            "page": 78,
+            "quote": "正常人血清中IgE 含量极低（<50ug/ml）",
+            "verified": false
+          }
+        },
+        {
+          "label": "来源",
+          "value": "主要由黏膜下淋巴组织中的浆细胞分泌",
+          "cite": {
+            "page": 78,
+            "quote": "IgE 主要由黏膜下淋巴组织中的浆细胞分泌",
+            "verified": false
+          }
+        },
+        {
+          "label": "致敏机制",
+          "value": "通过其Fc片段与肥大细胞或嗜碱性粒细胞表面的FcεRI结合，使之致敏",
+          "cite": {
+            "page": 78,
+            "quote": "通过其Fc片段与肥大细胞或嗜碱性粒细胞表面的 FceRI 结",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "IgG/IgM",
+          "tip": "IgE介导I型超敏反应；IgG/IgM参与II、III型超敏反应"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:ige:1",
+          "prompt": "IgE通过哪个片段与肥大细胞/嗜碱性粒细胞结合？",
+          "answer": "Fc片段（与FcεRI结合）",
+          "difficulty": "why",
+          "cite": {
+            "page": 78,
+            "quote": "通过其Fc片段与肥大细胞或嗜碱性粒细胞表面的 FceRI 结",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:ige:2",
+          "prompt": "IgE主要由哪种细胞分泌？",
+          "answer": "黏膜下淋巴组织中的浆细胞",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "IgE 主要由黏膜下淋巴组织中的浆细胞分泌",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 78,
+          "quote": "通过其Fc片段与肥大细胞或嗜碱性粒细胞表面的 FceRI 结",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "mast-cell-basophil",
+      "name_zh": "肥大细胞与嗜碱性粒细胞",
+      "name_en": "Mast cell and basophil",
+      "aliases": [],
+      "kind": "cell",
+      "one_liner": "I型超敏反应的启动细胞，表达高亲和力FcεRI，含组胺等介质，脱颗粒引起炎症",
+      "fields": [
+        {
+          "label": "启动作用",
+          "value": "I型超敏反应的启动细胞主要是肥大细胞和嗜碱性粒细胞",
+          "cite": {
+            "page": 78,
+            "quote": "I型超敏反应的启动细胞主要是肥大细胞和嗜碱性粒细胞",
+            "verified": false
+          }
+        },
+        {
+          "label": "受体",
+          "value": "两者均表达高亲和力的FcεRI",
+          "cite": {
+            "page": 78,
+            "quote": "两者均表达高亲和力的 FcaRI",
+            "verified": false
+          }
+        },
+        {
+          "label": "颗粒介质",
+          "value": "胞质中含储存组胺、肝素、白三烯（LT）和嗜酸性粒细胞趋化因子等生物活性介质的嗜碱性颗粒，以脱颗粒方式引起炎症",
+          "cite": {
+            "page": 78,
+            "quote": "胞质中均含有储存组胺、肝素、白三烯",
+            "verified": false
+          }
+        },
+        {
+          "label": "细胞因子",
+          "value": "肥大细胞主要分泌IL-4、IL-5和TNF-α；嗜碱性粒细胞主要合成IL-4和IL-13",
+          "cite": {
+            "page": 78,
+            "quote": "肥大细胞主要分泌 1L-4、IL-5 和 TNF-a",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "嗜酸性粒细胞",
+          "tip": "肥大细胞/嗜碱性粒细胞是启动细胞；嗜酸性粒细胞也参与但非主要启动细胞"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:mast-cell-basophil:1",
+          "prompt": "I型超敏反应的启动细胞主要是哪两种？",
+          "answer": "肥大细胞和嗜碱性粒细胞",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "I型超敏反应的启动细胞主要是肥大细胞和嗜碱性粒细胞",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:mast-cell-basophil:2",
+          "prompt": "肥大细胞和嗜碱性粒细胞胞质颗粒中储存哪些主要生物活性介质？",
+          "answer": "组胺、肝素、白三烯和嗜酸性粒细胞趋化因子等",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "胞质中均含有储存组胺、肝素、白三烯",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:mast-cell-basophil:3",
+          "prompt": "肥大细胞主要分泌哪些细胞因子？",
+          "answer": "IL-4、IL-5和TNF-α",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "肥大细胞主要分泌 1L-4、IL-5 和 TNF-a",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 78,
+          "quote": "I型超敏反应的启动细胞主要是肥大细胞和嗜碱性粒细胞",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "type-ii-hypersensitivity",
+      "name_zh": "II型超敏反应",
+      "name_en": "Type II hypersensitivity",
+      "aliases": [
+        "细胞毒型超敏反应",
+        "细胞溶解型超敏反应"
+      ],
+      "kind": "process",
+      "one_liner": "抗体介导的细胞毒型超敏反应，由抗体、补体和ADCC参与靶细胞损伤",
+      "fields": [
+        {
+          "label": "别名",
+          "value": "又称细胞毒型超敏反应",
+          "cite": {
+            "page": 78,
+            "quote": "【型超敏反应（细胞毒型）",
+            "verified": false
+          }
+        },
+        {
+          "label": "介导方式",
+          "value": "由抗体介导（1~III型均由抗体介导）",
+          "cite": {
+            "page": 78,
+            "quote": "1~皿型超敏反应均由抗体介导",
+            "verified": false
+          }
+        },
+        {
+          "label": "定义",
+          "value": "又称细胞毒型或细胞溶解型超敏反应，由IgG或IgM类抗体直接与细胞表面抗原结合引起",
+          "cite": {
+            "page": 81,
+            "quote": "细胞毒型或细胞溶解型超敏反应",
+            "verified": false
+          }
+        },
+        {
+          "label": "靶细胞表面抗原",
+          "value": "包括细胞固有抗原（ABO血型抗原、Rh抗原、HLA抗原）、共同抗原、改变的自身抗原、吸附于细胞表面的外来抗原或半抗原。",
+          "cite": {
+            "page": 82,
+            "quote": "靶细胞表面抗原主要包括",
+            "verified": false
+          }
+        },
+        {
+          "label": "参与抗体",
+          "value": "主要是IgG（IgG1、IgG2、IgG3）和IgM类抗体。",
+          "cite": {
+            "page": 82,
+            "quote": "参与I型超敏反应的抗体主要是IgG",
+            "verified": false
+          }
+        },
+        {
+          "label": "参与成分",
+          "value": "IgG、IgM和补体",
+          "cite": {
+            "page": 89,
+            "quote": "均有IgC、IgM和补体参与",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "I型超敏反应",
+          "tip": "I型由IgE介导；II型为细胞毒型，损伤靶细胞"
+        },
+        {
+          "vs": "III型超敏反应",
+          "tip": "II型针对细胞表面抗原；III型由免疫复合物沉积致病"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:type-ii-hypersensitivity:1",
+          "prompt": "II型超敏反应又称什么？",
+          "answer": "细胞毒型超敏反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "【型超敏反应（细胞毒型）",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-hypersensitivity:2",
+          "prompt": "I~III型超敏反应由什么介导？",
+          "answer": "均由抗体介导",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "1~皿型超敏反应均由抗体介导",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-hypersensitivity:3",
+          "prompt": "II型超敏反应的别名是什么？",
+          "answer": "细胞毒型或细胞溶解型超敏反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 81,
+            "quote": "细胞毒型或细胞溶解型超敏反应",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-hypersensitivity:4",
+          "prompt": "II型超敏反应主要由哪类抗体介导？",
+          "answer": "IgG或IgM类抗体",
+          "difficulty": "what",
+          "cite": {
+            "page": 81,
+            "quote": "IgG 或IgM类抗体",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-hypersensitivity:5",
+          "prompt": "II型超敏反应的主要参与抗体是什么？",
+          "answer": "IgG（IgG1、IgG2、IgG3）和IgM类抗体。",
+          "difficulty": "what",
+          "cite": {
+            "page": 82,
+            "quote": "参与I型超敏反应的抗体主要是IgG",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-hypersensitivity:6",
+          "prompt": "II型超敏反应导致靶细胞溶解的三条途径是什么？",
+          "answer": "激活补体（MAC溶解）、调理吞噬、ADCC。",
+          "difficulty": "why",
+          "cite": {
+            "page": 82,
+            "quote": "激活补体",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-hypersensitivity:7",
+          "prompt": "II型超敏反应的靶细胞表面抗原包括哪几类？",
+          "answer": "细胞固有抗原、共同抗原、改变的自身抗原、吸附于细胞表面的外来抗原或半抗原。",
+          "difficulty": "what",
+          "cite": {
+            "page": 82,
+            "quote": "靶细胞表面抗原主要包括",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-hypersensitivity:8",
+          "prompt": "II型超敏反应有哪些抗体和补体参与？",
+          "answer": "IgG、IgM和补体",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "均有IgC、IgM和补体参与",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 78,
+          "quote": "【型超敏反应（细胞毒型）",
+          "verified": false
+        },
+        {
+          "page": 81,
+          "quote": "细胞毒型或细胞溶解型超敏反应",
+          "verified": false
+        },
+        {
+          "page": 81,
+          "quote": "IgG 或IgM类抗体",
+          "verified": false
+        },
+        {
+          "page": 82,
+          "quote": "引起以细胞溶解或组织损伤为主的超敏反应",
+          "verified": false
+        },
+        {
+          "page": 82,
+          "quote": "参与I型超敏反应的抗体主要是IgG",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "I型为细胞毒型",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "type-iii-hypersensitivity",
+      "name_zh": "III型超敏反应",
+      "name_en": "Type III hypersensitivity",
+      "aliases": [
+        "免疫复合物型超敏反应",
+        "免疫复合物病",
+        "血管炎型超敏反应"
+      ],
+      "kind": "process",
+      "one_liner": "由中等大小免疫复合物沉积引起的超敏反应，属抗体介导型",
+      "fields": [
+        {
+          "label": "别名",
+          "value": "又称免疫复合物型超敏反应",
+          "cite": {
+            "page": 78,
+            "quote": "𦉫型超敏反应（免疫复合物型）",
+            "verified": false
+          }
+        },
+        {
+          "label": "介导方式",
+          "value": "由抗体介导（1~III型均由抗体介导）",
+          "cite": {
+            "page": 78,
+            "quote": "1~皿型超敏反应均由抗体介导",
+            "verified": false
+          }
+        },
+        {
+          "label": "定义",
+          "value": "由中等大小可溶性免疫复合物沉积引起的超敏反应",
+          "cite": {
+            "page": 84,
+            "quote": "中等大小可溶性免疫复合物",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制-补体",
+          "value": "免疫复合物激活补体产生C3a、C5a、C3b",
+          "cite": {
+            "page": 84,
+            "quote": "C3a、C5a、C3b",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制-中性粒细胞",
+          "value": "中性粒细胞浸润是III型超敏反应的主要病理特征",
+          "cite": {
+            "page": 84,
+            "quote": "中性粒细胞浸润是型超敏反应的主要病理特征",
+            "verified": false
+          }
+        },
+        {
+          "label": "参与成分",
+          "value": "IgG、IgM和补体",
+          "cite": {
+            "page": 89,
+            "quote": "均有IgC、IgM和补体参与",
+            "verified": false
+          }
+        },
+        {
+          "label": "定义",
+          "value": "抗体与可溶性抗原结合形成的免疫复合物未被及时清除，沉积于毛细血管基底膜",
+          "cite": {
+            "page": 83,
+            "quote": "沉积于毛细血管基底膜，通过激活补体",
+            "verified": false
+          }
+        },
+        {
+          "label": "主要参与成分",
+          "value": "游离可溶性抗原、IgG、IgM类抗体、补体、中性粒细胞、肥大细胞、嗜碱性粒细胞和血小板",
+          "cite": {
+            "page": 83,
+            "quote": "游离的可溶性抗原、IgG、IgM类抗体、补体、中性粒细胞",
+            "verified": false
+          }
+        },
+        {
+          "label": "病理特征",
+          "value": "充血水肿、局部坏死及以中性粒细胞浸润为主的炎症反应",
+          "cite": {
+            "page": 83,
+            "quote": "以充血水肿、局部坏死以及以中性粒细胞浸润为主要特征的炎症反应",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "II型超敏反应",
+          "tip": "II型针对细胞表面抗原；III型由免疫复合物沉积致病"
+        },
+        {
+          "vs": "II型超敏反应",
+          "tip": "II型为抗体直接针对细胞表面抗原；III型为可溶性免疫复合物沉积致病"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:type-iii-hypersensitivity:1",
+          "prompt": "III型超敏反应又称什么？",
+          "answer": "免疫复合物型超敏反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "𦉫型超敏反应（免疫复合物型）",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iii-hypersensitivity:2",
+          "prompt": "III型超敏反应的主要病理特征是什么？",
+          "answer": "中性粒细胞浸润",
+          "difficulty": "what",
+          "cite": {
+            "page": 84,
+            "quote": "中性粒细胞浸润是型超敏反应的主要病理特征",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iii-hypersensitivity:3",
+          "prompt": "III型超敏反应中补体激活产生哪些片段？",
+          "answer": "C3a、C5a、C3b",
+          "difficulty": "why",
+          "cite": {
+            "page": 84,
+            "quote": "C3a、C5a、C3b",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iii-hypersensitivity:4",
+          "prompt": "III型超敏反应的别名是什么？",
+          "answer": "免疫复合物型",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "皿型为免疫复合物型",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iii-hypersensitivity:5",
+          "prompt": "III型超敏反应又称什么？",
+          "answer": "免疫复合物型或血管炎型超敏反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 83,
+            "quote": "又称免疫复合物型或血管炎型超敏反应",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iii-hypersensitivity:6",
+          "prompt": "III型超敏反应组织损伤的主要特征是什么？",
+          "answer": "充血水肿、局部坏死及以中性粒细胞浸润为主的炎症反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 83,
+            "quote": "以充血水肿、局部坏死以及以中性粒细胞浸润为主要特征的炎症反应",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 78,
+          "quote": "𦉫型超敏反应（免疫复合物型）",
+          "verified": false
+        },
+        {
+          "page": 84,
+          "quote": "中性粒细胞浸润是型超敏反应的主要病理特征",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "皿型为免疫复合物型",
+          "verified": false
+        },
+        {
+          "page": 83,
+          "quote": "又称免疫复合物型或血管炎型超敏反应",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "type-iv-hypersensitivity",
+      "name_zh": "IV型超敏反应",
+      "name_en": "Type IV hypersensitivity",
+      "aliases": [
+        "迟发型超敏反应",
+        "DTH"
+      ],
+      "kind": "process",
+      "one_liner": "致敏T细胞再次接触相同抗原后引起的单个核细胞浸润和组织细胞损伤为主的炎症反应。",
+      "fields": [
+        {
+          "label": "别名",
+          "value": "又称迟发型超敏反应",
+          "cite": {
+            "page": 78,
+            "quote": "I型超敏反应（迟发型）",
+            "verified": false
+          }
+        },
+        {
+          "label": "介导细胞",
+          "value": "由效应T细胞介导",
+          "cite": {
+            "page": 78,
+            "quote": "I型超敏反应由效应T细胞介导",
+            "verified": false
+          }
+        },
+        {
+          "label": "免疫类型",
+          "value": "以细胞免疫为主",
+          "cite": {
+            "page": 89,
+            "quote": "I型以细胞免疫为主",
+            "verified": false
+          }
+        },
+        {
+          "label": "病理特征",
+          "value": "主要以单个核细胞浸润为特征",
+          "cite": {
+            "page": 89,
+            "quote": "W型主要以单个核细胞浸润为特征",
+            "verified": false
+          }
+        },
+        {
+          "label": "定义",
+          "value": "致敏T细胞再次接触相同抗原后，引起的以单个核细胞浸润和组织细胞损伤为主要特征的炎症反应。",
+          "cite": {
+            "page": 85,
+            "quote": "以单个核细胞浸润和组织细胞损伤为主要特征",
+            "verified": false
+          }
+        },
+        {
+          "label": "特点",
+          "value": "①发生缓慢，一般于再次接触抗原24~72小时后发生；②抗体与补体不参与反应；③效应T细胞和吞噬细胞及其产生的细胞因子等引起组织损伤。",
+          "cite": {
+            "page": 85,
+            "quote": "一般于再次接触抗原24~72小时后发生",
+            "verified": false
+          }
+        },
+        {
+          "label": "参与细胞",
+          "value": "由特异性致敏的效应T细胞介导，主要是CD4+Th1细胞和CD8+CTL；巨噬细胞既是专职APC也是重要效应细胞。",
+          "cite": {
+            "page": 85,
+            "quote": "由特异性致敏的效应T细胞介导",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "I~III型超敏反应",
+          "tip": "I~III型由抗体介导；IV型由效应T细胞介导"
+        },
+        {
+          "vs": "I型超敏反应",
+          "tip": "IV型以细胞免疫和单个核细胞浸润为主；I型由IgE与肥大/嗜碱细胞介导"
+        },
+        {
+          "vs": "I型超敏反应",
+          "tip": "IV型由致敏T细胞介导、抗体与补体不参与、24~72小时发生；I型由IgE介导、发生迅速。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:type-iv-hypersensitivity:1",
+          "prompt": "IV型超敏反应由什么介导？",
+          "answer": "效应T细胞",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "I型超敏反应由效应T细胞介导",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iv-hypersensitivity:2",
+          "prompt": "IV型超敏反应又称什么？",
+          "answer": "迟发型超敏反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "I型超敏反应（迟发型）",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iv-hypersensitivity:3",
+          "prompt": "IV型超敏反应的病理特征是什么？",
+          "answer": "主要以单个核细胞浸润为特征",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "W型主要以单个核细胞浸润为特征",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iv-hypersensitivity:4",
+          "prompt": "IV型超敏反应以哪种免疫为主？",
+          "answer": "细胞免疫",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "I型以细胞免疫为主",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iv-hypersensitivity:5",
+          "prompt": "IV型超敏反应由什么介导？",
+          "answer": "特异性致敏的效应T细胞（CD4+Th1和CD8+CTL）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 85,
+            "quote": "由特异性致敏的效应T细胞介导",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iv-hypersensitivity:6",
+          "prompt": "IV型超敏反应一般在再次接触抗原后多久发生？",
+          "answer": "24~72小时后。",
+          "difficulty": "what",
+          "cite": {
+            "page": 85,
+            "quote": "一般于再次接触抗原24~72小时后发生",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-iv-hypersensitivity:7",
+          "prompt": "IV型超敏反应中抗体与补体是否参与？",
+          "answer": "不参与。",
+          "difficulty": "why",
+          "cite": {
+            "page": 85,
+            "quote": "抗体与补体不参与反应",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 78,
+          "quote": "I型超敏反应由效应T细胞介导",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "W型主要以单个核细胞浸润为特征",
+          "verified": false
+        },
+        {
+          "page": 85,
+          "quote": "以单个核细胞浸润和组织细胞损伤为主要特征",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "autoimmune-disease",
+      "name_zh": "自身免疫病",
+      "name_en": "Autoimmune disease",
+      "aliases": [
+        "AID"
+      ],
+      "kind": "concept",
+      "one_liner": "免疫系统功能异常导致对自身抗原发生免疫应答而引起的疾病",
+      "fields": [
+        {
+          "label": "概念",
+          "value": "免疫系统功能异常导致机体出现相关病症，如超敏反应和自身免疫病等",
+          "cite": {
+            "page": 78,
+            "quote": "如超敏反应和自身免疫病等",
+            "verified": false
+          }
+        },
+        {
+          "label": "学习要求",
+          "value": "了解自身免疫病的基本知识",
+          "cite": {
+            "page": 78,
+            "quote": "了解自身免疫病的基本知识",
+            "verified": false
+          }
+        },
+        {
+          "label": "定义",
+          "value": "自身免疫应答过度而持久并引起疾病状态时称为自身免疫病",
+          "cite": {
+            "page": 86,
+            "quote": "当自身免疫应答过度而持久并引起疾病状态时称为自身免疫病",
+            "verified": false
+          }
+        },
+        {
+          "label": "共同特征",
+          "value": "高水平自身抗体和/或自身反应性T细胞介导病理损伤；病情与免疫应答强度相关、免疫抑制剂有效；慢性迁延反复；女性多见、随年龄增长、有遗传倾向；疾病重叠现象",
+          "cite": {
+            "page": 86,
+            "quote": "患者出现高水平自身抗体和/或自身反应性T细胞",
+            "verified": false
+          }
+        },
+        {
+          "label": "分类",
+          "value": "器官特异性自身免疫病和全身性自身免疫病",
+          "cite": {
+            "page": 89,
+            "quote": "可分为器官特异性自身免疫病和全身性自身免疫病",
+            "verified": false
+          }
+        },
+        {
+          "label": "病变范围",
+          "value": "几乎涉及人体所有的组织和器官",
+          "cite": {
+            "page": 89,
+            "quote": "病变几乎涉及人体所有的组织和器官",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "超敏反应",
+          "tip": "两者均为免疫系统功能异常所致病症，但机制不同"
+        },
+        {
+          "vs": "自身免疫",
+          "tip": "自身免疫为生理应答；AID为过度持久并致病的状态"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:autoimmune-disease:1",
+          "prompt": "自身免疫病属于哪类免疫异常？",
+          "answer": "免疫系统功能异常导致的病症",
+          "difficulty": "what",
+          "cite": {
+            "page": 78,
+            "quote": "如超敏反应和自身免疫病等",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease:2",
+          "prompt": "自身免疫病的定义是什么？",
+          "answer": "自身免疫应答过度而持久并引起疾病状态",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "当自身免疫应答过度而持久并引起疾病状态时称为自身免疫病",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease:3",
+          "prompt": "自身免疫病病理损伤由什么介导？",
+          "answer": "自身抗体和/或自身反应性T细胞",
+          "difficulty": "why",
+          "cite": {
+            "page": 86,
+            "quote": "病理损伤是由自身抗体和/或自身反应性T细胞所介导",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease:4",
+          "prompt": "自身免疫病的人群分布特征是什么？",
+          "answer": "女性多见，发病率随年龄增长而升高，且具遗传倾向",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "患者以女性多见，发病率随年龄增长而",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease:5",
+          "prompt": "自身免疫病按范围分哪两类？",
+          "answer": "器官特异性自身免疫病和全身性自身免疫病",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "可分为器官特异性自身免疫病和全身性自身免疫病",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 78,
+          "quote": "如超敏反应和自身免疫病等",
+          "verified": false
+        },
+        {
+          "page": 86,
+          "quote": "当自身免疫应答过度而持久并引起疾病状态时称为自身免疫病",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "自身免疫病是人体免疫系统对自身成分发生过度且持久的免疫应答所",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "sensitization-stage",
+      "name_zh": "致敏阶段",
+      "name_en": "Sensitization stage",
+      "aliases": [],
+      "kind": "process",
+      "one_liner": "变应原诱导IgE结合肥大/嗜碱性粒细胞FcεRI使机体致敏",
+      "fields": [
+        {
+          "label": "机制",
+          "value": "变应原选择性诱导特异性B细胞产生IgE，IgE与肥大细胞和嗜碱性粒细胞表面FcεRI结合",
+          "cite": {
+            "page": 79,
+            "quote": "选择性诱导特异性B细胞产生IgE",
+            "verified": false
+          }
+        },
+        {
+          "label": "持续时间",
+          "value": "致敏状态可维持数月或数年，长期不接触变应原可逐渐消失",
+          "cite": {
+            "page": 79,
+            "quote": "这种致敏状态可维持数月或数年",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "发敏阶段",
+          "tip": "致敏是IgE结合FcεRI的准备过程，发敏是变应原再次进入引起桥联活化"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:sensitization-stage:1",
+          "prompt": "致敏阶段机体处于什么状态？",
+          "answer": "特异性IgE结合肥大细胞和嗜碱性粒细胞表面FcεRI，机体处于致敏状态",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "使机体处于致敏状态",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:sensitization-stage:2",
+          "prompt": "致敏状态可维持多久？",
+          "answer": "数月或数年，长期不接触变应原可逐渐消失",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "这种致敏状态可维持数月或数年",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 79,
+          "quote": "使机体处于致敏状态",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "这种致敏状态可维持数月或数年",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "activation-stage",
+      "name_zh": "发敏阶段",
+      "name_en": "Activation stage",
+      "aliases": [],
+      "kind": "process",
+      "one_liner": "变应原桥联相邻IgE-FcεRI使致敏靶细胞脱颗粒",
+      "fields": [
+        {
+          "label": "机制",
+          "value": "相同变应原再次进入，相邻2个以上IgE与FcεRI交联，启动激活信号，诱导脱颗粒释放生物活性介质",
+          "cite": {
+            "page": 79,
+            "quote": "发生交联，方能启动激活信号",
+            "verified": false
+          }
+        },
+        {
+          "label": "关键条件",
+          "value": "单个IgE结合FcεRI不能激活细胞，必须桥联交联",
+          "cite": {
+            "page": 79,
+            "quote": "单个IgE结合 FceRI是不能激活细胞的",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "致敏阶段",
+          "tip": "发敏阶段需要变应原再次进入并发生IgE桥联"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:activation-stage:1",
+          "prompt": "发敏阶段细胞活化的关键分子事件是什么？",
+          "answer": "相邻2个以上IgE与FcεRI交联（桥联）",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "发生交联，方能启动激活信号",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:activation-stage:2",
+          "prompt": "为何单个IgE结合FcεRI不足以激活肥大细胞？",
+          "answer": "需要相邻2个以上IgE-FcεRI交联才能启动激活信号",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "单个IgE结合 FceRI是不能激活细胞的",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 79,
+          "quote": "发生交联，方能启动激活信号",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "单个IgE结合 FceRI是不能激活细胞的",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "effector-stage-type-i",
+      "name_zh": "效应阶段（I型超敏反应）",
+      "name_en": "Effector stage of type I hypersensitivity",
+      "aliases": [],
+      "kind": "process",
+      "one_liner": "肥大/嗜碱性粒细胞释放介质作用于靶器官引起过敏反应",
+      "fields": [
+        {
+          "label": "机制",
+          "value": "生物活性介质作用于相应靶器官，引起局部或全身过敏反应",
+          "cite": {
+            "page": 79,
+            "quote": "生物活性介质作用于相应靶器官",
+            "verified": false
+          }
+        },
+        {
+          "label": "效应表现",
+          "value": "平滑肌痉挛、毛细血管扩张、通透性增加、腺体分泌增强",
+          "cite": {
+            "page": 79,
+            "quote": "平滑肌痉挛、毛细血管扩张、通透性增加",
+            "verified": false
+          }
+        },
+        {
+          "label": "临床类型",
+          "value": "全身性过敏反应、皮肤过敏反应、呼吸道过敏反应、消化道过敏反应",
+          "cite": {
+            "page": 79,
+            "quote": "全身性过敏反应、皮肤过敏反应、呼吸道过敏反应",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "发敏阶段",
+          "tip": "效应阶段是介质作用于靶器官产生临床表现，发敏阶段是细胞脱颗粒"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:effector-stage-type-i:1",
+          "prompt": "I型超敏反应效应阶段介质作用于靶器官引起哪些基本改变？",
+          "answer": "平滑肌痉挛、毛细血管扩张、通透性增加、腺体分泌增强",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "平滑肌痉挛、毛细血管扩张、通透性增加",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:effector-stage-type-i:2",
+          "prompt": "I型超敏反应临床可表现为哪几类过敏反应？",
+          "answer": "全身性、皮肤、呼吸道、消化道过敏反应",
+          "difficulty": "case",
+          "cite": {
+            "page": 79,
+            "quote": "全身性过敏反应、皮肤过敏反应、呼吸道过敏反应",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 79,
+          "quote": "生物活性介质作用于相应靶器官",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "平滑肌痉挛、毛细血管扩张、通透性增加",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "ige-bridging",
+      "name_zh": "IgE桥联",
+      "name_en": "IgE bridging",
+      "aliases": [
+        "桥联结合"
+      ],
+      "kind": "process",
+      "one_liner": "变应原交联相邻IgE-FcεRI复合物启动肥大细胞活化",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "相同变应原再次进入致敏机体，与相邻2个以上IgE结合，使FcεRI交联",
+          "cite": {
+            "page": 79,
+            "quote": "与肥大细胞和嗜碱性粒细胞表面IgE发生桥联结合",
+            "verified": false
+          }
+        },
+        {
+          "label": "后果",
+          "value": "启动激活信号，诱导致敏靶细胞脱颗粒",
+          "cite": {
+            "page": 79,
+            "quote": "诱导已致敏的靶细胞脱颗粒",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "单价IgE结合",
+          "tip": "单个IgE结合FcεRI不能激活细胞，必须桥联"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:ige-bridging:1",
+          "prompt": "IgE桥联指什么？",
+          "answer": "变应原与相邻2个以上IgE结合使FcεRI交联",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "与肥大细胞和嗜碱性粒细胞表面IgE发生桥联结合",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:ige-bridging:2",
+          "prompt": "IgE桥联的细胞学后果是什么？",
+          "answer": "启动激活信号，诱导致敏靶细胞脱颗粒释放介质",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "诱导已致敏的靶细胞脱颗粒",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 79,
+          "quote": "与肥大细胞和嗜碱性粒细胞表面IgE发生桥联结合",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "诱导已致敏的靶细胞脱颗粒",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "fc-epsilon-ri",
+      "name_zh": "FcεRI",
+      "name_en": "Fc epsilon RI",
+      "aliases": [
+        "IgE高亲和力受体",
+        "FceRI"
+      ],
+      "kind": "molecule",
+      "one_liner": "肥大细胞和嗜碱性粒细胞表面高亲和力IgE受体",
+      "fields": [
+        {
+          "label": "表达",
+          "value": "表达于肥大细胞和嗜碱性粒细胞表面",
+          "cite": {
+            "page": 79,
+            "quote": "肥大细胞和嗜碱性粒细胞表面的FcRI",
+            "verified": false
+          }
+        },
+        {
+          "label": "功能",
+          "value": "结合IgE，交联后启动激活信号诱导脱颗粒",
+          "cite": {
+            "page": 79,
+            "quote": "发生交联，方能启动激活信号",
+            "verified": false
+          }
+        },
+        {
+          "label": "诱导表达",
+          "value": "嗜酸性粒细胞参与时诱导性表达FcεRI，也可脱颗粒",
+          "cite": {
+            "page": 79,
+            "quote": "它诱导性表达 FceRI，也可发生脱颗粒",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "FcγR",
+          "tip": "FcεRI结合IgE参与I型超敏反应，FcγR结合IgG参与II/III型"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:fc-epsilon-ri:1",
+          "prompt": "FcεRI主要表达于哪些细胞？",
+          "answer": "肥大细胞和嗜碱性粒细胞（嗜酸性粒细胞可诱导表达）",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "肥大细胞和嗜碱性粒细胞表面的FcRI",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:fc-epsilon-ri:2",
+          "prompt": "FcεRI在I型超敏反应中的作用是什么？",
+          "answer": "结合IgE，交联后启动激活信号诱导靶细胞脱颗粒",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "发生交联，方能启动激活信号",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 79,
+          "quote": "肥大细胞和嗜碱性粒细胞表面的FcRI",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "它诱导性表达 FceRI，也可发生脱颗粒",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "eosinophil-negative-regulation",
+      "name_zh": "嗜酸性粒细胞的负调节作用",
+      "name_en": "Negative regulation by eosinophils",
+      "aliases": [],
+      "kind": "cell",
+      "one_liner": "嗜酸性粒细胞释放组胺酶等灭活组胺和白三烯起负调节",
+      "fields": [
+        {
+          "label": "机制",
+          "value": "释放组胺酶等灭活组胺和白三烯，起负调节作用",
+          "cite": {
+            "page": 79,
+            "quote": "释放组胺酶等，灭活组胺和白三烯，起负调节作用",
+            "verified": false
+          }
+        },
+        {
+          "label": "双重性",
+          "value": "诱导性表达FcεRI，也可脱颗粒释放类似肥大细胞和嗜碱性粒细胞的介质",
+          "cite": {
+            "page": 79,
+            "quote": "它诱导性表达 FceRI，也可发生脱颗粒",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "肥大细胞",
+          "tip": "嗜酸性粒细胞既可释放类似介质，又通过组胺酶负调节"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:eosinophil-negative-regulation:1",
+          "prompt": "嗜酸性粒细胞如何负调节I型超敏反应？",
+          "answer": "释放组胺酶等灭活组胺和白三烯",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "释放组胺酶等，灭活组胺和白三烯，起负调节作用",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:eosinophil-negative-regulation:2",
+          "prompt": "嗜酸性粒细胞在I型超敏反应中为何具有双重作用？",
+          "answer": "可诱导表达FcεRI脱颗粒释放介质，同时释放组胺酶负调节",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "它诱导性表达 FceRI，也可发生脱颗粒",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 79,
+          "quote": "释放组胺酶等，灭活组胺和白三烯，起负调节作用",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "它诱导性表达 FceRI，也可发生脱颗粒",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "il-4-il-13-ige-switch",
+      "name_zh": "IL-4/IL-13与IgE类别转换",
+      "name_en": "IL-4/IL-13 and IgE class switching",
+      "aliases": [],
+      "kind": "molecule",
+      "one_liner": "IL-4和IL-13诱导B细胞类别转换产生IgE",
+      "fields": [
+        {
+          "label": "机制",
+          "value": "IL-4和IL-13诱导B细胞发生抗体类别转换产生IgE",
+          "cite": {
+            "page": 79,
+            "quote": "IL-4和IL-13可诱导B细胞发生抗体类别转换产生IgE",
+            "verified": false
+          }
+        },
+        {
+          "label": "其他作用",
+          "value": "IL-4可刺激肥大细胞增殖；IL-5刺激嗜碱性粒细胞生长活化和嗜酸性粒细胞活化",
+          "cite": {
+            "page": 79,
+            "quote": "IL-4 可刺激肥大细胞增殖",
+            "verified": false
+          }
+        },
+        {
+          "label": "负调控",
+          "value": "IFN-γ可抑制IL-4诱生IgE的作用",
+          "cite": {
+            "page": 79,
+            "quote": "IFN-Y可抑制 IL-4诱生IgE 的作用",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "IL-5",
+          "tip": "IL-5主要作用于嗜碱性/嗜酸性粒细胞，不直接诱导IgE类别转换"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:il-4-il-13-ige-switch:1",
+          "prompt": "哪些细胞因子诱导B细胞类别转换产生IgE？",
+          "answer": "IL-4和IL-13",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "IL-4和IL-13可诱导B细胞发生抗体类别转换产生IgE",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:il-4-il-13-ige-switch:2",
+          "prompt": "哪种细胞因子可抑制IL-4诱生IgE？",
+          "answer": "IFN-γ",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "IFN-Y可抑制 IL-4诱生IgE 的作用",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 79,
+          "quote": "IL-4和IL-13可诱导B细胞发生抗体类别转换产生IgE",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "IFN-Y可抑制 IL-4诱生IgE 的作用",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "il-5-eosinophil-basophil",
+      "name_zh": "IL-5对嗜碱性/嗜酸性粒细胞的作用",
+      "name_en": "IL-5 effects on basophils and eosinophils",
+      "aliases": [],
+      "kind": "molecule",
+      "one_liner": "IL-5刺激嗜碱性粒细胞生长活化及嗜酸性粒细胞活化",
+      "fields": [
+        {
+          "label": "来源",
+          "value": "由Th2细胞和活化的肥大细胞产生",
+          "cite": {
+            "page": 79,
+            "quote": "IL-5由 Th2细胞和活化的肥大细胞产生",
+            "verified": false
+          }
+        },
+        {
+          "label": "功能",
+          "value": "刺激嗜碱性粒细胞的生长和活化，以及活化嗜酸性粒细胞",
+          "cite": {
+            "page": 79,
+            "quote": "刺激嗜碱性粒细胞的生长和活化",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "IL-4",
+          "tip": "IL-4诱导IgE类别转换，IL-5主要作用于嗜碱性/嗜酸性粒细胞"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:il-5-eosinophil-basophil:1",
+          "prompt": "IL-5主要由哪些细胞产生？",
+          "answer": "Th2细胞和活化的肥大细胞",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "IL-5由 Th2细胞和活化的肥大细胞产生",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:il-5-eosinophil-basophil:2",
+          "prompt": "IL-5对嗜碱性粒细胞和嗜酸性粒细胞有何作用？",
+          "answer": "刺激嗜碱性粒细胞生长和活化，活化嗜酸性粒细胞",
+          "difficulty": "why",
+          "cite": {
+            "page": 79,
+            "quote": "刺激嗜碱性粒细胞的生长和活化",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 79,
+          "quote": "IL-5由 Th2细胞和活化的肥大细胞产生",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "刺激嗜碱性粒细胞的生长和活化",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "type-i-genetic-susceptibility",
+      "name_zh": "I型超敏反应遗传易感性",
+      "name_en": "Genetic susceptibility of type I hypersensitivity",
+      "aliases": [
+        "过敏体质遗传"
+      ],
+      "kind": "concept",
+      "one_liner": "I型超敏反应为多基因遗传病，涉及HLA及细胞因子基因",
+      "fields": [
+        {
+          "label": "性质",
+          "value": "已证实为多基因遗传病",
+          "cite": {
+            "page": 79,
+            "quote": "1型超敏反应为多基因遗传病",
+            "verified": false
+          }
+        },
+        {
+          "label": "相关基因",
+          "value": "HLA等位基因、IL-4、IL-4R、IL-13以及FcεRI基因",
+          "cite": {
+            "page": 79,
+            "quote": "HLA 等位基因、IL-4、IL-4R、IL-13 以及 F",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "单基因遗传病",
+          "tip": "I型超敏反应为多基因遗传，非单基因决定"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:type-i-genetic-susceptibility:1",
+          "prompt": "I型超敏反应的遗传学性质是什么？",
+          "answer": "多基因遗传病",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "1型超敏反应为多基因遗传病",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-genetic-susceptibility:2",
+          "prompt": "目前已知与I型超敏反应相关的基因有哪些？",
+          "answer": "HLA等位基因、IL-4、IL-4R、IL-13及FcεRI基因",
+          "difficulty": "what",
+          "cite": {
+            "page": 79,
+            "quote": "HLA 等位基因、IL-4、IL-4R、IL-13 以及 F",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 79,
+          "quote": "1型超敏反应为多基因遗传病",
+          "verified": false
+        },
+        {
+          "page": 79,
+          "quote": "HLA 等位基因、IL-4、IL-4R、IL-13 以及 F",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "preformed-mediators",
+      "name_zh": "预先存在的介质",
+      "name_en": "Preformed mediators",
+      "aliases": [
+        "组胺",
+        "类胰蛋白酶"
+      ],
+      "kind": "molecule",
+      "one_liner": "肥大细胞/嗜碱性粒细胞胞内预先储存的介质，包括组胺和类胰蛋白酶，参与Ⅰ型超敏反应",
+      "fields": [
+        {
+          "label": "组胺作用",
+          "value": "使小静脉和毛细血管扩张、刺激平滑肌收缩、促进黏膜腺体分泌增强",
+          "cite": {
+            "page": 80,
+            "quote": "可使小静脉和毛细血管扩张、刺激平滑肌收缩",
+            "verified": false
+          }
+        },
+        {
+          "label": "类胰蛋白酶作用",
+          "value": "刺激邻近的肥大细胞释放介质，放大炎症效应",
+          "cite": {
+            "page": 80,
+            "quote": "刺激邻近的肥大细胞释放介质，起到放大炎症效应",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "新合成的介质",
+          "tip": "预先存在的介质（组胺、类胰蛋白酶）储存于胞内，可迅速释放；新合成介质（白三烯、PGD2、PAF、细胞因子）需重新合成，参与迟发相。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:preformed-mediators:1",
+          "prompt": "组胺的主要生物学作用是什么？",
+          "answer": "使小静脉和毛细血管扩张、刺激平滑肌收缩、促进黏膜腺体分泌增强。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "可使小静脉和毛细血管扩张、刺激平滑肌收缩",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:preformed-mediators:2",
+          "prompt": "类胰蛋白酶在Ⅰ型超敏反应中的作用是什么？",
+          "answer": "刺激邻近的肥大细胞释放介质，起到放大炎症效应的作用。",
+          "difficulty": "why",
+          "cite": {
+            "page": 80,
+            "quote": "刺激邻近的肥大细胞释放介质，起到放大炎症效应",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 80,
+          "quote": "可使小静脉和毛细血管扩张、刺激平滑肌收缩",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "刺激邻近的肥大细胞释放介质，起到放大炎症效应",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "newly-synthesized-mediators",
+      "name_zh": "新合成的介质",
+      "name_en": "Newly synthesized mediators",
+      "aliases": [
+        "白三烯",
+        "前列腺素D2",
+        "血小板活化因子",
+        "PAF"
+      ],
+      "kind": "molecule",
+      "one_liner": "Ⅰ型超敏反应中肥大细胞新合成的脂类介质和细胞因子，包括白三烯、PGD2、PAF及",
+      "fields": [
+        {
+          "label": "白三烯（LT）",
+          "value": "刺激支气管平滑肌强烈持久地收缩，使血管扩张、通透性增强，黏膜腺体分泌增加",
+          "cite": {
+            "page": 80,
+            "quote": "刺激支气管平滑肌强烈持久地收缩",
+            "verified": false
+          }
+        },
+        {
+          "label": "前列腺素D2（PGD2）",
+          "value": "可使支气管平滑肌收缩，血管扩张、通透性增加",
+          "cite": {
+            "page": 80,
+            "quote": "可使支气管平滑肌收缩，血管扩张、通透性增加",
+            "verified": false
+          }
+        },
+        {
+          "label": "血小板活化因子（PAF）",
+          "value": "凝集和活化血小板，释放血管活性胺类物质，增强Ⅰ型超敏反应",
+          "cite": {
+            "page": 80,
+            "quote": "可凝集和活化血小板，使之释放血管活性胺类物质",
+            "verified": false
+          }
+        },
+        {
+          "label": "细胞因子",
+          "value": "IL-4、IL-5、IL-6及IL-13等促进Th2细胞引导的体液免疫及抗体类别转换生成IgE，诱导嗜酸性粒细胞生成和活化",
+          "cite": {
+            "page": 80,
+            "quote": "促进Th2 细胞引导的体液免疫以及抗体类别转换生成IgE",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "预先存在的介质",
+          "tip": "新合成介质需重新合成，参与迟发相反应；预先存在介质（组胺、类胰蛋白酶）储存于胞内，参与速发相。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:newly-synthesized-mediators:1",
+          "prompt": "白三烯对支气管平滑肌的作用特点是什么？",
+          "answer": "刺激支气管平滑肌强烈持久地收缩，使血管扩张、通透性增强，黏膜腺体分泌增加。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "刺激支气管平滑肌强烈持久地收缩",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:newly-synthesized-mediators:2",
+          "prompt": "PAF如何增强Ⅰ型超敏反应？",
+          "answer": "凝集和活化血小板，使之释放血管活性胺类物质，增强Ⅰ型超敏反应。",
+          "difficulty": "why",
+          "cite": {
+            "page": 80,
+            "quote": "可凝集和活化血小板，使之释放血管活性胺类物质",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:newly-synthesized-mediators:3",
+          "prompt": "IL-4、IL-5、IL-6及IL-13在Ⅰ型超敏反应中的作用是什么？",
+          "answer": "促进Th2细胞引导的体液免疫以及抗体类别转换生成IgE，诱导嗜酸性粒细胞生成和活化。",
+          "difficulty": "why",
+          "cite": {
+            "page": 80,
+            "quote": "促进Th2 细胞引导的体液免疫以及抗体类别转换生成IgE",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 80,
+          "quote": "刺激支气管平滑肌强烈持久地收缩",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "可凝集和活化血小板，使之释放血管活性胺类物质",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "促进Th2 细胞引导的体液免疫以及抗体类别转换生成IgE",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "anaphylaxis",
+      "name_zh": "全身过敏性反应",
+      "name_en": "Systemic anaphylaxis",
+      "aliases": [
+        "过敏性休克",
+        "药物过敏性休克",
+        "血清过敏性休克"
+      ],
+      "kind": "disease",
+      "one_liner": "最严重的Ⅰ型超敏反应，再次接触变应原后几秒至几分钟内发生，以药物及血清过敏性休克",
+      "fields": [
+        {
+          "label": "发生时间",
+          "value": "再次接触变应原后几秒至几分钟内发生",
+          "cite": {
+            "page": 80,
+            "quote": "可于再次接触变应原后几秒至几分钟内发生",
+            "verified": false
+          }
+        },
+        {
+          "label": "常见类型",
+          "value": "以药物及血清过敏性休克最常见",
+          "cite": {
+            "page": 80,
+            "quote": "以药物及血清过敏性休克最常见",
+            "verified": false
+          }
+        },
+        {
+          "label": "药物过敏性休克",
+          "value": "以青霉素引起的过敏性休克最常见；青霉素降解产物（青霉烯酸、青霉噻唑酸）作为半抗原与组织蛋白结合成完全抗原，诱导IgE致敏",
+          "cite": {
+            "page": 80,
+            "quote": "以青霉素引起的过敏性休克最常见",
+            "verified": false
+          }
+        },
+        {
+          "label": "血清过敏性休克",
+          "value": "应用动物免疫血清（如破伤风抗毒素、白喉抗毒素）紧急预防和治疗时，曾注射过相同血清制剂已致敏的患者可发生",
+          "cite": {
+            "page": 80,
+            "quote": "由于曾经注射过相同的血清制剂已致敏",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "血清病",
+          "tip": "血清过敏性休克属Ⅰ型超敏反应（IgE介导，速发）；血清病属Ⅲ型超敏反应（免疫复合物沉积，延迟发生）。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:anaphylaxis:1",
+          "prompt": "全身过敏性反应最常见于哪些情况？",
+          "answer": "以药物及血清过敏性休克最常见。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "以药物及血清过敏性休克最常见",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:anaphylaxis:2",
+          "prompt": "青霉素引起过敏性休克的致敏机制是什么？",
+          "answer": "青霉素降解产物青霉烯酸或青霉噻唑酸等半抗原在体内与组织蛋白结合成为完全抗原，诱导机体产生IgE而致敏。",
+          "difficulty": "why",
+          "cite": {
+            "page": 80,
+            "quote": "半抗原在体内与组织蛋白结合成为完全抗原",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 80,
+          "quote": "可于再次接触变应原后几秒至几分钟内发生",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "以药物及血清过敏性休克最常见",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "半抗原在体内与组织蛋白结合成为完全抗原",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "allergic-rhinitis-asthma",
+      "name_zh": "呼吸道过敏性反应",
+      "name_en": "Respiratory allergic reaction",
+      "aliases": [
+        "过敏性鼻炎",
+        "过敏性哮喘"
+      ],
+      "kind": "disease",
+      "one_liner": "吸入性变应原（花粉、尘螨、动物毛屑、真菌孢子等）引起的过敏性鼻炎和过敏性哮喘。",
+      "fields": [
+        {
+          "label": "常见变应原",
+          "value": "花粉、尘螨、动物毛屑、真菌孢子等吸入性变应原",
+          "cite": {
+            "page": 80,
+            "quote": "如花粉、尘螨、动物毛屑、真菌孢子等",
+            "verified": false
+          }
+        },
+        {
+          "label": "过敏性哮喘分型",
+          "value": "分速发相反应和迟发相反应2种类型",
+          "cite": {
+            "page": 80,
+            "quote": "过敏性哮喘分速发相反应和迟发相反应2种类型",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:allergic-rhinitis-asthma:1",
+          "prompt": "呼吸道过敏性反应常见的吸入性变应原有哪些？",
+          "answer": "花粉、尘螨、动物毛屑、真菌孢子等。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "如花粉、尘螨、动物毛屑、真菌孢子等",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:allergic-rhinitis-asthma:2",
+          "prompt": "过敏性哮喘分为哪两种类型？",
+          "answer": "速发相反应和迟发相反应2种类型。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "过敏性哮喘分速发相反应和迟发相反应2种类型",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 80,
+          "quote": "如花粉、尘螨、动物毛屑、真菌孢子等",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "过敏性哮喘分速发相反应和迟发相反应2种类型",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "allergic-gastroenteritis",
+      "name_zh": "消化道过敏性反应",
+      "name_en": "Gastrointestinal allergic reaction",
+      "aliases": [
+        "过敏性胃肠炎"
+      ],
+      "kind": "disease",
+      "one_liner": "食入鱼、虾、蟹、蛋、奶等食物后出现恶心、呕吐、腹痛、腹泻等消化道症状，可伴荨麻疹",
+      "fields": [
+        {
+          "label": "常见诱因",
+          "value": "食入鱼、虾、蟹、蛋、奶等食物",
+          "cite": {
+            "page": 80,
+            "quote": "食入鱼、虾、蟹、蛋、奶等食物后",
+            "verified": false
+          }
+        },
+        {
+          "label": "发病机制",
+          "value": "胃肠道SIgA含量减少、局部黏膜免疫防御功能下降，伴蛋白水解酶缺乏，无法彻底分解食物中的异种蛋白，蛋白经黏膜吸收后诱发过敏",
+          "cite": {
+            "page": 80,
+            "quote": "胃肠道 SIgA 含量减少，局部黏膜免疫防御功能下降",
+            "verified": false
+          }
+        },
+        {
+          "label": "相关因素",
+          "value": "肠道菌群失调与消化道过敏发生有关，亦与呼吸道、皮肤过敏反应发生有关",
+          "cite": {
+            "page": 80,
+            "quote": "肠道菌群失调与消化道过敏发生有关",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:allergic-gastroenteritis:1",
+          "prompt": "消化道过敏性反应的主要临床表现是什么？",
+          "answer": "恶心、呕吐、腹痛和腹泻等消化道症状，可伴皮肤超敏反应（如荨麻疹），严重者可致过敏性休克。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "出现恶心、呕吐、腹痛和腹泻等消化道症状",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:allergic-gastroenteritis:2",
+          "prompt": "消化道过敏性反应的发病机制涉及哪些因素？",
+          "answer": "胃肠道SIgA含量减少、局部黏膜免疫防御功能下降，伴蛋白水解酶缺乏，无法彻底分解食物中的异种蛋白；肠道菌群失调也相关。",
+          "difficulty": "why",
+          "cite": {
+            "page": 80,
+            "quote": "胃肠道 SIgA 含量减少，局部黏膜免疫防御功能下降",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 80,
+          "quote": "食入鱼、虾、蟹、蛋、奶等食物后",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "胃肠道 SIgA 含量减少，局部黏膜免疫防御功能下降",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "肠道菌群失调与消化道过敏发生有关",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "allergic-skin-reaction",
+      "name_zh": "皮肤过敏性反应",
+      "name_en": "Allergic skin reaction",
+      "aliases": [
+        "荨麻疹",
+        "湿疹",
+        "血管神经性水肿"
+      ],
+      "kind": "disease",
+      "one_liner": "主要表现为荨麻疹、湿疹和血管神经性水肿，可由药物、食物、肠道寄生虫或冷热刺激等引",
+      "fields": [
+        {
+          "label": "主要表现",
+          "value": "荨麻疹、湿疹和血管神经性水肿",
+          "cite": {
+            "page": 80,
+            "quote": "主要表现为荨麻疹、湿疹和血管神经性水肿",
+            "verified": false
+          }
+        },
+        {
+          "label": "常见诱因",
+          "value": "药物、食物、肠道寄生虫或冷热刺激等",
+          "cite": {
+            "page": 80,
+            "quote": "可由药物、食物、肠道寄生虫或冷热刺激等引起",
+            "verified": false
+          }
+        },
+        {
+          "label": "皮肤表现",
+          "value": "红斑、风团、水肿，引起瘙痒、疼痛等症状",
+          "cite": {
+            "page": 80,
+            "quote": "皮肤可出现红斑、风团、水肿，引起瘙痒、疼痛等症状",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:allergic-skin-reaction:1",
+          "prompt": "皮肤过敏性反应的主要表现是什么？",
+          "answer": "荨麻疹、湿疹和血管神经性水肿。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "主要表现为荨麻疹、湿疹和血管神经性水肿",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:allergic-skin-reaction:2",
+          "prompt": "皮肤过敏性反应可由哪些因素引起？",
+          "answer": "药物、食物、肠道寄生虫或冷热刺激等。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "可由药物、食物、肠道寄生虫或冷热刺激等引起",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 80,
+          "quote": "主要表现为荨麻疹、湿疹和血管神经性水肿",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "可由药物、食物、肠道寄生虫或冷热刺激等引起",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "皮肤可出现红斑、风团、水肿，引起瘙痒、疼痛等症状",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "type-i-prevention",
+      "name_zh": "Ⅰ型超敏反应防治原则",
+      "name_en": "Prevention and treatment principles of type I hypersensitivity",
+      "aliases": [
+        "脱敏治疗",
+        "变应原检测"
+      ],
+      "kind": "process",
+      "one_liner": "查明变应原避免接触是最有效预防方法；检测用皮肤试验和血清特异性IgE检测；脱敏治",
+      "fields": [
+        {
+          "label": "最有效预防方法",
+          "value": "避免与变应原接触",
+          "cite": {
+            "page": 80,
+            "quote": "避免与变应原接触是预防1型超敏反应最有效的方法",
+            "verified": false
+          }
+        },
+        {
+          "label": "变应原检测方法",
+          "value": "皮肤试验和血清特异性IgE检测",
+          "cite": {
+            "page": 80,
+            "quote": "检测变应原最常用的方法是皮肤试验和血清特异性IgE 检测",
+            "verified": false
+          }
+        },
+        {
+          "label": "脱敏治疗",
+          "value": "将变应原制成不同浓度的提取液，以逐渐递增剂量及浓度进行",
+          "cite": {
+            "page": 80,
+            "quote": "将变应原制成不同浓度的提取液，以逐渐递增剂量及浓度",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:type-i-prevention:1",
+          "prompt": "预防Ⅰ型超敏反应最有效的方法是什么？",
+          "answer": "避免与变应原接触。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "避免与变应原接触是预防1型超敏反应最有效的方法",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-prevention:2",
+          "prompt": "临床检测变应原最常用的方法有哪些？",
+          "answer": "皮肤试验和血清特异性IgE检测。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "检测变应原最常用的方法是皮肤试验和血清特异性IgE 检测",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-i-prevention:3",
+          "prompt": "脱敏治疗的基本做法是什么？",
+          "answer": "将变应原制成不同浓度的提取液，以逐渐递增剂量及浓度进行。",
+          "difficulty": "what",
+          "cite": {
+            "page": 80,
+            "quote": "将变应原制成不同浓度的提取液，以逐渐递增剂量及浓度",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 80,
+          "quote": "避免与变应原接触是预防1型超敏反应最有效的方法",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "检测变应原最常用的方法是皮肤试验和血清特异性IgE 检测",
+          "verified": false
+        },
+        {
+          "page": 80,
+          "quote": "将变应原制成不同浓度的提取液，以逐渐递增剂量及浓度",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "desensitization-therapy",
+      "name_zh": "脱敏疗法",
+      "name_en": "Desensitization therapy",
+      "aliases": [
+        "减敏疗法"
+      ],
+      "kind": "process",
+      "one_liner": "反复注射致敏原使靶细胞逐渐脱敏，减轻过敏症状",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "通过反复注射使致敏靶细胞逐渐脱去敏感状态或降低过敏反应临床症状的方法",
+          "cite": {
+            "page": 81,
+            "quote": "使致敏靶细胞逐渐脱去敏感状态",
+            "verified": false
+          }
+        },
+        {
+          "label": "异种免疫血清脱敏机制",
+          "value": "少量变应原与少量IgE结合，释放不足以引起症状的介质，多次注射使靶细胞分批脱敏",
+          "cite": {
+            "page": 81,
+            "quote": "多次注射使致敏靶细胞分批脱敏",
+            "verified": false
+          }
+        },
+        {
+          "label": "特异性变应原脱敏机制",
+          "value": "改变抗原进入途径，诱导产生特异性IgG封闭抗体，阻断变应原与IgE结合",
+          "cite": {
+            "page": 81,
+            "quote": "诱导机体产生特异性IgG 类封闭抗体",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "药物治疗",
+          "tip": "脱敏疗法针对病因（变应原），药物治疗仅阻断过敏反应环节"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:desensitization-therapy:1",
+          "prompt": "异种免疫血清脱敏疗法的机制是什么？",
+          "answer": "少量变应原与少量IgE结合，释放不足以引起症状的介质，多次注射使致敏靶细胞分批脱敏",
+          "difficulty": "why",
+          "cite": {
+            "page": 81,
+            "quote": "多次注射使致敏靶细胞分批脱敏",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:desensitization-therapy:2",
+          "prompt": "特异性变应原脱敏疗法诱导产生的封闭抗体是什么？",
+          "answer": "特异性IgG类封闭抗体",
+          "difficulty": "what",
+          "cite": {
+            "page": 81,
+            "quote": "特异性IgG 类封闭抗体",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 81,
+          "quote": "使致敏靶细胞逐渐脱去敏感状态",
+          "verified": false
+        },
+        {
+          "page": 81,
+          "quote": "多次注射使致敏靶细胞分批脱敏",
+          "verified": false
+        },
+        {
+          "page": 81,
+          "quote": "诱导机体产生特异性IgG 类封闭抗体",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "anaphylactoid-reaction",
+      "name_zh": "类过敏反应",
+      "name_en": "Anaphylactoid reaction",
+      "aliases": [],
+      "kind": "disease",
+      "one_liner": "非IgE依赖的肥大细胞/嗜碱性粒细胞脱颗粒引起的类似过敏症状",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "由非IgE依赖性的肥大细胞/嗜碱性粒细胞释放介质造成的类似过敏反应的一组临床症状",
+          "cite": {
+            "page": 81,
+            "quote": "非IgE 依赖性的肥大细胞/嗜碱性粒细胞",
+            "verified": false
+          }
+        },
+        {
+          "label": "常见诱因",
+          "value": "组胺释放因子、过敏毒素（C3a、C5a）、药物（阿片类、万古霉素、ASA、非甾体抗炎药）、物理刺激、运动或情绪因素",
+          "cite": {
+            "page": 81,
+            "quote": "组胺释放因子",
+            "verified": false
+          }
+        },
+        {
+          "label": "治疗原则",
+          "value": "主要为对症处理",
+          "cite": {
+            "page": 81,
+            "quote": "治疗主要为对症处理",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "I型超敏反应",
+          "tip": "类过敏反应非IgE依赖，I型超敏反应为IgE依赖"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:anaphylactoid-reaction:1",
+          "prompt": "类过敏反应的定义是什么？",
+          "answer": "由非IgE依赖性的肥大细胞/嗜碱性粒细胞释放介质造成的类似过敏反应的一组临床症状",
+          "difficulty": "what",
+          "cite": {
+            "page": 81,
+            "quote": "非IgE 依赖性的肥大细胞/嗜碱性粒细胞",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:anaphylactoid-reaction:2",
+          "prompt": "哪些补体成分可作为过敏毒素刺激肥大细胞脱颗粒？",
+          "answer": "C3a、C5a",
+          "difficulty": "what",
+          "cite": {
+            "page": 81,
+            "quote": "C3a、C5a",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 81,
+          "quote": "非IgE 依赖性的肥大细胞/嗜碱性粒细胞",
+          "verified": false
+        },
+        {
+          "page": 81,
+          "quote": "组胺释放因子",
+          "verified": false
+        },
+        {
+          "page": 81,
+          "quote": "治疗主要为对症处理",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "type-ii-target-cell-antigens",
+      "name_zh": "II型超敏反应靶细胞表面抗原",
+      "name_en": "Target cell surface antigens in type II hypersensitivity",
+      "aliases": [
+        "靶细胞表面抗原"
+      ],
+      "kind": "molecule",
+      "one_liner": "II型超敏反应中靶细胞表面的四类抗原：固有抗原、共同抗原、自身抗原、吸附抗原。",
+      "fields": [
+        {
+          "label": "细胞固有抗原",
+          "value": "如ABO血型抗原、Rh抗原和HLA抗原。",
+          "cite": {
+            "page": 82,
+            "quote": "如 ABO 血型抗原、Rh抗原和",
+            "verified": false
+          }
+        },
+        {
+          "label": "共同抗原",
+          "value": "如溶血性链球菌某些成分与人心肌细胞、心瓣膜、肾小球基底膜细胞间的共同抗原。",
+          "cite": {
+            "page": 82,
+            "quote": "溶血性链球菌的某些成分与人的心肌细胞",
+            "verified": false
+          }
+        },
+        {
+          "label": "自身抗原",
+          "value": "由感染和理化因素所致的改变的自身抗原。",
+          "cite": {
+            "page": 82,
+            "quote": "由感染和理化因素所致的改变的自身抗",
+            "verified": false
+          }
+        },
+        {
+          "label": "吸附抗原",
+          "value": "吸附于细胞表面的外来抗原或半抗原，可结合于自身组织细胞表面。",
+          "cite": {
+            "page": 82,
+            "quote": "吸附于细胞表面的外来抗原或半抗原",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "III型超敏反应抗原",
+          "tip": "II型抗原位于靶细胞表面；III型为可溶性抗原与抗体形成的循环免疫复合物。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:type-ii-target-cell-antigens:1",
+          "prompt": "II型超敏反应的细胞固有抗原举例有哪些？",
+          "answer": "ABO血型抗原、Rh抗原和HLA抗原。",
+          "difficulty": "what",
+          "cite": {
+            "page": 82,
+            "quote": "如 ABO 血型抗原、Rh抗原和",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-target-cell-antigens:2",
+          "prompt": "II型超敏反应中吸附于细胞表面的抗原是什么？",
+          "answer": "外来抗原或半抗原，可结合于自身组织细胞表面。",
+          "difficulty": "what",
+          "cite": {
+            "page": 82,
+            "quote": "吸附于细胞表面的外来抗原或半抗原",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 82,
+          "quote": "靶细胞表面抗原主要包括",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "type-ii-mechanism",
+      "name_zh": "II型超敏反应发生机制",
+      "name_en": "Mechanism of type II hypersensitivity",
+      "aliases": [
+        "细胞毒型机制"
+      ],
+      "kind": "process",
+      "one_liner": "抗体与靶细胞表面抗原结合后，经激活补体、调理吞噬、ADCC三条途径溶解靶细胞。",
+      "fields": [
+        {
+          "label": "激活补体",
+          "value": "抗体与靶细胞表面抗原结合后暴露C1q结合位点，经典途径激活补体产生MAC，导致靶细胞溶解；C3b等发挥调理作用。",
+          "cite": {
+            "page": 82,
+            "quote": "通过经典途径激活补体产生 MAC",
+            "verified": false
+          }
+        },
+        {
+          "label": "调理吞噬",
+          "value": "IgG与靶细胞结合后，Fc片段与巨噬细胞、中性粒细胞表面FcR结合，促进吞噬。",
+          "cite": {
+            "page": 82,
+            "quote": "促进吞噬作用",
+            "verified": false
+          }
+        },
+        {
+          "label": "ADCC",
+          "value": "IgG与靶细胞结合后，Fc片段与NK细胞、巨噬细胞FcγR结合，促进NK细胞杀伤作用。",
+          "cite": {
+            "page": 82,
+            "quote": "促进NK细胞的杀伤作用",
+            "verified": false
+          }
+        },
+        {
+          "label": "受体功能紊乱",
+          "value": "有些抗细胞表面受体自身抗体与受体结合后不引起靶细胞溶解，而致细胞功能紊乱（刺激或抑制）。",
+          "cite": {
+            "page": 82,
+            "quote": "导致细胞功能紊乱",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "I型超敏反应机制",
+          "tip": "II型为抗体直接结合靶细胞表面抗原；I型为IgE交联肥大细胞表面FcεRI触发脱颗粒。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:type-ii-mechanism:1",
+          "prompt": "II型超敏反应激活补体通过哪条途径？产生什么效应？",
+          "answer": "经典途径，产生MAC导致靶细胞溶解。",
+          "difficulty": "why",
+          "cite": {
+            "page": 82,
+            "quote": "通过经典途径激活补体产生 MAC",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-mechanism:2",
+          "prompt": "II型超敏反应中ADCC由哪些细胞介导？",
+          "answer": "NK细胞、巨噬细胞等，通过FcγR识别IgG Fc片段。",
+          "difficulty": "why",
+          "cite": {
+            "page": 82,
+            "quote": "促进NK细胞的杀伤作用",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:type-ii-mechanism:3",
+          "prompt": "抗细胞表面受体自身抗体与受体结合后一定引起靶细胞溶解吗？",
+          "answer": "不一定，可导致细胞功能紊乱，表现为受体介导的刺激或抑制作用。",
+          "difficulty": "why",
+          "cite": {
+            "page": 82,
+            "quote": "导致细胞功能紊乱",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 82,
+          "quote": "通过经典途径激活补体产生 MAC",
+          "verified": false
+        },
+        {
+          "page": 82,
+          "quote": "促进NK细胞的杀伤作用",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "transfusion-reaction",
+      "name_zh": "输血反应",
+      "name_en": "Transfusion reaction",
+      "aliases": [
+        "ABO血型不符输血反应"
+      ],
+      "kind": "disease",
+      "one_liner": "ABO血型不符输血后，受者天然抗体与供者红细胞抗原结合激活补体，导致溶血。",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "ABO血型不符引起的输血反应最为多见，属II型超敏反应。",
+          "cite": {
+            "page": 82,
+            "quote": "ABO 血型不符引起的输血反应最为多见",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "如A型供血者血误输给B型受者，A型红细胞表面A抗原与B型血清天然抗A抗体结合，激活补体使红细胞溶解损伤导致溶血反应。",
+          "cite": {
+            "page": 82,
+            "quote": "激活补体，使红细胞溶解损伤导致溶血反应",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "新生儿溶血症",
+          "tip": "输血反应为ABO血型不符的急性溶血；新生儿溶血症多因Rh血型不合的母婴免疫。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:transfusion-reaction:1",
+          "prompt": "最常见的输血反应类型是什么？",
+          "answer": "ABO血型不符引起的输血反应。",
+          "difficulty": "what",
+          "cite": {
+            "page": 82,
+            "quote": "ABO 血型不符引起的输血反应最为多见",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:transfusion-reaction:2",
+          "prompt": "A型血输给B型受者为何发生溶血？",
+          "answer": "A型红细胞表面A抗原与B型血清天然抗A抗体结合，激活补体使红细胞溶解。",
+          "difficulty": "why",
+          "cite": {
+            "page": 82,
+            "quote": "激活补体，使红细胞溶解损伤导致溶血反应",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 82,
+          "quote": "ABO 血型不符引起的输血反应最为多见",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "hemolytic-disease-of-newborn",
+      "name_zh": "新生儿溶血症",
+      "name_en": "Hemolytic disease of the newborn",
+      "aliases": [
+        "Rh血型不合新生儿溶血症"
+      ],
+      "kind": "disease",
+      "one_liner": "多发生于母亲Rh阴性、胎儿Rh阳性，母体抗Rh抗体经胎盘引起胎儿红细胞溶解。",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "多发生于母亲为Rh阴性、胎儿为Rh阳性的情况，属II型超敏反应。",
+          "cite": {
+            "page": 82,
+            "quote": "多发生于母亲为Rh，胎儿为Rh",
+            "verified": false
+          }
+        },
+        {
+          "label": "发生条件",
+          "value": "母亲由于输血、流产或分娩等致敏产生抗Rh抗体。",
+          "cite": {
+            "page": 82,
+            "quote": "母亲由于输血、流产或分娩等原",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "输血反应",
+          "tip": "新生儿溶血症为母婴Rh血型不合的被动免疫；输血反应为ABO血型不符的急性溶血。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:hemolytic-disease-of-newborn:1",
+          "prompt": "新生儿溶血症多发生于何种Rh血型组合？",
+          "answer": "母亲Rh阴性、胎儿Rh阳性。",
+          "difficulty": "what",
+          "cite": {
+            "page": 82,
+            "quote": "多发生于母亲为Rh，胎儿为Rh",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:hemolytic-disease-of-newborn:2",
+          "prompt": "母亲如何被致敏产生抗Rh抗体？",
+          "answer": "由于输血、流产或分娩等。",
+          "difficulty": "why",
+          "cite": {
+            "page": 82,
+            "quote": "母亲由于输血、流产或分娩等原",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 82,
+          "quote": "多发生于母亲为Rh，胎儿为Rh",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "rh-incompatibility-hemolytic-disease-newborn",
+      "name_zh": "Rh血型不合所致新生儿溶血症",
+      "name_en": "Rh incompatibility hemolytic disease of the newborn",
+      "aliases": [
+        "Rh抗体通过胎盘",
+        "Rh溶血病"
+      ],
+      "kind": "disease",
+      "one_liner": "母体抗Rh IgG经胎盘破坏胎儿Rh+红细胞，致流产、死胎或新生儿溶血症。",
+      "fields": [
+        {
+          "label": "抗体类型",
+          "value": "抗Rh的IgG类抗体，可通过胎盘",
+          "cite": {
+            "page": 83,
+            "quote": "产生抗 Rh 的IgG 类抗体，此类抗体可通过胎盘",
+            "verified": false
+          }
+        },
+        {
+          "label": "发病条件",
+          "value": "Rh-母亲妊娠或再次妊娠Rh+胎儿",
+          "cite": {
+            "page": 83,
+            "quote": "母亲妊娠或再次妊娠，且胎儿血型力 Rh时",
+            "verified": false
+          }
+        },
+        {
+          "label": "预防",
+          "value": "初产分娩后72小时内注射抗Rh抗体",
+          "cite": {
+            "page": 83,
+            "quote": "初产分娩后72 小时内注射抗 Rh 抗体",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "ABO血型不合新生儿溶血症",
+          "tip": "本页仅述Rh-IgG经胎盘；ABO型未在本页讨论"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:rh-incompatibility-hemolytic-disease-newborn:1",
+          "prompt": "Rh血型不合新生儿溶血症由哪类抗体介导？",
+          "answer": "抗Rh的IgG类抗体，可通过胎盘",
+          "difficulty": "what",
+          "cite": {
+            "page": 83,
+            "quote": "产生抗 Rh 的IgG 类抗体，此类抗体可通过胎盘",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:rh-incompatibility-hemolytic-disease-newborn:2",
+          "prompt": "如何预防再次妊娠时发生新生儿溶血症？",
+          "answer": "初产分娩后72小时内注射抗Rh抗体，清除进入母体的Rh+红细胞",
+          "difficulty": "case",
+          "cite": {
+            "page": 83,
+            "quote": "初产分娩后72 小时内注射抗 Rh 抗体",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 83,
+          "quote": "产生抗 Rh 的IgG 类抗体，此类抗体可通过胎盘",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "autoimmune-hemolytic-anemia",
+      "name_zh": "自身免疫性溶血性贫血",
+      "name_en": "autoimmune hemolytic anemia",
+      "aliases": [
+        "免疫性血细胞减少症"
+      ],
+      "kind": "disease",
+      "one_liner": "病毒或药物改变红细胞膜成分，诱导抗红细胞自身抗体致溶血。",
+      "fields": [
+        {
+          "label": "诱因",
+          "value": "某些病毒感染或服用甲基多巴等药物",
+          "cite": {
+            "page": 83,
+            "quote": "某些病毒感染或服用甲基多巴等药物",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "红细胞膜表面成分改变，刺激产生抗红细胞自身抗体",
+          "cite": {
+            "page": 83,
+            "quote": "使红细胞膜表面成分发生改变，刺激机体产生抗红细胞自身抗体",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "药物性溶血性贫血",
+          "tip": "后者由药物半抗原-载体完全抗原诱导的抗体引起，非自身抗体"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:autoimmune-hemolytic-anemia:1",
+          "prompt": "自身免疫性溶血性贫血的抗体针对什么？",
+          "answer": "抗红细胞自身抗体，与红细胞特异性结合",
+          "difficulty": "what",
+          "cite": {
+            "page": 83,
+            "quote": "刺激机体产生抗红细胞自身抗体",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 83,
+          "quote": "刺激机体产生抗红细胞自身抗体",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "drug-induced-cytopenia",
+      "name_zh": "药物性血细胞减少症",
+      "name_en": "drug-induced cytopenia",
+      "aliases": [
+        "药物性溶血性贫血",
+        "粒细胞减少症",
+        "血小板减少性紫癜"
+      ],
+      "kind": "disease",
+      "one_liner": "药物半抗原与血细胞膜蛋白结合成完全抗原，诱导抗体致血细胞减少。",
+      "fields": [
+        {
+          "label": "常见药物",
+          "value": "青霉素、磺胺等药物半抗原",
+          "cite": {
+            "page": 83,
+            "quote": "青霉素、磺胺等药物半抗原",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "半抗原与血细胞膜蛋白或血浆蛋白结合成完全抗原，刺激产生抗药物抗原表位抗体",
+          "cite": {
+            "page": 83,
+            "quote": "结合成完全抗原，刺激机体产生抗药物抗原表位的特异性抗体",
+            "verified": false
+          }
+        },
+        {
+          "label": "临床类型",
+          "value": "药物性溶血性贫血、粒细胞减少症或血小板减少性紫癜",
+          "cite": {
+            "page": 83,
+            "quote": "引起药物性溶血性贫血、粒细胞减少症或血小板减少性紫癜",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "自身免疫性溶血性贫血",
+          "tip": "前者抗体针对药物抗原表位，后者针对改变的自身红细胞膜成分"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:drug-induced-cytopenia:1",
+          "prompt": "青霉素等药物引起血细胞减少的抗原形成机制是什么？",
+          "answer": "药物半抗原与血细胞膜蛋白或血浆蛋白结合成完全抗原",
+          "difficulty": "why",
+          "cite": {
+            "page": 83,
+            "quote": "结合成完全抗原，刺激机体产生抗药物抗原表位的特异性抗体",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 83,
+          "quote": "结合成完全抗原，刺激机体产生抗药物抗原表位的特异性抗体",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "goodpasture-syndrome",
+      "name_zh": "肺出血-肾炎综合征（古德帕斯丘综合征）",
+      "name_en": "Goodpasture syndrome",
+      "aliases": [
+        "古德帕斯丘综合征"
+      ],
+      "kind": "disease",
+      "one_liner": "抗体与肺泡基底膜结合并与肾小球基底膜交叉反应，致肺出血和肾衰竭。",
+      "fields": [
+        {
+          "label": "诱因",
+          "value": "病毒、有机溶剂、药物使肺泡基底膜结构改变",
+          "cite": {
+            "page": 83,
+            "quote": "病毒、有机溶剂、药物等使肺泡基底膜结构改变",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "抗体与肺泡壁基底膜结合，且与肾小球基底膜交叉反应",
+          "cite": {
+            "page": 83,
+            "quote": "与肾小球基底膜发生交叉反应",
+            "verified": false
+          }
+        },
+        {
+          "label": "临床特征",
+          "value": "肺出血和进行性肾衰竭",
+          "cite": {
+            "page": 83,
+            "quote": "临床以肺出血和进行性肾衰竭为主要特征",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "毒性弥漫性甲状腺肿",
+          "tip": "后者为抗体刺激型（II型特殊类型），不溶解靶细胞"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:goodpasture-syndrome:1",
+          "prompt": "Goodpasture综合征损伤为何同时累及肺和肾？",
+          "answer": "抗体与肺泡壁基底膜结合，且与肾小球基底膜发生交叉反应",
+          "difficulty": "why",
+          "cite": {
+            "page": 83,
+            "quote": "与肾小球基底膜发生交叉反应",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:goodpasture-syndrome:2",
+          "prompt": "Goodpasture综合征的主要临床特征是什么？",
+          "answer": "肺出血和进行性肾衰竭",
+          "difficulty": "case",
+          "cite": {
+            "page": 83,
+            "quote": "临床以肺出血和进行性肾衰竭为主要特征",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 83,
+          "quote": "与肾小球基底膜发生交叉反应",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "graves-disease",
+      "name_zh": "毒性弥漫性甲状腺肿（格雷夫斯病）",
+      "name_en": "Graves disease",
+      "aliases": [
+        "格雷夫斯病",
+        "Graves病",
+        "抗体刺激型超敏反应",
+        "毒性弥漫性甲状腺肿"
+      ],
+      "kind": "disease",
+      "one_liner": "抗TSH受体抗体刺激甲状腺细胞合成并分泌甲状腺激素，致甲亢。",
+      "fields": [
+        {
+          "label": "超敏类型",
+          "value": "特殊类型的II型超敏反应，即抗体刺激型超敏反应",
+          "cite": {
+            "page": 83,
+            "quote": "是一种特殊类型的II型超敏反应，即抗体刺激型超敏反应",
+            "verified": false
+          }
+        },
+        {
+          "label": "靶抗原",
+          "value": "甲状腺细胞表面促甲状腺素（TSH）受体",
+          "cite": {
+            "page": 83,
+            "quote": "针对甲状腺细胞表面促甲状腺素（thyroid stimula",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "抗体不使靶细胞溶解，而促使甲状腺细胞合成并分泌甲状腺激素",
+          "cite": {
+            "page": 83,
+            "quote": "不是使靶细胞溶解，而是促使甲状腺细胞合成并分泌甲状腺激素",
+            "verified": false
+          }
+        },
+        {
+          "label": "分类",
+          "value": "器官特异性功能异常型自身免疫病",
+          "cite": {
+            "page": 86,
+            "quote": "如格雷夫斯病、重症肌无力",
+            "verified": false
+          }
+        },
+        {
+          "label": "自身抗原",
+          "value": "促甲状腺素（TSH）受体",
+          "cite": {
+            "page": 89,
+            "quote": "促甲状腺素",
+            "verified": false
+          }
+        },
+        {
+          "label": "应答产物",
+          "value": "抗TSH受体抗体",
+          "cite": {
+            "page": 89,
+            "quote": "抗TSH 受体抗体",
+            "verified": false
+          }
+        },
+        {
+          "label": "损伤类型",
+          "value": "抗细胞膜受体抗体介导的靶细胞功能紊乱；抗体模拟TSH，刺激甲状腺素增加",
+          "cite": {
+            "page": 89,
+            "quote": "抗体模拟TSH，刺",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "细胞毒型II型超敏反应",
+          "tip": "Graves病抗体刺激而非溶解靶细胞，属II型特殊类型"
+        },
+        {
+          "vs": "桥本甲状腺炎",
+          "tip": "两者均累及甲状腺；格雷夫斯病属抗体刺激所致功能异常型，桥本甲状腺炎为针对甲状腺靶抗原的器官特异性AID"
+        },
+        {
+          "vs": "Graves病 vs 桥本甲状腺炎",
+          "tip": "Graves病为抗体介导的受体功能紊乱，桥本为细胞毒/迟发型"
+        },
+        {
+          "vs": "重症肌无力",
+          "tip": "Graves病抗体模拟TSH刺激功能；MG抗体阻断乙酰胆碱受体致肌无力"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:graves-disease:1",
+          "prompt": "Graves病属于哪一型超敏反应的特殊类型？",
+          "answer": "II型超敏反应中的抗体刺激型超敏反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 83,
+            "quote": "是一种特殊类型的II型超敏反应，即抗体刺激型超敏反应",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:graves-disease:2",
+          "prompt": "Graves病抗体作用于TSH受体后为何导致甲亢？",
+          "answer": "抗体不溶解靶细胞，而促使甲状腺细胞合成并分泌甲状腺激素",
+          "difficulty": "why",
+          "cite": {
+            "page": 83,
+            "quote": "不是使靶细胞溶解，而是促使甲状腺细胞合成并分泌甲状腺激素",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:graves-disease:3",
+          "prompt": "格雷夫斯病属于哪类自身免疫病？",
+          "answer": "器官特异性功能异常型自身免疫病",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "如格雷夫斯病、重症肌无力",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:graves-disease:4",
+          "prompt": "格雷夫斯病的发病机制要点是什么？",
+          "answer": "自身抗体对靶器官过度刺激引起功能异常",
+          "difficulty": "why",
+          "cite": {
+            "page": 86,
+            "quote": "某些自身抗体可通过对靶器官过度刺激或抑制",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:graves-disease:5",
+          "prompt": "Graves病属于哪类疾病？",
+          "answer": "常见自身免疫病",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "常见的有格雷夫斯病（Graves 病）",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:graves-disease:6",
+          "prompt": "Graves病的自身抗原是什么？",
+          "answer": "促甲状腺素（TSH）受体",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "促甲状腺素",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:graves-disease:7",
+          "prompt": "Graves病抗体如何导致甲状腺素增加？",
+          "answer": "抗TSH受体抗体模拟TSH，刺激甲状腺素增加",
+          "difficulty": "why",
+          "cite": {
+            "page": 89,
+            "quote": "抗体模拟TSH，刺",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 83,
+          "quote": "是一种特殊类型的II型超敏反应，即抗体刺激型超敏反应",
+          "verified": false
+        },
+        {
+          "page": 86,
+          "quote": "如格雷夫斯病、重症肌无力",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "常见的有格雷夫斯病（Graves 病）",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "抗TSH 受体抗体",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "immune-complex-deposition-mechanism",
+      "name_zh": "中等大小可溶性免疫复合物的形成与沉积",
+      "name_en": "formation and deposition of medium-sized soluble immune complexes",
+      "aliases": [
+        "免疫复合物沉积机制"
+      ],
+      "kind": "process",
+      "one_liner": "约19S中等大小可溶性免疫复合物无法清除，在血流缓慢、涡流多的器官沉积。",
+      "fields": [
+        {
+          "label": "关键复合物",
+          "value": "中等大小可溶性免疫复合物（约19S）",
+          "cite": {
+            "page": 83,
+            "quote": "中等大小的可溶性免疫复合物（约19S）则无法及时排出体外",
+            "verified": false
+          }
+        },
+        {
+          "label": "清除规律",
+          "value": "大分子被吞噬细胞清除，小分子经肾小球滤过清除",
+          "cite": {
+            "page": 83,
+            "quote": "大分子的免疫复合物可以被机体的吞噬细胞清除",
+            "verified": false
+          }
+        },
+        {
+          "label": "沉积部位",
+          "value": "血流缓慢、压力较高、毛细血管丰富而涡流较多的器官（肾、关节滑膜、肺、皮肤）",
+          "cite": {
+            "page": 83,
+            "quote": "血流缓慢、血流压力较高、毛细血管丰富而涡流较多的器官组织",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "大分子免疫复合物",
+          "tip": "大分子可被吞噬细胞清除，不沉积致病"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:immune-complex-deposition-mechanism:1",
+          "prompt": "III型超敏反应发生的基础是什么？",
+          "answer": "中等大小可溶性免疫复合物的形成和沉积",
+          "difficulty": "what",
+          "cite": {
+            "page": 83,
+            "quote": "中等大小可溶性免疫复合物的形成和沉积是",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:immune-complex-deposition-mechanism:2",
+          "prompt": "为何免疫复合物易在肾、关节滑膜、肺、皮肤沉积？",
+          "answer": "这些器官血流缓慢、压力较高、毛细血管丰富而涡流较多",
+          "difficulty": "why",
+          "cite": {
+            "page": 83,
+            "quote": "血流缓慢、血流压力较高、毛细血管丰富而涡流较多的器官组织",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 83,
+          "quote": "中等大小的可溶性免疫复合物（约19S）则无法及时排出体外",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "immune-complex-inflammatory-injury",
+      "name_zh": "沉积免疫复合物引起的炎症损伤机制",
+      "name_en": "inflammatory injury by deposited immune complexes",
+      "aliases": [
+        "补体-中性粒细胞-血小板损伤机制"
+      ],
+      "kind": "process",
+      "one_liner": "沉积复合物经经典途径激活补体，产生过敏毒素与趋化因子，吸引中性粒细胞致炎。",
+      "fields": [
+        {
+          "label": "补体作用",
+          "value": "经典途径激活补体，产生C3a、C5a、C567等过敏毒素和趋化因子",
+          "cite": {
+            "page": 83,
+            "quote": "免疫复合物通过经典途径激活补体，产生C3a、C5a、C567",
+            "verified": false
+          }
+        },
+        {
+          "label": "血管通透性",
+          "value": "使嗜碱性粒细胞和肥大细胞脱颗粒释放组胺，造成毛细血管通透性增加",
+          "cite": {
+            "page": 83,
+            "quote": "使嗜碱性粒细胞和肥大细胞脱颗粒，释放组胺",
+            "verified": false
+          }
+        },
+        {
+          "label": "细胞浸润",
+          "value": "吸引中性粒细胞在炎症部位聚集",
+          "cite": {
+            "page": 83,
+            "quote": "吸引中性粒细胞在炎症部位聚",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "I型超敏反应",
+          "tip": "I型由IgE介导肥大细胞脱颗粒；III型由免疫复合物激活补体间接引起"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:immune-complex-inflammatory-injury:1",
+          "prompt": "沉积的免疫复合物通过哪条补体途径激活补体？",
+          "answer": "经典途径",
+          "difficulty": "what",
+          "cite": {
+            "page": 83,
+            "quote": "免疫复合物通过经典途径激活补体",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:immune-complex-inflammatory-injury:2",
+          "prompt": "III型超敏反应中中性粒细胞为何在炎症部位聚集？",
+          "answer": "补体激活产生C3a、C5a、C567等趋化因子吸引中性粒细胞",
+          "difficulty": "why",
+          "cite": {
+            "page": 83,
+            "quote": "产生C3a、C5a、C567 等过敏毒素和趋化因子",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 83,
+          "quote": "免疫复合物通过经典途径激活补体，产生C3a、C5a、C567",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "arthus-reaction",
+      "name_zh": "阿蒂斯反应",
+      "name_en": "Arthus reaction",
+      "aliases": [
+        "实验性局部过敏反应"
+      ],
+      "kind": "disease",
+      "one_liner": "局部反复注射抗原后形成的局部III型超敏反应，表现为红肿、出血和坏死。",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "实验性局部III型超敏反应",
+          "cite": {
+            "page": 84,
+            "quote": "阿蒂斯反应又称实验性局部过敏反应",
+            "verified": false
+          }
+        },
+        {
+          "label": "典型表现",
+          "value": "家兔皮下多次注射马血清后局部皮肤红肿、出血和坏死",
+          "cite": {
+            "page": 84,
+            "quote": "局部皮肤出现红肿、出血和坏死等症状",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "类阿蒂斯反应",
+          "tip": "类阿蒂斯反应见于局部反复注射药物（如胰岛素）后，表现类似但非实验性"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:arthus-reaction:1",
+          "prompt": "阿蒂斯反应的别称是什么？",
+          "answer": "实验性局部过敏反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 84,
+            "quote": "阿蒂斯反应又称实验性局部过敏反应",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:arthus-reaction:2",
+          "prompt": "阿蒂斯反应的典型局部表现是什么？",
+          "answer": "红肿、出血和坏死",
+          "difficulty": "case",
+          "cite": {
+            "page": 84,
+            "quote": "局部皮肤出现红肿、出血和坏死等症状",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 84,
+          "quote": "阿蒂斯反应又称实验性局部过敏反应",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "serum-sickness",
+      "name_zh": "血清病",
+      "name_en": "Serum sickness",
+      "aliases": [],
+      "kind": "disease",
+      "one_liner": "初次大剂量注射抗毒素血清后，中等大小免疫复合物沉积全身血管所致的III型超敏反应",
+      "fields": [
+        {
+          "label": "诱因",
+          "value": "初次大剂量抗毒素血清注射",
+          "cite": {
+            "page": 84,
+            "quote": "通常在初次大剂量抗毒素血清注射后出现",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "抗原抗体结合形成中等大小免疫复合物沉积于全身血管",
+          "cite": {
+            "page": 84,
+            "quote": "沉积于全身各处血管",
+            "verified": false
+          }
+        },
+        {
+          "label": "临床表现",
+          "value": "发热、皮疹、关节肿痛、肾炎、荨麻疹",
+          "cite": {
+            "page": 84,
+            "quote": "发热、皮疹、关节肿痛、肾炎、荨麻疹等症状",
+            "verified": false
+          }
+        },
+        {
+          "label": "病程",
+          "value": "大多为自限性，停用后可自然恢复",
+          "cite": {
+            "page": 84,
+            "quote": "大多为自限性，即停用后可自然恢复",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "药物热",
+          "tip": "大剂量反复注射抗生素可引起类似血清病样反应，称药物热"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:serum-sickness:1",
+          "prompt": "血清病通常由什么引起？",
+          "answer": "初次大剂量抗毒素血清注射",
+          "difficulty": "what",
+          "cite": {
+            "page": 84,
+            "quote": "通常在初次大剂量抗毒素血清注射后出现",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:serum-sickness:2",
+          "prompt": "血清病的典型临床表现有哪些？",
+          "answer": "发热、皮疹、关节肿痛、肾炎、荨麻疹",
+          "difficulty": "case",
+          "cite": {
+            "page": 84,
+            "quote": "发热、皮疹、关节肿痛、肾炎、荨麻疹等症状",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 84,
+          "quote": "通常在初次大剂量抗毒素血清注射后出现",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "immune-complex-glomerulonephritis",
+      "name_zh": "免疫复合物型肾小球肾炎",
+      "name_en": "Immune complex glomerulonephritis",
+      "aliases": [],
+      "kind": "disease",
+      "one_liner": "乙型溶血性链球菌感染后2~3周，免疫复合物沉积肾小球基底膜引起的III型超敏反应",
+      "fields": [
+        {
+          "label": "诱因",
+          "value": "乙型溶血性链球菌感染后2~3周",
+          "cite": {
+            "page": 84,
+            "quote": "一般发生于乙型溶血性链球菌感染后 2~3周",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "抗体与链球菌可溶性抗原结合并沉积于肾小球基底膜",
+          "cite": {
+            "page": 84,
+            "quote": "沉积于肾小球基底膜，引起肾小球肾炎",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:immune-complex-glomerulonephritis:1",
+          "prompt": "免疫复合物型肾小球肾炎一般发生于什么感染后多久？",
+          "answer": "乙型溶血性链球菌感染后2~3周",
+          "difficulty": "case",
+          "cite": {
+            "page": 84,
+            "quote": "一般发生于乙型溶血性链球菌感染后 2~3周",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:immune-complex-glomerulonephritis:2",
+          "prompt": "免疫复合物型肾小球肾炎的免疫复合物沉积在哪里？",
+          "answer": "肾小球基底膜",
+          "difficulty": "why",
+          "cite": {
+            "page": 84,
+            "quote": "沉积于肾小球基底膜，引起肾小球肾炎",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 84,
+          "quote": "沉积于肾小球基底膜，引起肾小球肾炎",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "platelet-in-type-iii",
+      "name_zh": "血小板在III型超敏反应中的作用",
+      "name_en": "Role of platelets in type III hypersensitivity",
+      "aliases": [],
+      "kind": "process",
+      "one_liner": "免疫复合物和C3b活化血小板，释放血管活性胺致充血水肿并形成微血栓。",
+      "fields": [
+        {
+          "label": "活化因素",
+          "value": "免疫复合物和补体C3b可使血小板活化",
+          "cite": {
+            "page": 84,
+            "quote": "免疫复合物和补体C3b 可使血小板活化",
+            "verified": false
+          }
+        },
+        {
+          "label": "释放物质",
+          "value": "释放血管活性胺类物质，导致血管扩张、通透性增加",
+          "cite": {
+            "page": 84,
+            "quote": "释放血管活性胺类物质",
+            "verified": false
+          }
+        },
+        {
+          "label": "后果",
+          "value": "血小板聚集激活凝血机制形成微血栓，造成局部组织缺血出血",
+          "cite": {
+            "page": 84,
+            "quote": "可在局部形成微血栓",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:platelet-in-type-iii:1",
+          "prompt": "III型超敏反应中什么可使血小板活化？",
+          "answer": "免疫复合物和补体C3b",
+          "difficulty": "why",
+          "cite": {
+            "page": 84,
+            "quote": "免疫复合物和补体C3b 可使血小板活化",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:platelet-in-type-iii:2",
+          "prompt": "III型超敏反应中血小板活化形成微血栓的后果是什么？",
+          "answer": "局部组织缺血、出血，加重损伤",
+          "difficulty": "why",
+          "cite": {
+            "page": 84,
+            "quote": "造成局部组织缺血，进而出血",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 84,
+          "quote": "免疫复合物和补体C3b 可使血小板活化",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "neutrophil-in-type-iii",
+      "name_zh": "中性粒细胞在III型超敏反应中的作用",
+      "name_en": "Role of neutrophils in type III hypersensitivity",
+      "aliases": [],
+      "kind": "process",
+      "one_liner": "中性粒细胞吞噬免疫复合物时释放多种蛋白酶，损伤血管基底膜和周围组织。",
+      "fields": [
+        {
+          "label": "病理特征",
+          "value": "中性粒细胞浸润是III型超敏反应的主要病理特征",
+          "cite": {
+            "page": 84,
+            "quote": "中性粒细胞浸润是型超敏反应的主要病理特征",
+            "verified": false
+          }
+        },
+        {
+          "label": "释放酶类",
+          "value": "释放蛋白水解酶、胶原酶、弹性纤维酶和碱性蛋白酶等",
+          "cite": {
+            "page": 84,
+            "quote": "释放蛋白水解酶、胶原酶、弹性纤维酶和碱性蛋白酶等",
+            "verified": false
+          }
+        },
+        {
+          "label": "损伤部位",
+          "value": "使血管基底膜和周围组织发生损伤",
+          "cite": {
+            "page": 84,
+            "quote": "使血管基底膜和周围组织发生损伤",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:neutrophil-in-type-iii:1",
+          "prompt": "III型超敏反应中中性粒细胞释放哪些酶造成组织损伤？",
+          "answer": "蛋白水解酶、胶原酶、弹性纤维酶和碱性蛋白酶等",
+          "difficulty": "why",
+          "cite": {
+            "page": 84,
+            "quote": "释放蛋白水解酶、胶原酶、弹性纤维酶和碱性蛋白酶等",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:neutrophil-in-type-iii:2",
+          "prompt": "III型超敏反应中中性粒细胞损伤哪些结构？",
+          "answer": "血管基底膜和周围组织",
+          "difficulty": "why",
+          "cite": {
+            "page": 84,
+            "quote": "使血管基底膜和周围组织发生损伤",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 84,
+          "quote": "中性粒细胞浸润是型超敏反应的主要病理特征",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "rheumatoid-arthritis-pathogenesis",
+      "name_zh": "类风湿关节炎（发病机制）",
+      "name_en": "Rheumatoid Arthritis",
+      "aliases": [
+        "RA",
+        "类风湿关节炎"
+      ],
+      "kind": "disease",
+      "one_liner": "抗变性IgG自身抗体（RF）与IgG形成免疫复合物沉积于小关节滑膜致病。",
+      "fields": [
+        {
+          "label": "致病机制",
+          "value": "病原体或其代谢产物使IgG变性，刺激机体产生抗变性IgG的自身抗体（IgM，即类风湿因子RF）；两者结合形成免疫复合物，沉积于小关节滑膜，引起类风湿关节炎。",
+          "cite": {
+            "page": 85,
+            "quote": "沉积于小关节滑膜，引起类风湿关节炎",
+            "verified": false
+          }
+        },
+        {
+          "label": "类风湿因子",
+          "value": "抗变性IgG的自身抗体，类型为IgM。",
+          "cite": {
+            "page": 85,
+            "quote": "抗变性IgG 的自身抗体（IgM）",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "系统性红斑狼疮",
+          "tip": "RA的免疫复合物主要沉积于小关节滑膜；SLE的免疫复合物沉积于全身多处血管基底膜，多器官受累。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:rheumatoid-arthritis-pathogenesis:1",
+          "prompt": "类风湿因子（RF）的本质是什么？",
+          "answer": "抗变性IgG的自身抗体，类型为IgM。",
+          "difficulty": "what",
+          "cite": {
+            "page": 85,
+            "quote": "抗变性IgG 的自身抗体（IgM）",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:rheumatoid-arthritis-pathogenesis:2",
+          "prompt": "类风湿关节炎的免疫复合物主要沉积在何处？",
+          "answer": "小关节滑膜。",
+          "difficulty": "why",
+          "cite": {
+            "page": 85,
+            "quote": "沉积于小关节滑膜",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 85,
+          "quote": "沉积于小关节滑膜，引起类风湿关节炎",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "systemic-lupus-erythematosus-pathogenesis",
+      "name_zh": "系统性红斑狼疮（发病机制）",
+      "name_en": "Systemic Lupus Erythematosus",
+      "aliases": [
+        "SLE",
+        "系统性红斑狼疮"
+      ],
+      "kind": "disease",
+      "one_liner": "多种自身抗体（如抗核抗体）与自身抗原形成免疫复合物沉积于全身血管基底膜。",
+      "fields": [
+        {
+          "label": "致病机制",
+          "value": "患者体内出现多种自身抗体（如抗核抗体），自身抗体与相应自身抗原结合形成免疫复合物，沉积于全身多处血管基底膜，导致组织损伤，表现为全身多器官病变。",
+          "cite": {
+            "page": 85,
+            "quote": "沉积于全身多处血管基底膜",
+            "verified": false
+          }
+        },
+        {
+          "label": "抗核抗体",
+          "value": "抗各种核酸和核蛋白抗体的总称。",
+          "cite": {
+            "page": 85,
+            "quote": "抗各种核酸和核蛋",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "类风湿关节炎",
+          "tip": "SLE免疫复合物沉积于全身多处血管基底膜致多器官病变；RA主要沉积于小关节滑膜。"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:systemic-lupus-erythematosus-pathogenesis:1",
+          "prompt": "SLE的组织损伤主要由什么机制引起？",
+          "answer": "自身抗体与自身抗原形成免疫复合物，沉积于全身多处血管基底膜。",
+          "difficulty": "why",
+          "cite": {
+            "page": 85,
+            "quote": "沉积于全身多处血管基底膜",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:systemic-lupus-erythematosus-pathogenesis:2",
+          "prompt": "抗核抗体的定义是什么？",
+          "answer": "抗各种核酸和核蛋白抗体的总称。",
+          "difficulty": "what",
+          "cite": {
+            "page": 85,
+            "quote": "抗各种核酸和核蛋",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 85,
+          "quote": "沉积于全身多处血管基底膜",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "dth-antigen",
+      "name_zh": "IV型超敏反应抗原",
+      "name_en": "Antigens of DTH",
+      "aliases": [
+        "迟发型超敏反应抗原"
+      ],
+      "kind": "molecule",
+      "one_liner": "主要是胞内寄生微生物和接触性抗原。",
+      "fields": [
+        {
+          "label": "抗原种类",
+          "value": "主要是胞内寄生微生物和接触性抗原；前者包括胞内寄生菌、真菌、某些寄生虫和病毒，后者包括某些化学物质。",
+          "cite": {
+            "page": 85,
+            "quote": "主要是胞内寄生微生物和接触性抗原",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:dth-antigen:1",
+          "prompt": "引起IV型超敏反应的抗原主要有哪些？",
+          "answer": "胞内寄生微生物（胞内寄生菌、真菌、某些寄生虫和病毒）和接触性抗原（某些化学物质）。",
+          "difficulty": "what",
+          "cite": {
+            "page": 85,
+            "quote": "主要是胞内寄生微生物和接触性抗原",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 85,
+          "quote": "主要是胞内寄生微生物和接触性抗原",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "dth-th1-inflammation",
+      "name_zh": "CD4+Th1细胞介导的炎症反应",
+      "name_en": "Th1-mediated Inflammation in DTH",
+      "aliases": [
+        "Th1炎症反应"
+      ],
+      "kind": "process",
+      "one_liner": "Th1识别抗原后分泌多种细胞因子，募集活化巨噬细胞并直接损伤组织。",
+      "fields": [
+        {
+          "label": "IL-3与GM-CSF作用",
+          "value": "刺激单核细胞生成，增加巨噬细胞数量。",
+          "cite": {
+            "page": 85,
+            "quote": "刺激单核细胞生成，增加巨噬细胞",
+            "verified": false
+          }
+        },
+        {
+          "label": "TNF与MCP-1作用",
+          "value": "TNF-α和TNF-β使局部血管内皮细胞黏附分子表达增加，MCP-1募集单个核细胞，促进巨噬细胞和淋巴细胞至抗原部位；还可直接攻击靶细胞及周围组织引起损伤。",
+          "cite": {
+            "page": 85,
+            "quote": "MCP-1 可募集单个",
+            "verified": false
+          }
+        },
+        {
+          "label": "IFN-γ作用",
+          "value": "使巨噬细胞活化，进一步释放IL-1、IL-6、IL-8等加重炎症反应。",
+          "cite": {
+            "page": 85,
+            "quote": "使巨噬细胞活化",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:dth-th1-inflammation:1",
+          "prompt": "IV型超敏反应中IL-3和GM-CSF的作用是什么？",
+          "answer": "刺激单核细胞生成，增加巨噬细胞数量。",
+          "difficulty": "why",
+          "cite": {
+            "page": 85,
+            "quote": "刺激单核细胞生成，增加巨噬细胞",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:dth-th1-inflammation:2",
+          "prompt": "IV型超敏反应中IFN-γ如何加重炎症？",
+          "answer": "活化巨噬细胞，使其进一步释放IL-1、IL-6、IL-8等。",
+          "difficulty": "why",
+          "cite": {
+            "page": 85,
+            "quote": "使巨噬细胞活化",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 85,
+          "quote": "MCP-1 可募集单个",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "dth-ctl-cytotoxicity",
+      "name_zh": "CD8+CTL介导的细胞毒作用",
+      "name_en": "CD8+ CTL-mediated Cytotoxicity in DTH",
+      "aliases": [
+        "CTL细胞毒作用"
+      ],
+      "kind": "process",
+      "one_liner": "CD8+CTL活化后通过穿孔素和颗粒酶特异性杀伤靶细胞。",
+      "fields": [
+        {
+          "label": "杀伤机制",
+          "value": "CD8+CTL与抗原结合后被活化，通过释放穿孔素和颗粒酶特异性杀伤靶细胞，使靶细胞发生凋亡。",
+          "cite": {
+            "page": 85,
+            "quote": "通过释放穿孔素和",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:dth-ctl-cytotoxicity:1",
+          "prompt": "IV型超敏反应中CD8+CTL通过什么杀伤靶细胞？",
+          "answer": "释放穿孔素和颗粒酶，使靶细胞发生凋亡。",
+          "difficulty": "why",
+          "cite": {
+            "page": 85,
+            "quote": "通过释放穿孔素和",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 85,
+          "quote": "通过释放穿孔素和",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "infectious-hypersensitivity",
+      "name_zh": "感染性超敏反应",
+      "name_en": "Infectious hypersensitivity",
+      "aliases": [
+        "传染性超敏反应"
+      ],
+      "kind": "process",
+      "one_liner": "胞内微生物感染中以T细胞免疫为基础的IV型超敏反应",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "机体受到某些胞内微生物感染过程中产生的以T细胞免疫为基础的IV型超敏反应",
+          "cite": {
+            "page": 86,
+            "quote": "以T细胞免疫为基础的I型超敏反应",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "病原长期存在于体内，与致敏T细胞接触，释放淋巴因子活化巨噬细胞，清除感染宿主细胞同时损伤周围正常组织",
+          "cite": {
+            "page": 86,
+            "quote": "使其释放淋巴因子，活化巨噬细胞",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "接触性皮炎",
+          "tip": "两者均为IV型，但感染性超敏反应由胞内微生物持续感染诱发，接触性皮炎由小分子半抗原经皮肤致敏引起"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:infectious-hypersensitivity:1",
+          "prompt": "感染性超敏反应属于哪一型超敏反应？",
+          "answer": "IV型（以T细胞免疫为基础）",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "以T细胞免疫为基础的I型超敏反应",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:infectious-hypersensitivity:2",
+          "prompt": "感染性超敏反应中致敏T细胞释放淋巴因子的主要效应是什么？",
+          "answer": "活化巨噬细胞，清除被感染宿主细胞，同时造成周围正常组织损伤",
+          "difficulty": "why",
+          "cite": {
+            "page": 86,
+            "quote": "使其释放淋巴因子，活化巨噬细胞",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "以T细胞免疫为基础的I型超敏反应",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "contact-dermatitis",
+      "name_zh": "接触性皮炎",
+      "name_en": "Contact dermatitis",
+      "aliases": [],
+      "kind": "disease",
+      "one_liner": "小分子半抗原经皮肤致敏T细胞引起的IV型超敏反应性皮炎",
+      "fields": [
+        {
+          "label": "病因",
+          "value": "接触小分子半抗原物质如油漆、染料、农药、化妆品和某些药物",
+          "cite": {
+            "page": 86,
+            "quote": "接触小分子半抗原物质，如油漆、染料、农药",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "半抗原与机体蛋白质（如表皮细胞角质蛋白）结合形成完全抗原，经朗格汉斯细胞摄取加工提呈给T细胞，诱发T细胞免疫应答；再次接触相同抗原后发病",
+          "cite": {
+            "page": 86,
+            "quote": "经皮肤等处的树突状细胞（朗格汉斯细胞）摄取",
+            "verified": false
+          }
+        },
+        {
+          "label": "临床表现",
+          "value": "局部皮肤红肿、皮疹、水疱，严重者剥脱性皮炎",
+          "cite": {
+            "page": 86,
+            "quote": "导致局部皮肤出现红肿、皮疹、水疱等",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "感染性超敏反应",
+          "tip": "同为IV型；接触性皮炎由外源半抗原经皮肤致敏，感染性超敏反应由胞内微生物持续感染诱发"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:contact-dermatitis:1",
+          "prompt": "接触性皮炎属于哪一型超敏反应？",
+          "answer": "IV型（T细胞介导的迟发型超敏反应）",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "诱发T细胞免疫应答",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:contact-dermatitis:2",
+          "prompt": "接触性皮炎中半抗原如何获得免疫原性？",
+          "answer": "与机体蛋白质（如表皮细胞角质蛋白）结合形成完全抗原",
+          "difficulty": "why",
+          "cite": {
+            "page": 86,
+            "quote": "与机体的蛋白质（如表皮细胞角质蛋白）结合形",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:contact-dermatitis:3",
+          "prompt": "接触性皮炎主要由哪类细胞提呈抗原？",
+          "answer": "皮肤等处的树突状细胞（朗格汉斯细胞）",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "经皮肤等处的树突状细胞（朗格汉斯细胞）摄取",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "接触小分子半抗原物质，如油漆、染料、农药",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "penicillin-hypersensitivity-multi-type",
+      "name_zh": "青霉素超敏反应的多型性",
+      "name_en": "Multi-type hypersensitivity of penicillin",
+      "aliases": [],
+      "kind": "concept",
+      "one_liner": "同一抗原在不同条件下可引起不同类型的超敏反应",
+      "fields": [
+        {
+          "label": "概念",
+          "value": "同一种抗原在不同条件下可引起不同类型的超敏反应",
+          "cite": {
+            "page": 86,
+            "quote": "同一种抗原在不同条件下也可引起不同类型的超敏反应",
+            "verified": false
+          }
+        },
+        {
+          "label": "举例",
+          "value": "青霉素可引起I型过敏性休克；结合于血细胞表面可引起II型血细胞减少症；与血清蛋白质结合可能出现III型超敏反应；外用可引起IV型接触性皮炎",
+          "cite": {
+            "page": 86,
+            "quote": "可引起1型过敏性休克；结合于血细胞表面",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "超敏反应分型固定不变",
+          "tip": "分型取决于抗原存在形式与反应机制，同一药物可介导多型超敏反应"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:penicillin-hypersensitivity-multi-type:1",
+          "prompt": "青霉素外用主要引起哪一型超敏反应？",
+          "answer": "IV型（接触性皮炎）",
+          "difficulty": "case",
+          "cite": {
+            "page": 86,
+            "quote": "青霉素外用还可引起I型的接触性皮炎",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:penicillin-hypersensitivity-multi-type:2",
+          "prompt": "青霉素结合于血细胞表面可引起哪一型超敏反应？",
+          "answer": "II型（血细胞减少症）",
+          "difficulty": "case",
+          "cite": {
+            "page": 86,
+            "quote": "结合于血细胞表面可引起开型的血细胞减少症",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "同一种抗原在不同条件下也可引起不同类型的超敏反应",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "autoimmunity",
+      "name_zh": "自身免疫",
+      "name_en": "Autoimmunity",
+      "aliases": [],
+      "kind": "concept",
+      "one_liner": "机体免疫系统针对自身成分发生的免疫应答",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "机体免疫系统针对自身成分发生的免疫应答",
+          "cite": {
+            "page": 86,
+            "quote": "机体免疫系统针对自身成分发生的免疫应答",
+            "verified": false
+          }
+        },
+        {
+          "label": "生理意义",
+          "value": "清除体内衰老损伤细胞、维持自身稳定和调节免疫应答",
+          "cite": {
+            "page": 86,
+            "quote": "清除体内衰老损伤细胞、维持机体自身稳定",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "自身免疫病",
+          "tip": "自身免疫是生理性应答；过度而持久并引起疾病状态时称自身免疫病"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:autoimmunity:1",
+          "prompt": "自身免疫的定义是什么？",
+          "answer": "机体免疫系统针对自身成分发生的免疫应答",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "机体免疫系统针对自身成分发生的免疫应答",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmunity:2",
+          "prompt": "生理性自身免疫有何意义？",
+          "answer": "清除衰老损伤细胞、维持自身稳定和调节免疫应答",
+          "difficulty": "why",
+          "cite": {
+            "page": 86,
+            "quote": "清除体内衰老损伤细胞、维持机体自身稳定",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "机体免疫系统针对自身成分发生的免疫应答",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "organ-specific-autoimmune-disease",
+      "name_zh": "器官特异性自身免疫病",
+      "name_en": "Organ-specific autoimmune disease",
+      "aliases": [],
+      "kind": "concept",
+      "one_liner": "病变局限于某一特定器官、由针对该器官靶抗原的自身免疫反应引起",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "患者病变一般局限于某一特定器官，由针对特定器官靶抗原的自身免疫反应引起",
+          "cite": {
+            "page": 86,
+            "quote": "病变一般局限于某一特定器官",
+            "verified": false
+          }
+        },
+        {
+          "label": "举例",
+          "value": "胰岛素依赖型糖尿病（IDDM）、桥本甲状腺炎；功能异常型如格雷夫斯病、重症肌无力",
+          "cite": {
+            "page": 86,
+            "quote": "如胰岛素依赖型糖尿病（IDDM）、桥本甲状腺炎等",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "全身性自身免疫病",
+          "tip": "器官特异性病变局限于特定器官；全身性针对多器官共有自身抗原，病变波及全身"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:organ-specific-autoimmune-disease:1",
+          "prompt": "器官特异性自身免疫病的定义是什么？",
+          "answer": "病变局限于某一特定器官，由针对该器官靶抗原的自身免疫反应引起",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "病变一般局限于某一特定器官",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:organ-specific-autoimmune-disease:2",
+          "prompt": "哪些属于器官特异性功能异常型自身免疫病？",
+          "answer": "格雷夫斯病、重症肌无力（自身抗体过度刺激或抑制靶器官）",
+          "difficulty": "case",
+          "cite": {
+            "page": 86,
+            "quote": "如格雷夫斯病、重症肌无力",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "病变一般局限于某一特定器官",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "systemic-autoimmune-disease",
+      "name_zh": "全身性自身免疫病",
+      "name_en": "Systemic autoimmune disease",
+      "aliases": [
+        "系统性自身免疫病"
+      ],
+      "kind": "concept",
+      "one_liner": "针对多器官组织共有自身抗原、病变波及全身的自身免疫病",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "由针对多种器官和组织靶抗原的自身免疫应答所致，自身抗原一般为多器官组织共有组分（如细胞核成分或线粒体）",
+          "cite": {
+            "page": 86,
+            "quote": "由针对多种器官和组织靶抗原的自身免疫应答所致",
+            "verified": false
+          }
+        },
+        {
+          "label": "举例",
+          "value": "系统性红斑狼疮（SLE），损伤可遍及皮肤、肾、关节等多种组织器官",
+          "cite": {
+            "page": 86,
+            "quote": "如系统性红斑狼疮",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "器官特异性自身免疫病",
+          "tip": "全身性针对共有自身抗原（如核成分），多器官受累；器官特异性局限于单一器官"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:systemic-autoimmune-disease:1",
+          "prompt": "全身性自身免疫病的自身抗原有何特点？",
+          "answer": "一般为多器官、组织的共有组分，如细胞核成分或线粒体",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "其自身抗原一般为多器官、组织的共有组分",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:systemic-autoimmune-disease:2",
+          "prompt": "系统性红斑狼疮属于哪类自身免疫病？",
+          "answer": "全身性（系统性）自身免疫病",
+          "difficulty": "case",
+          "cite": {
+            "page": 86,
+            "quote": "如系统性红斑狼疮",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "由针对多种器官和组织靶抗原的自身免疫应答所致",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "myasthenia-gravis",
+      "name_zh": "重症肌无力",
+      "name_en": "Myasthenia gravis",
+      "aliases": [
+        "MG"
+      ],
+      "kind": "disease",
+      "one_liner": "自身抗体抑制靶器官引起的器官特异性功能异常型自身免疫病",
+      "fields": [
+        {
+          "label": "分类",
+          "value": "器官特异性功能异常型自身免疫病",
+          "cite": {
+            "page": 86,
+            "quote": "如格雷夫斯病、重症肌无力",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "自身抗体通过对靶器官过度刺激或抑制而引发功能异常",
+          "cite": {
+            "page": 86,
+            "quote": "某些自身抗体可通过对靶器官过度刺激或抑制",
+            "verified": false
+          }
+        },
+        {
+          "label": "自身抗原",
+          "value": "乙酰胆碱受体",
+          "cite": {
+            "page": 89,
+            "quote": "乙酰胆碱受体",
+            "verified": false
+          }
+        },
+        {
+          "label": "应答产物",
+          "value": "抗乙酰胆碱受体抗体",
+          "cite": {
+            "page": 89,
+            "quote": "抗乙酰胆碱受体",
+            "verified": false
+          }
+        },
+        {
+          "label": "损伤类型",
+          "value": "抗细胞膜受体抗体介导的靶细胞功能紊乱，导致肌无力",
+          "cite": {
+            "page": 89,
+            "quote": "肌无力",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "格雷夫斯病",
+          "tip": "两者均为抗体介导的功能异常型AID；格雷夫斯病为过度刺激，重症肌无力为抑制性抗体所致"
+        },
+        {
+          "vs": "Graves病",
+          "tip": "MG抗体针对乙酰胆碱受体致肌无力；Graves病抗体模拟TSH致甲状腺素增加"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:myasthenia-gravis:1",
+          "prompt": "重症肌无力属于哪类自身免疫病？",
+          "answer": "器官特异性功能异常型自身免疫病",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "如格雷夫斯病、重症肌无力",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:myasthenia-gravis:2",
+          "prompt": "重症肌无力的自身抗体通过何种方式致病？",
+          "answer": "通过对靶器官过度刺激或抑制引起功能异常",
+          "difficulty": "why",
+          "cite": {
+            "page": 86,
+            "quote": "某些自身抗体可通过对靶器官过度刺激或抑制",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:myasthenia-gravis:3",
+          "prompt": "重症肌无力的自身抗原是什么？",
+          "answer": "乙酰胆碱受体",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "乙酰胆碱受体",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:myasthenia-gravis:4",
+          "prompt": "重症肌无力的主要表现是什么？",
+          "answer": "肌无力",
+          "difficulty": "case",
+          "cite": {
+            "page": 89,
+            "quote": "肌无力",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "如格雷夫斯病、重症肌无力",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "抗乙酰胆碱受体",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "iddm",
+      "name_zh": "胰岛素依赖型糖尿病",
+      "name_en": "Insulin-dependent diabetes mellitus (IDDM)",
+      "aliases": [
+        "IDDM",
+        "1型糖尿病"
+      ],
+      "kind": "disease",
+      "one_liner": "针对胰岛靶抗原的器官特异性自身免疫病",
+      "fields": [
+        {
+          "label": "分类",
+          "value": "器官特异性自身免疫病",
+          "cite": {
+            "page": 86,
+            "quote": "如胰岛素依赖型糖尿病（IDDM）、桥本甲状腺炎等",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "Th1细胞优势应答参与介导器官特异性AID",
+          "cite": {
+            "page": 88,
+            "quote": "Th1 细胞优势应答可参与介导某些器官特异性 AID",
+            "verified": false
+          }
+        },
+        {
+          "label": "自身抗原",
+          "value": "胰岛β细胞",
+          "cite": {
+            "page": 89,
+            "quote": "胰岛阝细胞",
+            "verified": false
+          }
+        },
+        {
+          "label": "应答产物",
+          "value": "抗胰岛细胞抗体、Th1细胞、CTL",
+          "cite": {
+            "page": 89,
+            "quote": "抗胰岛细胞抗体、抗体和细胞介导的细胞",
+            "verified": false
+          }
+        },
+        {
+          "label": "损伤类型",
+          "value": "抗体和细胞介导的细胞毒作用",
+          "cite": {
+            "page": 89,
+            "quote": "毒作用",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "全身性自身免疫病",
+          "tip": "IDDM病变局限于胰岛，属器官特异性；SLE为全身性"
+        },
+        {
+          "vs": "IDDM vs 实验性自身免疫性脑脊髓炎",
+          "tip": "两者均为Th1优势参与的器官特异性AID"
+        },
+        {
+          "vs": "多发性硬化",
+          "tip": "IDDM靶抗原为胰岛β细胞；MS靶抗原为髓鞘碱性蛋白"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:iddm:1",
+          "prompt": "胰岛素依赖型糖尿病属于哪类自身免疫病？",
+          "answer": "器官特异性自身免疫病",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "如胰岛素依赖型糖尿病（IDDM）、桥本甲状腺炎等",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:iddm:2",
+          "prompt": "IDDM属于哪类AID？",
+          "answer": "器官特异性AID",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "胰岛素依赖型糖尿病",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:iddm:3",
+          "prompt": "哪种T细胞亚群优势应答参与IDDM发生？",
+          "answer": "Th1细胞",
+          "difficulty": "why",
+          "cite": {
+            "page": 88,
+            "quote": "Th1 细胞优势应答可参与介导某些器官特异性 AID",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:iddm:4",
+          "prompt": "IDDM的自身抗原是什么？",
+          "answer": "胰岛β细胞",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "胰岛阝细胞",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:iddm:5",
+          "prompt": "IDDM的免疫损伤类型是什么？",
+          "answer": "抗体和细胞介导的细胞毒作用",
+          "difficulty": "why",
+          "cite": {
+            "page": 89,
+            "quote": "毒作用",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "如胰岛素依赖型糖尿病（IDDM）、桥本甲状腺炎等",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "胰岛素依赖型糖尿病",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "Th1 细胞优势应答可参与介导某些器官特异性 AID",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "抗胰岛细胞抗体、抗体和细胞介导的细胞",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "hashimoto-thyroiditis",
+      "name_zh": "桥本甲状腺炎",
+      "name_en": "Hashimoto thyroiditis",
+      "aliases": [],
+      "kind": "disease",
+      "one_liner": "针对甲状腺靶抗原的器官特异性自身免疫病",
+      "fields": [
+        {
+          "label": "分类",
+          "value": "器官特异性自身免疫病",
+          "cite": {
+            "page": 86,
+            "quote": "如胰岛素依赖型糖尿病（IDDM）、桥本甲状腺炎等",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "格雷夫斯病",
+          "tip": "桥本甲状腺炎为针对甲状腺靶抗原的器官特异性AID；格雷夫斯病属抗体刺激所致功能异常型"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:hashimoto-thyroiditis:1",
+          "prompt": "桥本甲状腺炎属于哪类自身免疫病？",
+          "answer": "器官特异性自身免疫病",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "如胰岛素依赖型糖尿病（IDDM）、桥本甲状腺炎等",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "如胰岛素依赖型糖尿病（IDDM）、桥本甲状腺炎等",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "sle",
+      "name_zh": "系统性红斑狼疮",
+      "name_en": "Systemic lupus erythematosus (SLE)",
+      "aliases": [
+        "SLE"
+      ],
+      "kind": "disease",
+      "one_liner": "针对核成分等共有自身抗原、多器官受累的全身性自身免疫病",
+      "fields": [
+        {
+          "label": "分类",
+          "value": "全身性（系统性）自身免疫病",
+          "cite": {
+            "page": 86,
+            "quote": "如系统性红斑狼疮",
+            "verified": false
+          }
+        },
+        {
+          "label": "受累范围",
+          "value": "损伤可遍及皮肤、肾、关节等多种组织器官",
+          "cite": {
+            "page": 86,
+            "quote": "的损伤可遍及皮肤、肾、关节等多种组织、器官",
+            "verified": false
+          }
+        },
+        {
+          "label": "性别",
+          "value": "女性发病率高于男性10~20倍",
+          "cite": {
+            "page": 88,
+            "quote": "系统性红斑狼疮在女性的发病率高于男性10~20倍",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "Th2细胞功能增强参与全身性AID发生；活化自身反应性T细胞Fas表达障碍",
+          "cite": {
+            "page": 88,
+            "quote": "Th2细胞功能增强参与全身性 AID（如SLE）的发生",
+            "verified": false
+          }
+        },
+        {
+          "label": "自身抗原",
+          "value": "细胞核、组蛋白",
+          "cite": {
+            "page": 89,
+            "quote": "细胞核、组",
+            "verified": false
+          }
+        },
+        {
+          "label": "应答产物",
+          "value": "抗核抗体、抗组蛋白抗体",
+          "cite": {
+            "page": 89,
+            "quote": "抗核抗体、抗组蛋白",
+            "verified": false
+          }
+        },
+        {
+          "label": "损伤类型",
+          "value": "免疫复合物反应、抗体介导的细胞毒作用，致皮肤、肾、关节等多部位炎症",
+          "cite": {
+            "page": 89,
+            "quote": "免疫复合物反应、抗体",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "器官特异性自身免疫病",
+          "tip": "SLE针对多器官共有自身抗原（如核成分），病变波及全身；器官特异性局限于单一器官"
+        },
+        {
+          "vs": "SLE vs RA",
+          "tip": "SLE为全身性AID，Th2增强；RA与超抗原激活相关"
+        },
+        {
+          "vs": "RA",
+          "tip": "SLE靶抗原为细胞核、组蛋白，累及多部位；RA靶抗原为IgG Fc片段，以关节炎症为主"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:sle:1",
+          "prompt": "系统性红斑狼疮属于哪类自身免疫病？",
+          "answer": "全身性（系统性）自身免疫病",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "如系统性红斑狼疮",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:sle:2",
+          "prompt": "SLE的自身抗原主要是什么类型？",
+          "answer": "多器官组织共有组分，如细胞核成分或线粒体",
+          "difficulty": "why",
+          "cite": {
+            "page": 86,
+            "quote": "其自身抗原一般为多器官、组织的共有组分",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:sle:3",
+          "prompt": "SLE女性发病率高于男性多少倍？",
+          "answer": "10~20倍",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "高于男性10~20倍",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:sle:4",
+          "prompt": "哪种Th细胞功能增强参与SLE发生？",
+          "answer": "Th2细胞",
+          "difficulty": "why",
+          "cite": {
+            "page": 88,
+            "quote": "Th2细胞功能增强参与全身性 AID（如SLE）的发生",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:sle:5",
+          "prompt": "SLE患者自身反应性T细胞Fas表达有何异常？",
+          "answer": "Fas表达发生障碍",
+          "difficulty": "why",
+          "cite": {
+            "page": 88,
+            "quote": "Fas表达发生障碍",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:sle:6",
+          "prompt": "SLE的自身抗原是什么？",
+          "answer": "细胞核、组蛋白",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "细胞核、组",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:sle:7",
+          "prompt": "SLE的免疫损伤类型是什么？",
+          "answer": "免疫复合物反应、抗体介导的细胞毒作用",
+          "difficulty": "why",
+          "cite": {
+            "page": 89,
+            "quote": "免疫复合物反应、抗体",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "如系统性红斑狼疮",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "系统性红斑狼疮在女性的发病率高于男性10~20倍",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "Th2细胞功能增强参与全身性 AID（如SLE）的发生",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "Fas表达发生障碍",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "抗核抗体、抗组蛋白",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "ctl-target-killing",
+      "name_zh": "CTL杀伤靶细胞机制",
+      "name_en": "CTL-mediated target cell killing",
+      "aliases": [],
+      "kind": "process",
+      "one_liner": "CTL通过颗粒酶、FasL-Fas及TNF-TNFR诱导靶细胞凋亡",
+      "fields": [
+        {
+          "label": "机制",
+          "value": "颗粒酶等损伤靶细胞并诱导凋亡；CTL活化后高表达FasL并分泌TNF，分别与靶细胞Fas、TNFR结合导致凋亡",
+          "cite": {
+            "page": 86,
+            "quote": "CTL 活化后高表达 FasL，并分泌 TNF",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "ADCC",
+          "tip": "CTL为T细胞直接杀伤；ADCC由抗体Fc段介导效应细胞杀伤"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:ctl-target-killing:1",
+          "prompt": "CTL活化后通过哪对分子与靶细胞结合诱导凋亡？",
+          "answer": "FasL-Fas 及 TNF-TNFR",
+          "difficulty": "why",
+          "cite": {
+            "page": 86,
+            "quote": "分别与靶细胞表面相应的 Fas、TNFR结合",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:ctl-target-killing:2",
+          "prompt": "CTL杀伤靶细胞除FasL/TNF途径外还依赖什么？",
+          "answer": "颗粒酶等",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "颗粒酶等损伤靶细胞以及诱导靶细胞凋亡",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "CTL 活化后高表达 FasL，并分泌 TNF",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "hypersensitivity-mixed-mechanism",
+      "name_zh": "超敏反应混合机制",
+      "name_en": "Mixed mechanisms of hypersensitivity",
+      "aliases": [],
+      "kind": "concept",
+      "one_liner": "临床超敏反应病常由2型或3型机制同时存在或以某型为主",
+      "fields": [
+        {
+          "label": "概念",
+          "value": "临床上超敏反应性疾病发生机制复杂，常可见2型或3型机制同时存在，以某一型为主或在疾病不同阶段由不同型超敏反应引起",
+          "cite": {
+            "page": 86,
+            "quote": "常可见2型或3型机制同时存在",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "单一型超敏反应",
+          "tip": "临床疾病常为混合机制，不宜机械按单一型归类"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:hypersensitivity-mixed-mechanism:1",
+          "prompt": "临床超敏反应病的机制有何特点？",
+          "answer": "常为2型或3型机制同时存在，以某一型为主或不同阶段由不同型引起",
+          "difficulty": "what",
+          "cite": {
+            "page": 86,
+            "quote": "常可见2型或3型机制同时存在",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "常可见2型或3型机制同时存在",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "hypersensitivity-in-transplant-thyroiditis",
+      "name_zh": "IV型超敏反应的其他临床关联",
+      "name_en": "IV hypersensitivity in transplantation and thyroiditis",
+      "aliases": [],
+      "kind": "concept",
+      "one_liner": "IV型超敏反应也见于急性移植排斥反应、甲状腺炎等",
+      "fields": [
+        {
+          "label": "临床关联",
+          "value": "IV型超敏反应也常见于急性移植排斥反应、甲状腺炎等的发生、发展中",
+          "cite": {
+            "page": 86,
+            "quote": "I型超敏反应也常见于急性移植排斥反应、甲状腺炎等",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "II型/III型超敏反应",
+          "tip": "移植排斥与甲状腺炎以T细胞介导的IV型机制为主"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:hypersensitivity-in-transplant-thyroiditis:1",
+          "prompt": "除接触性皮炎外，IV型超敏反应还常见于哪些情况？",
+          "answer": "急性移植排斥反应、甲状腺炎等",
+          "difficulty": "case",
+          "cite": {
+            "page": 86,
+            "quote": "I型超敏反应也常见于急性移植排斥反应、甲状腺炎等",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 86,
+          "quote": "I型超敏反应也常见于急性移植排斥反应、甲状腺炎等",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "autoimmune-disease-pathogenesis",
+      "name_zh": "自身免疫病发病机制",
+      "name_en": "Pathogenesis of Autoimmune Disease",
+      "aliases": [
+        "AID发病机制",
+        "自身免疫病机制"
+      ],
+      "kind": "process",
+      "one_liner": "自身抗原出现、耐受失效、淋巴细胞异常活化与调节失控共同引发AID",
+      "fields": [
+        {
+          "label": "核心机制",
+          "value": "主要与自身抗原出现、自身免疫耐受机制失效、自身反应性淋巴细胞异常活化和免疫调节失控等有关",
+          "cite": {
+            "page": 87,
+            "quote": "主要与自身抗原出现、自身免疫耐受机制的失效",
+            "verified": false
+          }
+        },
+        {
+          "label": "相关因素",
+          "value": "免疫、遗传、性别、感染等",
+          "cite": {
+            "page": 87,
+            "quote": "主要涉及免疫、遗传、性别、感染等",
+            "verified": false
+          }
+        },
+        {
+          "label": "多克隆激活",
+          "value": "多克隆激活剂（超抗原）可激活T细胞，不受MHC限制；B1细胞BCR缺乏多样性，易受TI抗原诱导多克隆激活",
+          "cite": {
+            "page": 88,
+            "quote": "多克隆激活剂（超抗原）可激活T细胞",
+            "verified": false
+          }
+        },
+        {
+          "label": "活化诱导细胞死亡障碍",
+          "value": "活化的克隆细胞表达Fas与FasL引起自身反应性克隆抑制；SLE患者自身反应性T细胞Fas表达障碍",
+          "cite": {
+            "page": 88,
+            "quote": "活化的克隆细胞可同时表达 Fas与FasL",
+            "verified": false
+          }
+        },
+        {
+          "label": "免疫偏离",
+          "value": "Th1/Th2平衡偏离导致自身反应性克隆失去抑制；Th1优势参与器官特异性AID，Th2增强参与全身性AID",
+          "cite": {
+            "page": 88,
+            "quote": "Th1/Th2间的平衡是维持自身耐受的一种机制",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制要点",
+          "value": "自身抗原的出现、特异性自身免疫耐受机制失效、自身反应性淋巴细胞异常活化和免疫调节机制紊乱",
+          "cite": {
+            "page": 89,
+            "quote": "自身抗原的出现、特异性自身免疫耐受机制的失效",
+            "verified": false
+          }
+        },
+        {
+          "label": "直接原因",
+          "value": "自身抗体和/或自身反应性T细胞对自身成分发生的免疫应答",
+          "cite": {
+            "page": 89,
+            "quote": "自身抗体和/或自身反应性T细胞对自身成分发生的免疫应答是自身",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "免疫偏离 vs 多克隆激活",
+          "tip": "前者是Th1/Th2平衡偏移，后者是超抗原/TI抗原非特异性激活淋巴细胞"
+        },
+        {
+          "vs": "超敏反应机制",
+          "tip": "AID的免疫损伤机制与超敏反应相关（如II、III、IV型机制）"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:autoimmune-disease-pathogenesis:1",
+          "prompt": "AID的免疫病理机制主要涉及哪几方面？",
+          "answer": "自身抗原出现、自身免疫耐受机制失效、自身反应性淋巴细胞异常活化和免疫调节失控",
+          "difficulty": "what",
+          "cite": {
+            "page": 87,
+            "quote": "主要与自身抗原出现、自身免疫耐受机制的失效",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease-pathogenesis:2",
+          "prompt": "引发AID的因素主要涉及哪些方面？",
+          "answer": "免疫、遗传、性别、感染等",
+          "difficulty": "what",
+          "cite": {
+            "page": 87,
+            "quote": "主要涉及免疫、遗传、性别、感染等",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease-pathogenesis:3",
+          "prompt": "多克隆激活剂激活T细胞是否受MHC限制？",
+          "answer": "不受MHC限制",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "但不受MHC限制",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease-pathogenesis:4",
+          "prompt": "SLE患者自身反应性T细胞克隆的Fas表达有何异常？",
+          "answer": "Fas表达发生障碍",
+          "difficulty": "why",
+          "cite": {
+            "page": 88,
+            "quote": "Fas表达发生障碍",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease-pathogenesis:5",
+          "prompt": "Th1细胞优势应答参与哪类AID？",
+          "answer": "某些器官特异性AID（如胰岛素依赖型糖尿病、实验性自身免疫性脑脊髓炎）",
+          "difficulty": "case",
+          "cite": {
+            "page": 88,
+            "quote": "Th1 细胞优势应答可参与介导某些器官特异性 AID",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease-pathogenesis:6",
+          "prompt": "自身免疫病发生与哪些机制相关？",
+          "answer": "自身抗原的出现、特异性自身免疫耐受机制失效、自身反应性淋巴细胞异常活化和免疫调节机制紊乱",
+          "difficulty": "why",
+          "cite": {
+            "page": 89,
+            "quote": "自身抗原的出现、特异性自身免疫耐受机制的失效",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:autoimmune-disease-pathogenesis:7",
+          "prompt": "自身免疫病发生的直接原因是什么？",
+          "answer": "自身抗体和/或自身反应性T细胞对自身成分发生的免疫应答",
+          "difficulty": "why",
+          "cite": {
+            "page": 89,
+            "quote": "自身抗体和/或自身反应性T细胞对自身成分发生的免疫应答是自身",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 87,
+          "quote": "主要与自身抗原出现、自身免疫耐受机制的失效",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "多克隆激活剂（超抗原）可激活T细胞",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "活化的克隆细胞可同时表达 Fas与FasL",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "Th1/Th2间的平衡是维持自身耐受的一种机制",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "自身抗原的出现、特异性自身免疫耐受机制的失效",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "hidden-self-antigen",
+      "name_zh": "隐蔽自身抗原",
+      "name_en": "Hidden Self-Antigen",
+      "aliases": [
+        "隐蔽抗原"
+      ],
+      "kind": "molecule",
+      "one_liner": "存在于免疫赦免部位、未与免疫系统接触的自身抗原，释放后可引发AID",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "存在于某些特殊部位（如脑、晶状体、睾丸等）的隐蔽抗原，发育过程中始终未与免疫系统接触",
+          "cite": {
+            "page": 87,
+            "quote": "存在于某些特殊部位（如脑、晶状体、睾丸等）的隐蔽抗原",
+            "verified": false
+          }
+        },
+        {
+          "label": "机制",
+          "value": "感染、损伤等使免疫赦免机制失效，隐蔽抗原释放，被自身反应性淋巴细胞识别引起AID",
+          "cite": {
+            "page": 87,
+            "quote": "免疫“赦免”机制失效，隐蔽抗原释放",
+            "verified": false
+          }
+        },
+        {
+          "label": "典型例子",
+          "value": "眼外伤使晶状体蛋白入血，刺激特异性CTL攻击健侧眼，引发自身免疫性交感性眼炎",
+          "cite": {
+            "page": 87,
+            "quote": "引发自身免疫性交感性眼炎",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "改变的自身抗原",
+          "tip": "隐蔽抗原是位置隔离未被识别；改变的自身抗原是原有抗原性质改变被视作非己"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:hidden-self-antigen:1",
+          "prompt": "隐蔽自身抗原为何能逃过中枢耐受？",
+          "answer": "因存在于特殊部位，发育过程中始终未与免疫系统接触，其高亲和力自身反应性淋巴细胞克隆未被清除",
+          "difficulty": "why",
+          "cite": {
+            "page": 87,
+            "quote": "始终未能与免疫系统发生接触",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:hidden-self-antigen:2",
+          "prompt": "自身免疫性交感性眼炎由什么机制引起？",
+          "answer": "眼外伤使隐蔽的晶状体蛋白释放入血和淋巴液，刺激特异性CTL攻击健侧眼组织",
+          "difficulty": "case",
+          "cite": {
+            "page": 87,
+            "quote": "引发自身免疫性交感性眼炎",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 87,
+          "quote": "存在于某些特殊部位（如脑、晶状体、睾丸等）的隐蔽抗原",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "altered-self-antigen",
+      "name_zh": "改变的自身抗原",
+      "name_en": "Altered Self-Antigen",
+      "aliases": [
+        "自身抗原改变"
+      ],
+      "kind": "molecule",
+      "one_liner": "理化或生物因素使自身组织抗原性质改变，被免疫系统视为非己而排斥",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "自身组织成分在理化（辐射、药物等）和生物学因素（病毒、细菌等感染）作用下抗原性质改变，成为改变的自身抗原",
+          "cite": {
+            "page": 87,
+            "quote": "其抗原性质发生改变，成为改变的自身抗原",
+            "verified": false
+          }
+        },
+        {
+          "label": "表现形式",
+          "value": "构型改变和新表位暴露、自身抗原被修饰或降解、外来抗原与自身组织成分结合",
+          "cite": {
+            "page": 87,
+            "quote": "表现构型改变和新表位暴露",
+            "verified": false
+          }
+        },
+        {
+          "label": "例子",
+          "value": "变性自身IgG刺激产生IgM类自身抗体即类风湿因子（RF），RF与变性IgG形成免疫复合物可引起类风湿关节炎等AID",
+          "cite": {
+            "page": 87,
+            "quote": "称为类风湿因子（rheumatoid factor,RF）",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "隐蔽自身抗原",
+          "tip": "隐蔽抗原是位置隔离；改变的自身抗原是抗原本身性质改变"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:altered-self-antigen:1",
+          "prompt": "改变的自身抗原有哪三种表现形式？",
+          "answer": "构型改变和新表位暴露、自身抗原被修饰或降解、外来抗原与自身组织成分相结合",
+          "difficulty": "what",
+          "cite": {
+            "page": 87,
+            "quote": "表现构型改变和新表位暴露",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:altered-self-antigen:2",
+          "prompt": "类风湿因子（RF）是什么？",
+          "answer": "针对抗原性改变的自身IgG产生的IgM类自身抗体",
+          "difficulty": "what",
+          "cite": {
+            "page": 87,
+            "quote": "称为类风湿因子（rheumatoid factor,RF）",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 87,
+          "quote": "其抗原性质发生改变，成为改变的自身抗原",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "molecular-mimicry",
+      "name_zh": "分子模拟",
+      "name_en": "Molecular Mimicry",
+      "aliases": [],
+      "kind": "process",
+      "one_liner": "外源性抗原与宿主自身成分有相似表位，激发的免疫应答与自身成分交叉反应",
+      "fields": [
+        {
+          "label": "定义",
+          "value": "某些外源性抗原具有与宿主正常细胞或细胞外基质相同或相似的抗原表位，感染后激发的免疫应答也能与自身成分发生交叉反应",
+          "cite": {
+            "page": 87,
+            "quote": "这种现象被称为分子模拟（molecular mimicry）",
+            "verified": false
+          }
+        },
+        {
+          "label": "典型例子",
+          "value": "A型溶血性链球菌M蛋白与人肾小球基底膜、心肌间质和心瓣膜有相似表位，感染后抗体交叉反应引发急性肾小球肾炎和风湿性心脏病",
+          "cite": {
+            "page": 87,
+            "quote": "引发急性肾小球肾炎和风湿性心脏病",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "表位扩展",
+          "tip": "分子模拟是外来抗原与自身表位相似引起交叉反应；表位扩展是应答扩展到更多自身表位"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:molecular-mimicry:1",
+          "prompt": "分子模拟的定义是什么？",
+          "answer": "外源性抗原具有与宿主自身成分相同或相似的抗原表位，感染后激发的免疫应答与自身成分发生交叉反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 87,
+            "quote": "这种现象被称为分子模拟（molecular mimicry）",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:molecular-mimicry:2",
+          "prompt": "链球菌感染后急性肾小球肾炎和风湿性心脏病与什么机制有关？",
+          "answer": "分子模拟：链球菌M蛋白与肾小球基底膜、心肌间质和心瓣膜有相似表位，抗体交叉反应",
+          "difficulty": "case",
+          "cite": {
+            "page": 87,
+            "quote": "引发急性肾小球肾炎和风湿性心脏病",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 87,
+          "quote": "这种现象被称为分子模拟（molecular mimicry）",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "failure-of-self-tolerance",
+      "name_zh": "自身免疫耐受机制失效",
+      "name_en": "Failure of Self-Tolerance",
+      "aliases": [
+        "免疫耐受失效"
+      ],
+      "kind": "process",
+      "one_liner": "自身反应性淋巴细胞清除异常、克隆无能失效、免疫忽视破坏或Treg缺失可致AID",
+      "fields": [
+        {
+          "label": "机制",
+          "value": "自身反应性淋巴细胞清除异常、克隆无能因协同刺激信号异常表达而失效、免疫忽视因接受适量抗原加佐剂而被破坏",
+          "cite": {
+            "page": 87,
+            "quote": "免疫耐受机制的破坏或失效均可能导致 AID",
+            "verified": false
+          }
+        },
+        {
+          "label": "Treg作用",
+          "value": "调节性T细胞的特异性免疫抑制作用是维持外周自身耐受的重要机制，其数量或功能缺失可导致AID",
+          "cite": {
+            "page": 87,
+            "quote": "调节性T细胞的特异性免疫抑制作用",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [],
+      "atoms": [
+        {
+          "id": "ch07:failure-of-self-tolerance:1",
+          "prompt": "自身免疫耐受机制失效可表现为哪些方面？",
+          "answer": "自身反应性淋巴细胞清除异常、克隆无能失效、免疫忽视被破坏、调节性T细胞数量或功能缺失",
+          "difficulty": "what",
+          "cite": {
+            "page": 87,
+            "quote": "免疫耐受机制的破坏或失效均可能导致 AID",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:failure-of-self-tolerance:2",
+          "prompt": "调节性T细胞在维持自身耐受中有何作用？",
+          "answer": "其特异性免疫抑制作用是维持外周自身耐受的重要机制，数量或功能缺失可导致AID",
+          "difficulty": "why",
+          "cite": {
+            "page": 87,
+            "quote": "调节性T细胞的特异性免疫抑制作用",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 87,
+          "quote": "免疫耐受机制的破坏或失效均可能导致 AID",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "th17-treg-balance-aid",
+      "name_zh": "Th17/Treg失衡与AID",
+      "name_en": "Th17/Treg Imbalance in AID",
+      "aliases": [
+        "Th17与Treg失衡"
+      ],
+      "kind": "process",
+      "one_liner": "Th17与Treg动态平衡维持免疫自稳，失衡与AID发生密切相关",
+      "fields": [
+        {
+          "label": "Th17作用",
+          "value": "Th17细胞是重要致炎效应细胞，与AID发生、发展密切相关",
+          "cite": {
+            "page": 88,
+            "quote": "Th17细胞是人体重要的致炎效应细胞之一",
+            "verified": false
+          }
+        },
+        {
+          "label": "Treg作用",
+          "value": "CD4+CD25+调节性T细胞功能下降可能是AID发生机制之一",
+          "cite": {
+            "page": 88,
+            "quote": "其功能下降可能是AID 的发生机制之一",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "Th17/Treg失衡 vs Th1/Th2偏离",
+          "tip": "两者均为免疫调节紊乱机制，但细胞亚群不同"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:th17-treg-balance-aid:1",
+          "prompt": "Th17细胞在AID中的作用是什么？",
+          "answer": "重要的致炎效应细胞，与AID发生发展密切相关",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "Th17细胞是人体重要的致炎效应细胞之一",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:th17-treg-balance-aid:2",
+          "prompt": "Treg功能下降与AID有何关系？",
+          "answer": "可能是AID的发生机制之一",
+          "difficulty": "why",
+          "cite": {
+            "page": 88,
+            "quote": "其功能下降可能是AID 的发生机制之一",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 88,
+          "quote": "Th17细胞是人体重要的致炎效应细胞之一",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "其功能下降可能是AID 的发生机制之一",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "genetic-factors-aid",
+      "name_zh": "AID遗传因素",
+      "name_en": "Genetic Factors of AID",
+      "aliases": [
+        "遗传因素与自身免疫病"
+      ],
+      "kind": "concept",
+      "one_liner": "遗传与AID易感性密切相关，HLA基因影响最大，AIRE单突变可致病",
+      "fields": [
+        {
+          "label": "同卵双生子",
+          "value": "一人发生IDDM，另一人发生同样疾病概率35%~50%；异卵双生子仅5%~6%",
+          "cite": {
+            "page": 88,
+            "quote": "另一人发生同样疾病的概率为 35%~50%",
+            "verified": false
+          }
+        },
+        {
+          "label": "HLA基因",
+          "value": "大多数AID受多个易感基因影响，其中HLA基因影响最大",
+          "cite": {
+            "page": 88,
+            "quote": "对 AID 发生影响最大的是HLA 基因",
+            "verified": false
+          }
+        },
+        {
+          "label": "AIRE基因",
+          "value": "AIRE基因单一突变就可导致AID发生",
+          "cite": {
+            "page": 88,
+            "quote": "其单一突变就可导致 AID 的发生",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "HLA多基因易感 vs AIRE单基因突变",
+          "tip": "HLA为多基因影响，AIRE单一突变即可致病"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:genetic-factors-aid:1",
+          "prompt": "对AID发生影响最大的基因是什么？",
+          "answer": "HLA基因",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "对 AID 发生影响最大的是HLA 基因",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:genetic-factors-aid:2",
+          "prompt": "哪个基因单一突变即可导致AID？",
+          "answer": "AIRE基因",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "其单一突变就可导致 AID 的发生",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 88,
+          "quote": "另一人发生同样疾病的概率为 35%~50%",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "对 AID 发生影响最大的是HLA 基因",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "其单一突变就可导致 AID 的发生",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "sex-factors-aid",
+      "name_zh": "AID性别因素",
+      "name_en": "Sex Factors of AID",
+      "aliases": [
+        "性别与自身免疫病"
+      ],
+      "kind": "concept",
+      "one_liner": "某些AID易感性与性激素相关，SLE女性高发，强直性脊柱炎男性高发",
+      "fields": [
+        {
+          "label": "SLE",
+          "value": "系统性红斑狼疮女性发病率高于男性10~20倍",
+          "cite": {
+            "page": 88,
+            "quote": "系统性红斑狼疮在女性的发病率高于男性10~20倍",
+            "verified": false
+          }
+        },
+        {
+          "label": "强直性脊柱炎",
+          "value": "男性高发于女性3倍",
+          "cite": {
+            "page": 88,
+            "quote": "强直性脊柱炎则男性高发于女性3倍",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "SLE vs 强直性脊柱炎性别倾向",
+          "tip": "SLE女性高发，强直性脊柱炎男性高发"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:sex-factors-aid:1",
+          "prompt": "SLE女性发病率高于男性多少倍？",
+          "answer": "10~20倍",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "高于男性10~20倍",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:sex-factors-aid:2",
+          "prompt": "强直性脊柱炎男性高发于女性多少倍？",
+          "answer": "3倍",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "男性高发于女性3倍",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 88,
+          "quote": "系统性红斑狼疮在女性的发病率高于男性10~20倍",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "强直性脊柱炎则男性高发于女性3倍",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "infection-factors-aid",
+      "name_zh": "AID感染因素",
+      "name_en": "Infection Factors of AID",
+      "aliases": [
+        "感染与自身免疫病"
+      ],
+      "kind": "process",
+      "one_liner": "感染可能是许多AID发病诱因，机制涉及破坏屏障、分子模拟、超抗原激活",
+      "fields": [
+        {
+          "label": "分子模拟",
+          "value": "形成交叉反应（如多发性硬化）",
+          "cite": {
+            "page": 88,
+            "quote": "分子模拟，形成交叉反应（如多发性硬化）",
+            "verified": false
+          }
+        },
+        {
+          "label": "超抗原",
+          "value": "诱导自身反应性T细胞非特异性激活（如类风湿关节炎）",
+          "cite": {
+            "page": 88,
+            "quote": "超抗原诱导自身反应性T细胞非特异性激活",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "分子模拟 vs 超抗原激活",
+          "tip": "分子模拟为交叉反应，超抗原为非特异性多克隆激活"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:infection-factors-aid:1",
+          "prompt": "感染诱发AID的分子模拟机制举例？",
+          "answer": "多发性硬化",
+          "difficulty": "case",
+          "cite": {
+            "page": 88,
+            "quote": "分子模拟，形成交叉反应（如多发性硬化）",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:infection-factors-aid:2",
+          "prompt": "超抗原诱导自身反应性T细胞非特异性激活举例？",
+          "answer": "类风湿关节炎",
+          "difficulty": "case",
+          "cite": {
+            "page": 88,
+            "quote": "超抗原诱导自身反应性T细胞非特异性激活（如类风湿关节炎）",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 88,
+          "quote": "分子模拟，形成交叉反应（如多发性硬化）",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "超抗原诱导自身反应性T细胞非特异性激活",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "aid-immune-injury-types",
+      "name_zh": "AID免疫损伤类型",
+      "name_en": "Immune Injury Types of AID",
+      "aliases": [
+        "自身免疫病免疫损伤类型"
+      ],
+      "kind": "concept",
+      "one_liner": "AID实质是自身抗体和/或自身反应性T细胞针对自身抗原的超敏反应",
+      "fields": [
+        {
+          "label": "实质",
+          "value": "自身抗体和/或自身反应性T淋巴细胞针对自身抗原的超敏反应性疾病",
+          "cite": {
+            "page": 88,
+            "quote": "其实质是自身抗体和/或自身反应性T淋巴细胞针对自身抗原的超敏",
+            "verified": false
+          }
+        },
+        {
+          "label": "自身抗体介导",
+          "value": "包括抗体介导的细胞毒作用、激活补体、抗细胞膜受体抗体介导的靶细胞功能紊乱、免疫复合物反应",
+          "cite": {
+            "page": 88,
+            "quote": "自身抗体介导的免疫损伤包括抗体介导的细胞毒作用",
+            "verified": false
+          }
+        },
+        {
+          "label": "自身反应性T细胞介导",
+          "value": "包括CD4+Th1介导的迟发型超敏反应性炎症、CD8+T细胞介导的细胞毒作用、肉芽肿反应",
+          "cite": {
+            "page": 88,
+            "quote": "CD4'Th1 细胞介导的迟发型超敏反应性炎症",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "自身抗体介导 vs 自身反应性T细胞介导",
+          "tip": "前者包括细胞毒、补体、受体抗体、免疫复合物；后者包括DTH、CTL、肉芽肿"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:aid-immune-injury-types:1",
+          "prompt": "AID的实质是什么？",
+          "answer": "自身抗体和/或自身反应性T淋巴细胞针对自身抗原的超敏反应性疾病",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "其实质是自身抗体和/或自身反应性T淋巴细胞针对自身抗原的超敏",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:aid-immune-injury-types:2",
+          "prompt": "自身反应性T细胞介导的免疫损伤包括哪些？",
+          "answer": "CD4+Th1介导的迟发型超敏反应性炎症、CD8+T细胞介导的细胞毒作用、肉芽肿反应",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "CD4'Th1 细胞介导的迟发型超敏反应性炎症",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 88,
+          "quote": "其实质是自身抗体和/或自身反应性T淋巴细胞针对自身抗原的超敏",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "自身抗体介导的免疫损伤包括抗体介导的细胞毒作用",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "CD4'Th1 细胞介导的迟发型超敏反应性炎症",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "rheumatoid-arthritis",
+      "name_zh": "类风湿关节炎",
+      "name_en": "Rheumatoid Arthritis",
+      "aliases": [
+        "RA"
+      ],
+      "kind": "disease",
+      "one_liner": "常见AID，超抗原诱导自身反应性T细胞非特异性激活参与",
+      "fields": [
+        {
+          "label": "分类",
+          "value": "常见AID举例之一",
+          "cite": {
+            "page": 88,
+            "quote": "类风湿关",
+            "verified": false
+          }
+        },
+        {
+          "label": "感染机制",
+          "value": "超抗原诱导自身反应性T细胞非特异性激活",
+          "cite": {
+            "page": 88,
+            "quote": "超抗原诱导自身反应性T细胞非特异性激活（如类风湿关节炎）",
+            "verified": false
+          }
+        },
+        {
+          "label": "自身抗原",
+          "value": "IgG Fc片段",
+          "cite": {
+            "page": 89,
+            "quote": "IgG Fc 片段",
+            "verified": false
+          }
+        },
+        {
+          "label": "应答产物",
+          "value": "抗免疫球蛋白抗体",
+          "cite": {
+            "page": 89,
+            "quote": "抗免疫球蛋白抗体",
+            "verified": false
+          }
+        },
+        {
+          "label": "损伤类型",
+          "value": "免疫复合物反应、细胞介导的免疫损伤，导致关节炎症",
+          "cite": {
+            "page": 89,
+            "quote": "免疫复合物反应、细胞",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "RA vs SLE",
+          "tip": "RA与超抗原激活相关，SLE与Th2增强及Fas表达障碍相关"
+        },
+        {
+          "vs": "SLE",
+          "tip": "RA靶抗原为IgG Fc片段；SLE靶抗原为细胞核、组蛋白"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:rheumatoid-arthritis:1",
+          "prompt": "类风湿关节炎与哪种感染机制相关？",
+          "answer": "超抗原诱导自身反应性T细胞非特异性激活",
+          "difficulty": "why",
+          "cite": {
+            "page": 88,
+            "quote": "超抗原诱导自身反应性T细胞非特异性激活（如类风湿关节炎）",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:rheumatoid-arthritis:2",
+          "prompt": "RA的自身抗原是什么？",
+          "answer": "IgG Fc片段",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "IgG Fc 片段",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:rheumatoid-arthritis:3",
+          "prompt": "RA的免疫损伤类型是什么？",
+          "answer": "免疫复合物反应、细胞介导的免疫损伤",
+          "difficulty": "why",
+          "cite": {
+            "page": 89,
+            "quote": "免疫复合物反应、细胞",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 88,
+          "quote": "类风湿关",
+          "verified": false
+        },
+        {
+          "page": 88,
+          "quote": "超抗原诱导自身反应性T细胞非特异性激活（如类风湿关节炎）",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "抗免疫球蛋白抗体",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "multiple-sclerosis",
+      "name_zh": "多发性硬化",
+      "name_en": "Multiple Sclerosis",
+      "aliases": [
+        "MS"
+      ],
+      "kind": "disease",
+      "one_liner": "感染分子模拟形成交叉反应相关的AID",
+      "fields": [
+        {
+          "label": "感染机制",
+          "value": "分子模拟，形成交叉反应",
+          "cite": {
+            "page": 88,
+            "quote": "分子模拟，形成交叉反应（如多发性硬化）",
+            "verified": false
+          }
+        },
+        {
+          "label": "自身抗原",
+          "value": "髓鞘碱性蛋白",
+          "cite": {
+            "page": 89,
+            "quote": "髓鞘碱性蛋白",
+            "verified": false
+          }
+        },
+        {
+          "label": "应答产物",
+          "value": "抗髓鞘碱性蛋白抗体、CD4+Th1细胞",
+          "cite": {
+            "page": 89,
+            "quote": "抗髓鞘碱性蛋白抗",
+            "verified": false
+          }
+        },
+        {
+          "label": "损伤类型",
+          "value": "CD4+T细胞介导的迟发型超敏反应性炎症，中枢神经炎症性脱髓鞘",
+          "cite": {
+            "page": 89,
+            "quote": "CD4*T细胞介导的迟",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "多发性硬化 vs 实验性自身免疫性脑脊髓炎",
+          "tip": "两者均为神经系统AID，后者为Th1优势参与的实验模型"
+        },
+        {
+          "vs": "IDDM",
+          "tip": "MS靶抗原为髓鞘碱性蛋白，属迟发型超敏反应性炎症；IDDM靶抗原为胰岛β细胞"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:multiple-sclerosis:1",
+          "prompt": "多发性硬化与哪种感染诱发机制相关？",
+          "answer": "分子模拟形成交叉反应",
+          "difficulty": "why",
+          "cite": {
+            "page": 88,
+            "quote": "分子模拟，形成交叉反应（如多发性硬化）",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:multiple-sclerosis:2",
+          "prompt": "多发性硬化的自身抗原是什么？",
+          "answer": "髓鞘碱性蛋白",
+          "difficulty": "what",
+          "cite": {
+            "page": 89,
+            "quote": "髓鞘碱性蛋白",
+            "verified": false
+          }
+        },
+        {
+          "id": "ch07:multiple-sclerosis:3",
+          "prompt": "多发性硬化的免疫损伤类型是什么？",
+          "answer": "CD4+T细胞介导的迟发型超敏反应性炎症",
+          "difficulty": "why",
+          "cite": {
+            "page": 89,
+            "quote": "CD4*T细胞介导的迟",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 88,
+          "quote": "分子模拟，形成交叉反应（如多发性硬化）",
+          "verified": false
+        },
+        {
+          "page": 89,
+          "quote": "CD4*T细胞介导的迟",
+          "verified": false
+        }
+      ]
+    },
+    {
+      "id": "ankylosing-spondylitis",
+      "name_zh": "强直性脊柱炎",
+      "name_en": "Ankylosing Spondylitis",
+      "aliases": [
+        "AS"
+      ],
+      "kind": "disease",
+      "one_liner": "男性高发于女性的AID，与性激素易感性相关",
+      "fields": [
+        {
+          "label": "性别",
+          "value": "男性高发于女性3倍",
+          "cite": {
+            "page": 88,
+            "quote": "强直性脊柱炎则男性高发于女性3倍",
+            "verified": false
+          }
+        }
+      ],
+      "confusions": [
+        {
+          "vs": "强直性脊柱炎 vs SLE",
+          "tip": "前者男性高发，后者女性高发"
+        }
+      ],
+      "atoms": [
+        {
+          "id": "ch07:ankylosing-spondylitis:1",
+          "prompt": "强直性脊柱炎男性高发于女性多少倍？",
+          "answer": "3倍",
+          "difficulty": "what",
+          "cite": {
+            "page": 88,
+            "quote": "男性高发于女性3倍",
+            "verified": false
+          }
+        }
+      ],
+      "cites": [
+        {
+          "page": 88,
+          "quote": "强直性脊柱炎则男性高发于女性3倍",
+          "verified": false
+        }
+      ]
+    }
+  ]
+}
