@@ -1,6 +1,7 @@
 # 大文件与原始数据：PDF 一律不进 git
 *.pdf
 data/raw/
+data/uploads/
 .venv/
 
 # node

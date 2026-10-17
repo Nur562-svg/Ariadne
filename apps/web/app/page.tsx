@@ -1,37 +1,93 @@
 import Link from "next/link";
-import { loadCards } from "@/lib/entities";
+import { loadBooks, loadCards } from "@/lib/entities";
 
-export default function Home() {
-  const cards = loadCards();
-  const atoms = cards.reduce((n, c) => n + c.atoms.length, 0);
-  const verified = cards.filter((c) => c.cites.some((x) => x.verified && x.page != null)).length;
+/**
+ * 书库首页：从 config/books.json 派生，不硬编码任何书名/章节 copy。
+ * 空库 → 指向 /ingest 的安静 empty-state，不是营销 hero。
+ */
+export const dynamic = "force-dynamic";
+
+export default function Library() {
+  const books = loadBooks();
+
+  if (books.length === 0) {
+    return (
+      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-16">
+        <p className="mono text-sm text-cinnabar">ARIADNE</p>
+        <h1 className="brand-rule mt-2 pb-3 text-4xl font-bold tracking-wide">书库</h1>
+        <p className="mt-6 leading-8 text-foreground/90">
+          书库还空着。上传教材 PDF、在本机跑完 OCR 解析与实体卡抽取，再把书目注册进
+          <span className="mono text-sm"> config/books.json </span>，即可在这里进入卡浏览器与学习环。
+        </p>
+        <Link
+          href="/ingest"
+          className="mt-10 inline-block rounded-md bg-cinnabar px-5 py-2.5 text-white no-underline"
+        >
+          去导入教材 →
+        </Link>
+      </main>
+    );
+  }
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16 flex-1">
+    <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-12">
       <p className="mono text-sm text-cinnabar">ARIADNE</p>
-      <h1 className="brand-rule mt-2 pb-3 text-4xl font-bold tracking-wide">实体卡预览</h1>
-      <p className="mt-6 leading-8 text-foreground/90">
-        《免疫学基础与病原生物学（第3版）》第一篇 · 第一章 免疫学概述 + 第二章 抗原。
-        每张卡带印刷页码 citation；页码未知为 <span className="cite-unverified">p.?</span>，待抽查验证的已知页以琥珀虚线标 p.N。
+      <h1 className="brand-rule mt-2 pb-3 text-4xl font-bold tracking-wide">书库</h1>
+      <p className="mt-4 text-sm leading-7 text-muted">
+        教材 → 知识原子 / 实体卡 → 可复习。点击书目进入该书的卡浏览器；citation 仍 fail-closed（未验证保留琥珀 p.N / p.?）。
       </p>
-      <dl className="mt-10 grid grid-cols-3 gap-4 text-center">
-        {[
-          ["实体卡", cards.length],
-          ["知识原子", atoms],
-          ["带已验证页码的卡", verified],
-        ].map(([k, v]) => (
-          <div key={String(k)} className="rounded-lg border border-line bg-card px-4 py-6">
-            <dt className="text-sm text-muted">{k}</dt>
-            <dd className="mt-1 text-3xl font-semibold">{v}</dd>
-          </div>
-        ))}
-      </dl>
-      <Link
-        href="/entities"
-        className="mt-10 inline-block rounded-md bg-cinnabar px-5 py-2.5 text-white no-underline"
-      >
-        浏览全部实体卡 →
-      </Link>
+
+      <ul className="mt-10 space-y-4">
+        {books.map((b) => {
+          const cards = loadCards({ bookId: b.id });
+          const atoms = cards.reduce((n, c) => n + c.atoms.length, 0);
+          return (
+            <li key={b.id} className="rounded-lg border border-line bg-card p-5">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <h2 className="text-xl font-semibold text-foreground">
+                  <Link
+                    href={`/entities?book=${encodeURIComponent(b.id)}`}
+                    className="text-foreground no-underline hover:text-cinnabar"
+                  >
+                    {b.title}
+                  </Link>
+                </h2>
+                <Link
+                  href={`/entities?book=${encodeURIComponent(b.id)}`}
+                  className="mono text-xs text-muted no-underline hover:text-cinnabar"
+                >
+                  进入卡浏览器 →
+                </Link>
+              </div>
+              <dl className="mt-4 grid grid-cols-3 gap-4 text-center sm:max-w-md">
+                {[
+                  ["章节", b.chapterIds.length],
+                  ["实体卡", cards.length],
+                  ["知识原子", atoms],
+                ].map(([k, v]) => (
+                  <div key={String(k)}>
+                    <dt className="text-xs text-muted">{k}</dt>
+                    <dd className="mt-0.5 text-lg font-semibold">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-4 text-xs leading-6 text-muted">章 {b.chapterIds.join(" · ")}</p>
+              <p className="mt-2">
+                <Link
+                  href={`/study?book=${encodeURIComponent(b.id)}`}
+                  className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+                >
+                  去学习这本书 →
+                </Link>
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+
+      <p className="mt-10 text-sm text-muted">
+        导入新书：<Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">/ingest 上传 PDF</Link>
+      </p>
     </main>
   );
 }
