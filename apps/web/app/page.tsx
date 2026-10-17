@@ -12,7 +12,7 @@ export default function Home() {
       <h1 className="brand-rule mt-2 pb-3 text-4xl font-bold tracking-wide">实体卡预览</h1>
       <p className="mt-6 leading-8 text-foreground/90">
         《免疫学基础与病原生物学（第3版）》第一篇 · 第一章 免疫学概述 + 第二章 抗原。
-        每张卡带印刷页码 citation，未验证引用以琥珀虚线标 <span className="cite-unverified">p.?</span>。
+        每张卡带印刷页码 citation；页码未知为 <span className="cite-unverified">p.?</span>，待抽查验证的已知页以琥珀虚线标 p.N。
       </p>
       <dl className="mt-10 grid grid-cols-3 gap-4 text-center">
         {[

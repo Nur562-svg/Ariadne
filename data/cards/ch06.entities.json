@@ -1,0 +1,8014 @@
+{
+ "source": "data/chapters/ch06.blocks.json",
+ "book": "免疫学基础与病原生物学（第3版）",
+ "scope": "免疫应答（第六章）（书页 64–77）",
+ "pageNote": "page = 印刷书页码",
+ "generated_by": "extract_cards.mjs · DeepSeek deepseek-chat（逐页 CHUNK=1）· name_zh 近重复已合并 · 全部 cites verified=false 待 Nuradil 抽查",
+ "cards": [
+  {
+   "id": "immune-response-mechanism",
+   "name_zh": "免疫应答",
+   "name_en": "Immune Response",
+   "aliases": [
+    "immune response"
+   ],
+   "kind": "process",
+   "one_liner": "免疫系统识别并清除“非己”物质的整个过程",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "机体免疫系统对外源性及内源性危险信号刺激所形成的反应，包括识别和清除“非己”物质的全过程",
+     "cite": {
+      "page": 64,
+      "quote": "免疫系统对外源性及内源性危险信号刺激所形成",
+      "verified": false
+     }
+    },
+    {
+     "label": "结局",
+     "value": "多数有免疫保护作用（抗感染、抗肿瘤）；也可能造成免疫损伤（超敏反应、自身免疫病、移植排斥）",
+     "cite": {
+      "page": 64,
+      "quote": "但也可能给机体造成免疫损伤",
+      "verified": false
+     }
+    },
+    {
+     "label": "类型",
+     "value": "分为固有免疫应答和适应性免疫应答",
+     "cite": {
+      "page": 64,
+      "quote": "分为固有免疫应答（innate immune respons",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:immune-response-mechanism:1",
+     "prompt": "免疫应答的定义是什么？",
+     "answer": "机体免疫系统对外源性及内源性危险信号刺激所形成的反应，包括识别和清除“非己”物质的全过程",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "识别和清除“非己”物质的全过程",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:immune-response-mechanism:2",
+     "prompt": "免疫应答分为哪两类？",
+     "answer": "固有免疫应答和适应性免疫应答",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "固有免疫应答（innate immune response）",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 64,
+     "quote": "免疫应答（immune response）是机体免疫系统对外",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "innate-immune-response",
+   "name_zh": "固有免疫应答",
+   "name_en": "Innate Immune Response",
+   "aliases": [
+    "固有免疫",
+    "天然免疫应答",
+    "非特异性免疫应答",
+    "非特异性免疫"
+   ],
+   "kind": "process",
+   "one_liner": "种系进化形成的天然防御机制，快、非高度特异、无记忆",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "生物体在长期种系进化过程中逐渐形成的一系列天然防御机制",
+     "cite": {
+      "page": 64,
+      "quote": "在长期种系进化过程中逐渐形成的一系列天然防御机制",
+      "verified": false
+     }
+    },
+    {
+     "label": "组成",
+     "value": "由屏障系统、固有免疫细胞和固有免疫分子构成",
+     "cite": {
+      "page": 64,
+      "quote": "由屏障系统、固有免疫细胞和固有免疫分子构成",
+      "verified": false
+     }
+    },
+    {
+     "label": "启动因素",
+     "value": "病原体突破皮肤黏膜等屏障系统入侵机体",
+     "cite": {
+      "page": 64,
+      "quote": "病原体突破皮肤黏膜等屏障系统入侵机体是固有免疫应答启动的因素",
+      "verified": false
+     }
+    },
+    {
+     "label": "特点",
+     "value": "以分子模式为主要识别对象，胚系基因编码受体感知，清除时相快、非高度特异性、不形成免疫记忆",
+     "cite": {
+      "page": 64,
+      "quote": "此清除作用时相快，非高度特异性，不形成免疫记",
+      "verified": false
+     }
+    },
+    {
+     "label": "识别对象",
+     "value": "外源性PAMP与内源性DAMP",
+     "cite": {
+      "page": 65,
+      "quote": "外源性危险信号病原体相关分子模式",
+      "verified": false
+     }
+    },
+    {
+     "label": "识别受体",
+     "value": "PRR，由胚系基因编码，多样性有限",
+     "cite": {
+      "page": 65,
+      "quote": "此类受体由胚系基因编码，其多样性有限",
+      "verified": false
+     }
+    },
+    {
+     "label": "识别方式",
+     "value": "固有免疫细胞通过PRR直接识别结合PAMP和DAMP而被激活",
+     "cite": {
+      "page": 66,
+      "quote": "通过 PRR直接识别结合 PAMP 和 DAMP而被激活",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应特点",
+     "value": "不需扩增即迅速产生免疫效应",
+     "cite": {
+      "page": 66,
+      "quote": "不需扩增的情况下迅速产生免疫效应",
+      "verified": false
+     }
+    },
+    {
+     "label": "记忆性",
+     "value": "不产生记忆细胞，再次感染应答速度与强度同初次无差别",
+     "cite": {
+      "page": 66,
+      "quote": "不产生记忆细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "作用范围",
+     "value": "在肿瘤、移植排斥和炎性疾病等免疫病理过程中也发挥重要作用。",
+     "cite": {
+      "page": 68,
+      "quote": "固有免疫在肿瘤、移植排斥和炎性疾病等",
+      "verified": false
+     }
+    },
+    {
+     "label": "识别机制",
+     "value": "模式识别受体（PRR）直接识别病原体相关分子模式（PAMP）或损伤相关分子模式（DAMP）",
+     "cite": {
+      "page": 76,
+      "quote": "模式识别受体（PRR）直接识别病原体相关分子模式（PAMP）",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应方式",
+     "value": "固有免疫细胞和分子被激活，表现为即时性免疫效应分子（体液因子）的作用和免疫效应细胞（固有免疫细胞）的作用",
+     "cite": {
+      "page": 76,
+      "quote": "表现为即时性免疫效应分子（体液因子）的作用和免疫效应细胞（固",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "适应性免疫应答",
+     "tip": "固有免疫无免疫记忆、非高度特异性、时相快；适应性免疫有记忆、高度特异"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:innate-immune-response:1",
+     "prompt": "固有免疫应答由哪三部分构成？",
+     "answer": "屏障系统、固有免疫细胞和固有免疫分子",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "由屏障系统、固有免疫细胞和固有免疫分子构成",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:2",
+     "prompt": "固有免疫应答的识别对象和识别受体有何特点？",
+     "answer": "以分子模式（PAMP、DAMP）为主要识别对象，由胚系基因编码的PRR感知",
+     "difficulty": "why",
+     "cite": {
+      "page": 64,
+      "quote": "以分子模式为主要识别对象，由胚系基因编码的受体感知",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:3",
+     "prompt": "固有免疫应答的三大特点是什么？",
+     "answer": "时相快、非高度特异性、不形成免疫记忆",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "时相快，非高度特异性，不形成免疫记",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:4",
+     "prompt": "固有免疫应答识别的对象主要包括哪两类分子模式？",
+     "answer": "外源性PAMP和内源性DAMP",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "外源性危险信号病原体相关分子模式",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:5",
+     "prompt": "PRR的编码基因特点是什么？",
+     "answer": "由胚系基因编码，多样性有限",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "此类受体由胚系基因编码，其多样性有限",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:6",
+     "prompt": "固有免疫应答是否产生记忆细胞？",
+     "answer": "不产生记忆细胞，再次感染相同病原体时应答速度与强度与初次无差别。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "不产生记忆细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:7",
+     "prompt": "固有免疫细胞如何被激活？",
+     "answer": "通过PRR直接识别结合PAMP和DAMP而被激活，不需扩增即迅速产生效应。",
+     "difficulty": "why",
+     "cite": {
+      "page": 66,
+      "quote": "通过 PRR直接识别结合 PAMP 和 DAMP而被激活",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:8",
+     "prompt": "固有免疫应答在机体防御中处于什么地位？",
+     "answer": "是抵御微生物侵袭的第一道防线，并参与适应性免疫应答的启动。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "固有免疫应答是机体抵御微生物侵袭的第一道防线",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:9",
+     "prompt": "固有免疫应答对适应性免疫应答有何影响？",
+     "answer": "参与适应性免疫应答的启动，影响其强度、类型和效应。",
+     "difficulty": "why",
+     "cite": {
+      "page": 68,
+      "quote": "参与适应性免疫应答的启动，影",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:10",
+     "prompt": "固有免疫应答通过什么受体识别什么分子模式？",
+     "answer": "通过模式识别受体（PRR）直接识别病原体相关分子模式（PAMP）或损伤相关分子模式（DAMP）",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "模式识别受体（PRR）直接识别病原体相关分子模式（PAMP）",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-response:11",
+     "prompt": "固有免疫应答有哪三个特点？",
+     "answer": "应答快速、无克隆扩增、无免疫记忆",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "具有应答快速、无克隆扩增和无免疫记忆的特点",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 64,
+     "quote": "固有免疫应答是生物体在长期种系进化过程中逐渐形成的一系列天然",
+     "verified": false
+    },
+    {
+     "page": 65,
+     "quote": "一、固有免疫应答的特征",
+     "verified": false
+    },
+    {
+     "page": 66,
+     "quote": "不需扩增的情况下迅速产生免疫效应",
+     "verified": false
+    },
+    {
+     "page": 68,
+     "quote": "固有免疫应答是机体抵御微生物侵袭的第一道防线",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "模式识别受体（PRR）直接识别病原体相关分子模式（PAMP）",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "具有应答快速、无克隆扩增和无免疫记忆的特点",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "adaptive-immune-response",
+   "name_zh": "适应性免疫应答",
+   "name_en": "Adaptive Immune Response",
+   "aliases": [
+    "获得性免疫应答",
+    "特异性免疫应答"
+   ],
+   "kind": "process",
+   "one_liner": "由T/B细胞介导、高度特异、有免疫记忆的应答",
+   "fields": [
+    {
+     "label": "参与细胞",
+     "value": "αβT细胞、B2细胞",
+     "cite": {
+      "page": 64,
+      "quote": "αβT 细胞、B2细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "识别受体",
+     "value": "BCR、TCR",
+     "cite": {
+      "page": 64,
+      "quote": "BCR、TCR",
+      "verified": false
+     }
+    },
+    {
+     "label": "识别对象",
+     "value": "抗原表位",
+     "cite": {
+      "page": 64,
+      "quote": "抗原表位",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应方式",
+     "value": "T细胞介导的特异性细胞毒作用与炎症（细胞免疫）；B细胞介导的抗体（体液免疫）",
+     "cite": {
+      "page": 64,
+      "quote": "T细胞介导的特异性细胞毒作用与炎",
+      "verified": false
+     }
+    },
+    {
+     "label": "免疫记忆",
+     "value": "有",
+     "cite": {
+      "page": 64,
+      "quote": "有",
+      "verified": false
+     }
+    },
+    {
+     "label": "定义",
+     "value": "机体受抗原刺激后，抗原特异性淋巴细胞识别抗原，发生活化、增殖、分化，进而产生清除抗原的生物学效应的全过程。",
+     "cite": {
+      "page": 68,
+      "quote": "抗原特异性淋巴细胞识别抗原，发生活化、增殖",
+      "verified": false
+     }
+    },
+    {
+     "label": "特点",
+     "value": "启动较迟缓，具有高度特异性，可形成免疫记忆，可产生免疫耐受。",
+     "cite": {
+      "page": 68,
+      "quote": "启动较迟缓，具有高度的特异性，可形成免疫记忆",
+      "verified": false
+     }
+    },
+    {
+     "label": "识别机制",
+     "value": "通过T、B淋巴细胞表面的抗原受体（TCR/BCR）识别抗原分子",
+     "cite": {
+      "page": 76,
+      "quote": "通过T、B淋巴细胞表面的抗原受体（TCR/BCR）识别抗原分",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应",
+     "value": "发生活化、增殖和分化，产生效应细胞和效应分子，进而清除抗原",
+     "cite": {
+      "page": 76,
+      "quote": "发生活化、增殖和分化，产生效应细胞和效应分子，进而清除抗原",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "固有免疫应答",
+     "tip": "适应性免疫有免疫记忆、高度特异、由TCR/BCR识别抗原表位"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:adaptive-immune-response:1",
+     "prompt": "适应性免疫应答的识别受体是什么？",
+     "answer": "BCR和TCR",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "BCR、TCR",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:adaptive-immune-response:2",
+     "prompt": "适应性免疫应答的效应方式包括哪两类？",
+     "answer": "T细胞介导的特异性细胞毒作用与炎症（细胞免疫）；B细胞介导的抗体（体液免疫）",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "T细胞介导的特异性细胞毒作用与炎",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:adaptive-immune-response:3",
+     "prompt": "适应性免疫应答的定义是什么？",
+     "answer": "抗原特异性淋巴细胞识别抗原后活化、增殖、分化，产生清除抗原效应的全过程。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "抗原特异性淋巴细胞识别抗原，发生活化、增殖",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:adaptive-immune-response:4",
+     "prompt": "适应性免疫应答相对固有免疫应答有哪些特点？",
+     "answer": "启动较迟缓、高度特异性、可形成免疫记忆、可产生免疫耐受。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "启动较迟缓，具有高度的特异性，可形成免疫记忆",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:adaptive-immune-response:5",
+     "prompt": "适应性免疫应答通过什么受体识别抗原？",
+     "answer": "T、B淋巴细胞表面的抗原受体（TCR/BCR）",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "通过T、B淋巴细胞表面的抗原受体（TCR/BCR）识别抗原分",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:adaptive-immune-response:6",
+     "prompt": "适应性免疫应答的三个特点是什么？",
+     "answer": "启动较迟缓、高度特异性、可形成免疫记忆",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "具有启动较迟缓，高度特异性，可形成免疫记忆的特点",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 64,
+     "quote": "适应性免疫应答（adaptive immune respon",
+     "verified": false
+    },
+    {
+     "page": 68,
+     "quote": "适应性免疫应答是机体受抗原刺激后",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "通过T、B淋巴细胞表面的抗原受体（TCR/BCR）识别抗原分",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "具有启动较迟缓，高度特异性，可形成免疫记忆的特点",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "pamp-damp-prr",
+   "name_zh": "PAMP/DAMP/PRR",
+   "name_en": "PAMP / DAMP / PRR",
+   "aliases": [
+    "病原体相关分子模式",
+    "损伤相关分子模式",
+    "模式识别受体"
+   ],
+   "kind": "molecule",
+   "one_liner": "固有免疫以分子模式为识别对象，由胚系基因编码的PRR感知",
+   "fields": [
+    {
+     "label": "识别对象",
+     "value": "PAMP（病原体相关分子模式）、DAMP（损伤相关分子模式）",
+     "cite": {
+      "page": 64,
+      "quote": "PAMP、DAMP",
+      "verified": false
+     }
+    },
+    {
+     "label": "识别受体",
+     "value": "PRR（模式识别受体），由胚系基因编码",
+     "cite": {
+      "page": 64,
+      "quote": "PRR",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应",
+     "value": "吞噬细胞PRR与PAMP/DAMP结合后促进调理作用",
+     "cite": {
+      "page": 64,
+      "quote": "PRR与 PAMP/",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "BCR/TCR",
+     "tip": "PRR由胚系基因编码、识别分子模式；BCR/TCR由基因重排产生、识别抗原表位"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:pamp-damp-prr:1",
+     "prompt": "固有免疫应答识别对象PAMP和DAMP分别指什么？",
+     "answer": "PAMP为病原体相关分子模式，DAMP为损伤相关分子模式",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "PAMP、DAMP",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:pamp-damp-prr:2",
+     "prompt": "PRR与PAMP/DAMP结合后产生什么效应？",
+     "answer": "促进吞噬细胞的调理作用",
+     "difficulty": "why",
+     "cite": {
+      "page": 64,
+      "quote": "PRR与 PAMP/",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 64,
+     "quote": "PAMP、DAMP",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "innate-immune-cells",
+   "name_zh": "固有免疫细胞组分",
+   "name_en": "Innate Immune Cells",
+   "aliases": [
+    "固有免疫细胞"
+   ],
+   "kind": "cell",
+   "one_liner": "DC、巨噬细胞、中性粒、肥大、嗜酸、NK、NKT、γδT、B1、ILC、上皮细胞",
+   "fields": [
+    {
+     "label": "主要细胞",
+     "value": "树突状细胞、巨噬细胞、中性粒细胞、肥大细胞、嗜酸性粒细胞、NK细胞、NKT细胞、γδT细胞、B1细胞、ILC、上皮细胞等",
+     "cite": {
+      "page": 64,
+      "quote": "树突状细胞、巨噬细胞、中性粒细胞、肥大细胞、嗜",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "适应性免疫细胞",
+     "tip": "固有免疫细胞还包括B1、γδT、NKT、ILC等；适应性免疫主要为αβT和B2细胞"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:innate-immune-cells:1",
+     "prompt": "固有免疫应答参与的主要细胞组分有哪些？",
+     "answer": "树突状细胞、巨噬细胞、中性粒细胞、肥大细胞、嗜酸性粒细胞、NK细胞、NKT细胞、γδT细胞、B1细胞、ILC、上皮细胞等",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "树突状细胞、巨噬细胞、中性粒细胞、肥大细胞、嗜",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 64,
+     "quote": "NK 细胞、NK T细胞、y8T 细胞、B1细",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "innate-immune-molecules",
+   "name_zh": "固有免疫效应分子",
+   "name_en": "Innate Immune Effector Molecules",
+   "aliases": [
+    "固有免疫分子"
+   ],
+   "kind": "molecule",
+   "one_liner": "补体系统、细胞因子、抗菌肽、溶菌酶、乙型溶素等",
+   "fields": [
+    {
+     "label": "主要分子",
+     "value": "补体系统、细胞因子、抗菌肽、溶菌酶、乙型溶素等",
+     "cite": {
+      "page": 64,
+      "quote": "补体系统、细胞因子、抗菌肽、溶菌酶、乙型溶素等",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应",
+     "value": "补体系统发挥溶解细胞作用；干扰素分泌细胞产生抗病毒作用",
+     "cite": {
+      "page": 64,
+      "quote": "补体系统发挥溶解",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:innate-immune-molecules:1",
+     "prompt": "固有免疫应答参与的主要效应分子有哪些？",
+     "answer": "补体系统、细胞因子、抗菌肽、溶菌酶、乙型溶素等",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "补体系统、细胞因子、抗菌肽、溶菌酶、乙型溶素等",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-immune-molecules:2",
+     "prompt": "补体系统在固有免疫中的效应是什么？",
+     "answer": "发挥溶解细胞作用",
+     "difficulty": "why",
+     "cite": {
+      "page": 64,
+      "quote": "补体系统发挥溶解",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 64,
+     "quote": "补体系统、细胞因子、抗菌肽、溶菌酶、乙型溶素等",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "innate-vs-adaptive-comparison",
+   "name_zh": "固有免疫与适应性免疫比较",
+   "name_en": "Innate vs Adaptive Immunity Comparison",
+   "aliases": [
+    "表6-1"
+   ],
+   "kind": "concept",
+   "one_liner": "两类应答在细胞、分子、识别受体、效应方式与记忆上的差异",
+   "fields": [
+    {
+     "label": "识别受体差异",
+     "value": "固有免疫为PRR；适应性免疫为BCR、TCR",
+     "cite": {
+      "page": 64,
+      "quote": "PRR",
+      "verified": false
+     }
+    },
+    {
+     "label": "免疫记忆差异",
+     "value": "固有免疫无，适应性免疫有",
+     "cite": {
+      "page": 64,
+      "quote": "无",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "固有免疫应答 vs 适应性免疫应答",
+     "tip": "关键区分点：识别受体（PRR vs BCR/TCR）、识别对象（PAMP/DAMP vs 抗原表位）、有无免疫记忆"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:innate-vs-adaptive-comparison:1",
+     "prompt": "固有免疫与适应性免疫在免疫记忆上的区别？",
+     "answer": "固有免疫无免疫记忆，适应性免疫有免疫记忆",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "无",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:innate-vs-adaptive-comparison:2",
+     "prompt": "固有免疫与适应性免疫的识别受体分别是什么？",
+     "answer": "固有免疫为PRR；适应性免疫为BCR、TCR",
+     "difficulty": "what",
+     "cite": {
+      "page": 64,
+      "quote": "BCR、TCR",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 64,
+     "quote": "表6-1 固有免疫应答与适应性免疫应答的比较",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "pamp",
+   "name_zh": "病原体相关分子模式",
+   "name_en": "Pathogen-Associated Molecular Pattern (PAMP)",
+   "aliases": [
+    "PAMP"
+   ],
+   "kind": "molecule",
+   "one_liner": "病原微生物共有的、相对保守且对生存致病必要的结构",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "病原微生物共有的、相对保守的、对病原体生存和致病必要的结构",
+     "cite": {
+      "page": 65,
+      "quote": "PAMP通常是病原微生物共有的、相对保守的",
+      "verified": false
+     }
+    },
+    {
+     "label": "举例",
+     "value": "G⁻菌LPS、G⁺菌磷壁酸和肽聚糖、细菌DNA、病毒双链RNA",
+     "cite": {
+      "page": 65,
+      "quote": "G菌的脂多糖（LPS）",
+      "verified": false
+     }
+    },
+    {
+     "label": "来源限定",
+     "value": "仅来源于病原体，是区分自己与非己的重要结构",
+     "cite": {
+      "page": 65,
+      "quote": "PAMP仅来源于病原体",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "DAMP",
+     "tip": "PAMP仅来源于病原体；DAMP来源于自身损伤或过量自身物质"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:pamp:1",
+     "prompt": "PAMP的来源限定是什么？",
+     "answer": "仅来源于病原体",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "PAMP仅来源于病原体",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:pamp:2",
+     "prompt": "下列哪项属于PAMP？G⁻菌LPS还是热激蛋白？",
+     "answer": "G⁻菌LPS",
+     "difficulty": "case",
+     "cite": {
+      "page": 65,
+      "quote": "G菌的脂多糖（LPS）",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "PAMP通常是病原微生物共有的、相对保守的",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "damp",
+   "name_zh": "损伤相关分子模式",
+   "name_en": "Damage-Associated Molecular Pattern (DAMP)",
+   "aliases": [
+    "DAMP"
+   ],
+   "kind": "molecule",
+   "one_liner": "组织细胞损伤时产生或表达严重过量的自身物质",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "机体组织细胞损伤时产生的物质或表达严重过量的自身物质",
+     "cite": {
+      "page": 65,
+      "quote": "DAMP 多为机体组织细胞损伤时产生的物质",
+      "verified": false
+     }
+    },
+    {
+     "label": "举例",
+     "value": "HSP、HMGB1、透明质酸、尿酸结晶、凋亡细胞表面磷脂酰丝氨酸",
+     "cite": {
+      "page": 65,
+      "quote": "热激蛋白（heat shock protein, HSP）",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "PAMP",
+     "tip": "DAMP是内源性危险信号，PAMP是外源性病原体信号"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:damp:1",
+     "prompt": "DAMP属于内源性还是外源性危险信号？",
+     "answer": "内源性危险信号",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "内源性危险信号损伤相关分子模式",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:damp:2",
+     "prompt": "热激蛋白HSP属于PAMP还是DAMP？",
+     "answer": "DAMP",
+     "difficulty": "case",
+     "cite": {
+      "page": 65,
+      "quote": "热激蛋白（heat shock protein, HSP）",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "DAMP 多为机体组织细胞损伤时产生的物质",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "prr",
+   "name_zh": "模式识别受体",
+   "name_en": "Pattern Recognition Receptor (PRR)",
+   "aliases": [
+    "PRR"
+   ],
+   "kind": "molecule",
+   "one_liner": "胚系基因编码、识别PAMP/DAMP共有模式的受体",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "直接识别病原体产物或宿主损伤衰老凋亡细胞共有模式分子的受体",
+     "cite": {
+      "page": 65,
+      "quote": "称为模式识别受体（PRR）",
+      "verified": false
+     }
+    },
+    {
+     "label": "分类",
+     "value": "膜型（TLR、甘露糖受体、清道夫受体）、胞质型（RLR、NLR）、分泌型（MBL、CRP）",
+     "cite": {
+      "page": 65,
+      "quote": "膜型 PRR 主要包括 Toll 样受体",
+      "verified": false
+     }
+    },
+    {
+     "label": "NOD样受体（NLR）",
+     "value": "识别G+/G-菌及分枝杆菌产物、ATP、β-淀粉样蛋白、尿酸结晶等，激活NF-κB",
+     "cite": {
+      "page": 66,
+      "quote": "激活核因子 KB（NF-KB）",
+      "verified": false
+     }
+    },
+    {
+     "label": "RIG样受体（RLR）",
+     "value": "识别病毒双链RNA（dsRNA）",
+     "cite": {
+      "page": 66,
+      "quote": "病毒双链 RNA（dSRNA）",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "TCR/BCR",
+     "tip": "PRR由胚系基因编码、多样性有限；TCR/BCR经基因重排、高度多样"
+    },
+    {
+     "vs": "PAMP/DAMP",
+     "tip": "PRR是受体，PAMP/DAMP是被识别的配体模式分子。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:prr:1",
+     "prompt": "PRR按分布可分为哪三类？",
+     "answer": "膜型、胞质型、分泌型",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "膜型 PRR 主要包括 Toll 样受体",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:prr:2",
+     "prompt": "胞质型PRR主要包括哪两类？",
+     "answer": "RLR和NLR",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "视黄酸诱导基因I样受体",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:prr:3",
+     "prompt": "NOD样受体（NLR）可识别哪些配体？",
+     "answer": "G+/G-菌及分枝杆菌产物、ATP、β-淀粉样蛋白、尿酸结晶等，激活NF-κB。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "G\"/G 菌及分枝杆菌产物",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:prr:4",
+     "prompt": "RIG样受体（RLR）识别什么？",
+     "answer": "病毒双链RNA（dsRNA）。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "病毒双链 RNA（dSRNA）",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "称为模式识别受体（PRR）",
+     "verified": false
+    },
+    {
+     "page": 66,
+     "quote": "模式识别受体（PRR）",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "tlr",
+   "name_zh": "Toll样受体",
+   "name_en": "Toll-like Receptor (TLR)",
+   "aliases": [
+    "TLR"
+   ],
+   "kind": "molecule",
+   "one_liner": "膜型PRR主要成员，识别多种PAMP并激活NF-κB",
+   "fields": [
+    {
+     "label": "定位",
+     "value": "细胞膜或内体膜上",
+     "cite": {
+      "page": 65,
+      "quote": "TLR2同源二聚体",
+      "verified": false
+     }
+    },
+    {
+     "label": "信号",
+     "value": "激活NF-κB信号通路，促进黏附分子和炎性细胞因子生成",
+     "cite": {
+      "page": 65,
+      "quote": "激活 NF-KB信号通路",
+      "verified": false
+     }
+    },
+    {
+     "label": "配体举例",
+     "value": "TLR4识别G⁻菌LPS；TLR3识别病毒dsRNA；TLR9识别非甲基化CpG DNA",
+     "cite": {
+      "page": 65,
+      "quote": "TLR4 同源二聚体",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "NLR",
+     "tip": "TLR为膜型PRR；NLR为胞质型PRR"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:tlr:1",
+     "prompt": "TLR4同源二聚体识别什么PAMP？",
+     "answer": "G⁻菌LPS",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "TLR4 同源二聚体",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:tlr:2",
+     "prompt": "TLR9识别什么配体？",
+     "answer": "细菌或病毒非甲基化CpG DNA",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "细菌或病毒非甲基化 CpG",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:tlr:3",
+     "prompt": "TLR激活的主要信号通路是什么？",
+     "answer": "NF-κB信号通路",
+     "difficulty": "why",
+     "cite": {
+      "page": 65,
+      "quote": "激活 NF-KB信号通路",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "TLR2同源二聚体",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "secretory-prr",
+   "name_zh": "分泌型模式识别受体",
+   "name_en": "Secretory PRR",
+   "aliases": [
+    "分泌型PRR",
+    "急性期蛋白"
+   ],
+   "kind": "molecule",
+   "one_liner": "分布于体液中的PRR，如MBL和C反应蛋白，可活化补体",
+   "fields": [
+    {
+     "label": "成员",
+     "value": "MBL、C反应蛋白等急性期蛋白",
+     "cite": {
+      "page": 65,
+      "quote": "分泌型 PRR 主要包括 MBL 和C反应蛋白",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "活化补体、调理作用",
+     "cite": {
+      "page": 65,
+      "quote": "可活化补体等",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "膜型PRR",
+     "tip": "分泌型PRR在体液中；膜型PRR在细胞膜/内体膜上"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:secretory-prr:1",
+     "prompt": "分泌型PRR的典型成员有哪些？",
+     "answer": "MBL和C反应蛋白",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "分泌型 PRR 主要包括 MBL 和C反应蛋白",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:secretory-prr:2",
+     "prompt": "C反应蛋白识别什么模式分子？",
+     "answer": "细菌细胞壁的磷酰胆碱",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "细菌细胞壁的磷酰胆碱",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "分泌型 PRR 主要包括 MBL 和C反应蛋白",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "mbl",
+   "name_zh": "甘露糖结合凝集素",
+   "name_en": "Mannose-Binding Lectin (MBL)",
+   "aliases": [
+    "MBL"
+   ],
+   "kind": "molecule",
+   "one_liner": "分泌型PRR，识别病原体表面甘露糖/岩藻糖残基并激活补体",
+   "fields": [
+    {
+     "label": "配体",
+     "value": "病原体表面的甘露糖/岩藻糖残基",
+     "cite": {
+      "page": 65,
+      "quote": "病原体表面的甘露糖/岩藻糖",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "MBL途径激活补体、调理作用",
+     "cite": {
+      "page": 65,
+      "quote": "MBL 途径激活补体、调理",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "甘露糖受体MR",
+     "tip": "MBL为分泌型PRR激活补体；MR为内吞型PRR介导吞噬"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:mbl:1",
+     "prompt": "MBL通过哪条途径激活补体？",
+     "answer": "MBL途径",
+     "difficulty": "why",
+     "cite": {
+      "page": 65,
+      "quote": "MBL 途径激活补体、调理",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "MBL 途径激活补体、调理",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "mannose-receptor",
+   "name_zh": "甘露糖受体",
+   "name_en": "Mannose Receptor (MR)",
+   "aliases": [
+    "MR"
+   ],
+   "kind": "molecule",
+   "one_liner": "内吞型PRR，识别甘露糖/岩藻糖残基介导吞噬",
+   "fields": [
+    {
+     "label": "配体",
+     "value": "细菌或真菌细胞壁的甘露糖/岩藻糖残基",
+     "cite": {
+      "page": 65,
+      "quote": "细菌或真菌细胞壁的甘露糖/",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "介导吞噬作用",
+     "cite": {
+      "page": 65,
+      "quote": "吞噬作用",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "MBL",
+     "tip": "MR为内吞型PRR介导吞噬；MBL为分泌型PRR激活补体"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:mannose-receptor:1",
+     "prompt": "甘露糖受体属于哪一型PRR？",
+     "answer": "内吞型PRR",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "内吞型 PRR",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "细菌或真菌细胞壁的甘露糖/",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "scavenger-receptor",
+   "name_zh": "清道夫受体",
+   "name_en": "Scavenger Receptor (SR)",
+   "aliases": [
+    "SR"
+   ],
+   "kind": "molecule",
+   "one_liner": "内吞型PRR，识别磷壁酸、LPS及凋亡细胞磷脂酰丝氨酸",
+   "fields": [
+    {
+     "label": "配体",
+     "value": "G⁺菌磷壁酸、G⁻菌LPS、衰老/凋亡细胞表面磷脂酰丝氨酸",
+     "cite": {
+      "page": 65,
+      "quote": "G'菌磷壁酸、G菌LPS",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "吞噬作用、清除LPS",
+     "cite": {
+      "page": 65,
+      "quote": "吞噬作用、清除LPS",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "甘露糖受体",
+     "tip": "两者均为内吞型PRR，但配体不同：SR识别磷壁酸/LPS/磷脂酰丝氨酸"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:scavenger-receptor:1",
+     "prompt": "清道夫受体的功能包括什么？",
+     "answer": "吞噬作用、清除LPS",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "吞噬作用、清除LPS",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "吞噬作用、清除LPS",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "rlr",
+   "name_zh": "视黄酸诱导基因I样受体",
+   "name_en": "RIG-I-like Receptor (RLR)",
+   "aliases": [
+    "RLR"
+   ],
+   "kind": "molecule",
+   "one_liner": "胞质型PRR，主要介导细胞活化与细胞因子分泌",
+   "fields": [
+    {
+     "label": "定位",
+     "value": "细胞质",
+     "cite": {
+      "page": 65,
+      "quote": "胞质型 PRR 主要包括视黄酸诱导基因I样受体",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "介导细胞活化、分泌细胞因子",
+     "cite": {
+      "page": 65,
+      "quote": "主要介导细胞活化、分泌细胞因子",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "NLR",
+     "tip": "两者均为胞质型PRR，RLR主要识别病毒RNA"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:rlr:1",
+     "prompt": "RLR属于哪一型PRR？",
+     "answer": "胞质型PRR",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "胞质型 PRR 主要包括视黄酸诱导基因I样受体",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "胞质型 PRR 主要包括视黄酸诱导基因I样受体",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "nlr",
+   "name_zh": "NOD样受体",
+   "name_en": "NOD-like Receptor (NLR)",
+   "aliases": [
+    "NLR"
+   ],
+   "kind": "molecule",
+   "one_liner": "胞质型PRR，介导细胞活化与细胞因子分泌",
+   "fields": [
+    {
+     "label": "定位",
+     "value": "细胞质",
+     "cite": {
+      "page": 65,
+      "quote": "NOD 样受体",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "介导细胞活化、分泌细胞因子",
+     "cite": {
+      "page": 65,
+      "quote": "主要介导细胞活化、分泌细胞因子",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "TLR",
+     "tip": "NLR在胞质；TLR在细胞膜/内体膜"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:nlr:1",
+     "prompt": "NLR属于哪一型PRR？",
+     "answer": "胞质型PRR",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "NOD 样受体",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "NOD 样受体",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "crp",
+   "name_zh": "C反应蛋白",
+   "name_en": "C-Reactive Protein (CRP)",
+   "aliases": [
+    "CRP"
+   ],
+   "kind": "molecule",
+   "one_liner": "分泌型PRR/急性期蛋白，识别磷酰胆碱并激活补体、调理",
+   "fields": [
+    {
+     "label": "配体",
+     "value": "细菌细胞壁的磷酰胆碱",
+     "cite": {
+      "page": 65,
+      "quote": "细菌细胞壁的磷酰胆碱",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "激活补体、调理作用",
+     "cite": {
+      "page": 65,
+      "quote": "激活补体、调理作用",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "MBL",
+     "tip": "两者均为分泌型PRR，配体不同：CRP识别磷酰胆碱，MBL识别甘露糖/岩藻糖"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:crp:1",
+     "prompt": "C反应蛋白的生物学活性是什么？",
+     "answer": "激活补体、调理作用",
+     "difficulty": "what",
+     "cite": {
+      "page": 65,
+      "quote": "激活补体、调理作用",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 65,
+     "quote": "激活补体、调理作用",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "pamp-damp",
+   "name_zh": "模式分子（PAMP/DAMP）",
+   "name_en": "Pathogen-/Damage-associated Molecular Patterns",
+   "aliases": [
+    "PAMP",
+    "DAMP",
+    "病原相关分子模式",
+    "损伤相关分子模式"
+   ],
+   "kind": "molecule",
+   "one_liner": "PRR识别的配体模式分子，包括病原体产物与损伤/应激释放分子。",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "被PRR识别的模式分子，分PAMP与DAMP",
+     "cite": {
+      "page": 66,
+      "quote": "模式分子（PAMP/DAMP）",
+      "verified": false
+     }
+    },
+    {
+     "label": "举例",
+     "value": "G+/G-菌及分枝杆菌产物、ATP、β-淀粉样蛋白、尿酸结晶、病毒dsRNA等",
+     "cite": {
+      "page": 66,
+      "quote": "ATP、B- 淀粉蛋白、尿酸结晶等",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "PRR",
+     "tip": "PAMP/DAMP是配体，PRR是识别它们的受体。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:pamp-damp:1",
+     "prompt": "PAMP和DAMP的共同点是什么？",
+     "answer": "均为被PRR识别的模式分子，可激活固有免疫细胞。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "模式分子（PAMP/DAMP）",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 66,
+     "quote": "模式分子（PAMP/DAMP）",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "complement-innate",
+   "name_zh": "补体（固有免疫效应分子）",
+   "name_en": "Complement",
+   "aliases": [
+    "补体系统"
+   ],
+   "kind": "molecule",
+   "one_liner": "固有免疫应答最重要的免疫效应分子，感染早期经旁路和凝集素途径活化。",
+   "fields": [
+    {
+     "label": "地位",
+     "value": "参与固有免疫应答的最重要的免疫效应分子",
+     "cite": {
+      "page": 66,
+      "quote": "补体系统是参与固有免疫应答的最重要的免疫效应分子",
+      "verified": false
+     }
+    },
+    {
+     "label": "活化途径",
+     "value": "感染早期经旁路途径和凝集素途径活化，产生溶菌效应",
+     "cite": {
+      "page": 66,
+      "quote": "补体经旁路途径和凝集素途径活化",
+      "verified": false
+     }
+    },
+    {
+     "label": "活性片段效应",
+     "value": "趋化（C3a、C5a、C567）、调理（C3b、C4b）、免疫黏附（C3b）、促炎症（C3a、C5a）",
+     "cite": {
+      "page": 66,
+      "quote": "趋化（C3a、C5a、C567）",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "细胞因子",
+     "tip": "补体为最重要固有免疫效应分子；细胞因子由免疫/非免疫细胞受刺激后产生。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:complement-innate:1",
+     "prompt": "感染早期补体经哪些途径活化？",
+     "answer": "旁路途径和凝集素途径，产生溶菌效应。",
+     "difficulty": "why",
+     "cite": {
+      "page": 66,
+      "quote": "补体经旁路途径和凝集素途径活化",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:complement-innate:2",
+     "prompt": "补体活化片段C3a、C5a的主要效应是什么？",
+     "answer": "趋化和促炎症作用。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "趋化（C3a、C5a、C567）",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 66,
+     "quote": "补体系统是参与固有免疫应答的最重要的免疫效应分子",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cytokine-innate",
+   "name_zh": "细胞因子（固有免疫效应）",
+   "name_en": "Cytokines in Innate Immunity",
+   "aliases": [
+    "I型IFN",
+    "IL-1",
+    "IL-6",
+    "TNF-α",
+    "IL-12"
+   ],
+   "kind": "molecule",
+   "one_liner": "免疫及非免疫细胞受刺激产生，介导抗病毒、促炎和激活巨噬细胞/NK。",
+   "fields": [
+    {
+     "label": "I型IFN",
+     "value": "干扰病毒蛋白合成，抑制病毒复制扩散",
+     "cite": {
+      "page": 66,
+      "quote": "I型 IFN 干扰病毒蛋白合成",
+      "verified": false
+     }
+    },
+    {
+     "label": "促炎因子",
+     "value": "IL-1、IL-6、TNF-α促进炎症反应有利于抗感染",
+     "cite": {
+      "page": 66,
+      "quote": "IL-1、IL-6、TNF-a 等促进炎症反应",
+      "verified": false
+     }
+    },
+    {
+     "label": "激活因子",
+     "value": "IFN-γ、IL-12可激活巨噬细胞和NK细胞，发挥抗感染及抗肿瘤作用",
+     "cite": {
+      "page": 66,
+      "quote": "IFN-Y、IL-12 可激活巨噬细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "急性期蛋白",
+     "tip": "IL-1、IL-6、TNF-α可诱导肝细胞产生急性期蛋白，二者不同层次。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cytokine-innate:1",
+     "prompt": "I型IFN的抗病毒机制是什么？",
+     "answer": "干扰病毒蛋白合成，抑制病毒的复制扩散。",
+     "difficulty": "why",
+     "cite": {
+      "page": 66,
+      "quote": "I型 IFN 干扰病毒蛋白合成",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cytokine-innate:2",
+     "prompt": "哪些细胞因子可激活巨噬细胞和NK细胞？",
+     "answer": "IFN-γ和IL-12。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "IFN-Y、IL-12 可激活巨噬细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 66,
+     "quote": "IL-1、IL-6、TNF-a 等促进炎症反应",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "acute-phase-protein",
+   "name_zh": "急性期蛋白",
+   "name_en": "Acute Phase Proteins",
+   "aliases": [
+    "C反应蛋白",
+    "CRP",
+    "甘露糖结合凝集素",
+    "MBL"
+   ],
+   "kind": "molecule",
+   "one_liner": "感染/损伤时由IL-1、IL-6、TNF-α诱导肝细胞产生，作为分泌型PRR。",
+   "fields": [
+    {
+     "label": "诱导机制",
+     "value": "巨噬细胞产生的IL-1、IL-6、TNF-α诱导肝细胞产生",
+     "cite": {
+      "page": 66,
+      "quote": "诱导肝细胞产生急性期蛋白",
+      "verified": false
+     }
+    },
+    {
+     "label": "举例",
+     "value": "C反应蛋白、甘露糖结合凝集素等",
+     "cite": {
+      "page": 66,
+      "quote": "如C反应蛋白、甘露糖结合凝集素等",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "作为分泌型PRR识别PAMP/DAMP，活化补体或介导巨噬细胞调理吞噬",
+     "cite": {
+      "page": 66,
+      "quote": "分泌型PRR识别 PAMP/DAMP",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "细胞因子",
+     "tip": "急性期蛋白由肝细胞产生；IL-1/IL-6/TNF-α是诱导它的细胞因子。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:acute-phase-protein:1",
+     "prompt": "急性期蛋白由哪些细胞因子诱导产生？",
+     "answer": "IL-1、IL-6、TNF-α诱导肝细胞产生。",
+     "difficulty": "why",
+     "cite": {
+      "page": 66,
+      "quote": "诱导肝细胞产生急性期蛋白",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:acute-phase-protein:2",
+     "prompt": "急性期蛋白作为哪类PRR发挥作用？",
+     "answer": "分泌型PRR，识别PAMP/DAMP，活化补体或介导调理吞噬。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "分泌型PRR识别 PAMP/DAMP",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 66,
+     "quote": "如C反应蛋白、甘露糖结合凝集素等",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "lysozyme",
+   "name_zh": "溶菌酶",
+   "name_en": "Lysozyme",
+   "aliases": [],
+   "kind": "molecule",
+   "one_liner": "不耐热碱性蛋白，破坏G+菌细胞壁肽聚糖使细菌溶解。",
+   "fields": [
+    {
+     "label": "来源与分布",
+     "value": "主要来源于吞噬细胞，广泛存在于体液、外分泌液和吞噬细胞溶酶体中",
+     "cite": {
+      "page": 66,
+      "quote": "主要来源于吞噬细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "机制",
+     "value": "破坏G+菌细胞壁的肽聚糖使细菌溶解死亡",
+     "cite": {
+      "page": 66,
+      "quote": "破坏G*菌细胞壁的肽聚糖使细菌溶解死亡",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "防御素",
+     "tip": "溶菌酶主要针对G+菌肽聚糖；防御素对细菌、真菌和囊膜病毒有广谱直接杀伤。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:lysozyme:1",
+     "prompt": "溶菌酶的杀菌机制是什么？",
+     "answer": "破坏G+菌细胞壁的肽聚糖使细菌溶解死亡。",
+     "difficulty": "why",
+     "cite": {
+      "page": 66,
+      "quote": "破坏G*菌细胞壁的肽聚糖使细菌溶解死亡",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 66,
+     "quote": "主要来源于吞噬细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "defensin",
+   "name_zh": "防御素",
+   "name_en": "Defensin",
+   "aliases": [
+    "α-防御素",
+    "β-防御素"
+   ],
+   "kind": "molecule",
+   "one_liner": "耐受蛋白酶的抗菌多肽，对细菌、真菌和囊膜病毒有广谱直接杀伤。",
+   "fields": [
+    {
+     "label": "性质",
+     "value": "一组耐受蛋白酶的分子，多种抗菌性多肽中最重要者",
+     "cite": {
+      "page": 66,
+      "quote": "由一组耐受蛋白酶的分子组成",
+      "verified": false
+     }
+    },
+    {
+     "label": "作用谱",
+     "value": "对细菌、真菌和囊膜病毒均有广谱的直接杀伤作用",
+     "cite": {
+      "page": 66,
+      "quote": "对细菌、真菌和囊膜病毒均有广谱的直接杀伤作用",
+      "verified": false
+     }
+    },
+    {
+     "label": "分类",
+     "value": "人类及哺乳动物有α-防御素和β-防御素2种",
+     "cite": {
+      "page": 66,
+      "quote": "a-防御素和B-防御素",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "溶菌酶",
+     "tip": "防御素耐蛋白酶、作用谱更广（含真菌和囊膜病毒）。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:defensin:1",
+     "prompt": "防御素的作用谱是什么？",
+     "answer": "对细菌、真菌和囊膜病毒均有广谱的直接杀伤作用。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "对细菌、真菌和囊膜病毒均有广谱的直接杀伤作用",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 66,
+     "quote": "由一组耐受蛋白酶的分子组成",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "phagocyte",
+   "name_zh": "吞噬细胞",
+   "name_en": "Phagocytes",
+   "aliases": [
+    "中性粒细胞",
+    "单核/巨噬细胞"
+   ],
+   "kind": "cell",
+   "one_liner": "固有免疫系统主要效应细胞，含中性粒细胞和单核/巨噬细胞。",
+   "fields": [
+    {
+     "label": "组成",
+     "value": "包括中性粒细胞和单核/巨噬细胞，是固有免疫系统的主要效应细胞",
+     "cite": {
+      "page": 66,
+      "quote": "是固有免疫系统的主要效应细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "中性粒细胞特点",
+     "value": "存在于外周血，寿命短、更新快、数量多",
+     "cite": {
+      "page": 66,
+      "quote": "寿命短、更新快、数量多",
+      "verified": false
+     }
+    },
+    {
+     "label": "单核/巨噬细胞特点",
+     "value": "寿命长、形体大、富含细胞器",
+     "cite": {
+      "page": 66,
+      "quote": "寿命长、形体大、富含细胞器",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "树突状细胞（未成熟DC）",
+     "tip": "表型未成熟的DC也具有吞噬作用，但吞噬细胞主要指中性粒细胞和单核/巨噬细胞。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:phagocyte:1",
+     "prompt": "固有免疫系统的主要效应细胞包括哪些？",
+     "answer": "中性粒细胞和单核/巨噬细胞。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "是固有免疫系统的主要效应细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:phagocyte:2",
+     "prompt": "中性粒细胞与单核/巨噬细胞的特点差异？",
+     "answer": "中性粒细胞寿命短、更新快、数量多；单核/巨噬细胞寿命长、形体大、富含细胞器。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "寿命短、更新快、数量多",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 66,
+     "quote": "包括中性粒细胞和单核/巨噬细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "phagocytosis-receptors",
+   "name_zh": "吞噬相关受体",
+   "name_en": "Phagocytic Receptors",
+   "aliases": [
+    "甘露糖受体",
+    "清道夫受体",
+    "Fc受体",
+    "补体受体"
+   ],
+   "kind": "molecule",
+   "one_liner": "吞噬细胞表达，识别病原体或被抗体/补体覆盖的病原体，介导内化。",
+   "fields": [
+    {
+     "label": "种类",
+     "value": "甘露糖受体、清道夫受体、Fc受体、补体受体等",
+     "cite": {
+      "page": 66,
+      "quote": "甘露糖受体、清道夫受体、Fc 受体、补体受体等",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "与病原体或被覆抗体/补体的病原体结合，内化形成吞噬体",
+     "cite": {
+      "page": 66,
+      "quote": "能与病原体或被覆了抗体或补体的病原体结合",
+      "verified": false
+     }
+    },
+    {
+     "label": "后续",
+     "value": "吞噬体与胞质中溶酶体融合成为吞噬溶酶体",
+     "cite": {
+      "page": 66,
+      "quote": "融合成为吞噬溶酶体",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "PRR",
+     "tip": "吞噬相关受体中甘露糖受体、清道夫受体属PRR范畴；Fc受体、补体受体识别调理后的病原体。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:phagocytosis-receptors:1",
+     "prompt": "吞噬细胞表达哪些与吞噬相关的受体？",
+     "answer": "甘露糖受体、清道夫受体、Fc受体、补体受体等。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "甘露糖受体、清道夫受体、Fc 受体、补体受体等",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:phagocytosis-receptors:2",
+     "prompt": "病原体内化后形成什么结构？",
+     "answer": "形成吞噬体，与溶酶体融合成为吞噬溶酶体。",
+     "difficulty": "why",
+     "cite": {
+      "page": 66,
+      "quote": "融合成为吞噬溶酶体",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 66,
+     "quote": "能与病原体或被覆了抗体或补体的病原体结合",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "skin-mucosa-barrier",
+   "name_zh": "皮肤黏膜屏障",
+   "name_en": "Skin and Mucosal Barrier",
+   "aliases": [
+    "物理屏障",
+    "化学屏障",
+    "微生物屏障"
+   ],
+   "kind": "structure",
+   "one_liner": "健康完整的皮肤黏膜及附属成分构成阻挡病原体入侵的第一道防线。",
+   "fields": [
+    {
+     "label": "组成",
+     "value": "物理、化学和微生物屏障",
+     "cite": {
+      "page": 66,
+      "quote": "物理、化学和微生物屏障",
+      "verified": false
+     }
+    },
+    {
+     "label": "地位",
+     "value": "阻挡和抵御病原生物入侵的第一道防线",
+     "cite": {
+      "page": 66,
+      "quote": "阻挡和抵御病原生物入侵的第一道防线",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "固有免疫应答",
+     "tip": "屏障为第一道防线；病原体突破屏障后才启动固有免疫应答。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:skin-mucosa-barrier:1",
+     "prompt": "皮肤黏膜屏障由哪几类屏障组成？",
+     "answer": "物理、化学和微生物屏障。",
+     "difficulty": "what",
+     "cite": {
+      "page": 66,
+      "quote": "物理、化学和微生物屏障",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:skin-mucosa-barrier:2",
+     "prompt": "固有免疫应答在何时启动？",
+     "answer": "当病原体突破皮肤黏膜等屏障系统侵入机体时启动。",
+     "difficulty": "why",
+     "cite": {
+      "page": 66,
+      "quote": "当病原体突破皮肤黏膜等屏障系统侵入机体则启动",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 66,
+     "quote": "阻挡和抵御病原生物入侵的第一道防线",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "phagocyte-killing-mechanisms",
+   "name_zh": "吞噬细胞杀菌机制",
+   "name_en": "Phagocyte Killing Mechanisms",
+   "aliases": [
+    "氧依赖途径",
+    "非氧依赖途径"
+   ],
+   "kind": "process",
+   "one_liner": "吞噬溶酶体内经氧依赖与非氧依赖两途径杀灭病原体",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "病原体在吞噬溶酶体内通过氧依赖途径和非氧依赖途径被杀死",
+     "cite": {
+      "page": 67,
+      "quote": "在吞噬溶酶体内，病原体通过氧依赖途径和非氧依赖途径被杀死",
+      "verified": false
+     }
+    },
+    {
+     "label": "氧依赖途径",
+     "value": "以胞内呼吸暴发产生的反应性氧中间产物和反应性氮中间产物发挥杀菌作用",
+     "cite": {
+      "page": 67,
+      "quote": "氧依赖途径是以胞内呼吸暴发产生的多种反应性氧中间产物",
+      "verified": false
+     }
+    },
+    {
+     "label": "非氧依赖途径",
+     "value": "不需氧分子参与，包括酸性环境、溶菌酶、防御素及多种水解酶",
+     "cite": {
+      "page": 67,
+      "quote": "非氧依赖途径是不需要氧分子参与的杀菌系统",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "氧依赖途径 vs 非氧依赖途径",
+     "tip": "前者需呼吸暴发产生活性氧/氮中间产物；后者不需氧分子，靠酸性环境、溶菌酶、防御素、水解酶"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:phagocyte-killing-mechanisms:1",
+     "prompt": "吞噬细胞杀灭病原体的两条途径是什么？",
+     "answer": "氧依赖途径和非氧依赖途径",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "病原体通过氧依赖途径和非氧依赖途径被杀死",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:phagocyte-killing-mechanisms:2",
+     "prompt": "非氧依赖途径包括哪些杀菌系统？",
+     "answer": "酸性环境、溶菌酶、防御素以及多种水解酶",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "包括酸性环境、溶菌酶、防御素以及多种水解酶的杀菌作用",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "在吞噬溶酶体内，病原体通过氧依赖途径和非氧依赖途径被杀死",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "macrophage-antigen-presentation-response",
+   "name_zh": "巨噬细胞抗原提呈作用",
+   "name_en": "Macrophage Antigen Presentation",
+   "aliases": [
+    "Mφ提呈抗原"
+   ],
+   "kind": "process",
+   "one_liner": "巨噬细胞作为APC提呈抗原活化效应T淋巴细胞",
+   "fields": [
+    {
+     "label": "功能",
+     "value": "Mφ作为抗原提呈细胞提呈抗原，活化效应T淋巴细胞",
+     "cite": {
+      "page": 67,
+      "quote": "Mφ作为抗原提呈细胞，又可提呈抗原，活化效应T淋巴细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "意义",
+     "value": "巨噬细胞吞噬过程中的抗原提呈作用有助于对胞内病原体的清除",
+     "cite": {
+      "page": 67,
+      "quote": "巨噬细胞在吞噬过程中的抗原提呈作用有助于对胞内病原体的清除",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:macrophage-antigen-presentation-response:1",
+     "prompt": "巨噬细胞除吞噬外还有什么免疫功能？",
+     "answer": "作为抗原提呈细胞提呈抗原，活化效应T淋巴细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "Mφ作为抗原提呈细胞，又可提呈抗原，活化效应T淋巴细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "Mφ作为抗原提呈细胞，又可提呈抗原，活化效应T淋巴细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "inflammasome",
+   "name_zh": "炎性体",
+   "name_en": "Inflammasome",
+   "aliases": [],
+   "kind": "structure",
+   "one_liner": "单核/巨噬细胞识别PAMP/DAMP后形成的胞内信号平台",
+   "fields": [
+    {
+     "label": "形成机制",
+     "value": "单核/巨噬细胞通过TLR、NLR、RLR识别PAMP和DAMP，形成炎性体",
+     "cite": {
+      "page": 67,
+      "quote": "识别 PAMP和DAMP，形成炎性体（inflammasom",
+      "verified": false
+     }
+    },
+    {
+     "label": "下游效应",
+     "value": "启动胞内信号转导，激活NF-κB、AP-1等转录因子，诱导炎性细胞因子",
+     "cite": {
+      "page": 67,
+      "quote": "激活转录因子核因子 KB （NF-KB）、AP-1等",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:inflammasome:1",
+     "prompt": "炎性体由哪些受体识别PAMP/DAMP后形成？",
+     "answer": "TLR、NLR和RLR",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "通过胞质膜上的TLR、细胞质中的NLR 和 RLR 识别 P",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:inflammasome:2",
+     "prompt": "炎性体形成后激活哪些转录因子？",
+     "answer": "NF-κB和AP-1等",
+     "difficulty": "why",
+     "cite": {
+      "page": 67,
+      "quote": "激活转录因子核因子 KB （NF-KB）、AP-1等",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "识别 PAMP和DAMP，形成炎性体（inflammasom",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "major-inflammatory-cytokines",
+   "name_zh": "主要炎性细胞因子",
+   "name_en": "Major Inflammatory Cytokines",
+   "aliases": [
+    "TNF-α",
+    "IL-1",
+    "IL-6"
+   ],
+   "kind": "molecule",
+   "one_liner": "炎性体激活后产生的最主要炎性细胞因子TNF-α、IL-1和IL-6",
+   "fields": [
+    {
+     "label": "种类",
+     "value": "最主要的炎性细胞因子是TNF-α、IL-1和IL-6",
+     "cite": {
+      "page": 67,
+      "quote": "最主要的炎性细胞因子是 TNF-a、IL-1 和IL-6",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:major-inflammatory-cytokines:1",
+     "prompt": "最主要的炎性细胞因子有哪三种？",
+     "answer": "TNF-α、IL-1和IL-6",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "最主要的炎性细胞因子是 TNF-a、IL-1 和IL-6",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "最主要的炎性细胞因子是 TNF-a、IL-1 和IL-6",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "inflammatory-response-mechanisms",
+   "name_zh": "炎性细胞因子介导炎症反应机制",
+   "name_en": "Mechanisms of Inflammatory Response",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "炎性细胞因子通过五方面机制介导炎症反应",
+   "fields": [
+    {
+     "label": "血管效应",
+     "value": "使局部血流加快、内皮黏附分子增多、血管通透性增加，促进白细胞和血浆蛋白渗出",
+     "cite": {
+      "page": 67,
+      "quote": "使局部血流加快，血管内皮细胞黏附分子表达增多",
+      "verified": false
+     }
+    },
+    {
+     "label": "促凝血",
+     "value": "促进内皮细胞表达促凝血蛋白，形成局部小血管凝血，阻止病原体扩散",
+     "cite": {
+      "page": 67,
+      "quote": "形成局部小血管凝血，阻止病原体扩散",
+      "verified": false
+     }
+    },
+    {
+     "label": "急性期蛋白",
+     "value": "诱导肝合成MBL、CRP等急性期蛋白，激活补体，促进吞噬",
+     "cite": {
+      "page": 67,
+      "quote": "诱导肝合成多种急性期蛋白（如 MBL、CRP）",
+      "verified": false
+     }
+    },
+    {
+     "label": "致热原",
+     "value": "作为内源性致热原导致体温升高，抑制病原体增殖并促进抗原提呈",
+     "cite": {
+      "page": 67,
+      "quote": "作为内源性致热原，导致体温升高",
+      "verified": false
+     }
+    },
+    {
+     "label": "启动适应性免疫",
+     "value": "诱导树突状细胞向淋巴结迁移和成熟，启动适应性免疫应答",
+     "cite": {
+      "page": 67,
+      "quote": "诱导树突状细胞向淋巴结迁移和成熟，启动适应性免疫应答",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:inflammatory-response-mechanisms:1",
+     "prompt": "炎性细胞因子如何阻止病原体扩散？",
+     "answer": "促进血管内皮细胞表达促凝血蛋白，形成局部小血管凝血",
+     "difficulty": "why",
+     "cite": {
+      "page": 67,
+      "quote": "形成局部小血管凝血，阻止病原体扩散",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:inflammatory-response-mechanisms:2",
+     "prompt": "炎性细胞因子诱导肝合成哪些急性期蛋白？",
+     "answer": "MBL、CRP等",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "诱导肝合成多种急性期蛋白（如 MBL、CRP）",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:inflammatory-response-mechanisms:3",
+     "prompt": "炎性细胞因子作为内源性致热原导致体温升高有何意义？",
+     "answer": "有效抑制病原体增殖，并促进抗原提呈",
+     "difficulty": "why",
+     "cite": {
+      "page": 67,
+      "quote": "有效抑制病原体的增殖，并促进抗原提呈",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "介导炎症反应的机制包括",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "plasmacytoid-dendritic-cell",
+   "name_zh": "类浆细胞树突状细胞",
+   "name_en": "Plasmacytoid Dendritic Cell (pDC)",
+   "aliases": [
+    "pDC"
+   ],
+   "kind": "cell",
+   "one_liner": "识别病毒核酸后大量产生I型IFN的树突状细胞",
+   "fields": [
+    {
+     "label": "活化机制",
+     "value": "pDC通过细胞内病毒感受器（某些TLR和RLR）识别病毒核酸而活化",
+     "cite": {
+      "page": 67,
+      "quote": "pDC通过细胞内病毒感受器（某些TLR 和 RLR）识别病毒",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应",
+     "value": "产生I型IFN，产量约为其他细胞的1000倍以上",
+     "cite": {
+      "page": 67,
+      "quote": "pDC产生I型IFN 的产量约为其他细胞的1000倍以上",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:plasmacytoid-dendritic-cell:1",
+     "prompt": "pDC通过什么识别病毒核酸？",
+     "answer": "细胞内病毒感受器（某些TLR和RLR）",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "pDC通过细胞内病毒感受器（某些TLR 和 RLR）识别病毒",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:plasmacytoid-dendritic-cell:2",
+     "prompt": "pDC产生I型IFN的产量约为其他细胞的多少倍？",
+     "answer": "1000倍以上",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "pDC产生I型IFN 的产量约为其他细胞的1000倍以上",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "pDC通过细胞内病毒感受器（某些TLR 和 RLR）识别病毒",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "type-i-ifn",
+   "name_zh": "I型干扰素",
+   "name_en": "Type I Interferon",
+   "aliases": [
+    "IFN-α",
+    "IFN-β"
+   ],
+   "kind": "molecule",
+   "one_liner": "介导早期抗病毒反应的细胞因子，主要包括IFN-α和IFN-β",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "I型IFN是一组介导早期抗病毒反应的细胞因子",
+     "cite": {
+      "page": 67,
+      "quote": "I型IFN 是一组介导早期抗病毒反应的细胞因子",
+      "verified": false
+     }
+    },
+    {
+     "label": "主要成员",
+     "value": "主要包括IFN-α和IFN-β",
+     "cite": {
+      "page": 67,
+      "quote": "主要包括 IFN-a和 IFN-B",
+      "verified": false
+     }
+    },
+    {
+     "label": "产生细胞",
+     "value": "几乎所有细胞都可产生I型IFN，但pDC产量最高",
+     "cite": {
+      "page": 67,
+      "quote": "几乎所有的细胞都可产生I型 IFN",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:type-i-ifn:1",
+     "prompt": "I型IFN主要包括哪两种？",
+     "answer": "IFN-α和IFN-β",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "主要包括 IFN-a和 IFN-B",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:type-i-ifn:2",
+     "prompt": "I型IFN的主要生物学作用是什么？",
+     "answer": "介导早期抗病毒反应",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "I型IFN 是一组介导早期抗病毒反应的细胞因子",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "I型IFN 是一组介导早期抗病毒反应的细胞因子",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "nk-cell-response",
+   "name_zh": "NK细胞",
+   "name_en": "Natural Killer Cell",
+   "aliases": [],
+   "kind": "cell",
+   "one_liner": "直接杀伤靶细胞并分泌细胞因子参与免疫调节的固有淋巴细胞",
+   "fields": [
+    {
+     "label": "杀伤功能",
+     "value": "直接杀伤靶细胞（如肿瘤细胞、病毒感染的细胞）",
+     "cite": {
+      "page": 67,
+      "quote": "直接杀伤靶细胞（如肿瘤细胞、病毒感染的细胞）",
+      "verified": false
+     }
+    },
+    {
+     "label": "细胞因子分泌",
+     "value": "活化的NK细胞分泌IFN-γ、TNF-α等多种细胞因子",
+     "cite": {
+      "page": 67,
+      "quote": "活化的NK细胞分泌IFN-Y、TNF-a 等多种细胞因子",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:nk-cell-response:1",
+     "prompt": "NK细胞直接杀伤哪些靶细胞？",
+     "answer": "肿瘤细胞、病毒感染的细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "直接杀伤靶细胞（如肿瘤细胞、病毒感染的细胞）",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:nk-cell-response:2",
+     "prompt": "活化的NK细胞分泌哪些细胞因子？",
+     "answer": "IFN-γ、TNF-α等",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "活化的NK细胞分泌IFN-Y、TNF-a 等多种细胞因子",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "直接杀伤靶细胞（如肿瘤细胞、病毒感染的细胞）",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "nkt-cell-response",
+   "name_zh": "NKT细胞",
+   "name_en": "NKT Cell",
+   "aliases": [],
+   "kind": "cell",
+   "one_liner": "受CD1d提呈脂质抗原激活、具细胞毒和免疫调节作用的淋巴细胞",
+   "fields": [
+    {
+     "label": "激活方式",
+     "value": "受CD1d分子提呈的脂质、糖脂和某些肽类抗原激活",
+     "cite": {
+      "page": 67,
+      "quote": "受 CDld分子提呈的脂质、糖脂和某些肽类抗原激活",
+      "verified": false
+     }
+    },
+    {
+     "label": "杀伤机制",
+     "value": "通过分泌穿孔素/颗粒酶或Fas/FasL途径杀伤靶细胞",
+     "cite": {
+      "page": 67,
+      "quote": "通过分泌穿孔素/颗粒酶或 Fas/FasL 途径杀伤靶细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "分泌细胞因子调节免疫应答，参与炎症反应，具有抗感染、抗肿瘤作用",
+     "cite": {
+      "page": 67,
+      "quote": "具有抗感染、抗肿瘤作用",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "NKT细胞 vs NK细胞",
+     "tip": "NKT受CD1d提呈的脂质/糖脂抗原激活；NK不受抗原提呈分子限制，直接杀伤靶细胞"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:nkt-cell-response:1",
+     "prompt": "NKT细胞受什么分子提呈的抗原激活？",
+     "answer": "CD1d分子",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "受 CDld分子提呈的脂质、糖脂和某些肽类抗原激活",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:nkt-cell-response:2",
+     "prompt": "NKT细胞通过哪些途径杀伤靶细胞？",
+     "answer": "分泌穿孔素/颗粒酶或Fas/FasL途径",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "通过分泌穿孔素/颗粒酶或 Fas/FasL 途径杀伤靶细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "受 CDld分子提呈的脂质、糖脂和某些肽类抗原激活",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "gamma-delta-t-cell",
+   "name_zh": "γδT细胞",
+   "name_en": "γδ T Cell",
+   "aliases": [],
+   "kind": "cell",
+   "one_liner": "由TCR识别脂类/多肽/磷酸化配体激活、效应类似NK的T细胞",
+   "fields": [
+    {
+     "label": "激活方式",
+     "value": "由TCR识别的脂类抗原、某些多肽抗原或磷酸化配体激活",
+     "cite": {
+      "page": 67,
+      "quote": "由 TCR识别的脂类抗原、某些多肽抗原或磷酸化配体激活",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应方式",
+     "value": "通过细胞毒作用及分泌细胞因子发挥效应，类似NK细胞、NKT细胞",
+     "cite": {
+      "page": 67,
+      "quote": "效应方式类似NK细胞、NKT细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:gamma-delta-t-cell:1",
+     "prompt": "γδT细胞由TCR识别哪些配体激活？",
+     "answer": "脂类抗原、某些多肽抗原或磷酸化配体",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "由 TCR识别的脂类抗原、某些多肽抗原或磷酸化配体激活",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "由 TCR识别的脂类抗原、某些多肽抗原或磷酸化配体激活",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "ilc-cell",
+   "name_zh": "固有淋巴样细胞",
+   "name_en": "Innate Lymphoid Cell (ILC)",
+   "aliases": [
+    "ILC1",
+    "ILC2",
+    "ILC3"
+   ],
+   "kind": "cell",
+   "one_liner": "活化后分泌不同细胞因子直接或间接杀伤胞内病原菌的固有淋巴细胞",
+   "fields": [
+    {
+     "label": "功能",
+     "value": "ILC1、ILC2、ILC3活化后通过分泌不同类型细胞因子直接或间接杀伤胞内病原菌",
+     "cite": {
+      "page": 67,
+      "quote": "通过分泌不同类型的细胞因子直接或间接杀伤胞内病原菌",
+      "verified": false
+     }
+    },
+    {
+     "label": "作用范围",
+     "value": "发挥抗寄生虫、抗胞外细菌和抗真菌作用",
+     "cite": {
+      "page": 67,
+      "quote": "发挥抗寄生虫、抗胞外细菌和抗真菌作用",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:ilc-cell:1",
+     "prompt": "ILC细胞发挥哪些抗病原体作用？",
+     "answer": "抗寄生虫、抗胞外细菌和抗真菌作用",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "发挥抗寄生虫、抗胞外细菌和抗真菌作用",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "通过分泌不同类型的细胞因子直接或间接杀伤胞内病原菌",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "b1-cell-response",
+   "name_zh": "B1细胞",
+   "name_en": "B1 Cell",
+   "aliases": [],
+   "kind": "cell",
+   "one_liner": "由TI-Ag激活、抗体亲和力较弱、识别谱宽泛的固有样B细胞",
+   "fields": [
+    {
+     "label": "激活方式",
+     "value": "由BCR识别的TI-Ag激活",
+     "cite": {
+      "page": 67,
+      "quote": "由 BCR 识别的TI-Ag激活",
+      "verified": false
+     }
+    },
+    {
+     "label": "TI-1型抗原",
+     "value": "如脂多糖，可结合B细胞表面丝裂原结合蛋白并提供抗原表位与BCR结合",
+     "cite": {
+      "page": 67,
+      "quote": "TI-1 型抗原（如脂多糖）可结合B 细胞表面丝裂原结合蛋白",
+      "verified": false
+     }
+    },
+    {
+     "label": "TI-2型抗原",
+     "value": "如荚膜多糖，依赖多个重复表位同时与多个BCR结合使BCR交联",
+     "cite": {
+      "page": 67,
+      "quote": "TI-2 型抗原（如荚膜多糖）依赖多个重复表位同时与多个BC",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗体特点",
+     "value": "Ig型别转换有限、抗体识别谱宽泛、亲和力较弱，主要结合细菌表面多糖抗原",
+     "cite": {
+      "page": 67,
+      "quote": "B1细胞的Ig 型别转换有限、抗体识别谱宽泛、亲和力较弱",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "TI-1型抗原 vs TI-2型抗原",
+     "tip": "TI-1如脂多糖，兼有丝裂原作用；TI-2如荚膜多糖，靠重复表位交联BCR"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:b1-cell-response:1",
+     "prompt": "B1细胞由哪类抗原激活？",
+     "answer": "TI-Ag（胸腺非依赖性抗原）",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "由 BCR 识别的TI-Ag激活",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:b1-cell-response:2",
+     "prompt": "TI-2型抗原如何激活B1细胞？",
+     "answer": "依赖多个重复表位同时与多个BCR结合，使BCR交联",
+     "difficulty": "why",
+     "cite": {
+      "page": 67,
+      "quote": "依赖多个重复表位同时与多个BCR结合，使BCR发生交联",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:b1-cell-response:3",
+     "prompt": "B1细胞产生的抗体有何特点？",
+     "answer": "Ig型别转换有限、识别谱宽泛、亲和力较弱",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "B1细胞的Ig 型别转换有限、抗体识别谱宽泛、亲和力较弱",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "由 BCR 识别的TI-Ag激活",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "mast-cell-response",
+   "name_zh": "肥大细胞",
+   "name_en": "Mast Cell",
+   "aliases": [],
+   "kind": "cell",
+   "one_liner": "通过PRR和C3a/C5a受体识别配体、脱颗粒引发炎症的固有免疫细胞",
+   "fields": [
+    {
+     "label": "识别方式",
+     "value": "通过细胞表面模式识别受体、补体C3a和C5a受体等识别PAMP、C3a和C5a等配体",
+     "cite": {
+      "page": 67,
+      "quote": "通过细胞表面的模式识别受体、补体C3a 和CSa 受体等识别",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应",
+     "value": "脱颗粒释放胞内炎症介质和促炎性细胞因子，引发炎症反应",
+     "cite": {
+      "page": 67,
+      "quote": "通过脱颗粒释放胞内的炎症介质和促炎性细胞因子，引发炎症反应",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "在抗感染和免疫调节中发挥重要作用",
+     "cite": {
+      "page": 67,
+      "quote": "在抗感染和免疫调节中发挥重要作用",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:mast-cell-response:1",
+     "prompt": "肥大细胞通过哪些受体识别配体？",
+     "answer": "模式识别受体、补体C3a和C5a受体等",
+     "difficulty": "what",
+     "cite": {
+      "page": 67,
+      "quote": "通过细胞表面的模式识别受体、补体C3a 和CSa 受体等识别",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:mast-cell-response:2",
+     "prompt": "肥大细胞活化后通过什么方式引发炎症？",
+     "answer": "脱颗粒释放炎症介质和促炎性细胞因子",
+     "difficulty": "why",
+     "cite": {
+      "page": 67,
+      "quote": "通过脱颗粒释放胞内的炎症介质和促炎性细胞因子，引发炎症反应",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 67,
+     "quote": "通过脱颗粒释放胞内的炎症介质和促炎性细胞因子，引发炎症反应",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "adaptive-response-three-stages",
+   "name_zh": "适应性免疫应答三阶段",
+   "name_en": "Three Stages of Adaptive Immune Response",
+   "aliases": [
+    "抗原识别阶段",
+    "活化增殖分化阶段",
+    "抗原清除阶段"
+   ],
+   "kind": "process",
+   "one_liner": "适应性免疫应答分为抗原识别、细胞活化增殖分化和抗原清除三个阶段。",
+   "fields": [
+    {
+     "label": "三阶段",
+     "value": "抗原识别阶段、细胞活化增殖分化阶段、抗原清除阶段。",
+     "cite": {
+      "page": 68,
+      "quote": "抗原识别阶段、细胞活化增殖分化阶段和抗原清除阶段",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应形式",
+     "value": "T细胞介导的特异性细胞毒作用（或炎症）和B细胞分泌抗体所表现的生物学效应。",
+     "cite": {
+      "page": 68,
+      "quote": "由T细胞介导的特异性细胞毒作用（或炎症）",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:adaptive-response-three-stages:1",
+     "prompt": "适应性免疫应答过程可划分为哪三个阶段？",
+     "answer": "抗原识别阶段、细胞活化增殖分化阶段、抗原清除阶段。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "抗原识别阶段、细胞活化增殖分化阶段和抗原清除阶段",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:adaptive-response-three-stages:2",
+     "prompt": "适应性免疫应答的两种效应形式是什么？",
+     "answer": "T细胞介导的特异性细胞毒作用（或炎症）和B细胞分泌抗体介导的体液免疫效应。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "由T细胞介导的特异性细胞毒作用（或炎症）",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 68,
+     "quote": "适应性免疫应答过程可划分为3个阶段",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "adaptive-response-outcome",
+   "name_zh": "适应性免疫应答的结局",
+   "name_en": "Outcome of Adaptive Immune Response",
+   "aliases": [
+    "应答转归",
+    "记忆性T/B细胞"
+   ],
+   "kind": "process",
+   "one_liner": "抗原清除后应答水平下降恢复静息，同时记忆性T/B细胞长久存活介导再次应答。",
+   "fields": [
+    {
+     "label": "结局一",
+     "value": "T/B细胞应答水平下降，恢复到静息或自身稳定状态。",
+     "cite": {
+      "page": 68,
+      "quote": "T/B 细胞应答水平下降，恢复到静息或自身稳定状态",
+      "verified": false
+     }
+    },
+    {
+     "label": "结局二",
+     "value": "增殖分化阶段产生的记忆性T/B细胞以长寿、功能静息状态长久存活，介导和加强再次免疫应答。",
+     "cite": {
+      "page": 68,
+      "quote": "记忆性T/B 细胞以长寿、功能静息的状态长久存活",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:adaptive-response-outcome:1",
+     "prompt": "抗原被清除后适应性免疫应答有哪两方面结局？",
+     "answer": "应答水平下降恢复静息；记忆性T/B细胞长久存活介导再次应答。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "T/B 细胞应答水平下降，恢复到静息或自身稳定状态",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:adaptive-response-outcome:2",
+     "prompt": "记忆性T/B细胞以什么状态存活并发挥何作用？",
+     "answer": "以长寿、功能静息状态长久存活，介导和加强再次免疫应答。",
+     "difficulty": "why",
+     "cite": {
+      "page": 68,
+      "quote": "介导和加强再次免疫应答",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 68,
+     "quote": "当抗原被清除以后，适应性免疫应答的结局与转归",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "antigen-recognition-repertoire",
+   "name_zh": "适应性免疫的识别对象与受体多样性",
+   "name_en": "Recognition Objects and Receptor Diversity",
+   "aliases": [
+    "TCR/BCR多样性",
+    "抗原表位识别"
+   ],
+   "kind": "concept",
+   "one_liner": "T/B细胞识别抗原表位，受体经基因重排具高度多样性，单个体可识别约10^9种抗原",
+   "fields": [
+    {
+     "label": "识别对象",
+     "value": "T、B淋巴细胞识别的主要对象是抗原，识别的是决定抗原特异性的特殊化学基团即抗原表位。",
+     "cite": {
+      "page": 68,
+      "quote": "T、B 细胞受体识别的是抗原分子中决定抗原特异性的特殊化学基",
+      "verified": false
+     }
+    },
+    {
+     "label": "受体多样性",
+     "value": "TCR/BCR经体细胞基因重排而具有高度多样性，单一个体通常可识别多达10^9种不同抗原结构。",
+     "cite": {
+      "page": 68,
+      "quote": "单一个体通常可识别多达10°种不同的抗原结构",
+      "verified": false
+     }
+    },
+    {
+     "label": "识别方式差异",
+     "value": "BCR选择性识别天然抗原表面表位；TCR选择性识别APC提呈的抗原肽-MHC复合物（pMHC）。",
+     "cite": {
+      "page": 68,
+      "quote": "TCR则选择性识别由 APC提呈的各类抗原肽与 MHC分子结",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "BCR与TCR识别方式",
+     "tip": "BCR识别天然抗原表面表位；TCR只识别APC提呈的pMHC复合物。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:antigen-recognition-repertoire:1",
+     "prompt": "T、B细胞受体识别抗原的什么结构？",
+     "answer": "抗原分子中决定抗原特异性的特殊化学基团，即抗原表位。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "即抗原表位",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antigen-recognition-repertoire:2",
+     "prompt": "BCR与TCR识别抗原方式有何不同？",
+     "answer": "BCR识别天然抗原表面表位；TCR识别APC提呈的抗原肽-MHC复合物。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "BCR 可选择性识别天然抗原表面存在的对应表位",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antigen-recognition-repertoire:3",
+     "prompt": "TCR/BCR多样性来源于什么？单个体可识别多少种抗原结构？",
+     "answer": "来源于体细胞基因重排；单个体通常可识别多达10^9种抗原结构。",
+     "difficulty": "why",
+     "cite": {
+      "page": 68,
+      "quote": "TCR/BCR 经体细胞基因重排而具有高度的多样性",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 68,
+     "quote": "TCR/BCR 经体细胞基因重排而具有高度的多样性",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "t-cell-antigen-recognition",
+   "name_zh": "T细胞对抗原的识别",
+   "name_en": "T Cell Antigen Recognition",
+   "aliases": [
+    "pMHC识别",
+    "MHC限制性"
+   ],
+   "kind": "process",
+   "one_liner": "T细胞抗原受体只能识别APC加工处理后的抗原肽-MHC复合物（pMHC）。",
+   "fields": [
+    {
+     "label": "识别对象",
+     "value": "T细胞抗原受体只能识别经APC加工处理后的抗原肽-MHC复合物（pMHC）。",
+     "cite": {
+      "page": 68,
+      "quote": "只能识别经抗原提呈细胞加工处理后的抗原肽 -MHC 复合物",
+      "verified": false
+     }
+    },
+    {
+     "label": "提呈分子",
+     "value": "抗原肽段装载至MHC I类或II类分子抗原结合槽，经高尔基体转运至APC表面，供CD8+T或CD4+T细胞识别。",
+     "cite": {
+      "page": 68,
+      "quote": "供CD8'T 细胞或CD4'T细胞识别",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "BCR识别",
+     "tip": "TCR不能识别游离天然抗原，只识别APC提呈的pMHC；BCR可直接识别天然抗原表位。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:t-cell-antigen-recognition:1",
+     "prompt": "T细胞抗原受体识别的是什么形式的抗原？",
+     "answer": "经APC加工处理后的抗原肽-MHC复合物（pMHC）。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "只能识别经抗原提呈细胞加工处理后的抗原肽 -MHC 复合物",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-antigen-recognition:2",
+     "prompt": "MHC I类和II类分子提呈的抗原肽分别供哪类T细胞识别？",
+     "answer": "MHC I类供CD8+T细胞识别，MHC II类供CD4+T细胞识别。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "供CD8'T 细胞或CD4'T细胞识别",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 68,
+     "quote": "T细胞对抗原的识别过程受到严格限制",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "exogenous-endogenous-antigen",
+   "name_zh": "外源性抗原与内源性抗原",
+   "name_en": "Exogenous and Endogenous Antigens",
+   "aliases": [
+    "抗原加工提呈分类"
+   ],
+   "kind": "concept",
+   "one_liner": "按APC处理和提呈的抗原来源，抗原分为外源性抗原和内源性抗原两类。",
+   "fields": [
+    {
+     "label": "外源性抗原",
+     "value": "通过吞噬或吞饮等方式被APC从细胞外摄入的抗原，如胞外寄生菌等。",
+     "cite": {
+      "page": 68,
+      "quote": "外源性抗原指通过吞噬或吞饮等方式被 APC从细胞外摄入的抗原",
+      "verified": false
+     }
+    },
+    {
+     "label": "内源性抗原",
+     "value": "存在于APC及宿主细胞质中的抗原，如病毒蛋白、肿瘤抗原等。",
+     "cite": {
+      "page": 68,
+      "quote": "内源性抗原指存在于 APC 及宿主细胞质中的抗原",
+      "verified": false
+     }
+    },
+    {
+     "label": "加工途径",
+     "value": "外源性抗原和内源性抗原经不同的途径被加工提呈。",
+     "cite": {
+      "page": 68,
+      "quote": "外源性抗原和内源性抗原经不同的途径被加工提呈",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "外源性抗原 vs 内源性抗原",
+     "tip": "外源性来自细胞外经吞噬/吞饮摄入（如胞外寄生菌）；内源性存在于胞质（如病毒蛋白、肿瘤抗原）。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:exogenous-endogenous-antigen:1",
+     "prompt": "外源性抗原的定义及例子是什么？",
+     "answer": "经吞噬或吞饮从细胞外摄入的抗原，如胞外寄生菌。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "外源性抗原指通过吞噬或吞饮等方式被 APC从细胞外摄入的抗原",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:exogenous-endogenous-antigen:2",
+     "prompt": "内源性抗原的定义及例子是什么？",
+     "answer": "存在于APC及宿主细胞质中的抗原，如病毒蛋白、肿瘤抗原。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "内源性抗原指存在于 APC 及宿主细胞质中的抗原",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 68,
+     "quote": "可将抗原分为外源性抗原和内源性抗原2类",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cellular-humoral-immunity-division",
+   "name_zh": "细胞免疫与体液免疫的划分",
+   "name_en": "Cellular vs Humoral Immunity",
+   "aliases": [
+    "T细胞介导的免疫应答",
+    "B细胞介导的免疫应答"
+   ],
+   "kind": "concept",
+   "one_liner": "按参与主体细胞不同，适应性免疫应答分为T细胞介导的细胞免疫和B细胞介导的体液免疫",
+   "fields": [
+    {
+     "label": "划分依据",
+     "value": "根据参与适应性免疫应答的主体细胞不同划分。",
+     "cite": {
+      "page": 68,
+      "quote": "根据参与适应性免疫应答的主体细胞不同",
+      "verified": false
+     }
+    },
+    {
+     "label": "两类型",
+     "value": "T细胞介导的免疫应答（细胞免疫）和B细胞介导的免疫应答（体液免疫）。",
+     "cite": {
+      "page": 68,
+      "quote": "T细胞介导的免疫应答（细胞免疫）和B 细胞介导的免疫应答（体",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "细胞免疫 vs 体液免疫",
+     "tip": "细胞免疫由T细胞介导（细胞毒/炎症）；体液免疫由B细胞分泌抗体介导。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cellular-humoral-immunity-division:1",
+     "prompt": "适应性免疫应答按主体细胞分为哪两类型？",
+     "answer": "T细胞介导的细胞免疫和B细胞介导的体液免疫。",
+     "difficulty": "what",
+     "cite": {
+      "page": 68,
+      "quote": "T细胞介导的免疫应答（细胞免疫）和B 细胞介导的免疫应答（体",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 68,
+     "quote": "分为T细胞介导的免疫应答（细胞免疫）和B 细胞介导的免疫应答",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "exogenous-antigen-mhc-ii-pathway",
+   "name_zh": "外源性抗原加工提呈途径（MHC II类分子途径）",
+   "name_en": "Exogenous antigen processing and presentation pathway (MHC class II pathway)",
+   "aliases": [
+    "MHC II类途径",
+    "外源性抗原提呈"
+   ],
+   "kind": "process",
+   "one_liner": "APC摄取胞外抗原，降解为13~17aa肽，经MHC II类分子提呈给CD4+T",
+   "fields": [
+    {
+     "label": "抗原来源",
+     "value": "细胞外部抗原，经胞吞或胞饮摄入形成内体/吞噬体",
+     "cite": {
+      "page": 69,
+      "quote": "APC通过胞吞作用或胞饮作用摄入细胞外部抗原",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗原肽长度",
+     "value": "含13~17个氨基酸的抗原肽",
+     "cite": {
+      "page": 69,
+      "quote": "抗原被降解成含13~17个氨基酸的抗原肽",
+      "verified": false
+     }
+    },
+    {
+     "label": "关键分子",
+     "value": "Ii链、CLIP、HLA-DM协助抗原肽置换CLIP",
+     "cite": {
+      "page": 69,
+      "quote": "抗原肽在MHC-DM分子",
+      "verified": false
+     }
+    },
+    {
+     "label": "提呈对象",
+     "value": "供CD4+T细胞识别",
+     "cite": {
+      "page": 69,
+      "quote": "供CD4'T细胞识别",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "内源性抗原MHC I类途径",
+     "tip": "外源性走MHC II类提呈给CD4+T；内源性走MHC I类提呈给CD8+T"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:exogenous-antigen-mhc-ii-pathway:1",
+     "prompt": "外源性抗原经MHC II类途径降解成多少氨基酸的抗原肽？",
+     "answer": "13~17个氨基酸",
+     "difficulty": "what",
+     "cite": {
+      "page": 69,
+      "quote": "含13~17个氨基酸的抗原肽",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:exogenous-antigen-mhc-ii-pathway:2",
+     "prompt": "MHC II类途径中占据抗原结合槽、后被置换的片段是什么？",
+     "answer": "CLIP（I类分子相关恒定链肽段）",
+     "difficulty": "what",
+     "cite": {
+      "page": 69,
+      "quote": "CLIP）仍占据 MHCII类分子的抗原结合槽",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:exogenous-antigen-mhc-ii-pathway:3",
+     "prompt": "外源性抗原MHC II类途径最终供哪类T细胞识别？",
+     "answer": "CD4+T细胞",
+     "difficulty": "case",
+     "cite": {
+      "page": 69,
+      "quote": "供CD4'T细胞识别",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 69,
+     "quote": "APC通过胞吞作用或胞饮作用摄入细胞外部抗原",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "endogenous-antigen-mhc-i-pathway",
+   "name_zh": "内源性抗原加工提呈途径（MHC I类分子途径）",
+   "name_en": "Endogenous antigen processing and presentation pathway (MHC class I pathway)",
+   "aliases": [
+    "MHC I类途径",
+    "内源性抗原提呈"
+   ],
+   "kind": "process",
+   "one_liner": "胞质内抗原经蛋白酶体降解为8~12aa肽，经TAP转运、MHC I类分子提呈给C",
+   "fields": [
+    {
+     "label": "抗原来源",
+     "value": "细胞胞质内合成的抗原（如病毒蛋白），与泛素结合后进入蛋白酶体",
+     "cite": {
+      "page": 69,
+      "quote": "细胞胞质内合成的抗原（如病毒蛋白）在细胞质中与泛素",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗原肽长度",
+     "value": "蛋白酶体分解为6~30aa片段，其中8~12aa抗原肽与TAP结合",
+     "cite": {
+      "page": 69,
+      "quote": "含8~12个氨基酸的抗原肽与TAP结合",
+      "verified": false
+     }
+    },
+    {
+     "label": "关键分子",
+     "value": "蛋白酶体、TAP、钙联蛋白、TAP相关蛋白",
+     "cite": {
+      "page": 69,
+      "quote": "在伴随蛋白（钙联蛋白和 TAP 相关蛋白）的参与下组装",
+      "verified": false
+     }
+    },
+    {
+     "label": "提呈对象",
+     "value": "供CD8+T细胞识别",
+     "cite": {
+      "page": 69,
+      "quote": "供CD8'T细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "外源性抗原MHC II类途径",
+     "tip": "内源性经蛋白酶体+TAP走MHC I类；外源性经内体/溶酶体走MHC II类"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:endogenous-antigen-mhc-i-pathway:1",
+     "prompt": "内源性抗原在蛋白酶体降解后，多少氨基酸的肽段与TAP结合？",
+     "answer": "8~12个氨基酸",
+     "difficulty": "what",
+     "cite": {
+      "page": 69,
+      "quote": "含8~12个氨基酸的抗原肽与TAP结合",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:endogenous-antigen-mhc-i-pathway:2",
+     "prompt": "内源性抗原肽被转运至内质网腔依靠什么分子？",
+     "answer": "TAP",
+     "difficulty": "why",
+     "cite": {
+      "page": 69,
+      "quote": "与TAP结合被转运至内质网腔",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:endogenous-antigen-mhc-i-pathway:3",
+     "prompt": "MHC I类途径提呈的抗原肽-MHC I复合物供哪类T细胞识别？",
+     "answer": "CD8+T细胞",
+     "difficulty": "case",
+     "cite": {
+      "page": 69,
+      "quote": "供CD8'T细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 69,
+     "quote": "细胞胞质内合成的抗原（如病毒蛋白）在细胞质中与泛素",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cross-presentation-pathway",
+   "name_zh": "交叉提呈途径",
+   "name_en": "Cross-presentation pathway",
+   "aliases": [
+    "交叉提呈"
+   ],
+   "kind": "process",
+   "one_liner": "APC将外源性抗原经MHC I类提呈给CD8+T，或将内源性抗原经MHC II类",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "APC将外源性抗原通过MHC I类途径提呈给CD8+T细胞，或将内源性抗原通过MHC II类途径提呈给CD4+T细胞",
+     "cite": {
+      "page": 69,
+      "quote": "APC 将外源性抗原通过 MHC I类分子途径提呈给CD8'",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "经典MHC I/II类途径",
+     "tip": "交叉提呈打破“外源→II类、内源→I类”的常规对应"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cross-presentation-pathway:1",
+     "prompt": "交叉提呈中，外源性抗原经哪类MHC分子提呈给哪类T细胞？",
+     "answer": "经MHC I类分子提呈给CD8+T细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 69,
+      "quote": "外源性抗原通过 MHC I类分子途径提呈给CD8'T 细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 69,
+     "quote": "交叉提星途径是指 APC 将外源性抗原通过 MHC I类分子",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cd1-presentation-pathway",
+   "name_zh": "CD1分子提呈途径",
+   "name_en": "CD1 molecule presentation pathway",
+   "aliases": [
+    "CD1提呈"
+   ],
+   "kind": "process",
+   "one_liner": "CD1分子提呈途径是对脂类抗原的提呈途径",
+   "fields": [
+    {
+     "label": "提呈对象",
+     "value": "脂类抗原",
+     "cite": {
+      "page": 69,
+      "quote": "CD1分子提呈途径是对脂类抗原的提呈途径",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "MHC I/II类途径",
+     "tip": "MHC提呈蛋白抗原肽；CD1提呈脂类抗原"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cd1-presentation-pathway:1",
+     "prompt": "CD1分子提呈途径主要提呈哪类抗原？",
+     "answer": "脂类抗原",
+     "difficulty": "what",
+     "cite": {
+      "page": 69,
+      "quote": "CD1分子提呈途径是对脂类抗原的提呈途径",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 69,
+     "quote": "CD1分子提呈途径是对脂类抗原的提呈途径",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "mhc-restriction-mechanism",
+   "name_zh": "MHC限制性",
+   "name_en": "MHC restriction",
+   "aliases": [
+    "主要组织相容性复合体限制性",
+    "双识别"
+   ],
+   "kind": "concept",
+   "one_liner": "TCR识别抗原肽时必须同时识别提呈它的自身MHC分子，即双识别",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "T细胞TCR识别APC提呈的抗原肽时，必须同时识别与抗原肽形成复合物的自身MHC分子",
+     "cite": {
+      "page": 69,
+      "quote": "必须同时识别与抗原肽形成复合物的自身 MHC 分子",
+      "verified": false
+     }
+    },
+    {
+     "label": "别称",
+     "value": "双识别",
+     "cite": {
+      "page": 69,
+      "quote": "即T细胞的双识别",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "TCR单纯识别抗原肽",
+     "tip": "TCR本质识别的是pMHC，既认肽也认自身MHC"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:mhc-restriction-mechanism:1",
+     "prompt": "T细胞对抗原肽的识别本质上是对什么分子的识别？",
+     "answer": "pMHC（抗原肽-MHC复合物）",
+     "difficulty": "what",
+     "cite": {
+      "page": 69,
+      "quote": "T细胞对抗原肽的识别本质上是对pMHC 的识别",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:mhc-restriction-mechanism:2",
+     "prompt": "MHC限制性又称为什么？",
+     "answer": "双识别",
+     "difficulty": "what",
+     "cite": {
+      "page": 69,
+      "quote": "即T细胞的双识别",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 69,
+     "quote": "称为主要组织相容性复合体限制性（MHC restrictio",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "immunological-synapse",
+   "name_zh": "免疫突触",
+   "name_en": "Immunological synapse",
+   "aliases": [
+    "免疫突触形成",
+    "IS",
+    "SMAC"
+   ],
+   "kind": "structure",
+   "one_liner": "T细胞与APC相互作用、膜分子重新分布形成的接触结构，完成抗原识别",
+   "fields": [
+    {
+     "label": "形成过程",
+     "value": "T细胞与APC经黏附分子短暂结合，特异性识别pMHC后黏附增强、膜分子重新分布，围绕TCR-pMHC形成免疫突触",
+     "cite": {
+      "page": 69,
+      "quote": "最终形成免疫突触",
+      "verified": false
+     }
+    },
+    {
+     "label": "参与黏附分子",
+     "value": "LFA-1/ICAM-1、CD2/LFA-3等",
+     "cite": {
+      "page": 69,
+      "quote": "LFA-1/ICAM-1、CD2/LFA-3",
+      "verified": false
+     }
+    },
+    {
+     "label": "定义",
+     "value": "T细胞与APC接触形成的特殊结构，中心为TCR-pMHC、共受体及CD28-B7，外周为黏附分子",
+     "cite": {
+      "page": 70,
+      "quote": "分子形成免疫突触（immunological synapse",
+      "verified": false
+     }
+    },
+    {
+     "label": "中心分子组成",
+     "value": "TCR-pMHC、CD4/CD8共受体、CD28-B7共刺激分子位于突触中心",
+     "cite": {
+      "page": 70,
+      "quote": "TCR-pMHC、共受体（CD4/CD8）、共刺激分",
+      "verified": false
+     }
+    },
+    {
+     "label": "外周分子组成",
+     "value": "外周环形分布黏附分子如LFA-1/ICAM-1",
+     "cite": {
+      "page": 70,
+      "quote": "外周环形分布黏附分子（如LFA-1/ICAM-1等）",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "增强TCR与pMHC相互作用的亲和力，促进T细胞活化",
+     "cite": {
+      "page": 70,
+      "quote": "增强 TCR与pMIHC 相互作用的亲和力",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "TCR-pMHC结合",
+     "tip": "TCR-pMHC是特异性识别核心，免疫突触是围绕其形成的细胞接触结构"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:immunological-synapse:1",
+     "prompt": "T细胞与APC完成抗原识别过程最终形成什么结构？",
+     "answer": "免疫突触",
+     "difficulty": "what",
+     "cite": {
+      "page": 69,
+      "quote": "最终形成免疫突触",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:immunological-synapse:2",
+     "prompt": "T细胞与APC初始短暂结合依赖哪些黏附分子？",
+     "answer": "LFA-1/ICAM-1、CD2/LFA-3等",
+     "difficulty": "what",
+     "cite": {
+      "page": 69,
+      "quote": "LFA-1/ICAM-1、CD2/LFA-3",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:immunological-synapse:3",
+     "prompt": "免疫突触中心区分布哪些分子？",
+     "answer": "TCR-pMHC、CD4/CD8共受体、CD28-B7共刺激分子",
+     "difficulty": "what",
+     "cite": {
+      "page": 70,
+      "quote": "TCR-pMHC、共受体（CD4/CD8）、共刺激分",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:immunological-synapse:4",
+     "prompt": "免疫突触的功能是什么？",
+     "answer": "增强TCR与pMHC相互作用的亲和力，促进T细胞活化",
+     "difficulty": "why",
+     "cite": {
+      "page": 70,
+      "quote": "增强 TCR与pMIHC 相互作用的亲和力",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 69,
+     "quote": "最终形成免疫突触（图6-2）而完成识别过程",
+     "verified": false
+    },
+    {
+     "page": 70,
+     "quote": "分子形成免疫突触（immunological synapse",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "t-cell-dual-signal",
+   "name_zh": "T细胞活化双信号",
+   "name_en": "Two-Signal Model of T Cell Activation",
+   "aliases": [
+    "双信号",
+    "第一信号",
+    "第二信号",
+    "双信号模型",
+    "协同刺激信号",
+    "T细胞双信号"
+   ],
+   "kind": "process",
+   "one_liner": "T细胞完全活化有赖于第一信号、第二信号及细胞因子",
+   "fields": [
+    {
+     "label": "第一信号",
+     "value": "TCR特异性识别APC提呈的pMHC，经CD3转导入胞内",
+     "cite": {
+      "page": 70,
+      "quote": "TCR 特异性识别 APC提呈的pMHC，由此产生活化的第一",
+      "verified": false
+     }
+    },
+    {
+     "label": "第二信号",
+     "value": "APC与T细胞表面共刺激分子结合，如B7/CD28、ICAM-1/LFA-1、LFA-3/CD2",
+     "cite": {
+      "page": 70,
+      "quote": "B7/CD28、ICAM-I/LFA-1、LFA-3/CD2",
+      "verified": false
+     }
+    },
+    {
+     "label": "最重要共刺激对",
+     "value": "T细胞CD28与APC的B7，增强IL-2基因转录并稳定IL-2 mRNA",
+     "cite": {
+      "page": 70,
+      "quote": "T细胞的CD28与APC 表达的B7是最重要的一对共刺激",
+      "verified": false
+     }
+    },
+    {
+     "label": "无第二信号后果",
+     "value": "T细胞呈无能状态（anergy）或凋亡",
+     "cite": {
+      "page": 70,
+      "quote": "则呈无能状态（anergy）或调亡",
+      "verified": false
+     }
+    },
+    {
+     "label": "细胞因子",
+     "value": "IL-1、IL-2、IL-4、IL-6、IL-10、IL-12、IFN-γ等参与，IL-2信号最关键",
+     "cite": {
+      "page": 70,
+      "quote": "其中1L-2信号在促进T细胞充分活化和增殖中最为关键",
+      "verified": false
+     }
+    },
+    {
+     "label": "结果",
+     "value": "双信号作用下T细胞活化，增殖分化为效应T细胞（Th细胞和CTL）及记忆性T细胞",
+     "cite": {
+      "page": 76,
+      "quote": "在双信号作用下T细胞活化，并增殖和分化为效应T细胞（Th 细",
+      "verified": false
+     }
+    },
+    {
+     "label": "定义",
+     "value": "T细胞活化需要双信号，复习思考题明确提问",
+     "cite": {
+      "page": 77,
+      "quote": "T细胞活化的双信号是什么？",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "第一信号 vs 第二信号",
+     "tip": "第一信号决定抗原特异性（TCR-pMHC），第二信号决定活化与否（共刺激分子）；缺第二信号导致无能或凋亡"
+    },
+    {
+     "vs": "B细胞活化的双信号",
+     "tip": "B细胞第一信号由BCR识别天然抗原，无须APC提呈和MHC限制；T细胞第一信号需APC提呈pMHC。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:t-cell-dual-signal:1",
+     "prompt": "T细胞活化的第一信号是什么？",
+     "answer": "TCR特异性识别APC提呈的pMHC，经CD3转导入胞内",
+     "difficulty": "what",
+     "cite": {
+      "page": 70,
+      "quote": "TCR 特异性识别 APC提呈的pMHC，由此产生活化的第一",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-dual-signal:2",
+     "prompt": "T细胞活化最重要的共刺激分子对是什么？其作用为何？",
+     "answer": "CD28-B7，增强IL-2基因转录和稳定IL-2 mRNA",
+     "difficulty": "why",
+     "cite": {
+      "page": 70,
+      "quote": "T细胞的CD28与APC 表达的B7是最重要的一对共刺激",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-dual-signal:3",
+     "prompt": "T细胞识别抗原后缺乏第二信号会怎样？",
+     "answer": "呈无能状态（anergy）或凋亡",
+     "difficulty": "case",
+     "cite": {
+      "page": 70,
+      "quote": "则呈无能状态（anergy）或调亡",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-dual-signal:4",
+     "prompt": "T细胞活化的第一信号由什么提供？",
+     "answer": "TCR-CD3识别APC提呈的MHC-抗原肽复合体",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "TCR-CD3",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-dual-signal:5",
+     "prompt": "T细胞活化中CD28与B7结合提供什么信号？",
+     "answer": "协同刺激信号（第二信号）",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "CD28刺激",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-dual-signal:6",
+     "prompt": "仅有第一信号而无共刺激信号，T细胞会怎样？",
+     "answer": "进入无能（anergy）状态",
+     "difficulty": "why",
+     "cite": {
+      "page": 71,
+      "quote": "无能（anergy）",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-dual-signal:7",
+     "prompt": "T细胞活化的第二信号主要由哪对共刺激分子提供？",
+     "answer": "B7-CD28",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "主要有B7-CD28）为T细胞活化提供第二信号",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-dual-signal:8",
+     "prompt": "T细胞活化的双信号是什么？（教材复习思考题）",
+     "answer": "教材以复习思考题提出，本页未展开具体内容",
+     "difficulty": "what",
+     "cite": {
+      "page": 77,
+      "quote": "T细胞活化的双信号是什么？",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 70,
+     "quote": "T细胞完全活化有赖于双信号和细胞因子",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "TCR-CD3",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "CD28刺激",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "无能（anergy）",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "T细胞的TCR识别APC提呈的pMIC 产生活化的第一信号",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "主要有B7-CD28）为T细胞活化提供第二信号",
+     "verified": false
+    },
+    {
+     "page": 77,
+     "quote": "T细胞活化的双信号是什么？",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cd4-t-cell-activation",
+   "name_zh": "CD4⁺T细胞活化",
+   "name_en": "CD4+ T Cell Activation",
+   "aliases": [
+    "Th细胞活化"
+   ],
+   "kind": "process",
+   "one_liner": "初始CD4⁺T细胞必须由DC提呈抗原并经双信号活化",
+   "fields": [
+    {
+     "label": "抗原提呈细胞",
+     "value": "初始CD4⁺T细胞活化必须由DC为其提呈抗原",
+     "cite": {
+      "page": 70,
+      "quote": "初始CD4'T细胞的活化必须由 DC为其提呈抗原",
+      "verified": false
+     }
+    },
+    {
+     "label": "共受体作用",
+     "value": "CD4与MHC II类分子β2区结合，参与第一信号启动和转导",
+     "cite": {
+      "page": 70,
+      "quote": "共受体CD4分子与 MHC II类分子B链B，区结合",
+      "verified": false
+     }
+    },
+    {
+     "label": "关键细胞因子",
+     "value": "IL-2信号在促进T细胞充分活化和增殖中最为关键",
+     "cite": {
+      "page": 70,
+      "quote": "其中1L-2信号在促进T细胞充分活化和增殖中最为关键",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:cd4-t-cell-activation:1",
+     "prompt": "初始CD4⁺T细胞活化必须由哪种细胞提呈抗原？",
+     "answer": "DC（树突状细胞）",
+     "difficulty": "what",
+     "cite": {
+      "page": 70,
+      "quote": "初始CD4'T细胞的活化必须由 DC为其提呈抗原",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cd4-t-cell-activation:2",
+     "prompt": "CD4分子与MHC II类分子的哪个区域结合？",
+     "answer": "MHC II类分子β链β2区",
+     "difficulty": "what",
+     "cite": {
+      "page": 70,
+      "quote": "共受体CD4分子与 MHC II类分子B链B，区结合",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 70,
+     "quote": "初始CD4'T细胞的活化必须由 DC为其提呈抗原",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cd8-t-cell-activation",
+   "name_zh": "CD8⁺T细胞活化",
+   "name_en": "CD8+ T Cell Activation",
+   "aliases": [
+    "CTL活化"
+   ],
+   "kind": "process",
+   "one_liner": "初始CD8⁺T细胞活化需更强共刺激信号，有Th非依赖和Th依赖两种方式",
+   "fields": [
+    {
+     "label": "基本要求",
+     "value": "同样需要双信号，必须由DC提呈抗原，且需比CD4⁺T细胞更强的共刺激信号",
+     "cite": {
+      "page": 70,
+      "quote": "初始CD8T细胞活化需要比初始CD4'T 细胞更强的共刺激信",
+      "verified": false
+     }
+    },
+    {
+     "label": "Th非依赖方式",
+     "value": "提呈内源性抗原的靶细胞本身是专职APC（如病毒感染DC）时，高表达共刺激分子直接提供第二信号",
+     "cite": {
+      "page": 70,
+      "quote": "当提呈内源性抗原的靶细胞本身就是专职性 APC时",
+      "verified": false
+     }
+    },
+    {
+     "label": "Th依赖方式",
+     "value": "DC经MHC II类途径和交叉提呈途径加工抗原，效应CD4⁺T细胞分泌IL-2并表达CD40L促进CD8⁺T细胞活化",
+     "cite": {
+      "page": 70,
+      "quote": "效应CD4'T细胞产生的IL-2可作为生",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "CD4⁺T细胞活化 vs CD8⁺T细胞活化",
+     "tip": "两者均需DC提呈和双信号，但CD8⁺T细胞需要更强的共刺激信号，且有Th非依赖与Th依赖两种激活方式"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cd8-t-cell-activation:1",
+     "prompt": "初始CD8⁺T细胞活化对共刺激信号有何特殊要求？",
+     "answer": "需要比初始CD4⁺T细胞更强的共刺激信号",
+     "difficulty": "what",
+     "cite": {
+      "page": 70,
+      "quote": "初始CD8T细胞活化需要比初始CD4'T 细胞更强的共刺激信",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cd8-t-cell-activation:2",
+     "prompt": "CD8⁺T细胞Th非依赖性激活的条件是什么？",
+     "answer": "提呈内源性抗原的靶细胞本身是专职APC（如病毒感染DC），高表达共刺激分子直接提供第二信号",
+     "difficulty": "case",
+     "cite": {
+      "page": 70,
+      "quote": "当提呈内源性抗原的靶细胞本身就是专职性 APC时",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cd8-t-cell-activation:3",
+     "prompt": "Th依赖性CD8⁺T细胞活化中效应CD4⁺T细胞提供哪些帮助？",
+     "answer": "分泌IL-2作为生长因子，并表达CD40L与DC表面CD40结合传递信号",
+     "difficulty": "why",
+     "cite": {
+      "page": 70,
+      "quote": "效应CD4'T细胞产生的IL-2可作为生",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 70,
+     "quote": "初始CD8T细胞活化需要比初始CD4'T 细胞更强的共刺激信",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "t-cell-clonal-expansion",
+   "name_zh": "T细胞克隆扩增",
+   "name_en": "T Cell Clonal Expansion",
+   "aliases": [
+    "克隆扩增"
+   ],
+   "kind": "process",
+   "one_liner": "特异性T细胞经抗原激活后克隆扩增产生大量效应细胞",
+   "fields": [
+    {
+     "label": "克隆频率",
+     "value": "体内表达某一特异性TCR的T细胞克隆数仅占总T细胞库的10⁻⁵~10⁻⁴",
+     "cite": {
+      "page": 70,
+      "quote": "克隆数仅占总T细胞库的10~10~",
+      "verified": false
+     }
+    },
+    {
+     "label": "意义",
+     "value": "特异性T细胞只有被抗原激活后经克隆扩增产生大量效应细胞才能有效发挥作用",
+     "cite": {
+      "page": 70,
+      "quote": "通过克隆扩增而产",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:t-cell-clonal-expansion:1",
+     "prompt": "特异性T细胞克隆为何需要克隆扩增？",
+     "answer": "因特异性克隆频率极低（约10⁻⁵~10⁻⁴），需扩增产生大量效应细胞才能有效发挥作用",
+     "difficulty": "why",
+     "cite": {
+      "page": 70,
+      "quote": "通过克隆扩增而产",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 70,
+     "quote": "克隆数仅占总T细胞库的10~10~",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cd4-th-help-cd8-activation",
+   "name_zh": "CD4+Th细胞辅助初始CD8+T细胞活化",
+   "name_en": "CD4+ Th cell help for naive CD8+ T cell activation",
+   "aliases": [
+    "Th辅助CTL活化",
+    "交叉提呈辅助"
+   ],
+   "kind": "process",
+   "one_liner": "Th活化DC高表达B7并释放IL-2，辅助CD8+T细胞活化",
+   "fields": [
+    {
+     "label": "辅助机制一",
+     "value": "CD4+Th细胞活化DC，促进DC高表达B7共刺激分子",
+     "cite": {
+      "page": 71,
+      "quote": "Th活化DC细胞，促进高表达B7分子",
+      "verified": false
+     }
+    },
+    {
+     "label": "辅助机制二",
+     "value": "CD4+Th细胞表达CD40L并释放IL-2，辅助CD8+T细胞活化",
+     "cite": {
+      "page": 71,
+      "quote": "CD4*Th淋巴细胞表达CD40L并释放IL-2",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗原提呈方式",
+     "value": "外源性抗原经交叉提呈给CD8+T细胞；内源性抗原经MHC-I提呈",
+     "cite": {
+      "page": 71,
+      "quote": "抽获的抗原经交叉提",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "CD4+Th vs CD8+CTL",
+     "tip": "CD4+Th识别MHC-II并辅助；CD8+CTL识别MHC-I并杀伤；Th通过DC的B7和IL-2帮助CD8活化"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cd4-th-help-cd8-activation:1",
+     "prompt": "CD4+Th细胞如何增强DC对CD8+T细胞的共刺激？",
+     "answer": "活化DC使其高表达B7分子",
+     "difficulty": "why",
+     "cite": {
+      "page": 71,
+      "quote": "Th活化DC细胞，促进高表达B7分子",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cd4-th-help-cd8-activation:2",
+     "prompt": "CD4+Th细胞辅助CD8+T细胞活化时表达和释放哪些分子？",
+     "answer": "表达CD40L并释放IL-2",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "CD4*Th淋巴细胞表达CD40L并释放IL-2",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 71,
+     "quote": "Th活化DC细胞，促进高表达B7分子",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "CD4*Th淋巴细胞表达CD40L并释放IL-2",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "抽获的抗原经交叉提",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "t-cell-proliferation-differentiation",
+   "name_zh": "T细胞的增殖和分化",
+   "name_en": "Proliferation and differentiation of T cells",
+   "aliases": [
+    "T细胞克隆扩增"
+   ],
+   "kind": "process",
+   "one_liner": "活化T细胞以IL-2为核心大量扩增并分化为效应/记忆细胞",
+   "fields": [
+    {
+     "label": "增殖规模",
+     "value": "T细胞活化后数天内克隆扩增1000倍以上",
+     "cite": {
+      "page": 71,
+      "quote": "数天内T细胞克隆扩增1000倍以上",
+      "verified": false
+     }
+    },
+    {
+     "label": "关键细胞因子",
+     "value": "IL-2最重要，经自分泌及旁分泌作用诱导T细胞增殖分化",
+     "cite": {
+      "page": 71,
+      "quote": "其中最重要的是 IL-2",
+      "verified": false
+     }
+    },
+    {
+     "label": "分化去向",
+     "value": "部分分化为效应T细胞，部分分化为记忆性T细胞",
+     "cite": {
+      "page": 71,
+      "quote": "部分分化为效应T细胞，部分分化为记忆性T细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "效应T细胞 vs 记忆性T细胞",
+     "tip": "效应细胞执行即时功能；记忆细胞寿命长、再次遇抗原迅速产生更强应答"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:t-cell-proliferation-differentiation:1",
+     "prompt": "T细胞活化后数天内克隆扩增多少倍？",
+     "answer": "1000倍以上",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "数天内T细胞克隆扩增1000倍以上",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-proliferation-differentiation:2",
+     "prompt": "T细胞增殖中最重要的细胞因子是什么？",
+     "answer": "IL-2",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "其中最重要的是 IL-2",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:t-cell-proliferation-differentiation:3",
+     "prompt": "T细胞大量增殖后分化成哪两类细胞？",
+     "answer": "效应T细胞和记忆性T细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "部分分化为效应T细胞，部分分化为记忆性T细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 71,
+     "quote": "数天内T细胞克隆扩增1000倍以上",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "其中最重要的是 IL-2",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "部分分化为效应T细胞，部分分化为记忆性T细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cd4-t-cell-subsets",
+   "name_zh": "CD4+T细胞亚群分化",
+   "name_en": "CD4+ T cell subset differentiation",
+   "aliases": [
+    "Th0分化",
+    "Th1/Th2/Th17"
+   ],
+   "kind": "process",
+   "one_liner": "CD4+T细胞经短暂Th0阶段后受细胞因子调控分化为Th1、Th2、Th17等亚",
+   "fields": [
+    {
+     "label": "分化路径",
+     "value": "CD4+T细胞经历短暂Th0细胞阶段后分化为不同亚群",
+     "cite": {
+      "page": 71,
+      "quote": "短暂的ThO 细胞阶段",
+      "verified": false
+     }
+    },
+    {
+     "label": "调控因素",
+     "value": "周围环境细胞因子调控CD4+T细胞亚群分化",
+     "cite": {
+      "page": 71,
+      "quote": "在周围环境细胞因子调控下",
+      "verified": false
+     }
+    },
+    {
+     "label": "亚群种类",
+     "value": "可分化为Th1细胞、Th2细胞、Thl7细胞等不同亚群",
+     "cite": {
+      "page": 71,
+      "quote": "可分化为Thl细胞、Th2细胞、Thl7细胞等不同亚群",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "Th1 vs Th2",
+     "tip": "两者均由Th0在环境细胞因子调控下分化而来，属不同亚群；具体功能见后续章节"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cd4-t-cell-subsets:1",
+     "prompt": "CD4+T细胞分化为不同亚群前经历哪个短暂阶段？",
+     "answer": "Th0细胞阶段",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "短暂的ThO 细胞阶段",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cd4-t-cell-subsets:2",
+     "prompt": "CD4+T细胞亚群分化受什么调控？",
+     "answer": "周围环境细胞因子",
+     "difficulty": "why",
+     "cite": {
+      "page": 71,
+      "quote": "在周围环境细胞因子调控下",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cd4-t-cell-subsets:3",
+     "prompt": "CD4+T细胞可分化成哪些亚群？",
+     "answer": "Th1、Th2、Th17等亚群",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "可分化为Thl细胞、Th2细胞、Thl7细胞等不同亚群",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 71,
+     "quote": "短暂的ThO 细胞阶段",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "在周围环境细胞因子调控下",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "可分化为Thl细胞、Th2细胞、Thl7细胞等不同亚群",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "memory-t-cell-response",
+   "name_zh": "记忆性T细胞与再次应答",
+   "name_en": "Memory T cells and secondary response",
+   "aliases": [
+    "记忆T细胞"
+   ],
+   "kind": "cell",
+   "one_liner": "记忆性T细胞寿命长，再次遇相同抗原迅速产生更强应答",
+   "fields": [
+    {
+     "label": "寿命特点",
+     "value": "记忆性T细胞寿命长，可在体内长期存在",
+     "cite": {
+      "page": 71,
+      "quote": "记忆性T细胞寿命长，可",
+      "verified": false
+     }
+    },
+    {
+     "label": "再次应答",
+     "value": "再次遇到相同抗原时迅速激活，产生更强烈、有效的再次应答",
+     "cite": {
+      "page": 71,
+      "quote": "产生更强烈、有效的再次应答",
+      "verified": false
+     }
+    },
+    {
+     "label": "意义",
+     "value": "记忆细胞是预防接种及抵抗病原微生物再感染的细胞学基础",
+     "cite": {
+      "page": 71,
+      "quote": "记忆细胞是预防接种及机体抵抗病原微生物再感染的细胞学基础",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "初始T细胞 vs 记忆性T细胞",
+     "tip": "初始T细胞需充分活化才扩增；记忆细胞寿命长、再次遇抗原反应更快更强"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:memory-t-cell-response:1",
+     "prompt": "记忆性T细胞再次遇到相同抗原时产生怎样的应答？",
+     "answer": "迅速激活，产生更强烈、有效的再次应答",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "产生更强烈、有效的再次应答",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:memory-t-cell-response:2",
+     "prompt": "记忆细胞对预防接种有何意义？",
+     "answer": "是预防接种及机体抵抗病原微生物再感染的细胞学基础",
+     "difficulty": "case",
+     "cite": {
+      "page": 71,
+      "quote": "记忆细胞是预防接种及机体抵抗病原微生物再感染的细胞学基础",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 71,
+     "quote": "记忆性T细胞寿命长，可",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "产生更强烈、有效的再次应答",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "记忆细胞是预防接种及机体抵抗病原微生物再感染的细胞学基础",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "ctl-differentiation",
+   "name_zh": "CD8+T细胞分化为CTL",
+   "name_en": "Differentiation of CD8+ T cells into CTL",
+   "aliases": [
+    "细胞毒性T淋巴细胞分化"
+   ],
+   "kind": "process",
+   "one_liner": "CD8+T细胞活化增殖后分化为具有细胞毒作用的CTL",
+   "fields": [
+    {
+     "label": "分化结果",
+     "value": "CD8+T细胞分化为具有细胞毒作用的CTL",
+     "cite": {
+      "page": 71,
+      "quote": "CD8'T 细胞则分化为具有细胞毒作用的CTL",
+      "verified": false
+     }
+    },
+    {
+     "label": "活化条件",
+     "value": "初始CD8+T细胞需APC提供足够共刺激信号（如B7）",
+     "cite": {
+      "page": 71,
+      "quote": "为初始 CD8'T 细胞提供足够的共刺激信号",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "CD8+T细胞 vs CTL",
+     "tip": "CD8+T细胞是表型；CTL是其活化增殖后分化的效应形式，具有细胞毒作用"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:ctl-differentiation:1",
+     "prompt": "CD8+T细胞活化后分化为什么细胞？",
+     "answer": "具有细胞毒作用的CTL",
+     "difficulty": "what",
+     "cite": {
+      "page": 71,
+      "quote": "CD8'T 细胞则分化为具有细胞毒作用的CTL",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:ctl-differentiation:2",
+     "prompt": "初始CD8+T细胞活化需要APC提供什么？",
+     "answer": "足够的共刺激信号（如B7等共刺激分子）",
+     "difficulty": "why",
+     "cite": {
+      "page": 71,
+      "quote": "为初始 CD8'T 细胞提供足够的共刺激信号",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 71,
+     "quote": "CD8'T 细胞则分化为具有细胞毒作用的CTL",
+     "verified": false
+    },
+    {
+     "page": 71,
+     "quote": "为初始 CD8'T 细胞提供足够的共刺激信号",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cd4-t-cell-effector-response",
+   "name_zh": "CD4⁺T细胞介导的效应",
+   "name_en": "CD4⁺ T cell-mediated effector response",
+   "aliases": [
+    "CD4⁺Th效应",
+    "Th细胞效应"
+   ],
+   "kind": "process",
+   "one_liner": "效应CD4⁺Th细胞通过分泌细胞因子及表达膜分子发挥免疫效应",
+   "fields": [
+    {
+     "label": "效应方式",
+     "value": "通过分泌的多种细胞因子及表达相关膜分子发挥免疫效应",
+     "cite": {
+      "page": 72,
+      "quote": "通过分泌的多种细胞因子及表达相关膜分子发挥免疫效应",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "CD8⁺T细胞介导的效应",
+     "tip": "CD4⁺Th以细胞因子/膜分子为主；CD8⁺CTL以直接杀伤靶细胞为主"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cd4-t-cell-effector-response:1",
+     "prompt": "T细胞介导的抗原清除效应有哪两种基本形式？",
+     "answer": "CD4⁺T细胞介导的效应和CD8⁺T细胞介导的效应",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "CD4'T 细胞介导的效应",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cd4-t-cell-effector-response:2",
+     "prompt": "效应CD4⁺Th细胞通过什么方式发挥免疫效应？",
+     "answer": "分泌多种细胞因子及表达相关膜分子",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "通过分泌的多种细胞因子及表达相关膜分子发挥免疫效应",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "CD4'T 细胞介导的效应",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "th1-cell-effector",
+   "name_zh": "Th1细胞的效应",
+   "name_en": "Th1 cell effector function",
+   "aliases": [
+    "Th1效应"
+   ],
+   "kind": "cell",
+   "one_liner": "Th1分泌IFN-γ等细胞因子并表达CD40L，激活巨噬细胞、放大细胞免疫",
+   "fields": [
+    {
+     "label": "分泌细胞因子",
+     "value": "IFN-γ、IL-2、IL-3、TNF-β、GM-CSF等，并表达CD40L",
+     "cite": {
+      "page": 72,
+      "quote": "分泌 IFN-Y、IL-2、IL-3、TNF-B、GM-CS",
+      "verified": false
+     }
+    },
+    {
+     "label": "激活巨噬细胞",
+     "value": "IFN-γ活化感染胞内病原体的巨噬细胞，增强杀伤与提呈能力；CD40L与CD40结合发出活化信号",
+     "cite": {
+      "page": 72,
+      "quote": "IFN-y能使感染胞内病原体",
+      "verified": false
+     }
+    },
+    {
+     "label": "诱生并募集巨噬细胞",
+     "value": "IL-3和GM-CSF促进骨髓造血干细胞分化为巨噬细胞；TNF-α/β、MCP-1募集巨噬细胞至感染灶",
+     "cite": {
+      "page": 72,
+      "quote": "IL-3和 GM-CSF 可促进骨髓造血干细胞分化为巨噬细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "Th2细胞",
+     "tip": "Th1以IFN-γ激活巨噬细胞、放大细胞免疫为主；Th2以IL-4辅助B细胞、激活肥大细胞/嗜酸性粒细胞为主"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:th1-cell-effector:1",
+     "prompt": "Th1细胞激活巨噬细胞的关键细胞因子是什么？",
+     "answer": "IFN-γ",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "IFN-y能使感染胞内病原体",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:th1-cell-effector:2",
+     "prompt": "Th1细胞表面CD40L与巨噬细胞表面什么分子结合？",
+     "answer": "CD40",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "CD40L与巨噬细胞表面CD40结合",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:th1-cell-effector:3",
+     "prompt": "Th1细胞如何放大细胞免疫效应？",
+     "answer": "IL-2等细胞因子促进Th1细胞、CTL等增殖",
+     "difficulty": "why",
+     "cite": {
+      "page": 72,
+      "quote": "IL-2等细胞因子能促进Th1 细胞、CTL 等增殖",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "Thl细胞可分泌 IFN-Y、IL-2、IL-3、TNF-B",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "th2-cell-effector",
+   "name_zh": "Th2细胞的效应",
+   "name_en": "Th2 cell effector function",
+   "aliases": [
+    "Th2效应"
+   ],
+   "kind": "cell",
+   "one_liner": "Th2通过CD40L和IL-4辅助B细胞产生抗体，并激活肥大细胞、嗜酸性粒细胞",
+   "fields": [
+    {
+     "label": "辅助B细胞",
+     "value": "表达CD40L和分泌IL-4等细胞因子辅助B细胞产生抗体",
+     "cite": {
+      "page": 72,
+      "quote": "通过表达 CD40L 和分泌 IL-4等细胞因子辅助B细胞产",
+      "verified": false
+     }
+    },
+    {
+     "label": "激活肥大细胞/嗜酸性粒细胞",
+     "value": "分泌的细胞因子可激活肥大细胞、嗜酸性粒细胞，参与超敏反应和抗寄生虫感染",
+     "cite": {
+      "page": 72,
+      "quote": "可激活肥大细胞、嗜酸性粒细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "Th1细胞",
+     "tip": "Th2以IL-4辅助B细胞、参与超敏反应和抗寄生虫；Th1以IFN-γ激活巨噬细胞"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:th2-cell-effector:1",
+     "prompt": "Th2细胞辅助B细胞产生抗体依赖哪些分子？",
+     "answer": "CD40L和IL-4等细胞因子",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "通过表达 CD40L 和分泌 IL-4等细胞因子辅助B细胞产",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:th2-cell-effector:2",
+     "prompt": "Th2细胞分泌的细胞因子可激活哪些细胞？",
+     "answer": "肥大细胞、嗜酸性粒细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "可激活肥大细胞、嗜酸性粒细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "Th2细胞的效应",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "th17-cell-effector",
+   "name_zh": "Th17细胞的效应",
+   "name_en": "Th17 cell effector function",
+   "aliases": [
+    "Th17效应"
+   ],
+   "kind": "cell",
+   "one_liner": "Th17主要分泌IL-17，募集激活中性粒细胞，介导炎症清除胞外菌真菌",
+   "fields": [
+    {
+     "label": "主要分泌因子",
+     "value": "主要分泌IL-17",
+     "cite": {
+      "page": 72,
+      "quote": "Th17细胞主要分泌 1L-17",
+      "verified": false
+     }
+    },
+    {
+     "label": "作用机制",
+     "value": "刺激多种细胞产生IL-6、IL-1、TNF-α、GM-CSF和趋化因子，募集、激活和趋化中性粒细胞至感染部位",
+     "cite": {
+      "page": 72,
+      "quote": "募集、激活和趋化中性粒细胞至感染部位",
+      "verified": false
+     }
+    },
+    {
+     "label": "固有免疫作用",
+     "value": "IL-17刺激上皮细胞等分泌防御素，在固有免疫中发挥重要作用",
+     "cite": {
+      "page": 72,
+      "quote": "IL-17 还可刺激上皮细胞等分泌防御素",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "Th1细胞",
+     "tip": "Th17主要募集激活中性粒细胞、介导炎症抗胞外菌真菌；Th1主要激活巨噬细胞抗胞内病原体"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:th17-cell-effector:1",
+     "prompt": "Th17细胞主要分泌什么细胞因子？",
+     "answer": "IL-17",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "Th17细胞主要分泌 1L-17",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:th17-cell-effector:2",
+     "prompt": "Th17细胞主要募集和激活哪类细胞至感染部位？",
+     "answer": "中性粒细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "募集、激活和趋化中性粒细胞至感染部位",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:th17-cell-effector:3",
+     "prompt": "Th17细胞与哪些疾病的发生发展有关？",
+     "answer": "某些自身免疫病",
+     "difficulty": "case",
+     "cite": {
+      "page": 72,
+      "quote": "Th17 细胞与某些自身免疫病的发生与发展有关",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "Th17细胞主要分泌 1L-17",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "ctl-killing-process",
+   "name_zh": "CTL杀伤靶细胞过程",
+   "name_en": "CTL killing process",
+   "aliases": [
+    "CD8⁺T细胞介导的效应",
+    "CTL杀伤三阶段"
+   ],
+   "kind": "process",
+   "one_liner": "CTL经效-靶结合、CTL极化、致死性攻击三阶段特异性杀伤靶细胞",
+   "fields": [
+    {
+     "label": "效-靶细胞结合",
+     "value": "CTL的TCR特异性识别靶细胞表面pMHC I类分子复合物，具MHC I类分子限制性",
+     "cite": {
+      "page": 72,
+      "quote": "CTL的TCR 特异性识别靶细胞表面的 pMHCI类分子复合",
+      "verified": false
+     }
+    },
+    {
+     "label": "CTL极化",
+     "value": "形成免疫突触，骨架系统及胞浆颗粒朝向结合部位分布，保证效应分子定向释放",
+     "cite": {
+      "page": 72,
+      "quote": "CTL- 靶细胞间形成免疫突触",
+      "verified": false
+     }
+    },
+    {
+     "label": "致死性攻击",
+     "value": "穿孔素/颗粒酶途径和死亡受体途径（FasL/Fas、TNF/TNFR）导致靶细胞裂解和凋亡",
+     "cite": {
+      "page": 72,
+      "quote": "穿孔素/颗粒酶途径",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "CD4⁺Th细胞效应",
+     "tip": "CTL直接杀伤靶细胞且可连续杀伤；CD4⁺Th主要通过细胞因子/膜分子发挥作用"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:ctl-killing-process:1",
+     "prompt": "CTL识别靶细胞具有什么限制性？",
+     "answer": "MHC I类分子限制性",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "CTL 对靶细胞的识别具有MHC I类分子限制性",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:ctl-killing-process:2",
+     "prompt": "CTL致死性攻击主要通过哪两条途径？",
+     "answer": "穿孔素/颗粒酶途径和死亡受体途径",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "穿孔素/颗粒酶途径",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:ctl-killing-process:3",
+     "prompt": "穿孔素如何导致靶细胞死亡？",
+     "answer": "插入靶细胞膜聚合形成穿膜孔道，使靶细胞数分钟内裂解死亡",
+     "difficulty": "why",
+     "cite": {
+      "page": 72,
+      "quote": "聚合形成穿膜孔道",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "CTL 能特异性杀伤靶细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "perforin-granzyme-pathway",
+   "name_zh": "穿孔素/颗粒酶途径",
+   "name_en": "Perforin/granzyme pathway",
+   "aliases": [
+    "穿孔素颗粒酶途径"
+   ],
+   "kind": "process",
+   "one_liner": "穿孔素成孔、颗粒酶经孔入胞激活凋亡酶诱导靶细胞凋亡",
+   "fields": [
+    {
+     "label": "穿孔素作用",
+     "value": "插入靶细胞膜中聚合形成穿膜孔道，导致靶细胞数分钟内裂解死亡",
+     "cite": {
+      "page": 72,
+      "quote": "聚合形成穿膜孔道",
+      "verified": false
+     }
+    },
+    {
+     "label": "颗粒酶作用",
+     "value": "丝氨酸蛋白酶经穿孔素孔道进入靶细胞，激活凋亡相关酶诱导凋亡",
+     "cite": {
+      "page": 72,
+      "quote": "通过激活凋亡相关的酶诱导靶细胞凋亡",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "死亡受体途径",
+     "tip": "穿孔素/颗粒酶由CTL释放颗粒直接作用；死亡受体途径经FasL/Fas、TNF/TNFR转导死亡信号"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:perforin-granzyme-pathway:1",
+     "prompt": "颗粒酶属于哪类酶？",
+     "answer": "丝氨酸蛋白酶",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "颗粒酶（granzyme）是一类丝氨酸蛋白酶",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:perforin-granzyme-pathway:2",
+     "prompt": "颗粒酶如何进入靶细胞？",
+     "answer": "经穿孔素在靶细胞膜上形成的孔道进入",
+     "difficulty": "why",
+     "cite": {
+      "page": 72,
+      "quote": "经穿孔素在靶细胞膜上形成的孔道进入靶细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "穿孔素（perforin）可插入靶细胞膜中",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "death-receptor-pathway",
+   "name_zh": "死亡受体途径",
+   "name_en": "Death receptor pathway",
+   "aliases": [
+    "Fas/FasL途径"
+   ],
+   "kind": "process",
+   "one_liner": "CTL高表达FasL并分泌TNF，与靶细胞死亡受体结合引起caspase级联致凋",
+   "fields": [
+    {
+     "label": "关键分子",
+     "value": "CTL活化后高表达FasL，并分泌TNF-α、TNF-β",
+     "cite": {
+      "page": 72,
+      "quote": "CTL 活化后高表达FasL",
+      "verified": false
+     }
+    },
+    {
+     "label": "信号转导",
+     "value": "与靶细胞表面Fas、TNFR结合，转导死亡信号引起caspase级联反应导致凋亡",
+     "cite": {
+      "page": 72,
+      "quote": "引起 caspase 级联反应，导致靶细胞凋亡",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "穿孔素/颗粒酶途径",
+     "tip": "死亡受体途径经受体-配体结合转导信号；穿孔素/颗粒酶经颗粒释放成孔"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:death-receptor-pathway:1",
+     "prompt": "CTL表面的FasL与靶细胞表面什么受体结合？",
+     "answer": "Fas",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "分别与靶细胞表面相应的死亡受体（Fas、TNFR）结合",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:death-receptor-pathway:2",
+     "prompt": "死亡受体途径通过什么级联反应导致靶细胞凋亡？",
+     "answer": "caspase级联反应",
+     "difficulty": "why",
+     "cite": {
+      "page": 72,
+      "quote": "引起 caspase 级联反应",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "死亡受体途径",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "b-cell-mediated-immune-response",
+   "name_zh": "B细胞介导的免疫应答",
+   "name_en": "B cell-mediated immune response",
+   "aliases": [
+    "体液免疫应答"
+   ],
+   "kind": "process",
+   "one_liner": "B2细胞受抗原刺激活化增殖分化为浆细胞，分泌抗体发挥免疫效应",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "B2细胞在抗原刺激下活化、增殖，分化为浆细胞，合成并分泌抗体，通过抗体发挥免疫效应",
+     "cite": {
+      "page": 72,
+      "quote": "B2细胞在抗原的刺激下活化、增殖，分化为浆细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "T细胞介导的细胞免疫",
+     "tip": "B细胞应答以抗体为效应分子；T细胞应答以效应T细胞及细胞因子为主"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:b-cell-mediated-immune-response:1",
+     "prompt": "B细胞介导的免疫应答中，B细胞分化为什么细胞？",
+     "answer": "浆细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "分化为浆细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:b-cell-mediated-immune-response:2",
+     "prompt": "B细胞介导免疫应答的效应分子是什么？",
+     "answer": "抗体",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "通过抗体发挥免疫效应的过程",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "B 细胞介导的免疫应答",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "b-cell-antigen-recognition",
+   "name_zh": "B细胞对抗原的识别阶段",
+   "name_en": "B cell antigen recognition phase",
+   "aliases": [
+    "B细胞识别TD-Ag"
+   ],
+   "kind": "process",
+   "one_liner": "B2细胞BCR直接识别TD-Ag天然表位，内化形成pMHC II提呈给Th细胞",
+   "fields": [
+    {
+     "label": "识别方式",
+     "value": "BCR可直接识别TD-Ag的天然表位",
+     "cite": {
+      "page": 72,
+      "quote": "BCR可直接识别TD-Ag的天然表位",
+      "verified": false
+     }
+    },
+    {
+     "label": "提呈与辅助",
+     "value": "内化抗原形成pMHC II类分子复合物提呈给抗原特异性Th细胞，获得Th辅助",
+     "cite": {
+      "page": 72,
+      "quote": "提呈给抗原特异性Th 细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "T细胞识别抗原",
+     "tip": "B细胞BCR直接识别天然表位；T细胞TCR识别APC提呈的pMHC复合物"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:b-cell-antigen-recognition:1",
+     "prompt": "B2细胞的BCR识别TD-Ag的什么结构？",
+     "answer": "天然表位",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "BCR可直接识别TD-Ag的天然表位",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:b-cell-antigen-recognition:2",
+     "prompt": "B细胞将抗原以什么形式提呈给Th细胞？",
+     "answer": "pMHC II类分子复合物",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "形成 pMHC II 类分子复合物",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "B细胞对抗原的识别阶段",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "b-cell-dual-signal-activation",
+   "name_zh": "B细胞活化的双信号",
+   "name_en": "B cell dual-signal activation",
+   "aliases": [
+    "B细胞双信号"
+   ],
+   "kind": "process",
+   "one_liner": "B细胞活化需双信号，充分活化增殖还需细胞因子参与",
+   "fields": [
+    {
+     "label": "第一信号",
+     "value": "BCR识别结合特异性抗原表位产生，由Igα/Igβ转入B细胞内",
+     "cite": {
+      "page": 72,
+      "quote": "由 BCR 识别和结合特异性抗原表位产生",
+      "verified": false
+     }
+    },
+    {
+     "label": "共受体",
+     "value": "BCR共受体复合物（CD21-CD19-CD81）使B细胞对抗原刺激的敏感性明显增强",
+     "cite": {
+      "page": 72,
+      "quote": "BCR 共受体复合物（CD21-CD19-CD81）",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "T细胞双信号",
+     "tip": "B细胞第一信号由BCR识别抗原表位产生；T细胞第一信号由TCR识别pMHC产生"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:b-cell-dual-signal-activation:1",
+     "prompt": "B细胞活化的第一信号由什么产生？",
+     "answer": "BCR识别和结合特异性抗原表位",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "由 BCR 识别和结合特异性抗原表位产生",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:b-cell-dual-signal-activation:2",
+     "prompt": "B细胞第一信号由哪两个分子转入胞内？",
+     "answer": "Igα/Igβ",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "由 Iga/IgB转入B细胞内",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:b-cell-dual-signal-activation:3",
+     "prompt": "B细胞BCR共受体复合物由哪些分子组成？",
+     "answer": "CD21-CD19-CD81",
+     "difficulty": "what",
+     "cite": {
+      "page": 72,
+      "quote": "CD21-CD19-CD81",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 72,
+     "quote": "B 细胞活化同样需要双信号",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "b-cell-second-signal",
+   "name_zh": "B细胞活化的第二信号",
+   "name_en": "Second signal of B cell activation",
+   "aliases": [
+    "B细胞共刺激信号",
+    "CD40-CD40L信号"
+   ],
+   "kind": "process",
+   "one_liner": "Th细胞通过CD40L与B细胞CD40结合提供B细胞活化最强共刺激信号",
+   "fields": [
+    {
+     "label": "来源",
+     "value": "由Th细胞提供",
+     "cite": {
+      "page": 73,
+      "quote": "B 细胞活化的第二信号：由Th细胞提供",
+      "verified": false
+     }
+    },
+    {
+     "label": "分子机制",
+     "value": "效应Th细胞识别B细胞提呈的pMHC II类分子复合物后，表达CD40L与B细胞CD40结合",
+     "cite": {
+      "page": 73,
+      "quote": "表达的CD40L与B细胞表面的CD40结合",
+      "verified": false
+     }
+    },
+    {
+     "label": "强度",
+     "value": "产生最强的共刺激信号",
+     "cite": {
+      "page": 73,
+      "quote": "产生最强的共刺激信号",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "B细胞活化的第一信号",
+     "tip": "第一信号由BCR识别抗原提供；第二信号由Th细胞CD40L-CD40提供"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:b-cell-second-signal:1",
+     "prompt": "B细胞活化的第二信号由谁提供？",
+     "answer": "Th细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "B 细胞活化的第二信号：由Th细胞提供",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:b-cell-second-signal:2",
+     "prompt": "B细胞第二信号的关键分子配对是什么？",
+     "answer": "Th细胞CD40L与B细胞CD40结合",
+     "difficulty": "why",
+     "cite": {
+      "page": 73,
+      "quote": "表达的CD40L与B细胞表面的CD40结合",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "B 细胞活化的第二信号：由Th细胞提供",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "b-cell-activation-cytokines",
+   "name_zh": "B细胞充分活化的细胞因子需求",
+   "name_en": "Cytokine requirement for full B cell activation",
+   "aliases": [
+    "B细胞活化第三信号"
+   ],
+   "kind": "process",
+   "one_liner": "除双信号外B细胞充分活化还需Th细胞提供IL-2、IL-4等多种细胞因子",
+   "fields": [
+    {
+     "label": "必要条件",
+     "value": "除双信号外必须有Th细胞提供的IL-2、IL-4等多种细胞因子参与",
+     "cite": {
+      "page": 73,
+      "quote": "还必须有 Th 细胞提供的IL-2、IL-4等多种",
+      "verified": false
+     }
+    },
+    {
+     "label": "结果",
+     "value": "B细胞才能充分活化",
+     "cite": {
+      "page": 73,
+      "quote": "B细胞才能充分活化",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "B细胞活化的双信号",
+     "tip": "双信号是抗原识别信号+共刺激信号；细胞因子是充分活化的额外必要条件"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:b-cell-activation-cytokines:1",
+     "prompt": "B细胞充分活化除双信号外还需要什么？",
+     "answer": "Th细胞提供的IL-2、IL-4等多种细胞因子",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "还必须有 Th 细胞提供的IL-2、IL-4等多种",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "B细胞才能充分活化",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "b-cell-proliferation-cytokines",
+   "name_zh": "促进B细胞增殖与分化的细胞因子",
+   "name_en": "Cytokines promoting B cell proliferation and differentiation",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "IL-2/IL-4/IL-5促B细胞增殖，IL-4/IL-5/IL-6促分化为浆",
+   "fields": [
+    {
+     "label": "促增殖",
+     "value": "IL-2、IL-4和IL-5可促进B细胞增殖",
+     "cite": {
+      "page": 73,
+      "quote": "1L-2、IL-4和 IL-5可促进B细胞增殖",
+      "verified": false
+     }
+    },
+    {
+     "label": "促分化",
+     "value": "IL-4、IL-5、IL-6等可促进B细胞分化为浆细胞",
+     "cite": {
+      "page": 73,
+      "quote": "1L-4、IL-5、IL-6",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "IL-2/IL-4/IL-5 vs IL-4/IL-5/IL-6",
+     "tip": "促增殖 trio 含IL-2；促分化 trio 含IL-6"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:b-cell-proliferation-cytokines:1",
+     "prompt": "哪些细胞因子促进B细胞增殖？",
+     "answer": "IL-2、IL-4和IL-5",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "1L-2、IL-4和 IL-5可促进B细胞增殖",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:b-cell-proliferation-cytokines:2",
+     "prompt": "哪些细胞因子促进B细胞分化为浆细胞？",
+     "answer": "IL-4、IL-5、IL-6等",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "1L-4、IL-5、IL-6",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "1L-2、IL-4和 IL-5可促进B细胞增殖",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "plasma-cell-early-pathway",
+   "name_zh": "B细胞分化的早期浆细胞途径",
+   "name_en": "Early plasma cell pathway of B cell differentiation",
+   "aliases": [
+    "髓质浆细胞途径"
+   ],
+   "kind": "process",
+   "one_liner": "活化B细胞迁移至淋巴组织髓质分化为短寿命浆细胞分泌IgM即刻防御",
+   "fields": [
+    {
+     "label": "迁移部位",
+     "value": "迁移至淋巴组织的髓质",
+     "cite": {
+      "page": 73,
+      "quote": "迁移至淋巴组织的髓质",
+      "verified": false
+     }
+    },
+    {
+     "label": "寿命",
+     "value": "浆细胞多在2周内凋亡",
+     "cite": {
+      "page": 73,
+      "quote": "多在2周内凋亡",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "分泌的IgM抗体发挥即刻防御作用",
+     "cite": {
+      "page": 73,
+      "quote": "其分泌的IgM抗体",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "生发中心途径",
+     "tip": "髓质途径产生短寿命浆细胞和IgM；生发中心途径产生高亲和力抗体和记忆B细胞"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:plasma-cell-early-pathway:1",
+     "prompt": "迁移至髓质分化的浆细胞主要分泌哪类抗体、发挥什么作用？",
+     "answer": "分泌IgM，发挥即刻防御作用",
+     "difficulty": "case",
+     "cite": {
+      "page": 73,
+      "quote": "其分泌的IgM抗体",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:plasma-cell-early-pathway:2",
+     "prompt": "髓质途径产生的浆细胞寿命如何？",
+     "answer": "多在2周内凋亡",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "多在2周内凋亡",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "迁移至淋巴组织的髓质",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "germinal-center",
+   "name_zh": "生发中心",
+   "name_en": "Germinal center",
+   "aliases": [
+    "次级淋巴滤泡"
+   ],
+   "kind": "structure",
+   "one_liner": "活化B细胞在初级淋巴滤泡增殖形成的结构，进行亲和力成熟与类别转换",
+   "fields": [
+    {
+     "label": "形成",
+     "value": "活化B细胞迁移至附近初级淋巴滤泡迅速增殖形成生发中心（次级淋巴滤泡）",
+     "cite": {
+      "page": 73,
+      "quote": "迅速增殖形成生发中心（次级淋巴滤泡）",
+      "verified": false
+     }
+    },
+    {
+     "label": "经历过程",
+     "value": "体细胞高频突变、抗体亲和力成熟、抗体类别转换",
+     "cite": {
+      "page": 73,
+      "quote": "①体细胞高频突变",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "初级淋巴滤泡",
+     "tip": "生发中心由初级淋巴滤泡受抗原刺激后形成，故又称次级淋巴滤泡"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:germinal-center:1",
+     "prompt": "生发中心由什么结构形成？",
+     "answer": "活化B细胞迁移至初级淋巴滤泡增殖形成",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "迅速增殖形成生发中心（次级淋巴滤泡）",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:germinal-center:2",
+     "prompt": "生发中心内B细胞经历哪三个主要过程？",
+     "answer": "体细胞高频突变、抗体亲和力成熟、抗体类别转换",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "①体细胞高频突变",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "迅速增殖形成生发中心（次级淋巴滤泡）",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "somatic-hypermutation",
+   "name_zh": "体细胞高频突变",
+   "name_en": "Somatic hypermutation",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "生发中心内BCR的V区基因高频突变，增加BCR和抗体多样性",
+   "fields": [
+    {
+     "label": "发生部位",
+     "value": "生发中心",
+     "cite": {
+      "page": 73,
+      "quote": "活化的B细胞在生发中心经历",
+      "verified": false
+     }
+    },
+    {
+     "label": "机制",
+     "value": "BCR的V区基因发生高频率突变",
+     "cite": {
+      "page": 73,
+      "quote": "BCR的V 区基因发生高频率的突变",
+      "verified": false
+     }
+    },
+    {
+     "label": "意义",
+     "value": "进一步增加BCR的多样性和分泌抗体的多样性",
+     "cite": {
+      "page": 73,
+      "quote": "进一步增加BCR 的多样性和分泌抗体的多样性",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "抗体类别转换",
+     "tip": "高频突变改变V区（亲和力/多样性）；类别转换改变重链C区（抗体类别）"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:somatic-hypermutation:1",
+     "prompt": "体细胞高频突变发生在哪个基因区域？",
+     "answer": "BCR的V区基因",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "BCR的V 区基因发生高频率的突变",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:somatic-hypermutation:2",
+     "prompt": "体细胞高频突变的意义是什么？",
+     "answer": "增加BCR多样性和分泌抗体的多样性",
+     "difficulty": "why",
+     "cite": {
+      "page": 73,
+      "quote": "进一步增加BCR 的多样性和分泌抗体的多样性",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "BCR的V 区基因发生高频率的突变",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "affinity-maturation",
+   "name_zh": "抗体亲和力成熟",
+   "name_en": "Antibody affinity maturation",
+   "aliases": [],
+   "kind": "process",
+   "one_liner": "高频突变后少数BCR亲和力提高的B细胞存活并分化为高亲和力抗体浆细胞和记忆B细胞",
+   "fields": [
+    {
+     "label": "前提",
+     "value": "体细胞高频突变后",
+     "cite": {
+      "page": 73,
+      "quote": "体细胞高频突变后少部分B细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "选择",
+     "value": "少部分B细胞BCR与抗原结合亲和力提高并继续存活",
+     "cite": {
+      "page": 73,
+      "quote": "的BCR与抗原结合的亲和力提高，并继续存活",
+      "verified": false
+     }
+    },
+    {
+     "label": "结果",
+     "value": "分化为产生高亲和力抗体的浆细胞和记忆B细胞",
+     "cite": {
+      "page": 73,
+      "quote": "分化为产生高亲和力抗体的浆细胞和记忆",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "体细胞高频突变",
+     "tip": "高频突变是随机突变来源；亲和力成熟是选择高亲和力克隆的结果"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:affinity-maturation:1",
+     "prompt": "亲和力成熟的细胞学基础是什么？",
+     "answer": "高频突变后BCR亲和力提高的B细胞存活并被选择",
+     "difficulty": "why",
+     "cite": {
+      "page": 73,
+      "quote": "的BCR与抗原结合的亲和力提高，并继续存活",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:affinity-maturation:2",
+     "prompt": "亲和力成熟后B细胞分化为什么细胞？",
+     "answer": "产生高亲和力抗体的浆细胞和记忆B细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "分化为产生高亲和力抗体的浆细胞和记忆",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "的BCR与抗原结合的亲和力提高，并继续存活",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "antibody-class-switch",
+   "name_zh": "抗体类别转换",
+   "name_en": "Antibody class switch",
+   "aliases": [
+    "Ig类别转换"
+   ],
+   "kind": "process",
+   "one_liner": "V区不变、重链C区基因重排使抗体类别由IgM转为IgG/IgA/IgE",
+   "fields": [
+    {
+     "label": "V区",
+     "value": "抗体的V区不变，结合抗原特异性相同",
+     "cite": {
+      "page": 73,
+      "quote": "抗体的V区不变",
+      "verified": false
+     }
+    },
+    {
+     "label": "C区",
+     "value": "重链C区因基因重排而改变",
+     "cite": {
+      "page": 73,
+      "quote": "其重链的C区因",
+      "verified": false
+     }
+    },
+    {
+     "label": "类别变化",
+     "value": "由IgM转换为IgG、IgA或IgE",
+     "cite": {
+      "page": 73,
+      "quote": "由IgM转换为IgG、IgA或IgE",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "体细胞高频突变",
+     "tip": "类别转换改变C区（效应功能/类别），不改变抗原结合特异性；高频突变改变V区"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:antibody-class-switch:1",
+     "prompt": "抗体类别转换后抗体的抗原结合特异性是否改变？",
+     "answer": "不改变，V区不变",
+     "difficulty": "why",
+     "cite": {
+      "page": 73,
+      "quote": "抗体的V区不变",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antibody-class-switch:2",
+     "prompt": "抗体类别转换的分子基础是什么？",
+     "answer": "重链C区基因发生重排",
+     "difficulty": "why",
+     "cite": {
+      "page": 73,
+      "quote": "其重链的C区因",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antibody-class-switch:3",
+     "prompt": "B细胞在生发中心抗体类别由IgM可转换为什么？",
+     "answer": "IgG、IgA或IgE",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "由IgM转换为IgG、IgA或IgE",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "由IgM转换为IgG、IgA或IgE",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "memory-b-cell-response",
+   "name_zh": "记忆B细胞",
+   "name_en": "Memory B cell (Bm cell)",
+   "aliases": [
+    "Bm细胞"
+   ],
+   "kind": "cell",
+   "one_liner": "生发中心产生的长寿命记忆B细胞，进入再循环介导再次体液免疫应答",
+   "fields": [
+    {
+     "label": "来源",
+     "value": "生发中心最终分化的长寿命记忆B细胞",
+     "cite": {
+      "page": 73,
+      "quote": "长寿命的记忆B",
+      "verified": false
+     }
+    },
+    {
+     "label": "迁移",
+     "value": "多数进入淋巴细胞再循环",
+     "cite": {
+      "page": 73,
+      "quote": "Bm 细胞多数进入淋巴细胞再循环",
+      "verified": false
+     }
+    },
+    {
+     "label": "功能",
+     "value": "介导再次体液免疫应答",
+     "cite": {
+      "page": 73,
+      "quote": "介导再次体液免疫应答",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "浆细胞",
+     "tip": "浆细胞分泌抗体、多迁移至骨髓；记忆B细胞再循环、介导再次应答"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:memory-b-cell-response:1",
+     "prompt": "记忆B细胞的主要功能是什么？",
+     "answer": "介导再次体液免疫应答",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "介导再次体液免疫应答",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:memory-b-cell-response:2",
+     "prompt": "记忆B细胞的迁移特点是什么？",
+     "answer": "多数进入淋巴细胞再循环",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "Bm 细胞多数进入淋巴细胞再循环",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "介导再次体液免疫应答",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "bone-marrow-plasma-cell",
+   "name_zh": "骨髓浆细胞",
+   "name_en": "Bone marrow plasma cell",
+   "aliases": [
+    "长寿命浆细胞"
+   ],
+   "kind": "cell",
+   "one_liner": "生发中心来源浆细胞迁移至骨髓，高效、长时间、持续分泌高亲和力抗体",
+   "fields": [
+    {
+     "label": "迁移部位",
+     "value": "浆细胞迁移至骨髓",
+     "cite": {
+      "page": 73,
+      "quote": "浆细胞迁移至骨髓",
+      "verified": false
+     }
+    },
+    {
+     "label": "分泌特点",
+     "value": "高效率、长时间、持续性分泌高亲和力抗体",
+     "cite": {
+      "page": 73,
+      "quote": "可高效率、长时间、持续性分泌高亲和力",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "髓质短寿命浆细胞",
+     "tip": "骨髓浆细胞长寿命持续分泌高亲和力抗体；髓质浆细胞短寿命分泌IgM"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:bone-marrow-plasma-cell:1",
+     "prompt": "迁移至骨髓的浆细胞分泌抗体有何特点？",
+     "answer": "高效率、长时间、持续性分泌高亲和力抗体",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "可高效率、长时间、持续性分泌高亲和力",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "浆细胞迁移至骨髓",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "antibody-antigen-clearance",
+   "name_zh": "抗体清除抗原的效应方式",
+   "name_en": "Antibody effector mechanisms for antigen clearance",
+   "aliases": [
+    "B2细胞抗原清除效应"
+   ],
+   "kind": "process",
+   "one_liner": "抗体通过中和、激活补体、免疫调理和ADCC等效应清除抗原",
+   "fields": [
+    {
+     "label": "中和与补体",
+     "value": "抗体与抗原特异性结合产生中和作用，或激活补体系统产生溶细胞效应和清除抗原抗体复合物",
+     "cite": {
+      "page": 73,
+      "quote": "产生中和作用，或激活补体系统产生溶细胞效应",
+      "verified": false
+     }
+    },
+    {
+     "label": "免疫调理",
+     "value": "IgG的Fc片段与吞噬细胞FcγR结合产生免疫调理作用",
+     "cite": {
+      "page": 73,
+      "quote": "产生",
+      "verified": false
+     }
+    },
+    {
+     "label": "ADCC",
+     "value": "与细胞毒细胞FcγR结合产生抗体依赖细胞介导的细胞毒作用",
+     "cite": {
+      "page": 73,
+      "quote": "产生抗体依赖细胞介导的细胞毒作用（ADCC）",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "免疫调理 vs ADCC",
+     "tip": "调理作用于吞噬细胞增强吞噬；ADCC由NK等细胞毒细胞杀伤靶细胞"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:antibody-antigen-clearance:1",
+     "prompt": "IgG的Fc片段与吞噬细胞FcγR结合产生什么效应？",
+     "answer": "免疫调理作用",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "产生",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antibody-antigen-clearance:2",
+     "prompt": "ADCC由哪些细胞介导？",
+     "answer": "NK细胞、单核-巨噬细胞和中性粒细胞等细胞毒细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 73,
+      "quote": "产生抗体依赖细胞介导的细胞毒作用（ADCC）",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antibody-antigen-clearance:3",
+     "prompt": "抗体激活补体系统可产生哪些效应？",
+     "answer": "溶细胞效应和清除抗原抗体复合物",
+     "difficulty": "why",
+     "cite": {
+      "page": 73,
+      "quote": "产生中和作用，或激活补体系统产生溶细胞效应",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 73,
+     "quote": "产生抗体依赖细胞介导的细胞毒作用（ADCC）",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "primary-antibody-response",
+   "name_zh": "初次应答",
+   "name_en": "Primary response",
+   "aliases": [
+    "初次免疫应答",
+    "primary immune response"
+   ],
+   "kind": "process",
+   "one_liner": "初始淋巴细胞首次接触TD-Ag后的适应性应答，阈值高、慢、弱、以IgM为主。",
+   "fields": [
+    {
+     "label": "活化阈值",
+     "value": "初始细胞活化阈值较高，对双信号要求严格",
+     "cite": {
+      "page": 74,
+      "quote": "初始细胞活化的阈值较高，对双信号的要求较为严格",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗原提呈细胞",
+     "value": "只有树突状细胞才能活化初始T细胞",
+     "cite": {
+      "page": 74,
+      "quote": "只有树突状细胞才能活化初始T细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗体特点",
+     "value": "水平较低、亲和力较低、维持时间较短，类别主要是IgM",
+     "cite": {
+      "page": 74,
+      "quote": "产生的抗体类别主要是IgM",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "再次应答",
+     "tip": "初次应答慢、弱、低亲和力、以IgM为主；再次应答快、强、高亲和力、以IgG为主"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:primary-antibody-response:1",
+     "prompt": "初次应答产生的抗体类别主要是什么？",
+     "answer": "IgM",
+     "difficulty": "what",
+     "cite": {
+      "page": 74,
+      "quote": "产生的抗体类别主要是IgM",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:primary-antibody-response:2",
+     "prompt": "初次应答中能活化初始T细胞的抗原提呈细胞是？",
+     "answer": "树突状细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 74,
+      "quote": "只有树突状细胞才能活化初始T细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:primary-antibody-response:3",
+     "prompt": "初次应答的抗体水平与亲和力特点如何？",
+     "answer": "水平较低、亲和力较低、维持时间较短",
+     "difficulty": "what",
+     "cite": {
+      "page": 74,
+      "quote": "形成水平较低，亲和力较低，维持时间较短",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 74,
+     "quote": "产生的抗体类别主要是IgM",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "secondary-antibody-response",
+   "name_zh": "再次应答",
+   "name_en": "Secondary response",
+   "aliases": [
+    "再次免疫应答",
+    "secondary immune response",
+    "记忆性应答",
+    "二次应答"
+   ],
+   "kind": "process",
+   "one_liner": "记忆细胞介导的再次应答，阈值低、迅速、强、高亲和力、以IgG为主。",
+   "fields": [
+    {
+     "label": "活化阈值",
+     "value": "记忆细胞活化阈值较低，对协同刺激信号要求不严格",
+     "cite": {
+      "page": 74,
+      "quote": "记忆细胞活化的阈值较低，对协同刺激信号的要求并不严格",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗原提呈细胞",
+     "value": "巨噬细胞、B细胞等也能活化记忆性T细胞",
+     "cite": {
+      "page": 74,
+      "quote": "巨噬细胞、B 细胞）也能活化记忆性T细胞",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗体特点",
+     "value": "效应水平较高、亲和力高、维持时间较长，类别主要是IgG",
+     "cite": {
+      "page": 74,
+      "quote": "再次应答的抗体类别主要是 IgG",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗原剂量",
+     "value": "再次应答T/B细胞活化所需抗原剂量较低",
+     "cite": {
+      "page": 77,
+      "quote": "再次应答T/B 细胞活化需要的抗原剂量较低",
+      "verified": false
+     }
+    },
+    {
+     "label": "协同刺激",
+     "value": "对协同刺激信号要求不严格",
+     "cite": {
+      "page": 77,
+      "quote": "对协同刺激信号要求不严格",
+      "verified": false
+     }
+    },
+    {
+     "label": "抗体特征",
+     "value": "抗体产生水平高、亲和力高、维持时间长，主要类别为IgG",
+     "cite": {
+      "page": 77,
+      "quote": "抗体产生水平高，亲和力高，维持时间长，主要类别为 IgGo",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "初次应答",
+     "tip": "再次应答由记忆细胞介导，潜伏期短、抗体量高、以IgG为主"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:secondary-antibody-response:1",
+     "prompt": "再次应答产生的抗体类别主要是什么？",
+     "answer": "IgG",
+     "difficulty": "what",
+     "cite": {
+      "page": 74,
+      "quote": "再次应答的抗体类别主要是 IgG",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:secondary-antibody-response:2",
+     "prompt": "再次应答中除树突状细胞外，哪些细胞也能活化记忆性T细胞？",
+     "answer": "巨噬细胞、B细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 74,
+      "quote": "巨噬细胞、B 细胞）也能活化记忆性T细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:secondary-antibody-response:3",
+     "prompt": "再次应答的抗体亲和力与维持时间特点如何？",
+     "answer": "亲和力高、维持时间较长",
+     "difficulty": "what",
+     "cite": {
+      "page": 74,
+      "quote": "亲和力高，维持时间较长",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:secondary-antibody-response:4",
+     "prompt": "再次应答对抗原剂量和协同刺激信号的要求如何？",
+     "answer": "抗原剂量较低，对协同刺激信号要求不严格",
+     "difficulty": "what",
+     "cite": {
+      "page": 77,
+      "quote": "再次应答T/B 细胞活化需要的抗原剂量较低",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:secondary-antibody-response:5",
+     "prompt": "再次应答抗体产生的主要类别是什么？",
+     "answer": "IgG",
+     "difficulty": "what",
+     "cite": {
+      "page": 77,
+      "quote": "主要类别为 IgGo",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 74,
+     "quote": "再次应答的抗体类别主要是 IgG",
+     "verified": false
+    },
+    {
+     "page": 77,
+     "quote": "再次应答T/B 细胞活化需要的抗原剂量较低",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "antibody-production-rule",
+   "name_zh": "抗体产生的一般规律",
+   "name_en": "General rule of antibody production",
+   "aliases": [
+    "初次与再次应答规律"
+   ],
+   "kind": "concept",
+   "one_liner": "初次与再次应答的差异以体内特异性抗体变化最显著，故称抗体产生的一般规律。",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "初次应答与再次应答的差异以体内特异性抗体变化最显著，故称抗体产生的一般规律",
+     "cite": {
+      "page": 74,
+      "quote": "故又称抗体产生的一般规律",
+      "verified": false
+     }
+    },
+    {
+     "label": "临床意义",
+     "value": "对临床开展免疫诊断、免疫预防具有指导意义",
+     "cite": {
+      "page": 74,
+      "quote": "对临床开展免疫诊断、免疫预防具有指导意义",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "初次应答",
+     "tip": "规律本身是对初次与再次应答差异的概括，不是单一应答类型"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:antibody-production-rule:1",
+     "prompt": "初次与再次应答的差异以什么变化最为显著？",
+     "answer": "体内特异性抗体的变化",
+     "difficulty": "what",
+     "cite": {
+      "page": 74,
+      "quote": "以体内特异性抗体的变化最为显著",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antibody-production-rule:2",
+     "prompt": "抗体产生的一般规律对临床有何指导意义？",
+     "answer": "指导免疫诊断与免疫预防",
+     "difficulty": "case",
+     "cite": {
+      "page": 74,
+      "quote": "对临床开展免疫诊断、免疫预防具有指导意义",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 74,
+     "quote": "故又称抗体产生的一般规律",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "immune-regulation",
+   "name_zh": "免疫调节",
+   "name_en": "Immune regulation",
+   "aliases": [
+    "免疫应答调节",
+    "免疫应答调控"
+   ],
+   "kind": "process",
+   "one_liner": "免疫系统感知应答强度并反馈调节，形成适度应答以维持内环境稳定。",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "免疫系统感知自身应答强度并进行调节，通过反馈性调节形成适度应答",
+     "cite": {
+      "page": 74,
+      "quote": "通过感知免疫应答中免疫分子、免疫细胞克隆等的变化而进行反馈性",
+      "verified": false
+     }
+    },
+    {
+     "label": "生理意义",
+     "value": "适宜强度和时限的免疫应答维持机体内环境稳定",
+     "cite": {
+      "page": 74,
+      "quote": "适宜强度和时限的免疫应答维持机体内环境稳定",
+      "verified": false
+     }
+    },
+    {
+     "label": "病理意义",
+     "value": "过度应答可致内环境稳定失衡，产生病理作用",
+     "cite": {
+      "page": 74,
+      "quote": "过度的免疫应答可导致内环境稳定的失衡",
+      "verified": false
+     }
+    },
+    {
+     "label": "调节因素",
+     "value": "免疫分子、免疫细胞以及神经-内分泌-免疫调节网络",
+     "cite": {
+      "page": 77,
+      "quote": "免疫应答受到免疫分子、免疫细胞以及神经-内分泌-免疫调节网络",
+      "verified": false
+     }
+    },
+    {
+     "label": "目的",
+     "value": "形成有利于机体稳态的适度应答",
+     "cite": {
+      "page": 77,
+      "quote": "形成有利于机体稳态的适度应答",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "固有免疫调节",
+     "tip": "固有免疫调节较简单，主要是分子直接效应；适应性免疫调节由多系统、多细胞、多分子参与"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:immune-regulation:1",
+     "prompt": "免疫调节的目的是形成什么样的应答？",
+     "answer": "有利于机体稳态的适度应答",
+     "difficulty": "why",
+     "cite": {
+      "page": 74,
+      "quote": "使之形成有利于机体稳态的适度应答",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:immune-regulation:2",
+     "prompt": "适应性免疫调节涉及哪些层面？",
+     "answer": "多系统、多细胞和多分子参与，包括正、负调节",
+     "difficulty": "what",
+     "cite": {
+      "page": 74,
+      "quote": "是由多系统、多细胞和多分子参与的免疫生物学过程",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:immune-regulation:3",
+     "prompt": "免疫应答受到哪些因素的调控？",
+     "answer": "免疫分子、免疫细胞以及神经-内分泌-免疫调节网络",
+     "difficulty": "what",
+     "cite": {
+      "page": 77,
+      "quote": "免疫应答受到免疫分子、免疫细胞以及神经-内分泌-免疫调节网络",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:immune-regulation:4",
+     "prompt": "免疫调节的目的是什么？",
+     "answer": "形成有利于机体稳态的适度应答",
+     "difficulty": "why",
+     "cite": {
+      "page": 77,
+      "quote": "形成有利于机体稳态的适度应答",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 74,
+     "quote": "通过感知免疫应答中免疫分子、免疫细胞克隆等的变化而进行反馈性",
+     "verified": false
+    },
+    {
+     "page": 77,
+     "quote": "免疫应答受到免疫分子、免疫细胞以及神经-内分泌-免疫调节网络",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "antigen-immune-regulation",
+   "name_zh": "抗原对免疫应答的调节",
+   "name_en": "Antigen-mediated regulation of immune response",
+   "aliases": [
+    "抗原调节"
+   ],
+   "kind": "process",
+   "one_liner": "免疫应答的强度和维持时间取决于抗原的持续存在，抗原消失则应答终止。",
+   "fields": [
+    {
+     "label": "机制",
+     "value": "免疫应答的强度和维持时间取决于抗原的持续存在",
+     "cite": {
+      "page": 74,
+      "quote": "免疫应答的强度和维持时间取决于抗原的持续存在",
+      "verified": false
+     }
+    },
+    {
+     "label": "终止条件",
+     "value": "抗原在体内分解、中和及消失，则免疫应答终止",
+     "cite": {
+      "page": 74,
+      "quote": "抗原在体内分解、中和及消失，则免疫应答终止",
+      "verified": false
+     }
+    },
+    {
+     "label": "影响因素",
+     "value": "抗原的性质、剂量及进入机体的途径直接影响调节",
+     "cite": {
+      "page": 74,
+      "quote": "抗原的性质、剂量及进入机体的途径直接影",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:antigen-immune-regulation:1",
+     "prompt": "免疫应答的强度和维持时间取决于什么？",
+     "answer": "抗原的持续存在",
+     "difficulty": "why",
+     "cite": {
+      "page": 74,
+      "quote": "免疫应答的强度和维持时间取决于抗原的持续存在",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antigen-immune-regulation:2",
+     "prompt": "抗原在体内分解、中和及消失后免疫应答如何变化？",
+     "answer": "免疫应答终止",
+     "difficulty": "what",
+     "cite": {
+      "page": 74,
+      "quote": "抗原在体内分解、中和及消失，则免疫应答终止",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 74,
+     "quote": "免疫应答的强度和维持时间取决于抗原的持续存在",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "antigen-dose-immune-regulation",
+   "name_zh": "抗原剂量对免疫应答的调节",
+   "name_en": "Antigen Dose Regulation of Immune Response",
+   "aliases": [
+    "抗原剂量调节"
+   ],
+   "kind": "process",
+   "one_liner": "过高或过低剂量抗原易诱导耐受，中剂量易诱发免疫应答",
+   "fields": [
+    {
+     "label": "剂量-应答关系",
+     "value": "过高或过低剂量抗原刺激易诱导免疫耐受；中剂量抗原刺激易诱发免疫应答",
+     "cite": {
+      "page": 75,
+      "quote": "过高或过低剂量抗原刺激，易诱导免疫耐受",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:antigen-dose-immune-regulation:1",
+     "prompt": "何种抗原剂量易诱导免疫耐受？",
+     "answer": "过高或过低剂量抗原刺激",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "过高或过低剂量抗原刺激，易诱导免疫耐受",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antigen-dose-immune-regulation:2",
+     "prompt": "何种抗原剂量易诱发免疫应答？",
+     "answer": "中剂量抗原刺激",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "中剂量的抗原刺激，则易诱发免疫应答",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "过高或过低剂量抗原刺激，易诱导免疫耐受",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "antibody-negative-feedback-regulation",
+   "name_zh": "抗体对免疫应答的负反馈调节",
+   "name_en": "Antibody-Mediated Negative Feedback Regulation",
+   "aliases": [
+    "抗体负反馈调节"
+   ],
+   "kind": "process",
+   "one_liner": "特异性抗体通过阻断抗原及交联BCR/Fc受体产生抑制性信号",
+   "fields": [
+    {
+     "label": "机制①",
+     "value": "特异性抗体与抗原结合，阻断抗原与B细胞结合，加速抗原清除，减弱B细胞激活",
+     "cite": {
+      "page": 75,
+      "quote": "特异性抗体与抗原结合，阻断抗原与B细胞结合",
+      "verified": false
+     }
+    },
+    {
+     "label": "机制②",
+     "value": "抗原抗体复合物通过抗原表位和抗体Fc片段分别与BCR和Fc受体结合，交联受体引发抑制性信号，阻止B细胞进一步活化分化",
+     "cite": {
+      "page": 75,
+      "quote": "引发抑制性信号，阻止B细胞的进一步活化和分化",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:antibody-negative-feedback-regulation:1",
+     "prompt": "抗体对特异性免疫应答的调节性质是什么？",
+     "answer": "负反馈调节",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "抗体对特异性免疫应答具有负反馈调节功能",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:antibody-negative-feedback-regulation:2",
+     "prompt": "抗原抗体复合物如何引发抑制性信号？",
+     "answer": "通过抗原表位和抗体Fc片段分别与B细胞BCR和Fc受体结合，使受体交联",
+     "difficulty": "why",
+     "cite": {
+      "page": 75,
+      "quote": "分别与B细胞的BCR和Fc受体结合，使细胞表面的相应受体发生",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "抗体对特异性免疫应答具有负反馈调节功能",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "complement-b-cell-regulation",
+   "name_zh": "补体对B细胞激活的调节",
+   "name_en": "Complement Regulation of B Cell Activation",
+   "aliases": [
+    "C3d-CD21-CD19辅助途径"
+   ],
+   "kind": "process",
+   "one_liner": "C3d-CD21-CD19辅助途径明显促进B细胞活化",
+   "fields": [
+    {
+     "label": "机制",
+     "value": "补体成分与细胞表面补体受体结合调节免疫应答；C3d-CD21-CD19启动B细胞活化的辅助性途径，明显促进B细胞活化",
+     "cite": {
+      "page": 75,
+      "quote": "C3d-CD21-CD19",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:complement-b-cell-regulation:1",
+     "prompt": "哪一补体途径可促进B细胞活化？",
+     "answer": "C3d-CD21-CD19启动的辅助性途径",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "C3d-CD21-CD19",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "可明显促进B细胞的活化",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cytokine-immune-regulation",
+   "name_zh": "细胞因子对免疫应答的调节",
+   "name_en": "Cytokine Regulation of Immune Response",
+   "aliases": [
+    "细胞因子网络调节"
+   ],
+   "kind": "process",
+   "one_liner": "细胞因子形成复杂网络，精细调控免疫细胞分化、发育、活化与效应",
+   "fields": [
+    {
+     "label": "作用",
+     "value": "细胞因子调节免疫细胞分化、发育、活化与效应，在体内形成复杂网络精细有效调控免疫应答",
+     "cite": {
+      "page": 75,
+      "quote": "细胞因子在体内形成复杂的网络",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:cytokine-immune-regulation:1",
+     "prompt": "细胞因子调节免疫应答的方式是什么？",
+     "answer": "在体内形成复杂网络，精细有效调控免疫应答",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "细胞因子在体内形成复杂的网络",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "精细、有效地调控免疫应答",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "th1-th2-balance-regulation",
+   "name_zh": "Th1/Th2细胞平衡的免疫调节",
+   "name_en": "Th1/Th2 Balance in Immune Regulation",
+   "aliases": [
+    "Th1/Th2调节"
+   ],
+   "kind": "process",
+   "one_liner": "Th1与Th2互为抑制，平衡维持稳态，偏离可致免疫失衡",
+   "fields": [
+    {
+     "label": "相互关系",
+     "value": "Th1细胞和Th2细胞之间互为抑制，二者平衡是维持机体稳态的重要机制",
+     "cite": {
+      "page": 75,
+      "quote": "Thl 细胞和Th2细胞之间互为抑制",
+      "verified": false
+     }
+    },
+    {
+     "label": "失衡后果",
+     "value": "任一亚群比例过高或活性过强导致相应免疫应答呈优势（免疫偏离），可能引起免疫失衡和某些疾病",
+     "cite": {
+      "page": 75,
+      "quote": "此免疫偏离，可能导致机体免疫失衡和某些疾病发生",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "Th1与Th2",
+     "tip": "二者互为抑制；比例/活性失衡造成免疫偏离"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:th1-th2-balance-regulation:1",
+     "prompt": "Th1与Th2细胞之间的相互关系是什么？",
+     "answer": "互为抑制",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "Thl 细胞和Th2细胞之间互为抑制",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:th1-th2-balance-regulation:2",
+     "prompt": "Th1/Th2失衡的后果是什么？",
+     "answer": "免疫偏离，可能导致免疫失衡和某些疾病发生",
+     "difficulty": "why",
+     "cite": {
+      "page": 75,
+      "quote": "可能导致机体免疫失衡和某些疾病发生",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "二者平衡是维持机体稳态的重要机制",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "treg-negative-regulation",
+   "name_zh": "Treg的负调节作用",
+   "name_en": "Regulatory T Cell Negative Regulation",
+   "aliases": [
+    "调节性T细胞"
+   ],
+   "kind": "cell",
+   "one_liner": "Treg通过直接接触和分泌细胞因子抑制效应T细胞，维持免疫自稳",
+   "fields": [
+    {
+     "label": "调节机制",
+     "value": "Treg为具有负调节功能的T细胞亚群，通过直接接触和分泌细胞因子抑制效应T细胞活化、增殖和效应",
+     "cite": {
+      "page": 75,
+      "quote": "Treg为具有负调节功能的T细胞亚群",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:treg-negative-regulation:1",
+     "prompt": "Treg通过哪些方式发挥负调节作用？",
+     "answer": "直接接触和分泌细胞因子",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "可通过直接接触和分泌细胞因子抑制效应T细胞活化",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:treg-negative-regulation:2",
+     "prompt": "Treg在免疫中的主要意义是什么？",
+     "answer": "维持免疫自稳",
+     "difficulty": "why",
+     "cite": {
+      "page": 75,
+      "quote": "在维持免疫自稳中发挥重要作用",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "Treg为具有负调节功能的T细胞亚群",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "aicd-regulation",
+   "name_zh": "活化诱导的细胞死亡（AICD）",
+   "name_en": "Activation-Induced Cell Death",
+   "aliases": [
+    "AICD"
+   ],
+   "kind": "process",
+   "one_liner": "活化T细胞高表达FasL，使表达Fas的活化T/B细胞凋亡，终止免疫应答",
+   "fields": [
+    {
+     "label": "定义",
+     "value": "活化的T细胞表面高表达FasL，能使表达Fas的自身或邻近已克隆增殖的T、B细胞发生凋亡，称为活化诱导的细胞死亡（AICD）",
+     "cite": {
+      "page": 75,
+      "quote": "称为活化诱导的细胞死亡",
+      "verified": false
+     }
+    },
+    {
+     "label": "意义",
+     "value": "有效控制特异性T、B细胞克隆扩增水平，清除自身反应性淋巴细胞，在应答晚期及时终止免疫应答",
+     "cite": {
+      "page": 75,
+      "quote": "在应答晚期及时终止免疫应答",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:aicd-regulation:1",
+     "prompt": "AICD中活化T细胞通过什么分子诱导凋亡？",
+     "answer": "表面高表达FasL，与表达Fas的靶细胞结合",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "活化的T细胞表面高表达 FasL",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:aicd-regulation:2",
+     "prompt": "AICD的免疫调节意义是什么？",
+     "answer": "控制特异性T、B细胞克隆扩增，清除自身反应性淋巴细胞，及时终止免疫应答",
+     "difficulty": "why",
+     "cite": {
+      "page": 75,
+      "quote": "在应答晚期及时终止免疫应答",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "称为活化诱导的细胞死亡",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "itam-itim-receptor-feedback",
+   "name_zh": "免疫细胞激活性/抑制性受体的反馈调节（ITAM/ITIM）",
+   "name_en": "Activating/Inhibitory Receptor Feedback via ITAM/ITIM",
+   "aliases": [
+    "ITAM",
+    "ITIM",
+    "激活性受体与抑制性受体"
+   ],
+   "kind": "process",
+   "one_liner": "激活性受体含ITAM启动活化信号，抑制性受体含ITIM启动抑制信号",
+   "fields": [
+    {
+     "label": "受体分布",
+     "value": "T细胞、B细胞、NK细胞、肥大细胞等表面均表达激活性受体和抑制性受体，胞内段分别含ITAM和ITIM",
+     "cite": {
+      "page": 75,
+      "quote": "其胞内段分别含ITAM 和ITIM",
+      "verified": false
+     }
+    },
+    {
+     "label": "信号机制",
+     "value": "受体与配体结合导致ITAM或ITIM磷酸化，分别启动活化信号和抑制信号",
+     "cite": {
+      "page": 75,
+      "quote": "分别启动活化信号和抑制信号",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "ITAM与ITIM",
+     "tip": "ITAM=激活性受体胞内段，启动活化信号；ITIM=抑制性受体胞内段，启动抑制信号"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:itam-itim-receptor-feedback:1",
+     "prompt": "激活性受体和抑制性受体的胞内段分别含什么基序？",
+     "answer": "分别含ITAM和ITIM",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "其胞内段分别含ITAM 和ITIM",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:itam-itim-receptor-feedback:2",
+     "prompt": "ITAM与ITIM磷酸化后分别启动什么信号？",
+     "answer": "ITAM启动活化信号，ITIM启动抑制信号",
+     "difficulty": "why",
+     "cite": {
+      "page": 75,
+      "quote": "分别启动活化信号和抑制信号",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "其胞内段分别含ITAM 和ITIM",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cd28-ctla4-b7-regulation",
+   "name_zh": "CD28/CTLA-4与B7的T细胞负反馈调节",
+   "name_en": "CD28/CTLA-4-B7 Costimulatory Feedback",
+   "aliases": [
+    "CD28",
+    "CTLA-4",
+    "CD152"
+   ],
+   "kind": "process",
+   "one_liner": "CD28与B7给第二信号活化T细胞；CTLA-4竞争结合B7经ITIM启动抑制信",
+   "fields": [
+    {
+     "label": "活化信号",
+     "value": "未活化T细胞TCR与抗原肽-MHC复合物结合获第一信号；CD28与APC表面B7结合获第二信号，经ITAM使T细胞活化",
+     "cite": {
+      "page": 75,
+      "quote": "CD28与B7 结合获得第二信号",
+      "verified": false
+     }
+    },
+    {
+     "label": "抑制信号",
+     "value": "T细胞活化后表达CTLA-4，与CD28竞争结合B7，经ITIM启动抑制信号，使激活的T细胞停止增殖，产生负反馈调节",
+     "cite": {
+      "page": 75,
+      "quote": "CTLA-4与CD28竞争结合B7",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "CD28与CTLA-4",
+     "tip": "配体均为B7；CD28为激活性受体（ITAM）启动活化，CTLA-4为抑制性受体（ITIM）启动抑制"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cd28-ctla4-b7-regulation:1",
+     "prompt": "T细胞活化的第二信号由哪对分子提供？",
+     "answer": "CD28与APC表面B7结合",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "CD28与B7 结合获得第二信号",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cd28-ctla4-b7-regulation:2",
+     "prompt": "CTLA-4如何对T细胞应答产生负反馈？",
+     "answer": "与CD28竞争结合B7，经ITIM启动抑制信号，使活化T细胞停止增殖",
+     "difficulty": "why",
+     "cite": {
+      "page": 75,
+      "quote": "使激活的T细胞停止增殖",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "CD28 和 CTLA-4分别是T细胞启动活化的激活性受体和",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "pd-1-inhibitory-receptor",
+   "name_zh": "PD-1（CD279）抑制性受体",
+   "name_en": "PD-1 (CD279) Inhibitory Receptor",
+   "aliases": [
+    "CD279",
+    "PD-1"
+   ],
+   "kind": "molecule",
+   "one_liner": "PD-1是活化后T细胞表达的最重要抑制性受体，阻断其结合可用于某些肿瘤治疗",
+   "fields": [
+    {
+     "label": "表达与性质",
+     "value": "PD-1（CD279）是活化后T细胞表达的最重要抑制性受体",
+     "cite": {
+      "page": 75,
+      "quote": "PD-1（CD279）则是活化后T细胞表达的最重要抑制性受体",
+      "verified": false
+     }
+    },
+    {
+     "label": "临床应用",
+     "value": "应用抗体阻断CD152和/或CD279与配体的结合，在某些肿瘤治疗中有明显疗效",
+     "cite": {
+      "page": 75,
+      "quote": "在某些肿瘤的治疗中有明显的疗效",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:pd-1-inhibitory-receptor:1",
+     "prompt": "活化后T细胞表达的最重要抑制性受体是什么？",
+     "answer": "PD-1（CD279）",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "PD-1（CD279）则是活化后T细胞表达的最重要抑制性受体",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:pd-1-inhibitory-receptor:2",
+     "prompt": "阻断CD152和/或CD279与配体结合有何应用？",
+     "answer": "在某些肿瘤治疗中有明显疗效",
+     "difficulty": "case",
+     "cite": {
+      "page": 75,
+      "quote": "在某些肿瘤的治疗中有明显的疗效",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "PD-1（CD279）则是活化后T细胞表达的最重要抑制性受体",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "neuro-endocrine-immune-network",
+   "name_zh": "神经-内分泌-免疫网络调节",
+   "name_en": "Neuro-Endocrine-Immune Network Regulation",
+   "aliases": [
+    "神经内分泌免疫网络"
+   ],
+   "kind": "process",
+   "one_liner": "神经递质、激素与细胞因子构成调节网络，在整体水平调节免疫应答",
+   "fields": [
+    {
+     "label": "网络构成",
+     "value": "神经递质、内分泌激素与免疫细胞产生的细胞因子作为信息分子，在神经-内分泌-免疫系统之间构成调节性网络，在整体水平进行免疫应答调节",
+     "cite": {
+      "page": 75,
+      "quote": "在神经-内分泌-免疫系统之间构成了调节性网络",
+      "verified": false
+     }
+    },
+    {
+     "label": "内分泌因子的作用",
+     "value": "皮质类固醇和雄激素等下调免疫反应（应激性刺激致糖皮质激素增高引起免疫功能降低）；雌激素、生长激素、甲状腺素、胰岛素等增强免疫应答",
+     "cite": {
+      "page": 75,
+      "quote": "皮质类固醇和雄激素等内分泌因子下调免疫反应",
+      "verified": false
+     }
+    },
+    {
+     "label": "免疫对神经内分泌的调节",
+     "value": "免疫细胞产生的细胞因子可与神经内分泌系统组织细胞表达的相应受体结合，调节神经、内分泌系统",
+     "cite": {
+      "page": 76,
+      "quote": "免疫细胞产生的细胞因子可与神经内分泌系统组织细胞表达的相应受",
+      "verified": false
+     }
+    },
+    {
+     "label": "举例",
+     "value": "IL-2可抑制乙酰胆碱的释放，TNF-α促进星形胶质细胞表达脑啡肽",
+     "cite": {
+      "page": 76,
+      "quote": "IL-2可抑制乙酰胆碱的释放，TNF-a促进星形胶质细胞表达",
+      "verified": false
+     }
+    },
+    {
+     "label": "HPA轴负反馈",
+     "value": "IL-1、IL-6和TNF-α通过下丘脑-垂体-肾上腺轴刺激皮质激素合成，下调Th1细胞和巨噬细胞活性",
+     "cite": {
+      "page": 76,
+      "quote": "IL-1、1L-6和 TNF-a等细胞因子通过下丘脑-垂体-",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "下调 vs 上调免疫的激素",
+     "tip": "皮质类固醇、雄激素下调；雌激素、生长激素、甲状腺素、胰岛素增强"
+    },
+    {
+     "vs": "单纯免疫调节",
+     "tip": "此网络强调免疫系统与神经、内分泌系统双向调节，而非仅免疫系统内部调节。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:neuro-endocrine-immune-network:1",
+     "prompt": "神经-内分泌-免疫网络的信息分子包括哪些？",
+     "answer": "神经递质、内分泌激素与免疫细胞产生的细胞因子",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "神经递质、内分泌激素与免疫细胞产生的细胞因子",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:neuro-endocrine-immune-network:2",
+     "prompt": "哪些内分泌因子下调免疫反应？",
+     "answer": "皮质类固醇和雄激素等",
+     "difficulty": "what",
+     "cite": {
+      "page": 75,
+      "quote": "皮质类固醇和雄激素等内分泌因子下调免疫反应",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:neuro-endocrine-immune-network:3",
+     "prompt": "应激性刺激导致免疫功能降低的机制是什么？",
+     "answer": "应激性刺激导致糖皮质激素增高，引起免疫功能降低",
+     "difficulty": "why",
+     "cite": {
+      "page": 75,
+      "quote": "应激性刺激可导致糖皮质激素增高，引起免疫功能降低",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:neuro-endocrine-immune-network:4",
+     "prompt": "IL-2对神经内分泌系统有何作用？",
+     "answer": "可抑制乙酰胆碱的释放",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "IL-2可抑制乙酰胆碱的释放",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:neuro-endocrine-immune-network:5",
+     "prompt": "IL-1、IL-6和TNF-α通过HPA轴产生什么免疫调节效应？",
+     "answer": "刺激皮质激素合成，下调Th1细胞和巨噬细胞活性，下调细胞因子表达",
+     "difficulty": "why",
+     "cite": {
+      "page": 76,
+      "quote": "刺激皮质激素的合成，下调 Thl细胞和巨噬细胞活性，下调细胞",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 75,
+     "quote": "在神经-内分泌-免疫系统之间构成了调节性网络",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "免疫细胞产生的细胞因子可与神经内分泌系统组织细胞表达的相应受",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "IL-2可抑制乙酰胆碱的释放，TNF-a促进星形胶质细胞表达",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "刺激皮质激素的合成，下调 Thl细胞和巨噬细胞活性，下调细胞",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cellular-immunity-effector",
+   "name_zh": "细胞免疫效应",
+   "name_en": "Cellular Immunity Effector Phase",
+   "aliases": [
+    "T细胞介导的细胞免疫"
+   ],
+   "kind": "process",
+   "one_liner": "Th细胞各亚群激活巨噬细胞等清除抗原，CTL杀伤感染细胞和肿瘤细胞。",
+   "fields": [
+    {
+     "label": "Th细胞作用",
+     "value": "Th细胞通过不同亚群（Th1、Th2、Th17等）激活巨噬细胞或其他免疫细胞以清除抗原",
+     "cite": {
+      "page": 76,
+      "quote": "Th细胞通过不同亚群（Th1细胞、Th2细胞、Th17细胞等",
+      "verified": false
+     }
+    },
+    {
+     "label": "CTL作用",
+     "value": "CTL杀伤病原体感染细胞和肿瘤细胞",
+     "cite": {
+      "page": 76,
+      "quote": "CTL 杀伤病原体感染细胞和肿瘤细胞",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "体液免疫效应",
+     "tip": "细胞免疫由T细胞介导，效应为Th激活巨噬细胞、CTL杀伤靶细胞；体液免疫由B细胞产生抗体介导。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cellular-immunity-effector:1",
+     "prompt": "CTL的效应功能是什么？",
+     "answer": "杀伤病原体感染细胞和肿瘤细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "CTL 杀伤病原体感染细胞和肿瘤细胞",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:cellular-immunity-effector:2",
+     "prompt": "Th细胞通过哪些亚群激活巨噬细胞等清除抗原？",
+     "answer": "Th1细胞、Th2细胞、Th17细胞等",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "Th细胞通过不同亚群（Th1细胞、Th2细胞、Th17细胞等",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 76,
+     "quote": "CTL 杀伤病原体感染细胞和肿瘤细胞",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "Th细胞通过不同亚群（Th1细胞、Th2细胞、Th17细胞等",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "b-cell-td-antigen-response",
+   "name_zh": "B细胞对TD-Ag的应答",
+   "name_en": "B Cell Response to TD-Ag",
+   "aliases": [
+    "B细胞双信号活化"
+   ],
+   "kind": "process",
+   "one_liner": "BCR识别天然抗原产生第一信号，Th细胞共刺激分子及细胞因子提供第二信号。",
+   "fields": [
+    {
+     "label": "第一信号",
+     "value": "B细胞的BCR识别天然抗原，无须APC提呈和MHC限制，产生活化的第一信号",
+     "cite": {
+      "page": 76,
+      "quote": "B细胞的 BCR识别天然抗原，无须 APC.提呈和 MHC ",
+      "verified": false
+     }
+    },
+    {
+     "label": "第二信号",
+     "value": "Th细胞和B细胞间共刺激分子及细胞因子的作用向B细胞提供第二活化信号",
+     "cite": {
+      "page": 76,
+      "quote": "Th 细胞和B 细胞间共刺激分子及细胞因子的作用向B细胞提供",
+      "verified": false
+     }
+    },
+    {
+     "label": "结果",
+     "value": "双信号作用下B细胞活化、增殖、分化为浆细胞和记忆B细胞",
+     "cite": {
+      "page": 76,
+      "quote": "在双信号作用下B 细胞活化、增殖、分化为浆细胞和记忆B细",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "T细胞双信号",
+     "tip": "B细胞BCR直接识别天然抗原，无MHC限制；T细胞TCR须识别APC提呈的pMHC。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:b-cell-td-antigen-response:1",
+     "prompt": "B细胞活化的第一信号有何特点？",
+     "answer": "BCR识别天然抗原，无须APC提呈和MHC限制",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "B细胞的 BCR识别天然抗原，无须 APC.提呈和 MHC ",
+      "verified": false
+     }
+    },
+    {
+     "id": "ch06:b-cell-td-antigen-response:2",
+     "prompt": "B细胞活化的第二信号由谁提供？",
+     "answer": "Th细胞和B细胞间共刺激分子及细胞因子",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "Th 细胞和B 细胞间共刺激分子及细胞因子的作用向B细胞提供",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 76,
+     "quote": "B细胞的 BCR识别天然抗原，无须 APC.提呈和 MHC ",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "Th 细胞和B 细胞间共刺激分子及细胞因子的作用向B细胞提供",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "humoral-immunity-effector",
+   "name_zh": "体液免疫效应",
+   "name_en": "Humoral Immunity Effector Phase",
+   "aliases": [
+    "B细胞介导的体液免疫"
+   ],
+   "kind": "process",
+   "one_liner": "B细胞活化后分化为浆细胞和记忆B细胞，由抗体等效应分子清除抗原。",
+   "fields": [
+    {
+     "label": "效应细胞",
+     "value": "B细胞活化、增殖、分化为浆细胞和记忆B细胞",
+     "cite": {
+      "page": 76,
+      "quote": "在双信号作用下B 细胞活化、增殖、分化为浆细胞和记忆B细",
+      "verified": false
+     }
+    },
+    {
+     "label": "效应分子",
+     "value": "产生效应细胞和效应分子，进而清除抗原",
+     "cite": {
+      "page": 76,
+      "quote": "产生效应细胞和效应分子，进而清除抗原",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "细胞免疫效应",
+     "tip": "体液免疫由B细胞/抗体介导；细胞免疫由T细胞（Th、CTL）介导。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:humoral-immunity-effector:1",
+     "prompt": "B细胞活化后分化为什么细胞？",
+     "answer": "浆细胞和记忆B细胞",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "在双信号作用下B 细胞活化、增殖、分化为浆细胞和记忆B细",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 76,
+     "quote": "在双信号作用下B 细胞活化、增殖、分化为浆细胞和记忆B细",
+     "verified": false
+    },
+    {
+     "page": 76,
+     "quote": "产生效应细胞和效应分子，进而清除抗原",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "cd28-ctla4-regulation",
+   "name_zh": "CD28/B7与CTLA-4/B7的正负调节",
+   "name_en": "CD28/B7 and CTLA-4/B7 Costimulation",
+   "aliases": [
+    "共刺激分子正负调节"
+   ],
+   "kind": "molecule",
+   "one_liner": "CD28/B7介导正调节，CTLA-4/B7介导负调节，共同调控T细胞活化。",
+   "fields": [
+    {
+     "label": "正调节",
+     "value": "CD28/B7介导正调节效应",
+     "cite": {
+      "page": 76,
+      "quote": "图 6-7 CD28/B7和 CTLA-4/B7介导的正负调",
+      "verified": false
+     }
+    },
+    {
+     "label": "负调节",
+     "value": "CTLA-4/B7介导负调节效应",
+     "cite": {
+      "page": 76,
+      "quote": "图 6-7 CD28/B7和 CTLA-4/B7介导的正负调",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "CD28与CTLA-4",
+     "tip": "两者均结合B7，但CD28提供正调节信号，CTLA-4提供负调节信号。"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:cd28-ctla4-regulation:1",
+     "prompt": "CD28/B7与CTLA-4/B7分别介导什么调节效应？",
+     "answer": "CD28/B7介导正调节，CTLA-4/B7介导负调节",
+     "difficulty": "what",
+     "cite": {
+      "page": 76,
+      "quote": "图 6-7 CD28/B7和 CTLA-4/B7介导的正负调",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 76,
+     "quote": "图 6-7 CD28/B7和 CTLA-4/B7介导的正负调",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "innate-vs-adaptive-response",
+   "name_zh": "固有免疫应答与适应性免疫应答的比较",
+   "name_en": "Comparison of innate and adaptive immune responses",
+   "aliases": [
+    "固有免疫 vs 适应性免疫"
+   ],
+   "kind": "concept",
+   "one_liner": "两类免疫应答的异同比较（复习思考题）",
+   "fields": [
+    {
+     "label": "比较要求",
+     "value": "复习思考题要求比较固有免疫应答与适应性免疫应答的异同",
+     "cite": {
+      "page": 77,
+      "quote": "比较固有免疫应答与适应性免疫应答的异同",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [
+    {
+     "vs": "固有免疫应答",
+     "tip": "本页仅提出比较要求，未列出具体异同点"
+    }
+   ],
+   "atoms": [
+    {
+     "id": "ch06:innate-vs-adaptive-response:1",
+     "prompt": "教材复习思考题要求比较哪两类免疫应答？",
+     "answer": "固有免疫应答与适应性免疫应答",
+     "difficulty": "what",
+     "cite": {
+      "page": 77,
+      "quote": "比较固有免疫应答与适应性免疫应答的异同",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 77,
+     "quote": "比较固有免疫应答与适应性免疫应答的异同",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "plasma-cell-antibody-effector",
+   "name_zh": "浆细胞分泌抗体发挥效应",
+   "name_en": "Plasma cell antibody effector function",
+   "aliases": [
+    "浆细胞效应",
+    "抗体效应"
+   ],
+   "kind": "cell",
+   "one_liner": "浆细胞通过分泌抗体发挥免疫效应",
+   "fields": [
+    {
+     "label": "功能",
+     "value": "浆细胞分泌抗体发挥效应",
+     "cite": {
+      "page": 77,
+      "quote": "浆细胞分泌抗体发挥效应",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:plasma-cell-antibody-effector:1",
+     "prompt": "浆细胞如何发挥免疫效应？",
+     "answer": "分泌抗体发挥效应",
+     "difficulty": "what",
+     "cite": {
+      "page": 77,
+      "quote": "浆细胞分泌抗体发挥效应",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 77,
+     "quote": "浆细胞分泌抗体发挥效应",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "memory-cell-activation",
+   "name_zh": "记忆细胞活化",
+   "name_en": "Memory cell activation",
+   "aliases": [
+    "记忆细胞"
+   ],
+   "kind": "cell",
+   "one_liner": "再次应答中记忆细胞迅速活化、增殖、分化",
+   "fields": [
+    {
+     "label": "特点",
+     "value": "记忆细胞活化、增殖、分化迅速",
+     "cite": {
+      "page": 77,
+      "quote": "记忆细胞活化、增殖、分化迅速",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:memory-cell-activation:1",
+     "prompt": "再次应答中记忆细胞活化的特点是什么？",
+     "answer": "活化、增殖、分化迅速",
+     "difficulty": "what",
+     "cite": {
+      "page": 77,
+      "quote": "记忆细胞活化、增殖、分化迅速",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 77,
+     "quote": "记忆细胞活化、增殖、分化迅速",
+     "verified": false
+    }
+   ]
+  },
+  {
+   "id": "tcm-immune-regulation",
+   "name_zh": "中医学与免疫调节",
+   "name_en": "TCM and immune regulation",
+   "aliases": [
+    "中医免疫调节"
+   ],
+   "kind": "concept",
+   "one_liner": "中医学理法方药蕴含免疫调节理论和方法",
+   "fields": [
+    {
+     "label": "理论",
+     "value": "中医学的理法方药蕴含丰富的免疫调节理论和方法",
+     "cite": {
+      "page": 77,
+      "quote": "中医学的理法方药蕴含了丰富的免疫调节的理论和方法",
+      "verified": false
+     }
+    }
+   ],
+   "confusions": [],
+   "atoms": [
+    {
+     "id": "ch06:tcm-immune-regulation:1",
+     "prompt": "中医学的理法方药蕴含什么免疫学内容？",
+     "answer": "丰富的免疫调节理论和方法",
+     "difficulty": "what",
+     "cite": {
+      "page": 77,
+      "quote": "中医学的理法方药蕴含了丰富的免疫调节的理论和方法",
+      "verified": false
+     }
+    }
+   ],
+   "cites": [
+    {
+     "page": 77,
+     "quote": "中医学的理法方药蕴含了丰富的免疫调节的理论和方法",
+     "verified": false
+    }
+   ]
+  }
+ ]
+}

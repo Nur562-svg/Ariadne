@@ -37,6 +37,13 @@
       "physicalStart": 64,
       "physicalEnd": 79,
       "pageOffset": 16
+    },
+    {
+      "id": "ch06",
+      "title": "免疫应答（第六章）",
+      "physicalStart": 80,
+      "physicalEnd": 93,
+      "pageOffset": 16
     }
   ]
 }

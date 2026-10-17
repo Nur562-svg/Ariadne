@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { loadChapterPages } from "@/lib/entities";
+import { loadAllChapterPages } from "@/lib/entities";
 
 /**
  * citation 跳页的落点：展示该印刷页的 OCR 原文（main 栏阅读序），
  * 高亮 ?q= 传入的引文片段。Nuradil 也可按 physicalPage 在 PDF 里核对。
+ *
+ * 印刷页索引合并自 data/chapters/*.blocks.json（各章 page = 物理页 − pageOffset），
+ * 勿写死单一章节，否则 ch03+ 的 cite（如 p.64）会报「本章范围 1–18」。
  */
 export default function ViewerPage({
   params,
@@ -35,9 +38,20 @@ async function ViewerBody({
   const { page } = await params;
   const { q } = await searchParams;
   const pageNo = Number(page);
-  const pages = loadChapterPages("ch01");
+  const pages = loadAllChapterPages();
   const pg = pages.find((p) => p.page === pageNo);
-  if (!pg) return <p className="mt-8 text-status-warn">未找到印刷页 p.{page}（本章范围 1–18）。</p>;
+  if (!pg) {
+    const nums = pages.map((p) => p.page).filter((n): n is number => n != null);
+    const range =
+      nums.length > 0
+        ? `${Math.min(...nums)} – ${Math.max(...nums)}`
+        : "（无已收录页）";
+    return (
+      <p className="mt-8 text-status-warn">
+        未找到印刷页 p.{page}（已收录范围 {range}）。
+      </p>
+    );
+  }
 
   const prev = pages.find((p) => p.page === pageNo - 1);
   const next = pages.find((p) => p.page === pageNo + 1);
@@ -47,7 +61,10 @@ async function ViewerBody({
       <header className="mt-4 flex flex-wrap items-baseline justify-between gap-3">
         <h1 className="text-2xl font-bold">
           印刷页 p.{pg.page}
-          <span className="ml-3 text-sm font-normal text-muted">PDF 物理页 {pg.physicalPage}</span>
+          <span className="ml-3 text-sm font-normal text-muted">
+            PDF 物理页 {pg.physicalPage}
+            {pg.chapterId ? ` · ${pg.chapterId}` : ""}
+          </span>
         </h1>
         <nav className="flex gap-3 text-sm">
           {prev ? (

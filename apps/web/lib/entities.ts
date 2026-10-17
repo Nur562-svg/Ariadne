@@ -33,11 +33,18 @@ export type EntityCard = {
   cites: Cite[];
 };
 
+export type PageDoc = {
+  page: number | null;
+  physicalPage: number;
+  text: string;
+  chapterId?: string;
+};
+
 export type ChapterDoc = {
   book: string;
   chapter: { id: string; title: string };
   pageOffset: number;
-  pages: { page: number | null; physicalPage: number; text: string }[];
+  pages: PageDoc[];
 };
 
 // apps/web → 仓库根（data/ 在根下）。部署时可用 ARIADNE_DATA 覆盖。
@@ -60,11 +67,42 @@ export function loadCard(id: string): EntityCard | undefined {
   return loadCards().find((c) => c.id === id);
 }
 
-export function loadChapterPages(chapterId = "ch01"): ChapterDoc["pages"] {
+/** 单章 pages（按印刷页）。边界页若跨章重复，以该章文件为准。 */
+export function loadChapterPages(chapterId = "ch01"): PageDoc[] {
   const file = path.join(repoRoot(), "data", "chapters", `${chapterId}.blocks.json`);
   if (!fs.existsSync(file)) return [];
   const doc = JSON.parse(fs.readFileSync(file, "utf8")) as ChapterDoc;
-  return doc.pages ?? [];
+  return (doc.pages ?? []).map((p) => ({ ...p, chapterId }));
+}
+
+/**
+ * 合并所有已解析章的印刷页索引（按 page 去重，先出现的章优先）。
+ * viewer / cite 跳转必须走这里，不能写死 ch01。
+ */
+export function loadAllChapterPages(): PageDoc[] {
+  const dir = path.join(repoRoot(), "data", "chapters");
+  if (!fs.existsSync(dir)) return [];
+  const files = fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".blocks.json"))
+    .sort();
+  const byPage = new Map<number, PageDoc>();
+  for (const f of files) {
+    const chapterId = f.replace(/\.blocks\.json$/, "");
+    const doc = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")) as ChapterDoc;
+    for (const p of doc.pages ?? []) {
+      if (p.page == null) continue;
+      if (!byPage.has(p.page)) {
+        byPage.set(p.page, { ...p, chapterId });
+      }
+    }
+  }
+  return [...byPage.values()].sort((a, b) => (a.page ?? 0) - (b.page ?? 0));
+}
+
+/** 按印刷页查找 OCR 页；找不到返回 undefined。 */
+export function findPageByPrinted(printedPage: number): PageDoc | undefined {
+  return loadAllChapterPages().find((p) => p.page === printedPage);
 }
 
 /** 章节短标题（去掉「（第N章）」括注），用于 /entities 页头派生，不硬编码。 */
