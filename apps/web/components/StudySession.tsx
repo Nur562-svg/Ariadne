@@ -1,95 +1,140 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { StudyAtom } from "@/lib/entities";
 import { CiteChip } from "@/components/CiteChip";
-
-const STORE_KEY = "ariadne.study.v1";
-
-export type GradeMap = Record<string, { k: 0 | 1; t: number }>;
-
-function loadGrades(): GradeMap {
-  try {
-    const raw = window.localStorage.getItem(STORE_KEY);
-    return raw ? (JSON.parse(raw) as GradeMap) : {};
-  } catch {
-    return {};
-  }
-}
-
-/** atomId 在卡内唯一；跨卡用 cardId 组合成全局键。 */
-function keyOf(a: StudyAtom): string {
-  return `${a.cardId}/${a.atomId}`;
-}
-
-/** 确定性顺序（章 → 卡 → 按 prompt），服务端/客户端一致，避免 hydration 错位。 */
-function orderAtoms(atoms: StudyAtom[]): StudyAtom[] {
-  return atoms.slice().sort((a, b) => {
-    const byChapter = (a.chapterId ?? "").localeCompare(b.chapterId ?? "");
-    if (byChapter !== 0) return byChapter;
-    const byCard = a.cardId.localeCompare(b.cardId);
-    if (byCard !== 0) return byCard;
-    return a.prompt.localeCompare(b.prompt);
-  });
-}
+import {
+  atomKey,
+  countPoolGrades,
+  filterAtomsByMode,
+  loadGrades,
+  orderAtoms,
+  saveGrade,
+  type GradeMap,
+  type StudyMode,
+} from "@/lib/study";
 
 /**
  * atom 自评环：prompt → 揭示 answer → 自评 认识/不熟 → 下一个。
+ * 队列三档（全部｜未评｜不熟再练）是本机态过滤，不是 FSRS 到期调度；
  * 进度写 localStorage（ariadne.study.v1），跨刷新保留；评分不改变 cite 语义。
- * 换范围时父级用 key 重挂载以重置本轮进度。
+ * 换范围/档位时父级用 key 重挂载；挂载后读本机评分并冻结本轮队列，
+ * 避免「不熟再练」里评分把当前原子从队列抽走导致跳题。
  */
 export default function StudySession({
   atoms,
   scopeLabel,
   diffLabel,
+  mode,
+  activeBookId,
+  bookByChapter,
+  deskHref,
+  reviewHref,
+  allHref,
+  unknownHref,
 }: {
+  /** 当前范围全池（未按档位过滤；档位在客户端按本机评分过滤）。 */
   atoms: StudyAtom[];
   scopeLabel: string;
   diffLabel: Record<string, string>;
+  /** 队列档位：all 全部｜ungraded 未评｜unknown 不熟再练。 */
+  mode: StudyMode;
+  /** 当前 ?book=（有值时 CiteChip 优先深链书桌章页）。 */
+  activeBookId?: string;
+  /** 章 → 书反查（books.json）：无 ?book= 时按 atom 所在章找书。 */
+  bookByChapter: Record<string, string>;
+  /** 完成态 / 空队列回链：书桌与核页（有书带 book 参数）。 */
+  deskHref: string;
+  reviewHref: string;
+  /** 「只练不熟」与空队列回链：同范围切档 URL。 */
+  allHref: string;
+  unknownHref: string;
 }) {
+  const [grades, setGrades] = useState<GradeMap>({});
+  const [order, setOrder] = useState<StudyAtom[]>([]);
+  const [ready, setReady] = useState(false);
   const [idx, setIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [run, setRun] = useState({ known: 0, unknown: 0 });
-  const [grades, setGrades] = useState<GradeMap>(() =>
-    typeof window === "undefined" ? {} : loadGrades(),
-  );
 
-  const order = useMemo(() => orderAtoms(atoms), [atoms]);
+  // 挂载后读本机评分并冻结本轮队列（SSR 不读 localStorage，避免水合不一致）。
+  useEffect(() => {
+    const g = loadGrades();
+    setGrades(g);
+    setOrder(orderAtoms(filterAtomsByMode(atoms, g, mode)));
+    setReady(true);
+  }, [atoms, mode]);
 
-  const poolGraded = useMemo(() => {
-    let known = 0;
-    let unknown = 0;
-    for (const a of atoms) {
-      const g = grades[keyOf(a)];
-      if (!g) continue;
-      if (g.k === 1) known++;
-      else unknown++;
-    }
-    return { known, unknown };
-  }, [atoms, grades]);
+  const pool = useMemo(() => countPoolGrades(atoms, grades), [atoms, grades]);
 
   if (atoms.length === 0) return null;
 
+  /** 本机评分读取中：服务端/首帧一致占位，读完再出题。 */
+  if (!ready) {
+    return <p className="mt-8 text-sm text-muted">正在读取本机自评进度…</p>;
+  }
+
+  /** 队列空（档位过滤后无原子）：诚实说明 + 切档 / 回书桌 / 核页。 */
+  if (order.length === 0) {
+    return (
+      <section className="mt-10 rounded-lg border border-line bg-card p-6">
+        <h2 className="text-xl font-semibold">这个队列是空的</h2>
+        <p className="mt-3 text-sm leading-7 text-foreground/90">
+          {mode === "ungraded"
+            ? "当前范围的原子都评过了——没有未评的。"
+            : mode === "unknown"
+              ? "当前范围没有标「不熟」的原子。先在「全部」或「未评」里标几张不熟，再回来只练它们。"
+              : "当前范围没有可练的原子。"}
+          本范围累计（仅这个浏览器）：认识 {pool.known} · 不熟 {pool.unknown} · 未评{" "}
+          {pool.ungraded}。
+        </p>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          {mode !== "all" ? (
+            <Link
+              href={allHref}
+              className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90"
+            >
+              切到「全部」
+            </Link>
+          ) : null}
+          <Link
+            href={deskHref}
+            className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+          >
+            回书桌
+          </Link>
+          <Link
+            href={reviewHref}
+            className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+          >
+            去核页
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
   const done = idx >= order.length;
   const cur = done ? undefined : order[idx];
+  /** CiteChip 深链书：优先当前 ?book=，否则按 atom 所在章反查。 */
+  const curDeskBookId =
+    activeBookId ?? (cur?.chapterId ? bookByChapter[cur.chapterId] : undefined);
 
   function grade(k: 0 | 1) {
     if (!cur) return;
-    const key = keyOf(cur);
-    const next: GradeMap = { ...grades, [key]: { k, t: Date.now() } };
+    const next = saveGrade(atomKey(cur), k);
     setGrades(next);
-    try {
-      window.localStorage.setItem(STORE_KEY, JSON.stringify(next));
-    } catch {
-      /* 隐私模式等场景写失败不阻塞自评 */
-    }
     setRun((r) => ({ known: r.known + (k === 1 ? 1 : 0), unknown: r.unknown + (k === 0 ? 1 : 0) }));
     setRevealed(false);
     setIdx((i) => i + 1);
   }
 
   function restart() {
+    // 用最新本机评分重新过滤（如「不熟再练」里已转认识的不再出现），重置本轮。
+    const g = loadGrades();
+    setGrades(g);
+    setOrder(orderAtoms(filterAtomsByMode(atoms, g, mode)));
     setIdx(0);
     setRevealed(false);
     setRun({ known: 0, unknown: 0 });
@@ -101,21 +146,35 @@ export default function StudySession({
         <h2 className="text-xl font-semibold">本轮完成</h2>
         <p className="mt-3 text-sm leading-7 text-foreground/90">
           共 {order.length} 个原子 · 认识 {run.known} · 不熟 {run.unknown}。
-          本范围累计（跨刷新保留）：认识 {poolGraded.known} · 不熟 {poolGraded.unknown} · 未评{" "}
-          {atoms.length - poolGraded.known - poolGraded.unknown}。
+          本范围累计（仅这个浏览器，跨刷新保留）：认识 {pool.known} · 不熟 {pool.unknown} · 未评{" "}
+          {pool.ungraded}。
         </p>
-        <div className="mt-5 flex gap-3">
+        <div className="mt-5 flex flex-wrap items-center gap-3">
           <button
             onClick={restart}
-            className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-colors hover:opacity-90 motion-reduce:transition-none"
+            className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-opacity hover:opacity-90 motion-reduce:transition-none"
           >
             再来一轮
           </button>
+          {mode !== "unknown" ? (
+            <Link
+              href={unknownHref}
+              className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline hover:border-cinnabar hover:text-cinnabar"
+            >
+              只练不熟
+            </Link>
+          ) : null}
           <Link
-            href="/entities"
+            href={deskHref}
             className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
           >
-            浏览实体卡
+            回书桌
+          </Link>
+          <Link
+            href={reviewHref}
+            className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+          >
+            去核页
           </Link>
         </div>
       </section>
@@ -123,13 +182,14 @@ export default function StudySession({
   }
 
   const progress = Math.round((idx / order.length) * 100);
+  const modeLabel = mode === "all" ? "全部" : mode === "ungraded" ? "未评" : "不熟再练";
 
   return (
     <section className="mt-8">
       {/* 进度（aria 可见文本） */}
       <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm text-muted">
         <span aria-live="polite">
-          第 {idx + 1} / {order.length} 个原子
+          队列「{modeLabel}」 · 第 {idx + 1} / {order.length} 个原子
         </span>
         <span>
           本轮 认识 {run.known} · 不熟 {run.unknown}
@@ -149,7 +209,7 @@ export default function StudySession({
       <article className="mt-6 rounded-lg border border-line bg-card p-6">
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
           <Link
-            href={`/entities/${cur.cardId}`}
+            href={`/desk/card/${encodeURIComponent(cur.cardId)}`}
             className="font-medium text-cinnabar no-underline hover:underline underline-offset-4"
           >
             {cur.cardName}
@@ -169,7 +229,7 @@ export default function StudySession({
             <p className="text-sm leading-7 text-foreground/90">{cur.answer}</p>
             {cur.cite ? (
               <div className="mt-2">
-                <CiteChip cite={cur.cite} q={cur.answer.slice(0, 24)} />
+                <CiteChip cite={cur.cite} q={cur.answer.slice(0, 24)} deskBookId={curDeskBookId} />
               </div>
             ) : null}
           </div>
@@ -203,7 +263,7 @@ export default function StudySession({
       </article>
 
       <p className="mt-4 text-xs text-muted">
-        范围：{scopeLabel} · 评分只记本机浏览器；citation 徽章语义不变（未验证仍为琥珀）。
+        范围：{scopeLabel} · 评分只记本机浏览器（非 FSRS 调度）；citation 徽章语义不变（未验证仍为琥珀）。
       </p>
     </section>
   );

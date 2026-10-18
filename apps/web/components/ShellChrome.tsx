@@ -1,9 +1,10 @@
 import Link from "next/link";
 
 /**
- * 残留 shell 页（/ingest /study /entities /viewer）的薄壳：
+ * 残留 shell 页（/ingest /entities /viewer）的薄壳：
  * 品牌行 + 「书桌 / 书架」回链，不复制 Sidebar 的 PRIMARY/SECONDARY 清单。
  * 主导航只有 DeskShell 侧栏一套；这里不是第二套导航。
+ * （/study 已迁入 DeskShell——desk-study-01，本壳不再提供。）
  */
 export default function ShellChrome({ children }: { children: React.ReactNode }) {
   return (

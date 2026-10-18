@@ -11,14 +11,14 @@ export type SidebarBook = {
 };
 
 const PRIMARY = [
-  { href: "/desk", label: "书桌", hint: "实体卡 · 过渡文档" },
+  { href: "/desk", label: "书桌", hint: "实体卡 · 章页" },
+  { href: "/study", label: "学习", hint: "本机自评 · 不熟再练" },
   { href: "/review", label: "复习", hint: "核页 · 本机对页" },
   { href: "/", label: "书架", hint: "书库" },
 ] as const;
 
 const SECONDARY = [
   { href: "/entities", label: "实体卡浏览器" },
-  { href: "/study", label: "学习环 · 自评" },
   { href: "/ingest", label: "导入教材" },
 ] as const;
 
@@ -28,8 +28,9 @@ function isActive(pathname: string, href: string) {
 }
 
 /**
- * desk-v4 左栏（~248）：书桌 / 复习 / 书架 主导航 + 次级入口 + 在读书目。
- * 朱砂只做当前行强调；「复习」是核页本机对页（desk-heye-01），禁止再写假 Due 角标 / FSRS 暗示。
+ * desk-v4 左栏（~248）：书桌 / 学习 / 复习 / 书架 主导航 + 次级入口 + 在读书目。
+ * 朱砂只做当前行强调；「学习」是本机自评环（desk-study-01，全部｜未评｜不熟再练），
+ * 「复习」是核页本机对页（desk-heye-01）——两者都不是 FSRS，禁止再写假 Due 角标 / 到期暗示。
  */
 export default function Sidebar({ book }: { book?: SidebarBook }) {
   const pathname = usePathname();
