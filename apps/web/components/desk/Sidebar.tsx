@@ -12,7 +12,7 @@ export type SidebarBook = {
 
 const PRIMARY = [
   { href: "/desk", label: "书桌", hint: "实体卡 · 过渡文档" },
-  { href: "/review", label: "复习", hint: "到期 0 · FSRS 未接" },
+  { href: "/review", label: "复习", hint: "核页 · 本机对页" },
   { href: "/", label: "书架", hint: "书库" },
 ] as const;
 
@@ -29,7 +29,7 @@ function isActive(pathname: string, href: string) {
 
 /**
  * desk-v4 左栏（~248）：书桌 / 复习 / 书架 主导航 + 次级入口 + 在读书目。
- * 朱砂只做当前行强调；复习角标为静态 0（FSRS 未接入，禁止假队列）。
+ * 朱砂只做当前行强调；「复习」是核页本机对页（desk-heye-01），禁止再写假 Due 角标 / FSRS 暗示。
  */
 export default function Sidebar({ book }: { book?: SidebarBook }) {
   const pathname = usePathname();

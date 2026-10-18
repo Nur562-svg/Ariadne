@@ -16,9 +16,12 @@ export const dynamic = "force-dynamic";
 export default async function DeskPage({
   searchParams,
 }: {
-  searchParams: Promise<{ book?: string }>;
+  searchParams: Promise<{ book?: string; page?: string; mode?: string }>;
 }) {
-  const { book: bookId } = await searchParams;
+  const { book: bookId, page: pageParam, mode: modeParam } = await searchParams;
+  /** CiteChip / 核页深链：?page=N → DocumentPane 自动切章页并定位；?mode=split 可选。 */
+  const initialPage = pageParam != null && /^\d+$/.test(pageParam) ? Number(pageParam) : null;
+  const initialMode = modeParam === "split" || modeParam === "pages" ? modeParam : undefined;
   const books = loadBooks();
   const book = books.find((b) => b.id === bookId) ?? books[0];
   const invalidBook = bookId != null && !books.some((b) => b.id === bookId);
@@ -54,6 +57,8 @@ export default async function DeskPage({
       pages={pages}
       invalidBook={invalidBook}
       badBookId={bookId}
+      initialPage={initialPage}
+      initialMode={initialMode}
     />
   );
 }

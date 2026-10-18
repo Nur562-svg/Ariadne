@@ -12,10 +12,14 @@ export function EntityCardDetail({
   card,
   backHref,
   backLabel,
+  deskBookId,
 }: {
   card: EntityCard;
   backHref: string;
   backLabel: string;
+  /** 书桌语境（/desk/card/[id]）传入书 id：CiteChip 有页时深链 /desk?book=&page=；
+   *  shell /entities 不传，保持落 /viewer。 */
+  deskBookId?: string;
 }) {
   return (
     <>
@@ -39,7 +43,7 @@ export function EntityCardDetail({
             <div key={i} className="rounded-lg border border-line bg-card p-4">
               <div className="flex items-baseline justify-between gap-3">
                 <dt className="font-semibold">{f.label}</dt>
-                <CiteChip cite={f.cite} q={f.value.slice(0, 24)} />
+                <CiteChip cite={f.cite} q={f.value.slice(0, 24)} deskBookId={deskBookId} />
               </div>
               <dd className="mt-1.5 text-sm leading-7 text-foreground/90">{f.value}</dd>
             </div>
@@ -86,7 +90,7 @@ export function EntityCardDetail({
               </details>
               {a.cite ? (
                 <div className="mt-2">
-                  <CiteChip cite={a.cite} q={a.answer.slice(0, 24)} />
+                  <CiteChip cite={a.cite} q={a.answer.slice(0, 24)} deskBookId={deskBookId} />
                 </div>
               ) : null}
             </li>
@@ -98,7 +102,7 @@ export function EntityCardDetail({
         引用：{" "}
         {card.cites.map((c, i) => (
           <span key={i} className="mr-2 inline-flex items-center gap-1">
-            <CiteChip cite={c} />
+            <CiteChip cite={c} deskBookId={deskBookId} />
             {c.quote ? <span className="text-xs">“{c.quote}”</span> : null}
           </span>
         ))}

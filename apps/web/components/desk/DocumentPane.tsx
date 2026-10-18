@@ -89,6 +89,8 @@ export default function DocumentPane({
   pages,
   invalidBook,
   badBookId,
+  initialPage,
+  initialMode,
 }: {
   book: BookConfig;
   chapters: ChapterConfig[];
@@ -96,13 +98,26 @@ export default function DocumentPane({
   pages: PageDoc[];
   invalidBook: boolean;
   badBookId?: string;
+  /** 深链 ?page=N（CiteChip / 核页「在书桌打开」）：挂载即切章页并定位。 */
+  initialPage?: number | null;
+  /** 深链可选 ?mode=pages|split；有 page 未给 mode 时默认章页。 */
+  initialMode?: Mode;
 }) {
   const { setClew } = useDeskContext();
 
-  const [mode, setMode] = useState<Mode>("cards");
+  /** 深链页是否落在本书已解析页里；不在 → 诚实横幅，不伪造定位。 */
+  const deepPage =
+    initialPage != null ? pages.find((p) => p.page === initialPage) : undefined;
+  const invalidPage = initialPage != null && !deepPage;
+
+  const [mode, setMode] = useState<Mode>(
+    deepPage ? (initialMode ?? "pages") : "cards",
+  );
   const [section, setSection] = useState<SectionId>("map");
-  const [chapterId, setChapterId] = useState<string>(chapters[0]?.id ?? "");
-  const [pageNo, setPageNo] = useState<number | null>(null);
+  const [chapterId, setChapterId] = useState<string>(
+    deepPage?.chapterId ?? chapters[0]?.id ?? "",
+  );
+  const [pageNo, setPageNo] = useState<number | null>(deepPage?.page ?? null);
 
   const firstPageOf = (chId: string) =>
     pages
@@ -160,13 +175,20 @@ export default function DocumentPane({
         <p className="mt-1 text-sm text-muted">
           过渡文档 · 六段讲义生成管线未接入；章页是 OCR 原文，不是萃取讲义。
         </p>
+        {invalidPage ? (
+          <p className="mt-3 rounded-lg border border-amber-300 bg-status-warn-bg px-4 py-3 text-sm leading-7 text-status-warn">
+            本书已解析的 OCR 里没有印刷页 p.{initialPage}——可能该页未解析或不属于本书。
+            已从第一章开始；可换页码或用「章页」模式翻页。
+          </p>
+        ) : null}
       </header>
 
-      {/* 模式切换：实体卡 | 章页 | 分栏（朱砂只标当前模式） */}
+      {/* 模式切换：实体卡 | 章页 | 分栏（朱砂只标当前模式）。
+          分段控件留呼吸感：段间 gap + 段内横向 padding，inactive 不贴 active 朱红 pill。 */}
       <div
         role="tablist"
         aria-label="中栏模式"
-        className="mt-6 inline-flex rounded-lg border border-line bg-card p-1"
+        className="mt-6 inline-flex items-center gap-2 rounded-lg border border-line bg-card p-1.5"
       >
         {(
           [
@@ -180,7 +202,7 @@ export default function DocumentPane({
             role="tab"
             aria-selected={mode === m}
             onClick={() => setMode(m)}
-            className={`rounded-md px-3.5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
+            className={`rounded-md px-5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
               mode === m
                 ? "bg-cinnabar text-white"
                 : "text-muted hover:text-foreground"

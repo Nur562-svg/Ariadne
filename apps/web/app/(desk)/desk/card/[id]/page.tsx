@@ -21,7 +21,7 @@ export default async function DeskCardPage({
 
   return (
     <div className="mx-auto w-full max-w-3xl px-8 py-10">
-      <EntityCardDetail card={card} backHref={backHref} backLabel="← 书桌" />
+      <EntityCardDetail card={card} backHref={backHref} backLabel="← 书桌" deskBookId={book?.id} />
     </div>
   );
 }
