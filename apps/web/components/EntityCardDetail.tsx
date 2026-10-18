@@ -1,66 +1,24 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import { notFound } from "next/navigation";
-import { loadCard, loadCards } from "@/lib/entities";
+import type { EntityCard } from "@/lib/entities";
 import { CiteChip } from "@/components/CiteChip";
-
-export function generateStaticParams() {
-  return loadCards().map((c) => ({ id: c.id }));
-}
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
 
-const KIND_ZH: Record<string, string> = {
-  concept: "概念",
-  structure: "结构",
-  process: "过程",
-  molecule: "分子",
-  pathogen: "病原",
-  cell: "细胞",
-  disease: "疾病",
-};
-
-export default function EntityPage({
-  params,
-  searchParams,
+/**
+ * 实体卡详情正文：/entities/[id]（shell-01）与 /desk/card/[id]（书桌 DocumentPane）共用。
+ * CiteChip 语义不变：有 page → p.N（verified:false 仍琥珀虚线）；page:null → p.?。
+ */
+export function EntityCardDetail({
+  card,
+  backHref,
+  backLabel,
 }: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ kind?: string }>;
+  card: EntityCard;
+  backHref: string;
+  backLabel: string;
 }) {
   return (
-    <Suspense
-      fallback={
-        <main className="mx-auto max-w-3xl px-6 py-12 flex-1">
-          <p className="text-sm text-muted">加载中…</p>
-        </main>
-      }
-    >
-      <EntityDetail params={params} searchParams={searchParams} />
-    </Suspense>
-  );
-}
-
-async function EntityDetail({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ kind?: string }>;
-}) {
-  const { id } = await params;
-  const { kind } = await searchParams;
-  const card = loadCard(id);
-  if (!card) notFound();
-
-  const backHref =
-    kind && kind !== "全部" ? `/entities?kind=${encodeURIComponent(kind)}` : "/entities";
-  const backLabel =
-    kind && kind !== "全部"
-      ? `← ${KIND_ZH[kind] ?? kind}实体卡`
-      : "← 全部实体卡";
-
-  return (
-    <main className="mx-auto max-w-3xl px-6 py-12 flex-1">
+    <>
       <Link href={backHref} className="text-sm text-muted no-underline hover:text-cinnabar">
         {backLabel}
       </Link>
@@ -94,7 +52,10 @@ async function EntityDetail({
           <h2 className="text-sm font-semibold text-muted">易混点</h2>
           <ul className="mt-3 space-y-2">
             {card.confusions.map((c, i) => (
-              <li key={i} className="rounded-lg border border-cinnabar/30 bg-cinnabar-soft/60 p-4 text-sm leading-7">
+              <li
+                key={i}
+                className="rounded-lg border border-cinnabar/30 bg-cinnabar-soft/60 p-4 text-sm leading-7"
+              >
                 <span className="font-semibold text-cinnabar">vs {c.vs}</span>
                 <span className="mx-2 text-line">|</span>
                 {c.tip}
@@ -119,7 +80,9 @@ async function EntityDetail({
                 <summary className="cursor-pointer select-none text-sm text-muted hover:text-cinnabar">
                   显示答案
                 </summary>
-                <p className="mt-2 border-l-2 border-cinnabar/40 pl-3 text-sm leading-7">{a.answer}</p>
+                <p className="mt-2 border-l-2 border-cinnabar/40 pl-3 text-sm leading-7">
+                  {a.answer}
+                </p>
               </details>
               {a.cite ? (
                 <div className="mt-2">
@@ -140,6 +103,6 @@ async function EntityDetail({
           </span>
         ))}
       </footer>
-    </main>
+    </>
   );
 }

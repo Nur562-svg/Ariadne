@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
+  { href: "/desk", label: "书桌" },
   { href: "/", label: "书库" },
   { href: "/entities", label: "实体卡" },
   { href: "/study", label: "学习" },
