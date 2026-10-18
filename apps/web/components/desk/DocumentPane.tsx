@@ -6,6 +6,7 @@ import type { BookConfig, ChapterConfig, EntityCard, PageCitingCard, PageDoc } f
 import SectionToc, { SECTIONS } from "@/components/desk/SectionToc";
 import type { SectionId } from "@/components/desk/SectionToc";
 import ChapterPageReader from "@/components/desk/ChapterPageReader";
+import LocalProgressStrip from "@/components/LocalProgressStrip";
 import { useDeskContext } from "@/components/desk/DeskContext";
 
 const KIND_ZH: Record<string, string> = {
@@ -102,6 +103,7 @@ export default function DocumentPane({
   initialMode,
   citingByPage,
   pendingByPage,
+  heyePool,
 }: {
   book: BookConfig;
   chapters: ChapterConfig[];
@@ -117,6 +119,8 @@ export default function DocumentPane({
   citingByPage?: Record<number, PageCitingCard[]>;
   /** 服务端预计算：页 → 本页待核 cite 数（T15「核本页」诚实入口）。 */
   pendingByPage?: Record<number, number>;
+  /** 本书核池键（服务端 collectCiteQueue({bookId}) 的 {key}）：LocalProgressStrip 按池计数。 */
+  heyePool?: { key: string }[];
 }) {
   const { setClew } = useDeskContext();
 
@@ -171,7 +175,7 @@ export default function DocumentPane({
   const pagePendingCount =
     readingPage != null && pendingByPage ? (pendingByPage[readingPage] ?? 0) : 0;
 
-  /** 同步 Clew 上下文（书/章/当前页/可见卡名/示例 cite 页）。 */
+  /** 同步 Clew 上下文（书/章/当前页/可见卡名/示例 cite 页/表面/当前卡）。 */
   useEffect(() => {
     const citePages = [
       ...new Set(
@@ -180,12 +184,16 @@ export default function DocumentPane({
           .flatMap((c) => c.cites.filter((x) => x.page != null).map((x) => x.page as number)),
       ),
     ].slice(0, 3);
+    const firstCard = visibleCards[0];
     setClew({
       book: { id: book.id, title: book.title },
       chapter: activeChapter ? { id: activeChapter.id, title: activeChapter.title } : undefined,
       page: readingPage,
       citePages,
-      visibleEntityName: visibleCards[0]?.name_zh,
+      visibleEntityName: firstCard?.name_zh,
+      // 书桌面：card = 当前过滤后第一张可见卡（会话条可点回跳；非精确「当前强调」）。
+      card: firstCard ? { id: firstCard.id, name_zh: firstCard.name_zh } : undefined,
+      surface: "desk",
     });
   }, [book, activeChapter, readingPage, visibleCards, setClew]);
 
@@ -210,6 +218,11 @@ export default function DocumentPane({
             学习环 · 自评 →
           </Link>
         </div>
+        {/* 跨面本机进度：本书原子池 + 本书核池（分列，非掌握仪表盘）。 */}
+        <LocalProgressStrip
+          atoms={cards.flatMap((c) => c.atoms.map((a) => ({ cardId: c.id, atomId: a.id })))}
+          items={heyePool}
+        />
         <p className="mt-1 text-sm text-muted">
           过渡文档 · 六段讲义生成管线未接入；章页是 OCR 原文，不是萃取讲义。
         </p>

@@ -62,6 +62,7 @@ async function EntityDetail({
         backHref={backHref}
         backLabel={backLabel}
         pendingCiteCount={collectCiteQueue({ cardId: card.id }).length}
+        heyePoolKeys={collectCiteQueue({ cardId: card.id }).map((it) => ({ key: it.key }))}
       />
     </main>
   );

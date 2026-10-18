@@ -1,12 +1,16 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 /**
- * 中栏 → Clew 的上下文：DocumentPane 随模式/章节/页码变化同步，
- * ClewPane 据此生成建议问与 stub 回复的页码提示。形状只此一处，避免多书大拆。
+ * 中栏 → Clew 的上下文：DocumentPane / 卡页 / study / review 随表面变化同步，
+ * ClewPane 据此生成建议问、会话条与 stub 回复的页码提示。形状只此一处，避免多书大拆。
+ * desk-clew-session-honesty（T17）：加 surface（哪个面）与 card（当前卡）；
+ * sessionStartedAt 由 Provider 挂载时记一次，setClew 不触碰它——「本轮变更」按它过滤。
  */
+export type DeskSurface = "desk" | "card" | "study" | "review" | "library";
+
 export type ClewContextData = {
   book?: { id: string; title: string };
   chapter?: { id: string; title: string };
@@ -16,16 +20,23 @@ export type ClewContextData = {
   citePages: number[];
   /** 当前可见（过滤后）第一张实体卡名，插入建议问文案。 */
   visibleEntityName?: string;
+  /** 当前强调的实体卡（书桌=第一张可见卡；卡页=本卡）。 */
+  card?: { id: string; name_zh: string };
+  /** 当前表面：书桌 / 本卡 / 学习 / 核页 / 书架。 */
+  surface?: DeskSurface;
 };
 
 type DeskContextValue = {
   clew: ClewContextData;
   setClew: (data: ClewContextData) => void;
+  /** 本会话开始时刻（Provider 首次挂载记一次）；Clew「本轮变更」用它过滤本机活动。 */
+  sessionStartedAt: number;
 };
 
 const DeskContext = createContext<DeskContextValue>({
   clew: { citePages: [] },
   setClew: () => {},
+  sessionStartedAt: 0,
 });
 
 export function DeskContextProvider({
@@ -36,7 +47,12 @@ export function DeskContextProvider({
   children: ReactNode;
 }) {
   const [clew, setClew] = useState<ClewContextData>(initial);
-  const value = useMemo(() => ({ clew, setClew }), [clew]);
+  /** 挂载一次即固定；不放进 clew state —— setClew 合并永远冲不掉它。 */
+  const sessionStartedAt = useRef<number>(Date.now());
+  const value = useMemo(
+    () => ({ clew, setClew, sessionStartedAt: sessionStartedAt.current }),
+    [clew],
+  );
   return <DeskContext.Provider value={value}>{children}</DeskContext.Provider>;
 }
 

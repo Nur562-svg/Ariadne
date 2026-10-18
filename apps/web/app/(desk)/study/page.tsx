@@ -4,6 +4,7 @@ import { collectStudyAtoms, loadBooks, loadCard, loadChapters } from "@/lib/enti
 import type { StudyMode } from "@/lib/study";
 import StudySession from "@/components/StudySession";
 import StudyScopeCounts from "@/components/StudyScopeCounts";
+import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 
 export const dynamic = "force-dynamic";
 
@@ -110,6 +111,16 @@ async function StudyBody({
 
   return (
     <div className="mx-auto w-full max-w-3xl px-8 py-10">
+      {/* 学习面薄桥：Clew 会话条显示学习范围。 */}
+      <DeskSurfaceBridge
+        data={{
+          surface: "study",
+          book: scopeBook ? { id: scopeBook.id, title: scopeBook.title } : undefined,
+          chapter: activeChapter ? { id: activeChapter.id, title: activeChapter.title } : undefined,
+          card: scopedCard ? { id: scopedCard.id, name_zh: scopedCard.name_zh } : undefined,
+          citePages: [],
+        }}
+      />
       <header>
         <h1 className="brand-rule pb-2 text-3xl font-bold">学习 · 本机自评</h1>
         <p className="mt-3 text-sm leading-7 text-muted">

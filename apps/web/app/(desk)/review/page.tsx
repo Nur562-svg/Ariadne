@@ -5,6 +5,7 @@ import { collectCiteQueue } from "@/lib/heye";
 import type { HeYeMode } from "@/lib/heye-store";
 import HeYeSession from "@/components/HeYeSession";
 import HeYeScopeCounts from "@/components/HeYeScopeCounts";
+import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 
 export const dynamic = "force-dynamic";
 
@@ -137,6 +138,19 @@ async function ReviewBody({
 
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">
+      {/* 核页面薄桥：Clew 会话条显示核页范围（书/章/页/卡）。 */}
+      <DeskSurfaceBridge
+        data={{
+          surface: "review",
+          book: scopeBook ? { id: scopeBook.id, title: scopeBook.title } : undefined,
+          chapter: effChapter
+            ? { id: effChapter.id, title: effChapter.title }
+            : undefined,
+          page: pageNum,
+          card: card ? { id: card.id, name_zh: card.name_zh } : undefined,
+          citePages: [],
+        }}
+      />
       <header>
         <h1 className="brand-rule pb-2 text-3xl font-bold">核页 · 本机对页</h1>
         <p className="mt-3 text-sm leading-7 text-muted">

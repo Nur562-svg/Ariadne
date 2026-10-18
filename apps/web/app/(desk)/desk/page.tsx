@@ -61,8 +61,9 @@ export default async function DeskPage({
     citingByPage[p.page] = cardsCitingPage(p.page, { bookId: book.id });
   }
   /** 页 → 本页待核 cite 数（collectCiteQueue 只读，零回写）。 */
+  const bookQueue = collectCiteQueue({ bookId: book.id });
   const pendingByPage: Record<number, number> = {};
-  for (const it of collectCiteQueue({ bookId: book.id })) {
+  for (const it of bookQueue) {
     pendingByPage[it.page] = (pendingByPage[it.page] ?? 0) + 1;
   }
 
@@ -78,6 +79,7 @@ export default async function DeskPage({
       initialMode={initialMode}
       citingByPage={citingByPage}
       pendingByPage={pendingByPage}
+      heyePool={bookQueue.map((it) => ({ key: it.key }))}
     />
   );
 }

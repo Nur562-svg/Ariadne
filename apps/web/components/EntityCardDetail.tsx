@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { EntityCard } from "@/lib/entities";
-import { CiteChip } from "@/components/CiteChip";
+import CitePeek from "@/components/CitePeek";
+import LocalProgressStrip from "@/components/LocalProgressStrip";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
 
@@ -47,6 +48,7 @@ export function EntityCardDetail({
   deskBookId,
   pendingCiteCount,
   confusionLinks,
+  heyePoolKeys,
 }: {
   card: EntityCard;
   backHref: string;
@@ -58,6 +60,8 @@ export function EntityCardDetail({
   pendingCiteCount?: number;
   /** 易混对象名（归一化）→ 卡 id：书桌语境下 vs 命中则链 /desk/card/[id]，否则纯文。 */
   confusionLinks?: Record<string, string>;
+  /** 本卡核池键（服务端 collectCiteQueue({cardId}) 的 {key}）：LocalProgressStrip 按池计数。 */
+  heyePoolKeys?: { key: string }[];
 }) {
   const stats = citeStats(card);
   const studyHref = deskBookId
@@ -153,6 +157,12 @@ export function EntityCardDetail({
         )}
       </section>
 
+      {/* 跨面本机进度：本卡原子（练）+ 本卡核池（核）；无池时只报本机已记录数（诚实，不编数）。 */}
+      <LocalProgressStrip
+        atoms={card.atoms.map((a) => ({ cardId: card.id, atomId: a.id }))}
+        items={heyePoolKeys}
+      />
+
       <section className="mt-8">
         <h2 className="text-sm font-semibold text-muted">字段</h2>
         <dl className="mt-3 space-y-3">
@@ -160,7 +170,7 @@ export function EntityCardDetail({
             <div key={i} className="rounded-lg border border-line bg-card p-4">
               <div className="flex items-baseline justify-between gap-3">
                 <dt className="font-semibold">{f.label}</dt>
-                <CiteChip cite={f.cite} q={f.value.slice(0, 24)} deskBookId={deskBookId} />
+                <CitePeek cite={f.cite} q={f.value.slice(0, 24)} deskBookId={deskBookId} cardId={card.id} />
               </div>
               <dd className="mt-1.5 text-sm leading-7 text-foreground/90">{f.value}</dd>
             </div>
@@ -223,7 +233,7 @@ export function EntityCardDetail({
               </details>
               {a.cite ? (
                 <div className="mt-2">
-                  <CiteChip cite={a.cite} q={a.answer.slice(0, 24)} deskBookId={deskBookId} />
+                  <CitePeek cite={a.cite} q={a.answer.slice(0, 24)} deskBookId={deskBookId} cardId={card.id} />
                 </div>
               ) : null}
             </li>
@@ -235,7 +245,7 @@ export function EntityCardDetail({
         引用：{" "}
         {card.cites.map((c, i) => (
           <span key={i} className="mr-2 inline-flex items-center gap-1">
-            <CiteChip cite={c} deskBookId={deskBookId} />
+            <CitePeek cite={c} deskBookId={deskBookId} cardId={card.id} />
             {c.quote ? <span className="text-xs">“{c.quote}”</span> : null}
           </span>
         ))}
