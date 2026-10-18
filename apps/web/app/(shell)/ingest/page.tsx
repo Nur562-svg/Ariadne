@@ -1,9 +1,14 @@
 import Link from "next/link";
 import type { Material, MaterialStage } from "@/lib/entities";
-import { deriveMaterialStage, loadMaterials } from "@/lib/entities";
+import { deriveMaterialStage, loadBooks, loadMaterials } from "@/lib/entities";
 import IngestUpload from "@/components/IngestUpload";
 
 export const dynamic = "force-dynamic";
+
+/** 反查包含该物料全部章的已注册书目（用于 ready → 书桌 CTA）；未注册返回 undefined。 */
+function findDeskBook(m: Material) {
+  return loadBooks().find((b) => m.chapters.every((c) => b.chapterIds.includes(c.id)));
+}
 
 const STAGE_UI: Record<MaterialStage, { label: string; badge: string; hint: (m: Material) => string }> = {
   uploaded: {
@@ -22,12 +27,12 @@ const STAGE_UI: Record<MaterialStage, { label: string; badge: string; hint: (m: 
     label: "已抽取 · 未注册书库",
     badge: "border-line bg-card text-foreground",
     hint: () =>
-      "实体卡已生成。把章节注册进 config/chapter.json + config/books.json 后即为 ready（可在书库/学习环使用）。",
+      "实体卡已生成。把章节注册进 config/chapter.json + config/books.json 后即为 ready（注册后可在书桌打开）。",
   },
   ready: {
     label: "就绪 · 已在书库",
     badge: "border-status-ok/40 bg-status-ok-bg text-status-ok",
-    hint: () => "可在书库浏览、进入卡浏览器与学习环。",
+    hint: () => "就绪。可在书桌（三栏学习面）打开阅读，或进入卡浏览器与学习环。",
   },
   failed: {
     label: "失败",
@@ -82,6 +87,36 @@ export default function IngestPage() {
                     章范围：{m.chapters.map((c) => `${c.id} 物理页 ${c.physicalStart}–${c.physicalEnd}`).join(" · ")}
                   </p>
                   <p className="mt-3 text-sm leading-7 text-foreground/90">{ui.hint(m)}</p>
+                  {stage === "ready" || stage === "extracted" ? (
+                    (() => {
+                      // extracted 按状态机语义 = 尚未全部注册进书库，恒链书库并说明先注册
+                      const book = stage === "ready" ? findDeskBook(m) : undefined;
+                      return (
+                        <p className="mt-3">
+                          {book ? (
+                            <Link
+                              href={`/desk?book=${encodeURIComponent(book.id)}`}
+                              className="inline-block rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
+                            >
+                              打开书桌 →
+                            </Link>
+                          ) : (
+                            <>
+                              <Link
+                                href="/"
+                                className="inline-block rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
+                              >
+                                去书库 →
+                              </Link>
+                              <span className="ml-3 text-xs text-muted">
+                                先注册进 config/books.json，书桌才能打开这本书。
+                              </span>
+                            </>
+                          )}
+                        </p>
+                      );
+                    })()
+                  ) : null}
                   <p className="mt-2 text-xs text-muted">
                     创建于 {m.createdAt} · PDF：<span className="mono">{m.pdfFile}</span>
                   </p>

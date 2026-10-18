@@ -28,6 +28,8 @@ export default async function DeskPage({
   const { book: bookId } = await searchParams;
   const books = loadBooks();
   const book = books.find((b) => b.id === bookId) ?? books[0];
+  /** 请求了不存在的 book id → 回落第一本书，并诚实提示。 */
+  const invalidBook = bookId != null && !books.some((b) => b.id === bookId);
 
   if (!book) {
     return (
@@ -53,6 +55,11 @@ export default async function DeskPage({
     <div className="mx-auto w-full max-w-4xl px-8 py-10">
       <header>
         <h1 className="brand-rule pb-2 text-3xl font-bold">{book.title}</h1>
+        {invalidBook ? (
+          <p className="mt-2 text-sm text-status-warn">
+            书库中没有 book id「{bookId}」——已回落到第一本书。可从书架打开正确书目。
+          </p>
+        ) : null}
         <p className="mt-2 text-sm text-muted">
           {book.chapterIds.length} 章 · {cards.length} 张实体卡 · {atoms} 个知识原子
         </p>

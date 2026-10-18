@@ -17,7 +17,7 @@ export default function Library() {
         <h1 className="brand-rule mt-2 pb-3 text-4xl font-bold tracking-wide">书库</h1>
         <p className="mt-6 leading-8 text-foreground/90">
           书库还空着。上传教材 PDF、在本机跑完 OCR 解析与实体卡抽取，再把书目注册进
-          <span className="mono text-sm"> config/books.json </span>，即可在这里进入卡浏览器与学习环。
+          <span className="mono text-sm"> config/books.json </span>，即可在书桌阅读、进入卡浏览器与学习环。
         </p>
         <Link
           href="/ingest"
@@ -34,29 +34,30 @@ export default function Library() {
       <p className="mono text-sm text-cinnabar">ARIADNE</p>
       <h1 className="brand-rule mt-2 pb-3 text-4xl font-bold tracking-wide">书库</h1>
       <p className="mt-4 text-sm leading-7 text-muted">
-        教材 → 知识原子 / 实体卡 → 可复习。点击书目进入该书的卡浏览器；citation 仍 fail-closed（未验证保留琥珀 p.N / p.?）。
+        教材 → 知识原子 / 实体卡 → 可复习。打开一本书进入书桌（三栏学习面）；citation 仍 fail-closed（未验证保留琥珀 p.N / p.?）。
       </p>
 
       <ul className="mt-10 space-y-4">
         {books.map((b) => {
           const cards = loadCards({ bookId: b.id });
           const atoms = cards.reduce((n, c) => n + c.atoms.length, 0);
+          const deskHref = `/desk?book=${encodeURIComponent(b.id)}`;
           return (
             <li key={b.id} className="rounded-lg border border-line bg-card p-5">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <h2 className="text-xl font-semibold text-foreground">
                   <Link
-                    href={`/entities?book=${encodeURIComponent(b.id)}`}
+                    href={deskHref}
                     className="text-foreground no-underline hover:text-cinnabar"
                   >
                     {b.title}
                   </Link>
                 </h2>
                 <Link
-                  href={`/entities?book=${encodeURIComponent(b.id)}`}
-                  className="mono text-xs text-muted no-underline hover:text-cinnabar"
+                  href={deskHref}
+                  className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
                 >
-                  进入卡浏览器 →
+                  打开书桌 →
                 </Link>
               </div>
               <dl className="mt-4 grid grid-cols-3 gap-4 text-center sm:max-w-md">
@@ -72,12 +73,18 @@ export default function Library() {
                 ))}
               </dl>
               <p className="mt-4 text-xs leading-6 text-muted">章 {b.chapterIds.join(" · ")}</p>
-              <p className="mt-2">
+              <p className="mt-2 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-sm">
+                <Link
+                  href={`/entities?book=${encodeURIComponent(b.id)}`}
+                  className="text-muted no-underline hover:text-cinnabar"
+                >
+                  卡浏览器 →
+                </Link>
                 <Link
                   href={`/study?book=${encodeURIComponent(b.id)}`}
-                  className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+                  className="text-muted no-underline hover:text-cinnabar"
                 >
-                  去学习这本书 →
+                  学习环 →
                 </Link>
               </p>
             </li>
