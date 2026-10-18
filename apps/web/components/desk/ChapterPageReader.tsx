@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import type { PageCitingCard, PageDoc } from "@/lib/entities";
+import { isEditableTarget } from "@/lib/keyboard";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -73,6 +75,28 @@ export default function ChapterPageReader({
     onChapterChange(id, first?.page ?? null);
   }
 
+  /** 可编辑目标静默（输入框/文本域/下拉/富文本不拦截键盘）。 */
+  function silentKeyTarget(target: EventTarget | null): boolean {
+    return isEditableTarget(target);
+  }
+
+  /** 键盘翻页（T18）：← 上一页 · → 下一页；无 prev/next 时忽略。 */
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (silentKeyTarget(e.target)) return;
+      if (e.key === "ArrowLeft" && prev) {
+        e.preventDefault();
+        onPageChange(prev.page as number);
+      } else if (e.key === "ArrowRight" && next) {
+        e.preventDefault();
+        onPageChange(next.page as number);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prev?.page, next?.page, onPageChange]);
+
   return (
     <section aria-label="章页阅读">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -104,10 +128,11 @@ export default function ChapterPageReader({
                 PDF 物理页 {pg.physicalPage} · {pg.chapterId}
               </span>
             </h3>
-            <nav className="flex gap-3 text-sm" aria-label="翻页">
+            <nav className="flex gap-3 text-sm" aria-label="翻页" title="键盘：←/→ 翻页">
               {prev ? (
                 <button
                   onClick={() => onPageChange(prev.page as number)}
+                  aria-keyshortcuts="ArrowLeft"
                   className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   ← p.{prev.page}
@@ -119,6 +144,7 @@ export default function ChapterPageReader({
               {next ? (
                 <button
                   onClick={() => onPageChange(next.page as number)}
+                  aria-keyshortcuts="ArrowRight"
                   className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   p.{next.page} →

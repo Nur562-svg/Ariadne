@@ -14,6 +14,7 @@ import {
   type HeYeMode,
   type HeYeStore,
 } from "@/lib/heye-store";
+import { isEditableTarget } from "@/lib/keyboard";
 
 /**
  * 核页对页会话（/review 中栏，客户端）：
@@ -74,6 +75,43 @@ export default function HeYeSession({
     for (const p of pages) if (p.page != null) m.set(p.page, p);
     return m;
   }, [pages]);
+
+  /** 可编辑目标（输入框/文本域/下拉/富文本）不拦截键盘（含 activeElement 兜底）。 */
+  function silentKeyTarget(target: EventTarget | null): boolean {
+    return isEditableTarget(target);
+  }
+
+  /**
+   * 键盘环（T18）：1 本机已对 · 2 存疑 · ←/j 上一条 · →/k 下一条 · b 同页批量（仅待核档）。
+   * 挂在 window；可编辑目标静默；空档直接忽略。markOne/go/markSamePage 声明在后（函数声明提升）。
+   */
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (silentKeyTarget(e.target)) return;
+      if (visible.length === 0) return;
+      if (e.key === "1") {
+        e.preventDefault();
+        markOne("checked");
+      } else if (e.key === "2") {
+        e.preventDefault();
+        markOne("doubt");
+      } else if (e.key === "ArrowLeft" || e.key === "j") {
+        e.preventDefault();
+        go(index - 1);
+      } else if (e.key === "ArrowRight" || e.key === "k") {
+        e.preventDefault();
+        go(index + 1);
+      } else if (e.key === "b" && mode === "open") {
+        if (samePageOpen.length >= 1) {
+          e.preventDefault();
+          markSamePage();
+        }
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible.length, index, mode, store]);
 
   /** 标完跳到下一条仍属本档的项（按全池顺序；没有则停在最后一条，空档由空态分支接管）。 */
   function advance(nextStore: HeYeStore, fromKey: string) {
@@ -291,6 +329,16 @@ export default function HeYeSession({
           </button>
         </nav>
       </div>
+      <p className="mt-1 text-xs text-muted">
+        键：<span className="mono">1</span> 已对 · <span className="mono">2</span> 存疑 ·{" "}
+        <span className="mono">←</span>/<span className="mono">→</span> 上下条
+        {mode === "open" && samePageOpen.length >= 1 ? (
+          <>
+            {" "}
+            · <span className="mono">b</span> 同页批量
+          </>
+        ) : null}
+      </p>
 
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {/* 左：cite 上下文 */}

@@ -157,10 +157,13 @@ export function EntityCardDetail({
         )}
       </section>
 
-      {/* 跨面本机进度：本卡原子（练）+ 本卡核池（核）；无池时只报本机已记录数（诚实，不编数）。 */}
+      {/* 跨面本机进度：本卡原子（练）+ 本卡核池（核）；条末弱链进同范围练/核（不重复动作条主 CTA）。 */}
       <LocalProgressStrip
         atoms={card.atoms.map((a) => ({ cardId: card.id, atomId: a.id }))}
         items={heyePoolKeys}
+        scopeLabel="本卡"
+        studyHref={studyHref}
+        reviewHref={reviewHref}
       />
 
       <section className="mt-8">

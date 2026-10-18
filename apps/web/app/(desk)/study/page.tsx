@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { collectStudyAtoms, loadBooks, loadCard, loadChapters } from "@/lib/entities";
+import { collectCiteQueue } from "@/lib/heye";
 import type { StudyMode } from "@/lib/study";
 import StudySession from "@/components/StudySession";
 import StudyScopeCounts from "@/components/StudyScopeCounts";
+import LocalProgressStrip from "@/components/LocalProgressStrip";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 
 export const dynamic = "force-dynamic";
@@ -143,6 +145,24 @@ async function StudyBody({
           </p>
         ) : null}
         <StudyScopeCounts atoms={atoms} />
+        {/* 作用域进度（T18：同范围练+核分列；本页即练环，不重复练链）。 */}
+        <LocalProgressStrip
+          atoms={atoms.map((a) => ({ cardId: a.cardId, atomId: a.atomId }))}
+          items={collectCiteQueue({
+            cardId: scopedCard?.id,
+            bookId: activeBook?.id,
+            chapterId: activeChapter?.id,
+          }).map((it) => ({ key: it.key }))}
+          scopeLabel={
+            scopedCard
+              ? "本卡"
+              : activeChapter
+                ? `本章 ${activeChapter.id}`
+                : activeBook
+                  ? "本书"
+                  : "全部"
+          }
+        />
       </header>
 
       {/* 章过滤（config 派生；有书时以上下文书为准；保留当前队列档）。单卡范围固定，隐藏章芯片。 */}

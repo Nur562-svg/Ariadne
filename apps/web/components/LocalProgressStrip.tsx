@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   atomKey,
@@ -41,6 +42,9 @@ export default function LocalProgressStrip({
   atoms,
   items,
   compact,
+  scopeLabel,
+  studyHref,
+  reviewHref,
 }: {
   /** 范围池：练的原子（只要 cardId/atomId 做键）。缺省 → 全局已记录计数。 */
   atoms?: { cardId: string; atomId: string }[];
@@ -48,6 +52,12 @@ export default function LocalProgressStrip({
   items?: { key: string }[];
   /** 紧凑单行（Clew 内用）。 */
   compact?: boolean;
+  /** 作用域标注（本章 / 本页 p.N / 本卡 / 本书）。 */
+  scopeLabel?: string;
+  /** 同范围练入口（未评/认识数…不单做数字链接，条末文字链更克制）。 */
+  studyHref?: string;
+  /** 同范围核入口。 */
+  reviewHref?: string;
 }) {
   const [grades, setGrades] = useState<GradeMap>({});
   const [heye, setHeYe] = useState<HeYeStore>({});
@@ -104,19 +114,26 @@ export default function LocalProgressStrip({
       className={`text-xs text-muted ${compact ? "leading-5" : "mt-2 leading-6"}`}
       aria-label="本机学习与核页进度"
     >
-      {compact ? (
-        <>
-          {studyPart}
-          <span className="mx-2 text-line">|</span>
-          {heyePart}
-        </>
-      ) : (
-        <>
-          {studyPart}
-          <span className="mx-3 text-line">|</span>
-          {heyePart}
-        </>
-      )}
+      {scopeLabel ? <span className="mr-2 text-foreground/80">{scopeLabel}</span> : null}
+      {studyPart}
+      <span className={compact ? "mx-2 text-line" : "mx-3 text-line"}>|</span>
+      {heyePart}
+      {studyHref ? (
+        <Link
+          href={studyHref}
+          className="ml-2 text-cinnabar no-underline hover:underline underline-offset-4"
+        >
+          练此范围 →
+        </Link>
+      ) : null}
+      {reviewHref ? (
+        <Link
+          href={reviewHref}
+          className="ml-1 text-cinnabar no-underline hover:underline underline-offset-4"
+        >
+          核此范围 →
+        </Link>
+      ) : null}
       <span className="ml-2">
         · 仅这个浏览器 · 非掌握度 · 非 Due · 与 seed verified 无关
       </span>

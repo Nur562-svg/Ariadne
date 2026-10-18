@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { loadAllChapterPages, loadBooks, loadCard, loadChapters } from "@/lib/entities";
+import {
+  collectStudyAtoms,
+  loadAllChapterPages,
+  loadBooks,
+  loadCard,
+  loadChapters,
+} from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import type { HeYeMode } from "@/lib/heye-store";
 import HeYeSession from "@/components/HeYeSession";
 import HeYeScopeCounts from "@/components/HeYeScopeCounts";
+import LocalProgressStrip from "@/components/LocalProgressStrip";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 
 export const dynamic = "force-dynamic";
@@ -236,6 +243,25 @@ async function ReviewBody({
           <HeYeScopeCounts items={items} />
         </p>
       </header>
+
+      {/* 作用域进度（T18：同范围练+核分列；本页即核环，不重复核链）。 */}
+      <LocalProgressStrip
+        atoms={collectStudyAtoms({
+          cardId: card?.id,
+          bookId: book?.id,
+          chapterId: effChapter?.id,
+        }).map((a) => ({ cardId: a.cardId, atomId: a.atomId }))}
+        items={items.map((it) => ({ key: it.key }))}
+        scopeLabel={
+          card
+            ? "本卡"
+            : effChapter
+              ? `本章 ${effChapter.id}`
+              : book
+                ? "本书"
+                : "全部"
+        }
+      />
 
       {/* 章过滤（对齐 study；单卡范围固定，隐藏章芯片）。 */}
       {!card && chipChapters.length > 0 ? (

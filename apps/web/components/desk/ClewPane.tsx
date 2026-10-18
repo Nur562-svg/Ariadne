@@ -180,7 +180,7 @@ export default function ClewPane() {
             {messages.length === 0 ? (
               <div>
                 <p className="text-xs leading-6 text-muted">
-                  还没接模型（stub）。清问带页码对照的问题；先按这条路径走通：
+                  还没接模型（stub）。请带着页码对照的问题发问；先按这条路径走通：
                 </p>
                 <p className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted">
                   <Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">导入教材</Link>

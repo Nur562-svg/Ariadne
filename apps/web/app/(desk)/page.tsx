@@ -84,6 +84,12 @@ export default function Library() {
                 >
                   学习环 →
                 </Link>
+                <Link
+                  href={`/review?book=${encodeURIComponent(b.id)}`}
+                  className="text-muted no-underline hover:text-cinnabar"
+                >
+                  核页 →
+                </Link>
               </p>
             </li>
           );

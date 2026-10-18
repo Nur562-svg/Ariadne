@@ -14,6 +14,7 @@ import {
   type GradeMap,
   type StudyMode,
 } from "@/lib/study";
+import { isEditableTarget } from "@/lib/keyboard";
 
 /**
  * atom 自评环：prompt → 揭示 answer → 自评 认识/不熟 → 下一个。
@@ -68,6 +69,45 @@ export default function StudySession({
     setOrder(orderAtoms(filterAtomsByMode(atoms, g, mode)));
     setReady(true);
   }, [atoms, mode]);
+
+  /** 可编辑目标（输入框/文本域/下拉/富文本）不拦截键盘（含 activeElement 兜底）。 */
+  function silentKeyTarget(target: EventTarget | null): boolean {
+    return isEditableTarget(target);
+  }
+
+  /**
+   * 键盘环（T18）：空格 揭示（已揭示 no-op）；1/j 认识、2/k 不熟（未揭示先揭示一次）。
+   * 挂在 window，可编辑目标静默；空队列/完成态直接忽略，不拦浏览器默认。
+   */
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (silentKeyTarget(e.target)) return;
+      if (!ready || order.length === 0 || idx >= order.length) return;
+      if (e.key === " ") {
+        e.preventDefault();
+        if (!revealed) setRevealed(true);
+        return;
+      }
+      if (e.key === "1" || e.key === "j") {
+        e.preventDefault();
+        if (!revealed) {
+          setRevealed(true);
+          return;
+        }
+        grade(1);
+      } else if (e.key === "2" || e.key === "k") {
+        e.preventDefault();
+        if (!revealed) {
+          setRevealed(true);
+          return;
+        }
+        grade(0);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, order, idx, revealed]);
 
   const pool = useMemo(() => countPoolGrades(atoms, grades), [atoms, grades]);
 
@@ -317,6 +357,10 @@ export default function StudySession({
 
       <p className="mt-4 text-xs text-muted">
         范围：{scopeLabel} · 评分只记本机浏览器（非 FSRS 调度）；citation 徽章语义不变（未验证仍为琥珀）。
+      </p>
+      <p className="mt-1 text-xs text-muted">
+        键：空格 显示答案 · <span className="mono">1</span>/<span className="mono">j</span> 认识 ·{" "}
+        <span className="mono">2</span>/<span className="mono">k</span> 不熟（未显示时先显示）。
       </p>
     </section>
   );

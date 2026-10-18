@@ -119,8 +119,8 @@ export default function DocumentPane({
   citingByPage?: Record<number, PageCitingCard[]>;
   /** 服务端预计算：页 → 本页待核 cite 数（T15「核本页」诚实入口）。 */
   pendingByPage?: Record<number, number>;
-  /** 本书核池键（服务端 collectCiteQueue({bookId}) 的 {key}）：LocalProgressStrip 按池计数。 */
-  heyePool?: { key: string }[];
+  /** 本书核池轻量项（服务端 collectCiteQueue({bookId})；带 cardId/page 供客户端按章/页过滤）。 */
+  heyePool?: { key: string; cardId: string; page: number }[];
 }) {
   const { setClew } = useDeskContext();
 
@@ -175,6 +175,53 @@ export default function DocumentPane({
   const pagePendingCount =
     readingPage != null && pendingByPage ? (pendingByPage[readingPage] ?? 0) : 0;
 
+  /**
+   * 作用域本机进度（T18）：默认「本章」池；章页/分栏下改「本页」池
+   * （citing 卡原子 + 本页 heye）；本页元引用则回落本章并诚实小字。
+   * 客户端按 cards 的 chapterId 归属过滤（不 import fs）。
+   */
+  const chapterCards = useMemo(
+    () => cards.filter((c) => c.chapterId === chapterId),
+    [cards, chapterId],
+  );
+  const chapterAtoms = useMemo(
+    () =>
+      chapterCards.flatMap((c) => c.atoms.map((a) => ({ cardId: c.id, atomId: a.id }))),
+    [chapterCards],
+  );
+  const chapterHeYe = useMemo(() => {
+    const ids = new Set(chapterCards.map((c) => c.id));
+    return (heyePool ?? []).filter((it) => ids.has(it.cardId));
+  }, [heyePool, chapterCards]);
+
+  const pageCitingIds = useMemo(
+    () => new Set(pageCitingCards.map((c) => c.cardId)),
+    [pageCitingCards],
+  );
+  const pageAtoms = useMemo(
+    () =>
+      cards
+        .filter((c) => pageCitingIds.has(c.id))
+        .flatMap((c) => c.atoms.map((a) => ({ cardId: c.id, atomId: a.id }))),
+    [cards, pageCitingIds],
+  );
+  const pageHeYe = useMemo(
+    () => (heyePool ?? []).filter((it) => it.page === readingPage),
+    [heyePool, readingPage],
+  );
+
+  /** 本页有引用（卡或 heye）才用本页池；否则回落本章。 */
+  const usePageScope = readingPage != null && (pageCitingCards.length > 0 || pageHeYe.length > 0);
+  const stripAtoms = usePageScope ? pageAtoms : chapterAtoms;
+  const stripItems = usePageScope ? pageHeYe : chapterHeYe;
+  const stripScopeLabel = usePageScope
+    ? `本页 p.${readingPage}`
+    : activeChapter
+      ? `本章 ${activeChapter.id}`
+      : "本书";
+  const stripStudyHref = `/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}`;
+  const stripReviewHref = `/review?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=open${usePageScope ? `&page=${readingPage}` : ""}`;
+
   /** 同步 Clew 上下文（书/章/当前页/可见卡名/示例 cite 页/表面/当前卡）。 */
   useEffect(() => {
     const citePages = [
@@ -218,11 +265,17 @@ export default function DocumentPane({
             学习环 · 自评 →
           </Link>
         </div>
-        {/* 跨面本机进度：本书原子池 + 本书核池（分列，非掌握仪表盘）。 */}
+        {/* 作用域本机进度：本章（默认为当前选中章）/ 本页（阅读时如有引用）；可点进同范围练核。 */}
         <LocalProgressStrip
-          atoms={cards.flatMap((c) => c.atoms.map((a) => ({ cardId: c.id, atomId: a.id })))}
-          items={heyePool}
+          atoms={stripAtoms}
+          items={stripItems}
+          scopeLabel={stripScopeLabel}
+          studyHref={stripStudyHref}
+          reviewHref={stripReviewHref}
         />
+        {readingPage != null && !usePageScope ? (
+          <p className="text-xs text-muted">本页暂无引用卡 · 显示本章进度。</p>
+        ) : null}
         <p className="mt-1 text-sm text-muted">
           过渡文档 · 六段讲义生成管线未接入；章页是 OCR 原文，不是萃取讲义。
         </p>

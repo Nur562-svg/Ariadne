@@ -94,12 +94,27 @@ export default function IngestPage() {
                       return (
                         <p className="mt-3">
                           {book ? (
-                            <Link
-                              href={`/desk?book=${encodeURIComponent(book.id)}`}
-                              className="inline-block rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
-                            >
-                              打开书桌 →
-                            </Link>
+                            <span className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                              <Link
+                                href={`/desk?book=${encodeURIComponent(book.id)}`}
+                                className="inline-block rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
+                              >
+                                打开书桌 →
+                              </Link>
+                              {/* 就绪三连（T18）：书桌主 CTA + 学习/核页次级文字链。 */}
+                              <Link
+                                href={`/study?book=${encodeURIComponent(book.id)}`}
+                                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+                              >
+                                学习环 →
+                              </Link>
+                              <Link
+                                href={`/review?book=${encodeURIComponent(book.id)}&mode=open`}
+                                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+                              >
+                                核页 →
+                              </Link>
+                            </span>
                           ) : (
                             <>
                               <Link

@@ -79,7 +79,7 @@ export default async function DeskPage({
       initialMode={initialMode}
       citingByPage={citingByPage}
       pendingByPage={pendingByPage}
-      heyePool={bookQueue.map((it) => ({ key: it.key }))}
+      heyePool={bookQueue.map((it) => ({ key: it.key, cardId: it.cardId, page: it.page }))}
     />
   );
 }
