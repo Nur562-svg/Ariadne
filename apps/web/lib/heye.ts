@@ -39,8 +39,14 @@ function quoteKey(quote?: string): string {
  * - ?card= 收窄（书桌卡枢纽 /review?card=）：只收集该卡待核项；语义 page!=null && verified===false 不变。
  *   组合规则：cardId 与 bookId 并存时要求卡属于该书（一致性约束），不属于 → 空队列；
  *   仅 bookId 无 cardId 时保持原按书行为。
+ * - ?page= 收窄（章页卡轨「核本页」）：在现有收集之后按 item.page === page 过滤（选择此实现并固化为注释）——
+ *   与 bookId 并存即「先书后页」，与 cardId 并存即交集；语义不变，零回写。
  */
-export function collectCiteQueue(opts?: { bookId?: string; cardId?: string }): HeYeItem[] {
+export function collectCiteQueue(opts?: {
+  bookId?: string;
+  cardId?: string;
+  page?: number;
+}): HeYeItem[] {
   let cards = loadCards(opts?.bookId ? { bookId: opts.bookId } : undefined);
   if (opts?.cardId != null) {
     const card = loadCard(opts.cardId);
@@ -129,8 +135,11 @@ export function collectCiteQueue(opts?: { bookId?: string; cardId?: string }): H
     }
   }
 
+  // ?page= 收窄：收集完成后过滤（先书/卡后页；与 cardId 为交集）。
+  const scoped = opts?.page != null ? items.filter((it) => it.page === opts.page) : items;
+
   // 按页码再按卡名排序：对页时相邻条目大概率同页，减少来回翻页。
-  return items.sort(
+  return scoped.sort(
     (a, b) => a.page - b.page || a.cardName.localeCompare(b.cardName, "zh"),
   );
 }

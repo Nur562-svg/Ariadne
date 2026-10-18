@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import type { BookConfig, ChapterConfig, EntityCard, PageDoc } from "@/lib/entities";
+import type { BookConfig, ChapterConfig, EntityCard, PageCitingCard, PageDoc } from "@/lib/entities";
 import SectionToc, { SECTIONS } from "@/components/desk/SectionToc";
 import type { SectionId } from "@/components/desk/SectionToc";
 import ChapterPageReader from "@/components/desk/ChapterPageReader";
@@ -100,6 +100,8 @@ export default function DocumentPane({
   badBookId,
   initialPage,
   initialMode,
+  citingByPage,
+  pendingByPage,
 }: {
   book: BookConfig;
   chapters: ChapterConfig[];
@@ -111,6 +113,10 @@ export default function DocumentPane({
   initialPage?: number | null;
   /** 深链可选 ?mode=pages|split；有 page 未给 mode 时默认章页。 */
   initialMode?: Mode;
+  /** 服务端预计算：页 → 引用该页的实体卡（轻量摘要；T15 本页卡轨）。 */
+  citingByPage?: Record<number, PageCitingCard[]>;
+  /** 服务端预计算：页 → 本页待核 cite 数（T15「核本页」诚实入口）。 */
+  pendingByPage?: Record<number, number>;
 }) {
   const { setClew } = useDeskContext();
 
@@ -141,6 +147,29 @@ export default function DocumentPane({
   const visibleCards = useMemo(() => filterCards(section, cards), [section, cards]);
   const activeChapter = chapters.find((c) => c.id === chapterId);
   const readingPage = mode === "pages" || mode === "split" ? pageNo : null;
+
+  /**
+   * 翻页 URL 同步（T15）：章页/分栏模式下当前印刷页变化时，
+   * 用 history.replaceState 把地址更新为 /desk?book=&page=（保留 mode=）。
+   * 不整页刷新、不打断滚动；?page= 深链（T12）进页行为不变。
+   */
+  useEffect(() => {
+    if (readingPage == null) return;
+    const params = new URLSearchParams();
+    params.set("book", book.id);
+    params.set("page", String(readingPage));
+    if (mode === "split" || mode === "pages") params.set("mode", mode);
+    const url = `/desk?${params.toString()}`;
+    if (window.location.pathname + window.location.search !== url) {
+      window.history.replaceState(window.history.state, "", url);
+    }
+  }, [readingPage, mode, book.id]);
+
+  /** 当前页的 citing 卡与待核数（服务端索引表按 pageNo 查；翻页随动）。 */
+  const pageCitingCards =
+    readingPage != null && citingByPage ? (citingByPage[readingPage] ?? []) : [];
+  const pagePendingCount =
+    readingPage != null && pendingByPage ? (pendingByPage[readingPage] ?? 0) : 0;
 
   /** 同步 Clew 上下文（书/章/当前页/可见卡名/示例 cite 页）。 */
   useEffect(() => {
@@ -257,6 +286,9 @@ export default function DocumentPane({
               setPageNo(p);
             }}
             onPageChange={setPageNo}
+            bookId={book.id}
+            citingCards={pageCitingCards}
+            pendingPageCount={pagePendingCount}
           />
           <p className="mt-4 text-xs text-muted">
             当前段「{SECTIONS.find((s) => s.id === section)?.label}」已按规则过滤实体卡（{visibleCards.length} 张）；
@@ -281,6 +313,9 @@ export default function DocumentPane({
                 setPageNo(p);
               }}
               onPageChange={setPageNo}
+              bookId={book.id}
+              citingCards={pageCitingCards}
+              pendingPageCount={pagePendingCount}
             />
           </div>
         </div>

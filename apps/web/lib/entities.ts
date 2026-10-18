@@ -211,6 +211,63 @@ export type StudyAtom = {
   cite?: Cite;
 };
 
+/** 页引用命中摘要（本页卡轨用）：来源标签 + 短引文（UI 再截断）。 */
+export type PageCiteHit = {
+  source: "card" | "field" | "atom";
+  label: string;
+  quote?: string;
+};
+
+/** 页 → 卡反向索引的一条结果：轻量卡摘要（不进完整 atoms/fields，控制 payload）。 */
+export type PageCitingCard = {
+  cardId: string;
+  nameZh: string;
+  nameEn?: string;
+  kind: EntityCard["kind"];
+  oneLiner: string;
+  chapterId?: string;
+  atomCount: number;
+  hits: PageCiteHit[];
+};
+
+/**
+ * 页 → 卡反向索引：扫描每张卡的 cites / fields[].cite / atoms[].cite，
+ * cite.page === page 即命中；按 card.id 去重（同卡多处命中合并 hits，同来源同 quote 只留一条）。
+ * bookId 可选：只扫该书章节下的卡（与 loadCards({bookId}) 一致）。
+ * 只读 seed，禁止改数据 / 编造卡。
+ */
+export function cardsCitingPage(page: number, opts?: { bookId?: string }): PageCitingCard[] {
+  const out: PageCitingCard[] = [];
+  for (const c of loadCards(opts?.bookId ? { bookId: opts.bookId } : undefined)) {
+    const hits: PageCiteHit[] = [];
+    const seen = new Set<string>();
+    const push = (cite: Cite | undefined, source: PageCiteHit["source"], label: string) => {
+      if (!cite || cite.page !== page) return;
+      const key = `${source}|${label}|${(cite.quote ?? "").trim().replace(/\s+/g, " ")}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      hits.push({ source, label, quote: cite.quote });
+    };
+    for (const x of c.cites) push(x, "card", "卡引用");
+    for (const f of c.fields) push(f.cite, "field", `字段 · ${f.label}`);
+    for (const a of c.atoms) push(a.cite, "atom", `原子 · ${a.prompt}`);
+    if (hits.length > 0) {
+      out.push({
+        cardId: c.id,
+        nameZh: c.name_zh,
+        nameEn: c.name_en,
+        kind: c.kind,
+        oneLiner: c.one_liner,
+        chapterId: c.chapterId,
+        atomCount: c.atoms.length,
+        hits,
+      });
+    }
+  }
+  // 按卡名稳定排序（服务端/客户端一致，避免水合错位）。
+  return out.sort((a, b) => a.nameZh.localeCompare(b.nameZh, "zh"));
+}
+
 /**
  * 组合规则（cardId 与 book/chapter 并存时）：
  * - 仅 cardId：只出该卡 atoms（书桌卡枢纽 /study?card= 的范围）。

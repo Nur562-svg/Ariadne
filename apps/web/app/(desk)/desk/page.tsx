@@ -1,10 +1,13 @@
 import Link from "next/link";
 import {
+  cardsCitingPage,
   loadAllChapterPages,
   loadBooks,
   loadCards,
   loadChapters,
+  type PageCitingCard,
 } from "@/lib/entities";
+import { collectCiteQueue } from "@/lib/heye";
 import DocumentPane from "@/components/desk/DocumentPane";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +15,8 @@ export const dynamic = "force-dynamic";
 /**
  * 书桌页（服务端薄层）：加载当前书数据后交给 DocumentPane（客户端）编排。
  * ?book= 驱动当前书；无效 book id 回落第一本书并诚实提示（Task 09 行为）。
+ * desk-page-card-loop（T15）：服务端预计算「页 → 引用该页的卡」与「页 → 本页待核数」
+ * 两张索引表传给 DocumentPane——客户端翻页时按 pageNo 查表即可，章页卡轨随动。
  */
 export default async function DeskPage({
   searchParams,
@@ -49,6 +54,18 @@ export default async function DeskPage({
     (p) => p.chapterId != null && book.chapterIds.includes(p.chapterId as string),
   );
 
+  /** 页 → 引用该页的实体卡（轻量摘要；按卡名稳定排序）。 */
+  const citingByPage: Record<number, PageCitingCard[]> = {};
+  for (const p of pages) {
+    if (p.page == null) continue;
+    citingByPage[p.page] = cardsCitingPage(p.page, { bookId: book.id });
+  }
+  /** 页 → 本页待核 cite 数（collectCiteQueue 只读，零回写）。 */
+  const pendingByPage: Record<number, number> = {};
+  for (const it of collectCiteQueue({ bookId: book.id })) {
+    pendingByPage[it.page] = (pendingByPage[it.page] ?? 0) + 1;
+  }
+
   return (
     <DocumentPane
       book={book}
@@ -59,6 +76,8 @@ export default async function DeskPage({
       badBookId={bookId}
       initialPage={initialPage}
       initialMode={initialMode}
+      citingByPage={citingByPage}
+      pendingByPage={pendingByPage}
     />
   );
 }

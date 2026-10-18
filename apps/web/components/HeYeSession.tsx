@@ -35,6 +35,7 @@ export default function HeYeSession({
   scopeLabel,
   cardHref,
   studyHref,
+  deskPageHref,
 }: {
   /** 待核队列（服务端 collectCiteQueue，已按页码排序）。 */
   items: HeYeItem[];
@@ -46,6 +47,8 @@ export default function HeYeSession({
   cardHref?: string;
   /** 跨环学习链（有卡带 ?card=，否则 /study）。 */
   studyHref?: string;
+  /** 单页范围（/review?page=）：空队列/全部对过时优先链回书桌本页（/desk?book=&page=）。 */
+  deskPageHref?: string;
 }) {
   const [store, setStore] = useState<Store>({});
   const [index, setIndex] = useState(0);
@@ -106,6 +109,29 @@ export default function HeYeSession({
                 className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
               >
                 去学习本卡 →
+              </Link>
+              {deskPageHref ? (
+                <Link
+                  href={deskPageHref}
+                  className="text-sm text-muted no-underline hover:text-cinnabar"
+                >
+                  回书桌本页 →
+                </Link>
+              ) : null}
+            </>
+          ) : deskPageHref ? (
+            <>
+              <Link
+                href={deskPageHref}
+                className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+              >
+                回书桌本页 →
+              </Link>
+              <Link
+                href={studyHref ?? "/study"}
+                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                去学习环 /study →
               </Link>
             </>
           ) : (
@@ -190,19 +216,29 @@ export default function HeYeSession({
               清除本机核页记录
             </button>
           </p>
-          {cardHref ? (
+          {cardHref || deskPageHref ? (
             <nav className="mt-3 flex flex-wrap items-center gap-4 text-sm">
-              <Link
-                href={cardHref}
-                className="text-cinnabar no-underline hover:underline underline-offset-4"
-              >
-                回本卡 →
-              </Link>
+              {deskPageHref ? (
+                <Link
+                  href={deskPageHref}
+                  className="text-cinnabar no-underline hover:underline underline-offset-4"
+                >
+                  回书桌本页 →
+                </Link>
+              ) : null}
+              {cardHref ? (
+                <Link
+                  href={cardHref}
+                  className="text-cinnabar no-underline hover:underline underline-offset-4"
+                >
+                  回本卡 →
+                </Link>
+              ) : null}
               <Link
                 href={studyHref ?? "/study"}
                 className="text-cinnabar no-underline hover:underline underline-offset-4"
               >
-                去学习本卡 →
+                {cardHref ? "去学习本卡 →" : "去学习环 →"}
               </Link>
             </nav>
           ) : null}

@@ -10,24 +10,30 @@ export const dynamic = "force-dynamic";
  * 这里不做 FSRS 到期调度：队列是「有页码但 seed 未抽查 verified」的 cite，
  * 「本机已对 / 存疑」只写浏览器 localStorage，绝不回写 seed JSON。
  * ?book= 过滤范围；无参 = 全部已解析卡（核页是数据质量工具，范围宁宽）。
- * desk-card-hub-01：支持 ?card= 收窄到单卡（卡枢纽「核本卡 cite」入口）；
- * 空/完成态链「回本卡」「去学习本卡」。
+ * desk-card-hub-01：?card= 收窄到单卡（卡枢纽「核本卡 cite」入口）。
+ * desk-page-card-loop-01（T15）：?page= 收窄到单印刷页（章页卡轨「核本页」入口）；
+ * 非法 page 诚实警告并回落无页过滤。
  */
 export default async function ReviewPage({
   searchParams,
 }: {
-  searchParams: Promise<{ book?: string; card?: string }>;
+  searchParams: Promise<{ book?: string; card?: string; page?: string }>;
 }) {
-  const { book: bookId, card: cardId } = await searchParams;
+  const { book: bookId, card: cardId, page: pageParam } = await searchParams;
   const books = loadBooks();
   const book = books.find((b) => b.id === bookId);
   const invalidBook = bookId != null && !book;
   const card = cardId != null ? loadCard(cardId) : undefined;
   const invalidCard = cardId != null && !card;
+  /** ?page= 需为正整数；非法 → 诚实警告 + 无页过滤回落。 */
+  const pageNum = pageParam != null && /^\d+$/.test(pageParam) ? Number(pageParam) : null;
+  const invalidPage = pageParam != null && pageNum == null;
 
-  const items = card
-    ? collectCiteQueue({ cardId: card.id, bookId: book?.id })
-    : collectCiteQueue(book ? { bookId: book.id } : undefined);
+  const items = collectCiteQueue({
+    cardId: card?.id,
+    bookId: book?.id,
+    page: pageNum ?? undefined,
+  });
   // OCR 只传队列涉及的页（loadAllChapterPages 真页子集），避免全量 OCR 进客户端。
   const wanted = new Set(items.map((it) => it.page));
   const pages = loadAllChapterPages().filter((p) => p.page != null && wanted.has(p.page));
@@ -48,6 +54,11 @@ export default async function ReviewPage({
   const studyHref = card
     ? `/study?card=${encodeURIComponent(card.id)}${book ? `&book=${encodeURIComponent(book.id)}` : ""}`
     : "/study";
+  /** 回书桌本页（书范围且 page 合法时）：/desk?book=&page= 章页定位。 */
+  const deskPageHref =
+    pageNum != null && scopeBook
+      ? `/desk?book=${encodeURIComponent(scopeBook.id)}&page=${pageNum}`
+      : undefined;
 
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">
@@ -67,8 +78,32 @@ export default async function ReviewPage({
             没有卡 id「{cardId}」——卡范围未生效，已按{book ? `《${book.title}》` : "全部已解析卡"}统计。
           </p>
         ) : null}
+        {invalidPage ? (
+          <p className="mt-2 text-sm text-status-warn">
+            page 参数「{pageParam}」需为正整数——页过滤未生效，已按{scopeLabel}统计。
+          </p>
+        ) : null}
         <p className="mt-2 text-sm text-muted">
-          范围：{scopeLabel} · 待核 {items.length} 条
+          范围：{scopeLabel}
+          {pageNum != null ? (
+            <>
+              {" "}
+              · 印刷页 <span className="mono font-medium text-foreground">p.{pageNum}</span>
+              {deskPageHref ? (
+                <>
+                  {" "}
+                  ·{" "}
+                  <Link
+                    href={deskPageHref}
+                    className="text-cinnabar no-underline hover:underline underline-offset-4"
+                  >
+                    回书桌本页 →
+                  </Link>
+                </>
+              ) : null}
+            </>
+          ) : null}
+          {" "}· 待核 {items.length} 条
           {book ? (
             <>
               {" "}
@@ -102,6 +137,7 @@ export default async function ReviewPage({
         scopeLabel={scopeLabel}
         cardHref={cardHref}
         studyHref={studyHref}
+        deskPageHref={deskPageHref}
       />
     </div>
   );
