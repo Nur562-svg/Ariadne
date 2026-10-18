@@ -41,23 +41,40 @@ function quoteKey(quote?: string): string {
  *   仅 bookId 无 cardId 时保持原按书行为。
  * - ?page= 收窄（章页卡轨「核本页」）：在现有收集之后按 item.page === page 过滤（选择此实现并固化为注释）——
  *   与 bookId 并存即「先书后页」，与 cardId 并存即交集；语义不变，零回写。
+ * - ?chapter= 收窄（核页工作台章芯片，T16）：在**卡集合阶段**按 card.chapterId 过滤（比收集后过滤省扫描）——
+ *   与 page 为交集；与 bookId 并存要求章属于该书（不属于 → 空队列）；与 cardId 并存要求卡属于该章（否则空）。
  */
 export function collectCiteQueue(opts?: {
   bookId?: string;
   cardId?: string;
   page?: number;
+  chapterId?: string;
 }): HeYeItem[] {
-  let cards = loadCards(opts?.bookId ? { bookId: opts.bookId } : undefined);
-  if (opts?.cardId != null) {
-    const card = loadCard(opts.cardId);
+  const { bookId, cardId, page, chapterId } = opts ?? {};
+
+  let cards = loadCards(bookId ? { bookId } : undefined);
+  if (cardId != null) {
+    const card = loadCard(cardId);
     if (!card) {
       cards = [];
-    } else if (opts.bookId != null) {
-      const book = loadBooks().find((b) => b.id === opts.bookId);
+    } else if (bookId != null) {
+      const book = loadBooks().find((b) => b.id === bookId);
       cards = book && book.chapterIds.includes(card.chapterId ?? "") ? [card] : [];
     } else {
       cards = [card];
     }
+    // cardId + chapterId：交集（卡必须属于该章）。
+    if (chapterId != null && cards.length > 0) {
+      cards = cards.filter((c) => c.chapterId === chapterId);
+    }
+  } else if (chapterId != null && bookId != null) {
+    // chapterId + bookId：章须属于该书（一致性约束），不属于 → 空队列。
+    const book = loadBooks().find((b) => b.id === bookId);
+    cards = book && book.chapterIds.includes(chapterId)
+      ? loadCards({ chapterId })
+      : [];
+  } else if (chapterId != null) {
+    cards = loadCards({ chapterId });
   }
   const books = loadBooks();
   const bookOf = new Map<string, string>();
@@ -135,8 +152,8 @@ export function collectCiteQueue(opts?: {
     }
   }
 
-  // ?page= 收窄：收集完成后过滤（先书/卡后页；与 cardId 为交集）。
-  const scoped = opts?.page != null ? items.filter((it) => it.page === opts.page) : items;
+  // ?page= 收窄：收集完成后过滤（先书/卡后页；与 cardId/chapterId 为交集）。
+  const scoped = page != null ? items.filter((it) => it.page === page) : items;
 
   // 按页码再按卡名排序：对页时相邻条目大概率同页，减少来回翻页。
   return scoped.sort(
