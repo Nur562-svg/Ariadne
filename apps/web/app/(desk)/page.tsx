@@ -2,7 +2,7 @@ import Link from "next/link";
 import { loadBooks, loadCards } from "@/lib/entities";
 
 /**
- * 书库首页：从 config/books.json 派生，不硬编码任何书名/章节 copy。
+ * 书库页（书架）：DeskShell 中栏，从 config/books.json 派生，不硬编码任何书名/章节 copy。
  * 空库 → 指向 /ingest 的安静 empty-state，不是营销 hero。
  */
 export const dynamic = "force-dynamic";
@@ -12,9 +12,8 @@ export default function Library() {
 
   if (books.length === 0) {
     return (
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-16">
-        <p className="mono text-sm text-cinnabar">ARIADNE</p>
-        <h1 className="brand-rule mt-2 pb-3 text-4xl font-bold tracking-wide">书库</h1>
+      <div className="mx-auto w-full max-w-3xl px-8 py-10">
+        <h1 className="brand-rule pb-2 text-4xl font-bold tracking-wide">书库</h1>
         <p className="mt-6 leading-8 text-foreground/90">
           书库还空着。上传教材 PDF、在本机跑完 OCR 解析与实体卡抽取，再把书目注册进
           <span className="mono text-sm"> config/books.json </span>，即可在书桌阅读、进入卡浏览器与学习环。
@@ -25,14 +24,13 @@ export default function Library() {
         >
           去导入教材 →
         </Link>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-12">
-      <p className="mono text-sm text-cinnabar">ARIADNE</p>
-      <h1 className="brand-rule mt-2 pb-3 text-4xl font-bold tracking-wide">书库</h1>
+    <div className="mx-auto w-full max-w-5xl px-8 py-10">
+      <h1 className="brand-rule pb-2 text-4xl font-bold tracking-wide">书库</h1>
       <p className="mt-4 text-sm leading-7 text-muted">
         教材 → 知识原子 / 实体卡 → 可复习。打开一本书进入书桌（三栏学习面）；citation 仍 fail-closed（未验证保留琥珀 p.N / p.?）。
       </p>
@@ -95,6 +93,6 @@ export default function Library() {
       <p className="mt-10 text-sm text-muted">
         导入新书：<Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">/ingest 上传 PDF</Link>
       </p>
-    </main>
+    </div>
   );
 }

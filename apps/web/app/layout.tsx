@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 /**
  * 根 layout 只管 html/body。
- * - (shell) 组：shell-01 单栏页（书库 / 实体卡 / 学习 / 导入 / viewer），保留满宽 DeskNav。
- * - (desk) 组：desk-v4 三栏壳（书桌主路径 / 复习），不再叠满宽顶栏。
+ * - (desk) 组：DeskShell 三栏壳（书架 /、书桌 /desk、/review）——Sidebar 是唯一主导航。
+ * - (shell) 组：残留单栏页（/ingest /study /entities /viewer），仅薄 ShellChrome 回链壳。
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

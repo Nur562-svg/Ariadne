@@ -1,14 +1,10 @@
-import DeskNav from "@/components/DeskNav";
+import ShellChrome from "@/components/ShellChrome";
 
 /**
- * shell-01 单栏壳：满宽顶栏 + 单栏内容。
- * 书桌主学习路径（/desk、/review）走 (desk) 组的三栏 DeskShell，不再叠这条顶栏。
+ * 残留 shell 路由组（/ingest /study /entities /viewer）：
+ * 薄 ShellChrome 壳（品牌 + 书桌/书架回链），不再是满宽主导航顶栏。
+ * 主导航只在 DeskShell 侧栏（书桌 / 复习 / 书架）一套。
  */
 export default function ShellLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <DeskNav />
-      {children}
-    </>
-  );
+  return <ShellChrome>{children}</ShellChrome>;
 }
