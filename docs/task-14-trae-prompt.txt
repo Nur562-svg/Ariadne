@@ -1,0 +1,59 @@
+按 docs/task-14-desk-card-hub.md 实现 Task 14 desk-card-hub-01。模型用 DeepSeek-V4-Pro。
+
+════════════════════════════════════
+体量要求（硬 · 读完再动手）
+════════════════════════════════════
+这不是 Task 08–10 那种「改两个 CTA / 迁一个路由」的小刀，也不是只改 EntityCardDetail 两行 Link。DeepSeek-V4-Pro 若 ~2 分钟就收工，说明漏做了。目标约 30–90 分钟真实编码：多文件协调（collectStudyAtoms/collectCiteQueue 扩 cardId + EntityCardDetail 动作条与 cite 诚实条 + /study /review 接 ?card= + DocumentPane QuizPanel 过时文案 + 跨环保留卡范围）、多路由自测。必须做完 brief 里 IN 的 A+B+C+D，不要只做其中一角。
+
+前置：先 git 确认 tip 为 1d59d96（Task 13 desk-study）或其后含 study 的 tip。不要 push。先读 docs/frontend-aesthetics.md。对照已有交付：StudySession / lib/study.ts / HeYeSession / lib/heye.ts / CiteChip deskBookId / DocumentPane / EntityCardDetail / Sidebar。
+
+产品身份：顾客自带材料 → 可考知识原子。卡是书桌连续面上的知识单元；本刀让卡成为「能练、能核、能回章页」的枢纽，而不是死胡同详情。免疫学 seed 是验收语料，不是把产品做成免疫学 demo。
+
+════════════════════════════════════
+做（按顺序 · 多步交付）
+════════════════════════════════════
+
+【步骤 1 · 数据层 ?card=】
+1) collectStudyAtoms(opts?) 增加可选 cardId：只出该卡 atoms（与 book/chapter 组合规则写注释）。
+2) collectCiteQueue(opts?) 增加可选 cardId：只出该卡待核 cite；page!=null && verified===false 语义不变。
+3) 禁止改 seed；禁止进度 API。
+
+【步骤 2 · EntityCardDetail 枢纽】
+1) 动作条：「练这张卡」→ /study?card=（有书兼 book=）；「核本卡 cite」→ /review?card=（有书兼 book=）。无原子/无待核诚实处理。
+2) cite 诚实条：有页 / p.? / seed verified:false 计数；标明 seed verified ≠ 本机核页态；禁止假全绿、禁止写 verified:true。
+3) 书桌语境继续 deskBookId → CiteChip。可选：易混 vs 命中卡名则链 /desk/card/。
+
+【步骤 3 · study / review 接卡范围】
+1) /study 读 ?card=；页头含卡名；三档队列仍本机态；完成态「回本卡」「核本卡」。
+2) /review 读 ?card=；队列仅本卡；空/完成链回本卡与 /study?card=。
+3) StudySession / HeYeSession 跨环链在有 card 时带上。
+
+【步骤 4 · 书桌入口 + 过时文案 + build】
+1) DocumentPane QuizPanel：去掉「复习页 stub」过时说法；诚实链学习/核页。
+2) 卡瓷砖保持 /desk/card/；可选薄「练」次链。
+3) 按 brief 自测表验证；pnpm --filter web build PASS；不要 push；确认无 FSRS、无 verified:true 写入 data/cards。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–13：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模、TOC、Clew stub、/review 核页本机态、/study 三档本机自评、CiteChip（有 page→p.N；desk 深链；null→p.?）、ingest、collectStudyAtoms、collectCiteQueue、loadAllChapterPages。勿 verified:true 过关。A+B+C+D 范围保持完整。
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+真 FSRS / ts-fsrs / Due 调度；Clew LLM/API / ProposalCard 真写入；改 seed verified:true；假本卡全核营销态；窄屏 DeskShell 大重构；ingest 迁壳/管线大改；新章 ch08+；nur-landing / 营销 hero；擅自 push。
+
+════════════════════════════════════
+审美
+════════════════════════════════════
+朱红唯一强调色；精炼书桌；卡片仅在「卡本身是交互」时用；效用文；无营销 hero。琥珀仅作未核实/警告状态，不作第二品牌色。
+
+════════════════════════════════════
+成功标准（回复时勾）
+════════════════════════════════════
+- 多文件改动（entities/heye + EntityCardDetail + study/review + DocumentPane…），不是两处文案
+- /desk/card 枢纽动作条 + cite 诚实条；/study?card= 与 /review?card= 可用
+- QuizPanel 不再称复习页 stub；T07–13 回归未毁；build PASS；未 push
+- 回复含：改动文件列表、build 结果、?card= 深链说明、自测路由摘要
+
+做完简短列出以上证据，等验收；不要 push。

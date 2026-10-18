@@ -33,13 +33,19 @@ export default function HeYeSession({
   items,
   pages,
   scopeLabel,
+  cardHref,
+  studyHref,
 }: {
   /** 待核队列（服务端 collectCiteQueue，已按页码排序）。 */
   items: HeYeItem[];
   /** 队列涉及的 OCR 页（真 loadAllChapterPages 子集，按 page 索引）。 */
   pages: PageDoc[];
-  /** 范围说明（全书库 / 某书书名），用于副文。 */
+  /** 范围说明（全书库 / 某书书名 / 单卡卡名），用于副文。 */
   scopeLabel: string;
+  /** 单卡范围（/review?card=）：空队列/全部对过时链回本卡。 */
+  cardHref?: string;
+  /** 跨环学习链（有卡带 ?card=，否则 /study）。 */
+  studyHref?: string;
 }) {
   const [store, setStore] = useState<Store>({});
   const [index, setIndex] = useState(0);
@@ -87,18 +93,37 @@ export default function HeYeSession({
           或数据尚未解析出来。
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-5">
-          <Link
-            href="/desk"
-            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-          >
-            回书桌 →
-          </Link>
-          <Link
-            href="/study"
-            className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-          >
-            去学习环 /study →
-          </Link>
+          {cardHref ? (
+            <>
+              <Link
+                href={cardHref}
+                className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+              >
+                回本卡 →
+              </Link>
+              <Link
+                href={studyHref ?? "/study"}
+                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                去学习本卡 →
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/desk"
+                className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+              >
+                回书桌 →
+              </Link>
+              <Link
+                href={studyHref ?? "/study"}
+                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                去学习环 /study →
+              </Link>
+            </>
+          )}
         </div>
       </div>
     );
@@ -157,13 +182,31 @@ export default function HeYeSession({
       </div>
 
       {allDone ? (
-        <p className="mt-4 rounded-lg border border-line bg-status-ok-bg px-4 py-3 text-sm leading-7 text-status-ok">
-          本机已全部对过（已对 {counts.checked} · 存疑 {counts.doubt}）。这只影响本浏览器记录，
-          seed 的「抽查 verified」状态没有变。{" "}
-          <button onClick={resetStore} className="underline underline-offset-4 hover:text-foreground">
-            清除本机核页记录
-          </button>
-        </p>
+        <>
+          <p className="mt-4 rounded-lg border border-line bg-status-ok-bg px-4 py-3 text-sm leading-7 text-status-ok">
+            本机已全部对过（已对 {counts.checked} · 存疑 {counts.doubt}）。这只影响本浏览器记录，
+            seed 的「抽查 verified」状态没有变。{" "}
+            <button onClick={resetStore} className="underline underline-offset-4 hover:text-foreground">
+              清除本机核页记录
+            </button>
+          </p>
+          {cardHref ? (
+            <nav className="mt-3 flex flex-wrap items-center gap-4 text-sm">
+              <Link
+                href={cardHref}
+                className="text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                回本卡 →
+              </Link>
+              <Link
+                href={studyHref ?? "/study"}
+                className="text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                去学习本卡 →
+              </Link>
+            </nav>
+          ) : null}
+        </>
       ) : null}
 
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">

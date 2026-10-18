@@ -54,27 +54,36 @@ function groupByKind(cards: EntityCard[]): { kind: string; items: EntityCard[] }
     .map(([kind, items]) => ({ kind, items }));
 }
 
-function CardCard({ card }: { card: EntityCard }) {
+function CardCard({ card, bookId }: { card: EntityCard; bookId?: string }) {
   const citePage = card.cites.find((x) => x.page != null)?.page ?? null;
   return (
-    <Link
-      href={`/desk/card/${card.id}`}
-      className="block h-full rounded-lg border border-line bg-card p-4 no-underline transition-shadow hover:shadow-md"
-    >
-      <div className="flex items-baseline justify-between gap-2">
-        <h3 className="text-base font-semibold text-foreground">{card.name_zh}</h3>
-        <span className="mono shrink-0 rounded border border-line px-1.5 py-0.5 text-[11px] text-muted">
-          {KIND_ZH[card.kind] ?? card.kind}
-        </span>
+    <div className="block h-full rounded-lg border border-line bg-card p-4 transition-shadow hover:shadow-md">
+      <Link href={`/desk/card/${card.id}`} className="block no-underline">
+        <div className="flex items-baseline justify-between gap-2">
+          <h3 className="text-base font-semibold text-foreground">{card.name_zh}</h3>
+          <span className="mono shrink-0 rounded border border-line px-1.5 py-0.5 text-[11px] text-muted">
+            {KIND_ZH[card.kind] ?? card.kind}
+          </span>
+        </div>
+        {card.name_en && <p className="mono mt-0.5 text-xs text-muted">{card.name_en}</p>}
+        <p className="mt-2 text-sm leading-6 text-foreground/85">{card.one_liner}</p>
+      </Link>
+      <div className="mt-2 flex items-baseline justify-between gap-2">
+        <p className="min-w-0 text-xs text-muted">
+          {card.atoms.length} 个原子 · {card.chapterId ?? ""}
+          {citePage != null ? ` · 引 p.${citePage}` : ""}
+          {card.cites.some((x) => x.page == null) ? " · 部分未验证 p.?" : ""}
+        </p>
+        {bookId ? (
+          <Link
+            href={`/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}`}
+            className="shrink-0 text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+          >
+            练 →
+          </Link>
+        ) : null}
       </div>
-      {card.name_en && <p className="mono mt-0.5 text-xs text-muted">{card.name_en}</p>}
-      <p className="mt-2 text-sm leading-6 text-foreground/85">{card.one_liner}</p>
-      <p className="mt-2 text-xs text-muted">
-        {card.atoms.length} 个原子 · {card.chapterId ?? ""}
-        {citePage != null ? ` · 引 p.${citePage}` : ""}
-        {card.cites.some((x) => x.page == null) ? " · 部分未验证 p.?" : ""}
-      </p>
-    </Link>
+    </div>
   );
 }
 
@@ -259,7 +268,7 @@ export default function DocumentPane({
         // 默认 auto 轨道会把它列撑宽、把卡列表列压到 0 宽。
         <div className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="min-w-0">
-            <SectionCards section={section} cards={visibleCards} compact />
+            <SectionCards section={section} cards={visibleCards} compact bookId={book.id} />
           </div>
           <div className="min-w-0 border-l border-line pl-6 max-xl:border-l-0 max-xl:pl-0">
             <ChapterPageReader
@@ -276,7 +285,7 @@ export default function DocumentPane({
           </div>
         </div>
       ) : (
-        <SectionCards section={section} cards={visibleCards} />
+        <SectionCards section={section} cards={visibleCards} bookId={book.id} />
       )}
     </div>
   );
@@ -333,36 +342,47 @@ function OverviewPanel({
   );
 }
 
-/** 自测面板：诚实 CTA → /study（自评环已可用；FSRS 未接）。 */
+/** 自测面板：学习环本机自评 + 核页本机对页（两者均已可用；均非 FSRS 到期调度）。 */
 function QuizPanel({ bookId, atomCount }: { bookId: string; atomCount: number }) {
   return (
     <section className="mt-8 max-w-xl rounded-lg border border-line bg-card p-6">
-      <h2 className="text-sm font-semibold">自测</h2>
+      <h2 className="text-sm font-semibold">自测与核对</h2>
       <p className="mt-2 text-sm leading-7 text-foreground/90">
-        学习环已有 {atomCount} 个知识原子：看问题 → 回想 → 自评「认识 / 不熟」（进度保存在本浏览器）。
+        学习环已有 {atomCount} 个知识原子：看问题 → 回想 → 自评「认识 / 不熟」（进度保存在本浏览器，
+        非到期调度）。
       </p>
       <p className="mt-1 text-sm leading-7 text-muted">
-        到期复习（FSRS）尚未接入，复习页保持诚实 stub。
+        核页已可用：把卡片引用逐条对着该页 OCR 原文核对，标「本机已对 / 存疑」——只记本机，不回写教材数据。
       </p>
-      <Link
-        href={`/study?book=${encodeURIComponent(bookId)}`}
-        className="mt-5 inline-block rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-      >
-        去学习环自评 →
-      </Link>
+      <div className="mt-5 flex flex-wrap items-center gap-4">
+        <Link
+          href={`/study?book=${encodeURIComponent(bookId)}`}
+          className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+        >
+          去学习环自评 →
+        </Link>
+        <Link
+          href={`/review?book=${encodeURIComponent(bookId)}`}
+          className="text-sm text-muted no-underline hover:text-cinnabar"
+        >
+          去核页 →
+        </Link>
+      </div>
     </section>
   );
 }
 
-/** 卡片区：默认网格；实体图谱按 kind 分组；compact 用于分栏窄列。 */
+/** 卡片区：默认网格；实体图谱按 kind 分组；compact 用于分栏窄列。卡瓷砖右上角带薄「练」链 → /study?card=。 */
 function SectionCards({
   section,
   cards,
   compact,
+  bookId,
 }: {
   section: SectionId;
   cards: EntityCard[];
   compact?: boolean;
+  bookId?: string;
 }) {
   if (cards.length === 0) {
     return (
@@ -382,7 +402,7 @@ function SectionCards({
             <ul className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
               {items.map((c) => (
                 <li key={c.id}>
-                  <CardCard card={c} />
+                  <CardCard card={c} bookId={bookId} />
                 </li>
               ))}
             </ul>
@@ -399,7 +419,7 @@ function SectionCards({
       <ul className={`mt-3 grid grid-cols-1 gap-4 ${compact ? "" : "md:grid-cols-2"}`}>
         {cards.map((c) => (
           <li key={c.id}>
-            <CardCard card={c} />
+            <CardCard card={c} bookId={bookId} />
           </li>
         ))}
       </ul>

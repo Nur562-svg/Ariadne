@@ -31,6 +31,7 @@ export default function StudySession({
   bookByChapter,
   deskHref,
   reviewHref,
+  cardHref,
   allHref,
   unknownHref,
 }: {
@@ -47,6 +48,8 @@ export default function StudySession({
   /** 完成态 / 空队列回链：书桌与核页（有书带 book 参数）。 */
   deskHref: string;
   reviewHref: string;
+  /** 单卡范围（/study?card=）：完成/空态改为「回本卡」「核本卡」，回书桌让位为次要链。 */
+  cardHref?: string;
   /** 「只练不熟」与空队列回链：同范围切档 URL。 */
   allHref: string;
   unknownHref: string;
@@ -98,18 +101,43 @@ export default function StudySession({
               切到「全部」
             </Link>
           ) : null}
-          <Link
-            href={deskHref}
-            className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
-          >
-            回书桌
-          </Link>
-          <Link
-            href={reviewHref}
-            className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
-          >
-            去核页
-          </Link>
+          {cardHref ? (
+            <>
+              <Link
+                href={cardHref}
+                className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline hover:border-cinnabar hover:text-cinnabar"
+              >
+                回本卡
+              </Link>
+              <Link
+                href={reviewHref}
+                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+              >
+                核本卡
+              </Link>
+              <Link
+                href={deskHref}
+                className="text-sm text-muted no-underline hover:text-cinnabar"
+              >
+                回书桌
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href={deskHref}
+                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+              >
+                回书桌
+              </Link>
+              <Link
+                href={reviewHref}
+                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+              >
+                去核页
+              </Link>
+            </>
+          )}
         </div>
       </section>
     );
@@ -164,18 +192,43 @@ export default function StudySession({
               只练不熟
             </Link>
           ) : null}
-          <Link
-            href={deskHref}
-            className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
-          >
-            回书桌
-          </Link>
-          <Link
-            href={reviewHref}
-            className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
-          >
-            去核页
-          </Link>
+          {cardHref ? (
+            <>
+              <Link
+                href={cardHref}
+                className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline hover:border-cinnabar hover:text-cinnabar"
+              >
+                回本卡
+              </Link>
+              <Link
+                href={reviewHref}
+                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+              >
+                核本卡
+              </Link>
+              <Link
+                href={deskHref}
+                className="text-sm text-muted no-underline hover:text-cinnabar"
+              >
+                回书桌
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href={deskHref}
+                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+              >
+                回书桌
+              </Link>
+              <Link
+                href={reviewHref}
+                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+              >
+                去核页
+              </Link>
+            </>
+          )}
         </div>
       </section>
     );

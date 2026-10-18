@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { loadBooks, loadCard } from "@/lib/entities";
+import { loadBooks, loadCard, loadCards } from "@/lib/entities";
+import { collectCiteQueue } from "@/lib/heye";
 import { EntityCardDetail } from "@/components/EntityCardDetail";
 
 export const dynamic = "force-dynamic";
@@ -19,9 +20,27 @@ export default async function DeskCardPage({
     : undefined;
   const backHref = book ? `/desk?book=${encodeURIComponent(book.id)}` : "/desk";
 
+  /** 枢纽 props：本卡待核 cite 数（动作条诚实文案）+ 易混对象名 → 卡 id（vs 深链）。 */
+  const pendingCiteCount = collectCiteQueue({ cardId: card.id }).length;
+  const confusionLinks: Record<string, string> = {};
+  for (const c of loadCards()) {
+    const names = [c.name_zh, ...(c.aliases ?? [])];
+    for (const n of names) {
+      const key = n.trim().toLowerCase();
+      if (key) confusionLinks[key] = c.id;
+    }
+  }
+
   return (
     <div className="mx-auto w-full max-w-3xl px-8 py-10">
-      <EntityCardDetail card={card} backHref={backHref} backLabel="← 书桌" deskBookId={book?.id} />
+      <EntityCardDetail
+        card={card}
+        backHref={backHref}
+        backLabel="← 书桌"
+        deskBookId={book?.id}
+        pendingCiteCount={pendingCiteCount}
+        confusionLinks={confusionLinks}
+      />
     </div>
   );
 }

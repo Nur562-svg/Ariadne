@@ -1,4 +1,4 @@
-import { loadBooks, loadCards } from "@/lib/entities";
+import { loadBooks, loadCards, loadCard } from "@/lib/entities";
 
 /**
  * 核页（本机对页）队列：从实体卡收集「有页码但未抽查验证」的 cite。
@@ -36,9 +36,23 @@ function quoteKey(quote?: string): string {
  *   无 quote 时按来源 id 兜底，同卡同页无引文的多条卡引用合并为一条。
  * - ?book= 过滤；无参默认**全部已解析卡**（含未注册进书库的章——核页是数据质量工具，
  *   范围宁宽勿窄；UI 仍可按书过滤）。
+ * - ?card= 收窄（书桌卡枢纽 /review?card=）：只收集该卡待核项；语义 page!=null && verified===false 不变。
+ *   组合规则：cardId 与 bookId 并存时要求卡属于该书（一致性约束），不属于 → 空队列；
+ *   仅 bookId 无 cardId 时保持原按书行为。
  */
-export function collectCiteQueue(opts?: { bookId?: string }): HeYeItem[] {
-  const cards = loadCards(opts?.bookId ? { bookId: opts.bookId } : undefined);
+export function collectCiteQueue(opts?: { bookId?: string; cardId?: string }): HeYeItem[] {
+  let cards = loadCards(opts?.bookId ? { bookId: opts.bookId } : undefined);
+  if (opts?.cardId != null) {
+    const card = loadCard(opts.cardId);
+    if (!card) {
+      cards = [];
+    } else if (opts.bookId != null) {
+      const book = loadBooks().find((b) => b.id === opts.bookId);
+      cards = book && book.chapterIds.includes(card.chapterId ?? "") ? [card] : [];
+    } else {
+      cards = [card];
+    }
+  }
   const books = loadBooks();
   const bookOf = new Map<string, string>();
   for (const b of books) for (const ch of b.chapterIds) bookOf.set(ch, b.id);

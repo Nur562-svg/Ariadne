@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { loadAllChapterPages, loadBooks } from "@/lib/entities";
+import { loadAllChapterPages, loadBooks, loadCard } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import HeYeSession from "@/components/HeYeSession";
 
@@ -10,23 +10,44 @@ export const dynamic = "force-dynamic";
  * 这里不做 FSRS 到期调度：队列是「有页码但 seed 未抽查 verified」的 cite，
  * 「本机已对 / 存疑」只写浏览器 localStorage，绝不回写 seed JSON。
  * ?book= 过滤范围；无参 = 全部已解析卡（核页是数据质量工具，范围宁宽）。
+ * desk-card-hub-01：支持 ?card= 收窄到单卡（卡枢纽「核本卡 cite」入口）；
+ * 空/完成态链「回本卡」「去学习本卡」。
  */
 export default async function ReviewPage({
   searchParams,
 }: {
-  searchParams: Promise<{ book?: string }>;
+  searchParams: Promise<{ book?: string; card?: string }>;
 }) {
-  const { book: bookId } = await searchParams;
+  const { book: bookId, card: cardId } = await searchParams;
   const books = loadBooks();
   const book = books.find((b) => b.id === bookId);
   const invalidBook = bookId != null && !book;
+  const card = cardId != null ? loadCard(cardId) : undefined;
+  const invalidCard = cardId != null && !card;
 
-  const items = collectCiteQueue(book ? { bookId: book.id } : undefined);
+  const items = card
+    ? collectCiteQueue({ cardId: card.id, bookId: book?.id })
+    : collectCiteQueue(book ? { bookId: book.id } : undefined);
   // OCR 只传队列涉及的页（loadAllChapterPages 真页子集），避免全量 OCR 进客户端。
   const wanted = new Set(items.map((it) => it.page));
   const pages = loadAllChapterPages().filter((p) => p.page != null && wanted.has(p.page));
 
-  const scopeLabel = book ? `《${book.title}》` : "全部已解析卡";
+  /** 卡所在书（章反查，可被 ?book= 覆盖）：范围文案与回书桌深链。 */
+  const cardBook =
+    card?.chapterId != null
+      ? books.find((b) => b.chapterIds.includes(card.chapterId as string))
+      : undefined;
+  const scopeBook = book ?? cardBook;
+
+  const scopeLabel = card
+    ? `卡《${card.name_zh}》${scopeBook ? ` · 《${scopeBook.title}》` : ""}`
+    : book
+      ? `《${book.title}》`
+      : "全部已解析卡";
+  const cardHref = card ? `/desk/card/${encodeURIComponent(card.id)}` : undefined;
+  const studyHref = card
+    ? `/study?card=${encodeURIComponent(card.id)}${book ? `&book=${encodeURIComponent(book.id)}` : ""}`
+    : "/study";
 
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">
@@ -39,6 +60,11 @@ export default async function ReviewPage({
         {invalidBook ? (
           <p className="mt-2 text-sm text-status-warn">
             书库中没有 book id「{bookId}」——已按全部已解析卡统计。可从书架打开正确书目。
+          </p>
+        ) : null}
+        {invalidCard ? (
+          <p className="mt-2 text-sm text-status-warn">
+            没有卡 id「{cardId}」——卡范围未生效，已按{book ? `《${book.title}》` : "全部已解析卡"}统计。
           </p>
         ) : null}
         <p className="mt-2 text-sm text-muted">
@@ -55,10 +81,28 @@ export default async function ReviewPage({
               </Link>
             </>
           ) : null}
+          {cardHref ? (
+            <>
+              {" "}
+              ·{" "}
+              <Link
+                href={cardHref}
+                className="text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                回本卡 →
+              </Link>
+            </>
+          ) : null}
         </p>
       </header>
 
-      <HeYeSession items={items} pages={pages} scopeLabel={scopeLabel} />
+      <HeYeSession
+        items={items}
+        pages={pages}
+        scopeLabel={scopeLabel}
+        cardHref={cardHref}
+        studyHref={studyHref}
+      />
     </div>
   );
 }

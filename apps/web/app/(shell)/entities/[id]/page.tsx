@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { loadCard, loadCards } from "@/lib/entities";
+import { collectCiteQueue } from "@/lib/heye";
 import { EntityCardDetail } from "@/components/EntityCardDetail";
 
 export function generateStaticParams() {
@@ -56,7 +57,12 @@ async function EntityDetail({
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 flex-1">
-      <EntityCardDetail card={card} backHref={backHref} backLabel={backLabel} />
+      <EntityCardDetail
+        card={card}
+        backHref={backHref}
+        backLabel={backLabel}
+        pendingCiteCount={collectCiteQueue({ cardId: card.id }).length}
+      />
     </main>
   );
 }

@@ -4,15 +4,49 @@ import { CiteChip } from "@/components/CiteChip";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
 
+/** 本卡全部 cite 来源的诚实汇总（cites + fields[].cite + atoms[].cite，按 page|verified|quote 去重）。 */
+function citeStats(card: EntityCard): {
+  total: number;
+  paged: number;
+  nullPage: number;
+  unverified: number;
+} {
+  const seen = new Set<string>();
+  let paged = 0;
+  let nullPage = 0;
+  let unverified = 0;
+  const all = [
+    ...card.cites,
+    ...card.fields.map((f) => f.cite),
+    ...card.atoms.map((a) => a.cite),
+  ];
+  for (const c of all) {
+    if (!c) continue;
+    const qk = (c.quote ?? "").trim().replace(/\s+/g, " ").slice(0, 60);
+    const key = `${c.page ?? "?"}|${c.verified ? 1 : 0}|${qk}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    if (c.page == null) nullPage++;
+    else paged++;
+    if (c.verified === false) unverified++;
+  }
+  return { total: paged + nullPage, paged, nullPage, unverified };
+}
+
 /**
  * 实体卡详情正文：/entities/[id]（shell-01）与 /desk/card/[id]（书桌 DocumentPane）共用。
  * CiteChip 语义不变：有 page → p.N（verified:false 仍琥珀虚线）；page:null → p.?。
+ * desk-card-hub-01：上方加「练 / 核」枢纽动作条与 cite 诚实条——本卡不是死胡同详情，
+ * 而是能练、能核、能回章页的连续面单元；诚实条只汇总 seed 自带 verified 标记，
+ * 绝不把「本机核页 localStorage 态」伪造成教材抽查结论。
  */
 export function EntityCardDetail({
   card,
   backHref,
   backLabel,
   deskBookId,
+  pendingCiteCount,
+  confusionLinks,
 }: {
   card: EntityCard;
   backHref: string;
@@ -20,7 +54,20 @@ export function EntityCardDetail({
   /** 书桌语境（/desk/card/[id]）传入书 id：CiteChip 有页时深链 /desk?book=&page=；
    *  shell /entities 不传，保持落 /viewer。 */
   deskBookId?: string;
+  /** 本卡待核 cite 数（服务端 collectCiteQueue({cardId}) 计数）：0 → 诚实文案，undefined → 不预检直接可点。 */
+  pendingCiteCount?: number;
+  /** 易混对象名（归一化）→ 卡 id：书桌语境下 vs 命中则链 /desk/card/[id]，否则纯文。 */
+  confusionLinks?: Record<string, string>;
 }) {
+  const stats = citeStats(card);
+  const studyHref = deskBookId
+    ? `/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(deskBookId)}`
+    : `/study?card=${encodeURIComponent(card.id)}`;
+  const reviewHref = deskBookId
+    ? `/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(deskBookId)}`
+    : `/review?card=${encodeURIComponent(card.id)}`;
+  const normName = (s: string) => s.trim().toLowerCase();
+
   return (
     <>
       <Link href={backHref} className="text-sm text-muted no-underline hover:text-cinnabar">
@@ -35,6 +82,76 @@ export function EntityCardDetail({
         ) : null}
         <p className="mt-3 text-lg leading-7">{card.one_liner}</p>
       </header>
+
+      {/* 枢纽动作条：练这张卡 → /study?card= · 核本卡 → /review?card=（朱红主 CTA 只给「练」）。 */}
+      <section
+        aria-label="本卡操作"
+        className="mt-6 flex flex-wrap items-center gap-3 rounded-lg border border-line bg-card px-4 py-3"
+      >
+        {card.atoms.length > 0 ? (
+          <Link
+            href={studyHref}
+            className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90 motion-reduce:transition-none"
+          >
+            练这张卡（{card.atoms.length}）
+          </Link>
+        ) : (
+          <span className="rounded-md border border-dashed border-line px-4 py-2 text-sm text-muted">
+            本卡无知识原子，暂不可练
+          </span>
+        )}
+        {pendingCiteCount === 0 ? (
+          <span className="rounded-md border border-dashed border-line px-4 py-2 text-sm text-muted">
+            本卡暂无待核 cite
+          </span>
+        ) : (
+          <Link
+            href={reviewHref}
+            className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline transition-colors hover:border-cinnabar hover:text-cinnabar motion-reduce:transition-none"
+          >
+            核本卡 cite{pendingCiteCount != null && pendingCiteCount > 0 ? ` · ${pendingCiteCount}` : ""}
+          </Link>
+        )}
+        <p className="w-full text-xs leading-6 text-muted">
+          练：本卡 {card.atoms.length} 个原子逐个自评；核：把引用对着该页 OCR 原文核对。
+          两者的进度都只记本机浏览器，不回写教材数据。
+        </p>
+      </section>
+
+      {/* cite 诚实条：有页 / p.? / seed 抽查未核计数；明确 seed verified ≠ 本机核页 localStorage 态。 */}
+      <section
+        aria-label="引用状态"
+        className="mt-4 rounded-lg border border-line bg-card px-4 py-3 text-sm leading-7"
+      >
+        {stats.total > 0 ? (
+          <>
+            <p className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <span className="text-muted">引用 {stats.total} 处</span>
+              <span className="text-muted">
+                有页 <span className="mono font-medium text-foreground">{stats.paged}</span>
+              </span>
+              <span className={stats.nullPage > 0 ? "text-status-warn" : "text-muted"}>
+                无页 p.?{" "}
+                <span className={`mono font-medium ${stats.nullPage > 0 ? "text-status-warn" : "text-foreground"}`}>
+                  {stats.nullPage}
+                </span>
+              </span>
+              <span className={stats.unverified > 0 ? "text-status-warn" : "text-muted"}>
+                教材抽查未核{" "}
+                <span className={`mono font-medium ${stats.unverified > 0 ? "text-status-warn" : "text-foreground"}`}>
+                  {stats.unverified}
+                </span>
+              </span>
+            </p>
+            <p className="mt-1 text-xs leading-6 text-muted">
+              「抽查未核」是教材数据（seed）自带的 verified 标记，未经本机对页——不计为已核；
+              你在核页标「本机已对」只存本浏览器，与这里的数字互不写入。本卡核页状态不在此条伪造。
+            </p>
+          </>
+        ) : (
+          <p className="text-muted">本卡暂无引用记录（卡引用 / 字段 / 原子均无 cite）。</p>
+        )}
+      </section>
 
       <section className="mt-8">
         <h2 className="text-sm font-semibold text-muted">字段</h2>
@@ -55,16 +172,32 @@ export function EntityCardDetail({
         <section className="mt-10">
           <h2 className="text-sm font-semibold text-muted">易混点</h2>
           <ul className="mt-3 space-y-2">
-            {card.confusions.map((c, i) => (
-              <li
-                key={i}
-                className="rounded-lg border border-cinnabar/30 bg-cinnabar-soft/60 p-4 text-sm leading-7"
-              >
-                <span className="font-semibold text-cinnabar">vs {c.vs}</span>
-                <span className="mx-2 text-line">|</span>
-                {c.tip}
-              </li>
-            ))}
+            {card.confusions.map((c, i) => {
+              const vsId =
+                deskBookId && confusionLinks ? confusionLinks[normName(c.vs)] : undefined;
+              return (
+                <li
+                  key={i}
+                  className="rounded-lg border border-cinnabar/30 bg-cinnabar-soft/60 p-4 text-sm leading-7"
+                >
+                  <span className="font-semibold text-cinnabar">
+                    vs{" "}
+                    {vsId ? (
+                      <Link
+                        href={`/desk/card/${encodeURIComponent(vsId)}`}
+                        className="text-cinnabar no-underline hover:underline underline-offset-4"
+                      >
+                        {c.vs}
+                      </Link>
+                    ) : (
+                      c.vs
+                    )}
+                  </span>
+                  <span className="mx-2 text-line">|</span>
+                  {c.tip}
+                </li>
+              );
+            })}
           </ul>
         </section>
       ) : null}

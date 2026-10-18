@@ -211,8 +211,37 @@ export type StudyAtom = {
   cite?: Cite;
 };
 
-export function collectStudyAtoms(opts?: { chapterId?: string; bookId?: string }): StudyAtom[] {
-  return loadCards(opts).flatMap((c) =>
+/**
+ * 组合规则（cardId 与 book/chapter 并存时）：
+ * - 仅 cardId：只出该卡 atoms（书桌卡枢纽 /study?card= 的范围）。
+ * - cardId + bookId / chapterId：要求卡属于该范围（一致性约束）——不属于则空数组，
+ *   由页面诚实回落（卡不存在 / 范围不匹配都给警告文案），不静默放宽。
+ * - 仅 bookId / chapterId（无 cardId）：原行为不变（按书 / 章过滤全库）。
+ */
+export function collectStudyAtoms(opts?: {
+  chapterId?: string;
+  bookId?: string;
+  cardId?: string;
+}): StudyAtom[] {
+  const { cardId, ...scope } = opts ?? {};
+
+  let cards: EntityCard[];
+  if (cardId != null) {
+    const card = loadCard(cardId);
+    if (!card) return [];
+    const inBook =
+      scope.bookId == null ||
+      loadBooks().some(
+        (b) => b.id === scope.bookId && b.chapterIds.includes(card.chapterId ?? ""),
+      );
+    const inChapter = scope.chapterId == null || card.chapterId === scope.chapterId;
+    if (!inBook || !inChapter) return [];
+    cards = [card];
+  } else {
+    cards = loadCards(scope);
+  }
+
+  return cards.flatMap((c) =>
     c.atoms.map((a) => ({
       cardId: c.id,
       cardName: c.name_zh,
