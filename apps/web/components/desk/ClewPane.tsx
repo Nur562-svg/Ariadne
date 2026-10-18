@@ -1,38 +1,75 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
+import { useDeskContext } from "@/components/desk/DeskContext";
+import type { ClewContextData } from "@/components/desk/DeskContext";
 
 type Msg = { role: "user" | "assistant"; text: string };
 
-const STUB_REPLY =
-  "（占位回复）Clew 对话尚未接入模型——这是本地 stub，不代表已核对的内容。回答请以教材印刷页（p.N）为准。";
+/** 建议问：静态模板插真名（书名/章/可见实体/当前页），无 LLM。 */
+function buildSuggestions(clew: ClewContextData): string[] {
+  if (!clew.book) {
+    return ["导入一本教材后，Clew 才有可问的上下文。"];
+  }
+  const b = clew.book.title;
+  const list: string[] = [];
+  if (clew.visibleEntityName) {
+    list.push(`《${b}》中「${clew.visibleEntityName}」的核心机制是什么？`);
+  }
+  if (clew.chapter) {
+    list.push(`「${clew.chapter.title}」这一章有哪些易混概念？`);
+  }
+  if (clew.page != null) {
+    list.push(`中栏印刷页 p.${clew.page} 这段在讲什么？`);
+  }
+  list.push(`这本书从哪一章开始读比较顺？`);
+  return list.slice(0, 3);
+}
+
+/** stub 回复规则：有页码上下文 → 提示对页；无 → 建议先开章页/卡。绝不宣称已核/verified。 */
+function stubReply(clew: ClewContextData): string {
+  const pages = [
+    ...(clew.page != null ? [clew.page] : []),
+    ...clew.citePages.filter((p) => p != null),
+  ];
+  if (pages.length > 0) {
+    return `（stub · 未接模型）本地占位回复。可以到中栏章页或实体卡 CiteChip 对着看 p.${pages.join(
+      "、p.",
+    )}；本面板不生成已核对结论，回答以教材印刷页为准。`;
+  }
+  return `（stub · 未接模型）本地占位回复。先把中栏切到「章页」或打开一张实体卡再问，便于对照印刷页核对；本面板不生成已核对结论。`;
+}
 
 /**
- * Clew 右栏（~400）：UI 壳 + 本地 stub 对话。
+ * Clew 右栏（~400）：UI 壳 + 本地 stub 对话（升级版）。
+ * 上下文来自 DeskContext（书/章/当前页/可见卡名/示例 cite 页）；
  * 无 LLM 调用、无假 verified cite；底部常驻「不做诊断」脚注。
  */
-export default function ClewPane({ bookTitle }: { bookTitle?: string }) {
+export default function ClewPane() {
+  const { clew } = useDeskContext();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
   const threadRef = useRef<HTMLDivElement>(null);
 
-  const suggestions = bookTitle
-    ? [
-        "固有免疫和适应性免疫的核心区别是什么？",
-        "抗原、表位、抗原决定簇是什么关系？",
-        "对比细胞免疫与体液免疫的应答过程。",
-      ]
-    : ["书库为空——先到 /ingest 导入教材，Clew 才有可问的上下文。"];
+  const suggestions = buildSuggestions(clew);
 
   function send(text: string) {
     const q = text.trim();
     if (!q) return;
-    setMessages((prev) => [...prev, { role: "user", text: q }, { role: "assistant", text: STUB_REPLY }]);
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: q },
+      { role: "assistant", text: stubReply(clew) },
+    ]);
     setDraft("");
     requestAnimationFrame(() => {
       threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight });
     });
   }
+
+  const bookHref = clew.book ? `/desk?book=${encodeURIComponent(clew.book.id)}` : "/desk";
+  const studyHref = clew.book ? `/study?book=${encodeURIComponent(clew.book.id)}` : "/study";
 
   return (
     <aside
@@ -42,7 +79,10 @@ export default function ClewPane({ bookTitle }: { bookTitle?: string }) {
       <header className="border-b border-line px-4 pb-2 pt-4">
         <div className="flex items-baseline justify-between">
           <h2 className="text-sm font-semibold">Clew</h2>
-          <span className="text-xs text-muted">{bookTitle ? "本地 stub" : "书库为空"}</span>
+          <span className="text-xs text-muted">
+            {clew.book ? "本地 stub" : "书库为空"}
+            {clew.page != null ? ` · p.${clew.page}` : ""}
+          </span>
         </div>
         <nav className="mt-2 flex gap-4 text-sm" aria-label="Clew 标签页">
           <span className="border-b-2 border-cinnabar pb-1.5 font-medium text-cinnabar">对话</span>
@@ -58,8 +98,17 @@ export default function ClewPane({ bookTitle }: { bookTitle?: string }) {
       <div ref={threadRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
         {messages.length === 0 ? (
           <div>
-            <p className="text-sm leading-7 text-muted">
-              可以问当前教材的内容。现在还只是本地占位对话（stub）——不接模型、不编页码。
+            <p className="text-xs leading-6 text-muted">
+              还没接模型（stub）。清问带页码对照的问题；先按这条路径走通：
+            </p>
+            <p className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted">
+              <Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">导入教材</Link>
+              <span>→</span>
+              <Link href="/" className="text-cinnabar no-underline hover:underline underline-offset-4">书架打开</Link>
+              <span>→</span>
+              <Link href={bookHref} className="text-cinnabar no-underline hover:underline underline-offset-4">书桌读实体卡/章页</Link>
+              <span>→</span>
+              <Link href={studyHref} className="text-cinnabar no-underline hover:underline underline-offset-4">学习环自测</Link>
             </p>
             <ul className="mt-4 space-y-2">
               {suggestions.map((s) => (

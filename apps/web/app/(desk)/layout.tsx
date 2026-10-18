@@ -1,13 +1,12 @@
 import { loadBooks, loadCards } from "@/lib/entities";
-import Sidebar from "@/components/desk/Sidebar";
-import ClewPane from "@/components/desk/ClewPane";
+import DeskShellClient from "@/components/desk/DeskShellClient";
 
 export const dynamic = "force-dynamic";
 
 /**
- * desk-v4 三栏壳：左 Sidebar(~248) · 中 DocumentPane(自适应) · 右 ClewPane(~400)。
- * 学习主路径（/desk、/desk/card/*、/review）共用此壳，不再叠满宽顶栏；
- * /ingest、书库、viewer 等 shell-01 页面留在 (shell) 单栏组。
+ * desk-v4 三栏壳（服务端数据装配）：
+ * 读 books/cards 组装 Sidebar 在读书目与 Clew 初始上下文，交给 DeskShellClient。
+ * 书桌主路径（/desk、/desk/card/*、/review）+ 书架 / 共用此壳。
  */
 export default function DeskLayout({ children }: { children: React.ReactNode }) {
   const books = loadBooks();
@@ -20,11 +19,13 @@ export default function DeskLayout({ children }: { children: React.ReactNode }) 
       }
     : undefined;
 
+  const clewInitial = book
+    ? { book: { id: book.id, title: book.title }, citePages: [] }
+    : { citePages: [] };
+
   return (
-    <div className="flex h-dvh overflow-hidden">
-      <Sidebar book={sidebarBook} />
-      <main className="min-w-0 flex-1 overflow-y-auto">{children}</main>
-      <ClewPane bookTitle={book?.title} />
-    </div>
+    <DeskShellClient sidebarBook={sidebarBook} clewInitial={clewInitial}>
+      {children}
+    </DeskShellClient>
   );
 }

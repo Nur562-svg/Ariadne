@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { loadAllChapterPages } from "@/lib/entities";
+import { loadAllChapterPages, loadBooks } from "@/lib/entities";
 
 /**
  * citation 跳页的落点：展示该印刷页的 OCR 原文（main 栏阅读序），
@@ -8,6 +8,7 @@ import { loadAllChapterPages } from "@/lib/entities";
  *
  * 印刷页索引合并自 data/chapters/*.blocks.json（各章 page = 物理页 − pageOffset），
  * 勿写死单一章节，否则 ch03+ 的 cite（如 p.64）会报「本章范围 1–18」。
+ * 回链优先书桌（章 → 书反查，能带 ?book= 则带），实体卡降为次级。
  */
 export default function ViewerPage({
   params,
@@ -18,9 +19,6 @@ export default function ViewerPage({
 }) {
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 flex-1">
-      <Link href="/entities" className="text-sm text-muted no-underline hover:text-cinnabar">
-        ← 全部实体卡
-      </Link>
       <Suspense fallback={<p className="mt-8 text-muted">加载中…</p>}>
         <ViewerBody params={params} searchParams={searchParams} />
       </Suspense>
@@ -40,6 +38,23 @@ async function ViewerBody({
   const pageNo = Number(page);
   const pages = loadAllChapterPages();
   const pg = pages.find((p) => p.page === pageNo);
+  /** 章 → 书反查：能推 book 则回链书桌带 ?book=；推不出回落 /desk。 */
+  const deskBook = pg?.chapterId
+    ? loadBooks().find((b) => b.chapterIds.includes(pg.chapterId as string))
+    : undefined;
+  const deskHref = deskBook ? `/desk?book=${encodeURIComponent(deskBook.id)}` : "/desk";
+
+  const backLinks = (
+    <nav className="flex items-baseline gap-5 text-sm" aria-label="返回">
+      <Link href={deskHref} className="text-cinnabar no-underline hover:underline underline-offset-4">
+        ← 书桌
+      </Link>
+      <Link href="/entities" className="text-muted no-underline hover:text-cinnabar">
+        ← 全部实体卡
+      </Link>
+    </nav>
+  );
+
   if (!pg) {
     const nums = pages.map((p) => p.page).filter((n): n is number => n != null);
     const range =
@@ -47,9 +62,12 @@ async function ViewerBody({
         ? `${Math.min(...nums)} – ${Math.max(...nums)}`
         : "（无已收录页）";
     return (
-      <p className="mt-8 text-status-warn">
-        未找到印刷页 p.{page}（已收录范围 {range}）。
-      </p>
+      <>
+        <div className="mt-2">{backLinks}</div>
+        <p className="mt-6 text-status-warn">
+          未找到印刷页 p.{page}（已收录范围 {range}）。
+        </p>
+      </>
     );
   }
 
@@ -58,6 +76,7 @@ async function ViewerBody({
 
   return (
     <>
+      <div className="mt-2">{backLinks}</div>
       <header className="mt-4 flex flex-wrap items-baseline justify-between gap-3">
         <h1 className="text-2xl font-bold">
           印刷页 p.{pg.page}
