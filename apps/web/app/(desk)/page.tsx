@@ -18,13 +18,14 @@ export default function Library() {
       <div className="mx-auto w-full max-w-3xl px-8 py-10">
         <h1 className="brand-rule pb-2 text-4xl font-bold tracking-wide">书库</h1>
         <p className="mt-6 leading-8 text-foreground/90">
-          书库还空着。上传教材 PDF、在本机跑完 OCR 解析与实体卡抽取，再把书目注册进
-          <span className="mono text-sm"> config/books.json </span>，即可在书桌阅读、进入卡浏览器与学习环。
+          书库还空着。先到 <span className="mono text-sm">/ingest</span> 上传教材 PDF、跑完 OCR 解析与实体卡抽取，
+          再在章清单里「注册进书库」，即可在书桌阅读、进入卡浏览器与学习环。
+          书目注册走应用内流程，不需要手工改 <span className="mono text-sm">config/books.json</span>。
         </p>
         <ol className="mt-8 max-w-md space-y-2 text-sm text-foreground/85">
           <li>1 · 上传教材 PDF，本机跑 OCR 解析。</li>
           <li>2 · 抽取实体卡与知识原子。</li>
-          <li>3 · 注册书目进 config/books.json，开书桌阅读、进学习环 / 核页。</li>
+          <li>3 · 在 /ingest 章清单里「注册进书库」，开书桌阅读、进学习环 / 核页。</li>
         </ol>
         <Link
           href="/ingest"

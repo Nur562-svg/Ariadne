@@ -125,6 +125,8 @@ async function ReviewBody({
     pageNum != null && scopeBook
       ? `/desk?book=${encodeURIComponent(scopeBook.id)}&page=${pageNum}`
       : undefined;
+  /** 无页时回书桌的兜底深链。 */
+  const deskHref = scopeBook ? `/desk?book=${encodeURIComponent(scopeBook.id)}` : "/desk";
 
   /** ?book= 时章芯片只显示该书 chapterIds（对齐 study）；单卡范围固定，隐藏章芯片。 */
   const chipChapters = book
@@ -174,13 +176,10 @@ async function ReviewBody({
         defaultMode="open"
         nonDefaultModes={["checked", "doubt"]}
       />
-      {/* T21 续开指针轻触：有效范围（?book= 或 ?card= 反查书）才写同 bookId；不写非法书。 */}
+      {/* T21/T23 续开指针轻触：有效范围（?book= 或 ?card= 反查书）才写同 bookId；不写非法书。
+          page 合法时写带 page 的 deskHref，否则回落不带 page 的兜底（同书保留原页）。 */}
       {scopeBook ? (
-        <LastOpenedTouch
-          bookId={scopeBook.id}
-          deskHref={`/desk?book=${encodeURIComponent(scopeBook.id)}`}
-          page={pageNum}
-        />
+        <LastOpenedTouch bookId={scopeBook.id} deskHref={deskPageHref ?? deskHref} page={pageNum} />
       ) : null}
       <header>
         <h1 className="brand-rule pb-2 text-3xl font-bold">核页 · 本机对页</h1>
@@ -340,6 +339,23 @@ async function ReviewBody({
                 {label}
               </Link>
             ))}
+          </div>
+
+          {/* T23 D：sticky 工具带回程薄链（对称 study）：?card= 回本卡；page 合法回书桌本页，否则回落回书桌。 */}
+          <div className="flex items-center gap-3">
+            {cardHref ? (
+              <Link href={cardHref} className="text-sm text-muted no-underline hover:text-cinnabar">
+                回本卡 →
+              </Link>
+            ) : null}
+            <Link
+              href={deskPageHref ?? deskHref}
+              className={`text-sm no-underline hover:underline underline-offset-4 ${
+                deskPageHref ? "text-cinnabar" : "text-muted hover:text-cinnabar"
+              }`}
+            >
+              {deskPageHref ? "回书桌本页 →" : "回书桌 →"}
+            </Link>
           </div>
         </div>
       </div>

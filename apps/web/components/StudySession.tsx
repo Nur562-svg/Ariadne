@@ -15,6 +15,8 @@ import {
   type StudyMode,
 } from "@/lib/study";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
+import { loadLastOpened } from "@/lib/last-opened";
+import { loadReturn, type ReturnEntry } from "@/lib/return-stack";
 import { isEditableTarget } from "@/lib/keyboard";
 
 /**
@@ -36,6 +38,8 @@ export default function StudySession({
   cardHref,
   allHref,
   unknownHref,
+  deskPageHint,
+  deskBookId,
   scopeKey,
 }: {
   /** 当前范围全池（未按档位过滤；档位在客户端按本机评分过滤）。 */
@@ -56,6 +60,10 @@ export default function StudySession({
   /** 「只练不熟」与空队列回链：同范围切档 URL。 */
   allHref: string;
   unknownHref: string;
+  /** 单卡首个有页 cite 页码（服务端给）：完成/空态回书桌本页的页来源之一。 */
+  deskPageHint?: number | null;
+  /** 当前范围书 id（scopeBook，含单卡反查）：回书桌本页 / last-opened 回落以它为准。 */
+  deskBookId?: string;
   /** 续位作用域（与父级 remount key 一致）：`${card|all}:${book|all}:${chapter|all}:${mode}`。 */
   scopeKey: string;
 }) {
@@ -67,7 +75,23 @@ export default function StudySession({
   const [run, setRun] = useState({ known: 0, unknown: 0 });
   /** 本标签续位标记（恢复游标 >0 时置位）——用于诚实续练文案。 */
   const [resumed, setResumed] = useState(false);
+  /** 最近一个带页 cite 的原子页码（完成态回书桌本页的第一优先页源）。 */
+  const [lastAtomPage, setLastAtomPage] = useState<number | null>(null);
+  /** loadLastOpened() 同书页码（第三优先页源，客户端回落）。 */
+  const [lastOpenedPage, setLastOpenedPage] = useState<number | null>(null);
+  /** 「回到刚才」return 短链（出发写于书桌/卡枢纽）。 */
+  const [ret, setRet] = useState<ReturnEntry | null>(null);
   const questionRef = useRef<HTMLElement | null>(null);
+
+  /** 同书 last-opened 页码 + return 短链（客户端读，SSR 不读 localStorage/sessionStorage）。 */
+  useEffect(() => {
+    const scopeBookId = deskBookId ?? activeBookId;
+    if (scopeBookId) {
+      const lo = loadLastOpened();
+      if (lo?.bookId === scopeBookId && lo.page != null) setLastOpenedPage(lo.page);
+    }
+    setRet(loadReturn());
+  }, [deskBookId, activeBookId]);
 
   // 挂载后读本机评分并冻结本轮队列（SSR 不读 localStorage，避免水合不一致）；
   // 同时恢复本标签会话游标（clamp 到 [0, order.length]，>0 视为续练）。
@@ -136,6 +160,15 @@ export default function StudySession({
 
   const pool = useMemo(() => countPoolGrades(atoms, grades), [atoms, grades]);
 
+  /** 回书桌本页 / 回书桌：页来源优先级 = 当前原子 cite.page → 单卡首个有页 cite(pageHint) → last-opened 同书 page。 */
+  const deskBackBookId = deskBookId ?? activeBookId;
+  const deskBackPage = lastAtomPage ?? deskPageHint ?? lastOpenedPage;
+  const deskBackHref =
+    deskBackPage != null && deskBackBookId
+      ? `/desk?book=${encodeURIComponent(deskBackBookId)}&page=${deskBackPage}`
+      : deskHref;
+  const deskBackLabel = deskBackPage != null && deskBackBookId ? "回书桌本页 →" : "回书桌 →";
+
   if (atoms.length === 0) return null;
 
   /** 本机评分读取中：服务端/首帧一致占位，读完再出题。 */
@@ -181,20 +214,30 @@ export default function StudySession({
                 核本卡
               </Link>
               <Link
-                href={deskHref}
+                href={deskBackHref}
                 className="text-sm text-muted no-underline hover:text-cinnabar"
               >
-                回书桌
+                {deskBackLabel}
               </Link>
+              {ret ? (
+                <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
+                  回到刚才 →
+                </Link>
+              ) : null}
             </>
           ) : (
             <>
               <Link
-                href={deskHref}
+                href={deskBackHref}
                 className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
               >
-                回书桌
+                {deskBackLabel}
               </Link>
+              {ret ? (
+                <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
+                  回到刚才 →
+                </Link>
+              ) : null}
               <Link
                 href={reviewHref}
                 className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
@@ -219,6 +262,7 @@ export default function StudySession({
     const next = saveGrade(atomKey(cur), k);
     setGrades(next);
     setRun((r) => ({ known: r.known + (k === 1 ? 1 : 0), unknown: r.unknown + (k === 0 ? 1 : 0) }));
+    if (cur.cite?.page != null) setLastAtomPage(cur.cite.page);
     setRevealed(false);
     setIdx((i) => i + 1);
   }
@@ -279,20 +323,30 @@ export default function StudySession({
                 核本卡
               </Link>
               <Link
-                href={deskHref}
+                href={deskBackHref}
                 className="text-sm text-muted no-underline hover:text-cinnabar"
               >
-                回书桌
+                {deskBackLabel}
               </Link>
+              {ret ? (
+                <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
+                  回到刚才 →
+                </Link>
+              ) : null}
             </>
           ) : (
             <>
               <Link
-                href={deskHref}
+                href={deskBackHref}
                 className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
               >
-                回书桌
+                {deskBackLabel}
               </Link>
+              {ret ? (
+                <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
+                  回到刚才 →
+                </Link>
+              ) : null}
               <Link
                 href={reviewHref}
                 className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"

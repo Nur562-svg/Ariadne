@@ -16,6 +16,7 @@ import {
   type HeYeStore,
 } from "@/lib/heye-store";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
+import { loadReturn, type ReturnEntry } from "@/lib/return-stack";
 import { isEditableTarget } from "@/lib/keyboard";
 
 /**
@@ -63,7 +64,13 @@ export default function HeYeSession({
   const [index, setIndex] = useState(0);
   /** 本标签续位标记（恢复游标时置位），用于诚实续练文案。 */
   const [resumed, setResumed] = useState(false);
+  /** 「回到刚才」return 短链（出发写于书桌章页 / 卡枢纽）。 */
+  const [ret, setRet] = useState<ReturnEntry | null>(null);
   const citeRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setRet(loadReturn());
+  }, []);
 
   // 挂载后读本机态（SSR 不读 localStorage，避免水合不一致）；换范围/档位由父级 key 重挂载。
   // 同时恢复本标签会话游标并 clamp 到可见队列（filterItemsByMode 同步可用）。
@@ -208,16 +215,16 @@ export default function HeYeSession({
           ) : deskPageHref ? (
             <>
               <Link
-                href={deskPageHref}
+                href={studyHref ?? "/study"}
                 className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
               >
-                回书桌本页 →
+                去学习环 /study →
               </Link>
               <Link
-                href={studyHref ?? "/study"}
+                href={deskPageHref}
                 className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
               >
-                去学习环 /study →
+                回书桌本页 →
               </Link>
             </>
           ) : (
@@ -242,6 +249,15 @@ export default function HeYeSession({
               className="text-sm text-muted no-underline hover:text-cinnabar"
             >
               清章看全章节 →
+            </Link>
+          ) : null}
+          {ret ? (
+            <Link
+              href={ret.href}
+              title={ret.label}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              回到刚才 →
             </Link>
           ) : null}
         </div>
@@ -316,6 +332,15 @@ export default function HeYeSession({
               className="text-sm text-muted no-underline hover:text-cinnabar"
             >
               清章看全章节 →
+            </Link>
+          ) : null}
+          {ret ? (
+            <Link
+              href={ret.href}
+              title={ret.label}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              回到刚才 →
             </Link>
           ) : null}
         </div>

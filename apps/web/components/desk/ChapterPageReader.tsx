@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import type { PageCitingCard, PageDoc } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import { isEditableTarget } from "@/lib/keyboard";
+import { saveReturn } from "@/lib/return-stack";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -68,6 +69,21 @@ export default function ChapterPageReader({
     bookId && curPage != null
       ? `/review?book=${encodeURIComponent(bookId)}&page=${curPage}`
       : undefined;
+
+  /** 出发进练/核前写 return 短链（回当前书桌章页，带印刷页）。 */
+  const deskReturnHref =
+    bookId && curPage != null
+      ? `/desk?book=${encodeURIComponent(bookId)}&page=${curPage}`
+      : bookId
+        ? `/desk?book=${encodeURIComponent(bookId)}`
+        : "/desk";
+  function rememberDeskReturn() {
+    saveReturn({
+      href: deskReturnHref,
+      label: curPage != null ? `书桌 p.${curPage}` : "书桌",
+      at: Date.now(),
+    });
+  }
 
   function switchChapter(id: string) {
     const first = pages
@@ -173,6 +189,7 @@ export default function ChapterPageReader({
               pendingPageCount != null && pendingPageCount > 0 ? (
                 <Link
                   href={reviewPageHref}
+                  onClick={rememberDeskReturn}
                   className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
                 >
                   核本页（{pendingPageCount}）→
@@ -204,6 +221,7 @@ export default function ChapterPageReader({
                       {c.atomCount > 0 && bookId ? (
                         <Link
                           href={`/study?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}`}
+                          onClick={rememberDeskReturn}
                           className="ml-2 text-xs text-cinnabar no-underline hover:underline underline-offset-4"
                         >
                           练

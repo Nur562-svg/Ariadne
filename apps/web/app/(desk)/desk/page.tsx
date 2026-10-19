@@ -80,6 +80,7 @@ export default async function DeskPage({
       ) : null}
       <DocumentPane
         book={book}
+        books={books.map((b) => ({ id: b.id, title: b.title }))}
         chapters={chapters}
         cards={cards}
         pages={pages}

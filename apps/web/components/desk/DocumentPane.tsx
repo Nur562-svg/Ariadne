@@ -6,6 +6,7 @@ import type { BookConfig, ChapterConfig, EntityCard, PageCitingCard, PageDoc } f
 import SectionToc, { SECTIONS } from "@/components/desk/SectionToc";
 import type { SectionId } from "@/components/desk/SectionToc";
 import ChapterPageReader from "@/components/desk/ChapterPageReader";
+import BookSwitcher, { type BookSwitcherBook } from "@/components/desk/BookSwitcher";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import CitePeek from "@/components/CitePeek";
 import { useDeskContext } from "@/components/desk/DeskContext";
@@ -100,6 +101,7 @@ function CardCard({ card, bookId }: { card: EntityCard; bookId?: string }) {
  */
 export default function DocumentPane({
   book,
+  books,
   chapters,
   cards,
   pages,
@@ -112,6 +114,8 @@ export default function DocumentPane({
   heyePool,
 }: {
   book: BookConfig;
+  /** 全部已注册书（T23 换书用）；书名旁 ≥2 本时显示「换书 ▾」。 */
+  books?: BookSwitcherBook[];
   chapters: ChapterConfig[];
   cards: EntityCard[];
   pages: PageDoc[];
@@ -283,7 +287,10 @@ export default function DocumentPane({
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">
       <header>
-        <h1 className="brand-rule pb-2 text-3xl font-bold">{book.title}</h1>
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <h1 className="brand-rule pb-2 text-3xl font-bold">{book.title}</h1>
+          {books ? <BookSwitcher books={books} currentBookId={book.id} /> : null}
+        </div>
         {invalidBook ? (
           <p className="mt-2 text-sm text-status-warn">
             书库中没有 book id「{badBookId}」——已回落到第一本书。可从书架打开正确书目。

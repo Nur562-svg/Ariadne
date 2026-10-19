@@ -1,0 +1,54 @@
+按 docs/task-23-desk-loop-roundtrip-continuity.md 实现 Task 23 desk-loop-roundtrip-continuity-01。模型用 DeepSeek-V4-Pro。
+
+════════════════════════════════════
+体量要求（硬 · 读完再动手）
+════════════════════════════════════
+这不是 Task 08–10 那种「改两个 CTA / 迁一个路由」的小刀，也不是只给 study「回书桌」加一个 ?page=。用户要约 1 小时的刀，不要 5–10 分钟收工。DeepSeek-V4-Pro 若 5–15 分钟就收工，说明漏做了。目标约 60–90 分钟真实编码：多文件协调（学习环回书桌带页 · sessionStorage 薄 return 栈「回到刚才」 · 卡枢纽 atoms 清单+本页链 · review LastOpenedTouch 写页 · study/review sticky 回本卡/回本页对称 · DocumentPane 书名旁换书补齐 · 空库文案对齐 T22 注册 · 多路由自测）。必须做完 brief 里 IN 的 A+B+C+D+E 全部，不要只做其中一角。验收按全部段检查。
+
+前置：先 git log -1 --oneline 确认 tip 已含 Task 22（目标「T22 tip or later」——feat desk-ingest-shelf-register-01：register-book.ts、RegisterMaterialButton、ingest 章清单、recent-books.v1、Sidebar 换书、长标题 truncate）。若仍停在仅 T21（cba68c0）或更早、或工作树无 T22 文件，停下来对齐，不要开工。不要 push。先读 docs/frontend-aesthetics.md。对照已有：StudySession / HeYeSession 回程链、deskPageHref、CitePeek、LastOpenedTouch、last-opened.ts（含 recent 栈）、session-continuity.ts、StickyModeGate、study/review sticky 工具带、EntityCardDetail 枢纽、DocumentPane、ChapterPageReader 核本页、Sidebar 换书、LibraryContinuity。
+
+产品身份：顾客自带材料 → 可考知识原子。日用路径是书桌 ↔ 练 ↔ 核 ↔ 卡枢纽不断线——不是掌握度仪表盘，也不是题库营销页。免疫学 seed 是验收语料。QueuePanel stub 故意保留（诚实跳转，不自建 Due）。
+
+════════════════════════════════════
+做（按顺序 · 多步交付）
+════════════════════════════════════
+
+【步骤 1 · A 学习回程带页 + B 薄 return 栈】
+1) /study 完成态、队列空、范围空：「回书桌」在能解析印刷页时改为 /desk?book=&page=，文案「回书桌本页 →」（与 HeYe 对称）；无页线索则不带 page、不假 p.1。页来源优先级：当前 atom cite.page → 单卡首个有页 cite → loadLastOpened() 同书 page/deskHref。
+2) LastOpenedTouch：study 已知页则传 page；未知保持 touchLastOpened「同书保留原页」语义，禁止用空 page 擦掉书桌精确页。
+3) 新增薄 return 桶（建议 ariadne.desk.return.v1，sessionStorage；与 ariadne.desk.session.v1 / recent-books.v1 / study·heye 分桶）。从书桌章页/卡枢纽出发进练或核时写入 { href, label?, at }；完成/空态次级链「回到刚才 →」；非法相对路径或目标失效则忽略。禁止改名 ariadne.study.v1 / ariadne.heye.v1；禁止复用 session 游标桶或最近栈当 return。
+
+【步骤 2 · C 卡枢纽 densify + D sticky/换书对称】
+1) EntityCardDetail：atoms 紧凑清单（id + 问句一行摘要）；有页 cite 时次级「在书桌打开本页 →」；从枢纽进练/核写 return。
+2) /review 的 LastOpenedTouch：合法 pageNum 时写入 page 与带 page 的 deskHref。
+3) /study sticky 工具带：?card= 时薄「回本卡」；可解析本页时薄「回书桌本页」（次级文字链，勿第三颗大红）。保持 T21 章芯片+档位 sticky 与 T20 StickyModeGate。
+4) DocumentPane 书名旁：books.length>=2 时补齐薄换书（T22 仅 Sidebar；本刀补齐 and/or）。复用最近栈 deskHref/page；视觉同族「换书 ▾」，非书单墙。
+
+【步骤 3 · E 空错/回归】
+1) / 书库空态：指向 /ingest「注册进书库」，勿再暗示只能手改 books.json。
+2) 按 brief 自测；pnpm --filter web build PASS；不要 push；确认无 FSRS、无 Clew API 真写入、无 verified:true、无掌握%、QueuePanel 未大改、CitePeek 未重做、study/heye/session/recent/return 桶边界清晰。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–22：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模、TOC、Clew 会话条/本轮变更/章池 compact、卡页 CitePeek、/review 章芯片+三档+同页批量+同页跳、/study 三档+键盘环+CitePeek、卡枢纽 ?card=、本页卡轨与翻页 ?page=、作用域 LocalProgress、ingest 状态机与就绪三连与注册进书库、书库三连、T20 sessionStorage 续位 + StickyModeGate + 空态作用域恢复、T21 last-opened + LibraryContinuity + Sidebar 在读 + sticky 工具带、T22 register API + 章清单 + recent-books + Sidebar 换书、collectStudyAtoms、collectCiteQueue、cardsCitingPage、loadAllChapterPages、ariadne.study.v1、ariadne.heye.v1、ariadne.desk.session.v1、ariadne.desk.last-opened.v1、ariadne.desk.recent-books.v1。勿 verified:true 过关。勿静默覆盖 seed 章。A+B+C+D+E 范围保持完整。
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+真 FSRS / ts-fsrs / Due 调度；Clew LLM/API / ProposalCard 真写入；改 seed verified:true；掌握% / 假仪表盘 / Due 角标；改名 ariadne.study.v1 / ariadne.heye.v1；复用 session.v1 或 recent-books.v1 当 return 桶；重做 CitePeek；OCR 句级高亮 / 页图 Canvas；Clew QueuePanel 大改（stub 故意）/ Clew 拖宽 / 窄屏 DeskShell 大重构；云端 OCR / 改 parse·extract；ingest 再注册大做 / 静默覆盖章 id；exam-anchor 题库/模考 UI；PWA / offline；进度 JSON 导出大做；⌘K 全命令面板；新章 ch08+ seed 内容；nur-landing / 营销 hero；擅自 push。
+
+════════════════════════════════════
+审美
+════════════════════════════════════
+朱红唯一强调色；精炼书桌；卡片仅在「卡本身是交互」时用；效用文；无营销 hero。琥珀仅作未核实/存疑/警告。回程链是次级文字链或一颗已有主 CTA 的对称，不要在完成态并排三颗大红。「回到刚才」克制次级。换书是效用入口，不要书单墙。atoms 清单紧凑可读，无假掌握色环/进度炫技。sticky / 在读 / 继续上次视觉语言与 T21–22 一致。
+
+════════════════════════════════════
+成功标准（回复时勾 · 全部段）
+════════════════════════════════════
+- 多文件改动（回程带页 + return 栈 + 卡枢纽 + sticky/换书 + 空库文案…），不是只改一处 href
+- /study 有页可回书桌本页；出发可回到刚才；卡枢纽 atoms+本页链；review 续开含 page；书桌书名旁可换书；T22 注册/最近栈/Sidebar 换书未毁
+- T07–22 回归未毁（含 T18 键盘环、T19 CitePeek、T20 续位、T21 sticky、T22 register）；build PASS；未 push；study/heye/session/recent key 未破；return 独立分桶
+- 回复含：改动文件列表、build 结果、A/B/C/D/E 说明（页来源优先级 · return 桶边界）、自测路由摘要
+
+做完简短列出以上证据，等验收；不要 push。

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { EntityCard } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
+import CardHubReturnLinks from "@/components/CardHubReturnLinks";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
 
@@ -32,6 +33,14 @@ function citeStats(card: EntityCard): {
     if (c.verified === false) unverified++;
   }
   return { total: paged + nullPage, paged, nullPage, unverified };
+}
+
+/** 本卡首个有页 cite 页码（cites → fields → atoms；全无页 → null）：「在书桌打开本页」定位用。 */
+function firstPagedCitePage(card: EntityCard): number | null {
+  for (const c of card.cites) if (c.page != null) return c.page;
+  for (const f of card.fields) if (f.cite?.page != null) return f.cite.page;
+  for (const a of card.atoms) if (a.cite?.page != null) return a.cite.page;
+  return null;
 }
 
 /**
@@ -71,6 +80,12 @@ export function EntityCardDetail({
     ? `/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(deskBookId)}`
     : `/review?card=${encodeURIComponent(card.id)}`;
   const normName = (s: string) => s.trim().toLowerCase();
+  /** 「在书桌打开本页」（仅书桌语境 + 首个有页 cite）：/desk?book=&page= 章页定位。 */
+  const firstPage = firstPagedCitePage(card);
+  const deskPageHref =
+    deskBookId && firstPage != null
+      ? `/desk?book=${encodeURIComponent(deskBookId)}&page=${firstPage}`
+      : undefined;
 
   return (
     <>
@@ -92,30 +107,23 @@ export function EntityCardDetail({
         aria-label="本卡操作"
         className="mt-6 flex flex-wrap items-center gap-3 rounded-lg border border-line bg-card px-4 py-3"
       >
-        {card.atoms.length > 0 ? (
+        <CardHubReturnLinks
+          studyHref={studyHref}
+          reviewHref={reviewHref}
+          cardId={card.id}
+          cardName={card.name_zh}
+          atomCount={card.atoms.length}
+          pendingCiteCount={pendingCiteCount}
+          deskBookId={deskBookId}
+        />
+        {deskPageHref ? (
           <Link
-            href={studyHref}
-            className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90 motion-reduce:transition-none"
+            href={deskPageHref}
+            className="text-sm text-muted no-underline hover:text-cinnabar"
           >
-            练这张卡（{card.atoms.length}）
+            在书桌打开本页 →
           </Link>
-        ) : (
-          <span className="rounded-md border border-dashed border-line px-4 py-2 text-sm text-muted">
-            本卡无知识原子，暂不可练
-          </span>
-        )}
-        {pendingCiteCount === 0 ? (
-          <span className="rounded-md border border-dashed border-line px-4 py-2 text-sm text-muted">
-            本卡暂无待核 cite
-          </span>
-        ) : (
-          <Link
-            href={reviewHref}
-            className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline transition-colors hover:border-cinnabar hover:text-cinnabar motion-reduce:transition-none"
-          >
-            核本卡 cite{pendingCiteCount != null && pendingCiteCount > 0 ? ` · ${pendingCiteCount}` : ""}
-          </Link>
-        )}
+        ) : null}
         <p className="w-full text-xs leading-6 text-muted">
           练：本卡 {card.atoms.length} 个原子逐个自评；核：把引用对着该页 OCR 原文核对。
           两者的进度都只记本机浏览器，不回写教材数据。
@@ -221,7 +229,10 @@ export function EntityCardDetail({
           {card.atoms.map((a) => (
             <li key={a.id} className="rounded-lg border border-line p-4">
               <div className="flex items-start justify-between gap-3">
-                <p className="font-medium leading-7">{a.prompt}</p>
+                <p className="min-w-0 font-medium leading-7">
+                  <span className="mono mr-2 align-middle text-[11px] text-muted">{a.id}</span>
+                  {a.prompt}
+                </p>
                 <span className="mono shrink-0 rounded border border-line px-1.5 py-0.5 text-[11px] text-muted">
                   {DIFF_ZH[a.difficulty]}
                 </span>

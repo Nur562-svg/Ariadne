@@ -8,6 +8,7 @@ import StudyScopeCounts from "@/components/StudyScopeCounts";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 import StickyModeGate from "@/components/desk/StickyModeGate";
+import ReturnNav from "@/components/desk/ReturnNav";
 import LastOpenedTouch from "@/components/LastOpenedTouch";
 
 export const dynamic = "force-dynamic";
@@ -88,6 +89,19 @@ async function StudyBody({
   const cardBookId = scopedCard?.chapterId ? bookByChapter[scopedCard.chapterId] : undefined;
   const scopeBook = activeBook ?? (cardBookId ? books.find((b) => b.id === cardBookId) : undefined);
 
+  /** 单卡首个有页 cite 页码（cites → fields → atoms）：完成/空态「回书桌本页」的第二优先页源。 */
+  const deskPageHint = scopedCard
+    ? (scopedCard.cites.find((c) => c.page != null)?.page ??
+      scopedCard.fields.find((f) => f.cite?.page != null)?.cite?.page ??
+      scopedCard.atoms.find((a) => a.cite?.page != null)?.cite?.page ??
+      null)
+    : null;
+  /** LastOpenedTouch 精确页：有页才写带 page 的 deskHref；无页保持「同书保留原页」，不擦书桌精确页。 */
+  const deskPageHrefForTouch =
+    deskPageHint != null && scopeBook
+      ? `/desk?book=${encodeURIComponent(scopeBook.id)}&page=${deskPageHint}`
+      : undefined;
+
   const qs = (opts?: { chapter?: string | null; mode?: StudyMode }) => {
     const p = new URLSearchParams();
     if (scopedCard) p.set("card", scopedCard.id);
@@ -136,9 +150,10 @@ async function StudyBody({
         defaultMode="all"
         nonDefaultModes={["ungraded", "unknown"]}
       />
-      {/* T21 续开指针轻触：有效范围（?book= 或 ?card= 反查书）才写同 bookId；不写非法书。 */}
+      {/* T21 续开指针轻触：有效范围（?book= 或 ?card= 反查书）才写同 bookId；不写非法书。
+          有页（本卡 cite）则写精确页；无页保持「同书保留原页」，禁止空 page 擦掉书桌精确页。 */}
       {scopeBook ? (
-        <LastOpenedTouch bookId={scopeBook.id} deskHref={deskHref} />
+        <LastOpenedTouch bookId={scopeBook.id} deskHref={deskPageHrefForTouch} page={deskPageHint} />
       ) : null}
       <header>
         <h1 className="brand-rule pb-2 text-3xl font-bold">学习 · 本机自评</h1>
@@ -236,6 +251,17 @@ async function StudyBody({
               </Link>
             ))}
           </div>
+
+          {/* T23 D：sticky 工具带回程薄链（次级文字，非第三颗大红）：?card= 回本卡；可解析本页回书桌本页。*/}
+          <div className="flex items-center gap-3">
+            <ReturnNav
+              bookId={scopeBook?.id}
+              pageHint={deskPageHint}
+              deskHref={deskHref}
+              cardHref={cardHref}
+              showReturn={false}
+            />
+          </div>
         </div>
       </div>
 
@@ -285,16 +311,13 @@ async function StudyBody({
                 </Link>
               )
             ) : null}
-            <Link
-              href={deskHref}
-              className={`text-sm no-underline hover:underline underline-offset-4 ${
-                cardHref || (!scopedCard && (activeChapter || activeBook))
-                  ? "text-muted hover:text-cinnabar"
-                  : "text-cinnabar"
-              }`}
-            >
-              回书桌 →
-            </Link>
+            {/* T23 A：范围空回书桌本页 / 回书桌 + 回到刚才（次级文字链，主 CTA 已在上面）。*/}
+            <ReturnNav
+              bookId={scopeBook?.id}
+              pageHint={deskPageHint}
+              deskHref={deskHref}
+              showReturn
+            />
           </div>
         </div>
       ) : (
@@ -312,6 +335,8 @@ async function StudyBody({
           cardHref={cardHref}
           allHref={`/study${qs({ mode: "all" })}`}
           unknownHref={`/study${qs({ mode: "unknown" })}`}
+          deskPageHint={deskPageHint}
+          deskBookId={scopeBook?.id}
         />
       )}
     </div>
