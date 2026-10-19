@@ -11,20 +11,20 @@ export const dynamic = "force-dynamic";
 export default function DeskLayout({ children }: { children: React.ReactNode }) {
   const books = loadBooks();
   const book = books[0];
-  const sidebarBook = book
-    ? {
-        title: book.title,
-        chapters: book.chapterIds.length,
-        cards: loadCards({ bookId: book.id }).length,
-      }
-    : undefined;
+  /** 多书摘要（id/title/章数/卡数）：Sidebar 客户端据此与 last-opened 对齐选「在读」，失效回落首本/空库。 */
+  const sidebarBooks = books.map((b) => ({
+    id: b.id,
+    title: b.title,
+    chapters: b.chapterIds.length,
+    cards: loadCards({ bookId: b.id }).length,
+  }));
 
   const clewInitial = book
     ? { book: { id: book.id, title: book.title }, citePages: [] }
     : { citePages: [] };
 
   return (
-    <DeskShellClient sidebarBook={sidebarBook} clewInitial={clewInitial}>
+    <DeskShellClient sidebarBooks={sidebarBooks} clewInitial={clewInitial}>
       {children}
     </DeskShellClient>
   );

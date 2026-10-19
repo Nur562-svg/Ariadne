@@ -9,6 +9,7 @@ import {
 } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import DocumentPane from "@/components/desk/DocumentPane";
+import LastOpenedTouch from "@/components/LastOpenedTouch";
 
 export const dynamic = "force-dynamic";
 
@@ -68,18 +69,28 @@ export default async function DeskPage({
   }
 
   return (
-    <DocumentPane
-      book={book}
-      chapters={chapters}
-      cards={cards}
-      pages={pages}
-      invalidBook={invalidBook}
-      badBookId={bookId}
-      initialPage={initialPage}
-      initialMode={initialMode}
-      citingByPage={citingByPage}
-      pendingByPage={pendingByPage}
-      heyePool={bookQueue.map((it) => ({ key: it.key, cardId: it.cardId, page: it.page }))}
-    />
+    <>
+      {/* T21 续开指针写点：仅当命中已注册书（非法 bookId 已回落不写）。 */}
+      {!invalidBook ? (
+        <LastOpenedTouch
+          bookId={book.id}
+          deskHref={`/desk?book=${encodeURIComponent(book.id)}`}
+          page={initialPage}
+        />
+      ) : null}
+      <DocumentPane
+        book={book}
+        chapters={chapters}
+        cards={cards}
+        pages={pages}
+        invalidBook={invalidBook}
+        badBookId={bookId}
+        initialPage={initialPage}
+        initialMode={initialMode}
+        citingByPage={citingByPage}
+        pendingByPage={pendingByPage}
+        heyePool={bookQueue.map((it) => ({ key: it.key, cardId: it.cardId, page: it.page }))}
+      />
+    </>
   );
 }

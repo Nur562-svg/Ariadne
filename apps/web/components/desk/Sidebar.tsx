@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { loadLastOpened, subscribeLastOpened } from "@/lib/last-opened";
 
-/** 侧栏「在读书目」一行（(desk) layout 服务端算好传入，客户端不读文件）。 */
+/** 侧栏「在读书目」摘要（(desk) layout 服务端算好传入多书，客户端据 last-opened 选一本）。 */
 export type SidebarBook = {
+  id: string;
   title: string;
   chapters: number;
   cards: number;
@@ -31,9 +34,26 @@ function isActive(pathname: string, href: string) {
  * desk-v4 左栏（~248）：书桌 / 学习 / 复习 / 书架 主导航 + 次级入口 + 在读书目。
  * 朱砂只做当前行强调；「学习」是本机自评环（desk-study-01，全部｜未评｜不熟再练），
  * 「复习」是核页本机对页（desk-heye-01）——两者都不是 FSRS，禁止再写假 Due 角标 / 到期暗示。
+ * T21（desk-library-shelf-continuity）：在读书目不再死取 books[0]，
+ * 客户端据 last-opened 选「在读」书（失效回落首本/空库），书名可点进书桌，并给学习/核次级链（?book=）。
  */
-export default function Sidebar({ book }: { book?: SidebarBook }) {
+export default function Sidebar({ books }: { books?: SidebarBook[] }) {
   const pathname = usePathname();
+  const [current, setCurrent] = useState<SidebarBook | undefined>(books?.[0]);
+
+  useEffect(() => {
+    function sync() {
+      const lo = loadLastOpened();
+      const book = lo
+        ? books?.find((b) => b.id === lo.bookId)
+        : undefined;
+      // 有效 last-opened → 该书；无效/无 → 首本（有书时）或 undefined（空库文案）。
+      setCurrent(book ?? books?.[0]);
+    }
+    sync();
+    return subscribeLastOpened(sync);
+  }, [books]);
+
   return (
     <aside className="flex h-full w-[248px] shrink-0 flex-col border-r border-line bg-card">
       <div className="px-5 pb-4 pt-5">
@@ -90,12 +110,31 @@ export default function Sidebar({ book }: { book?: SidebarBook }) {
       </nav>
 
       <div className="mt-auto border-t border-line px-5 py-4">
-        {book ? (
+        {current ? (
           <>
             <p className="text-[11px] text-muted">在读书目</p>
-            <p className="mt-1 text-sm font-medium leading-6 text-foreground">{book.title}</p>
+            <Link
+              href={`/desk?book=${encodeURIComponent(current.id)}`}
+              className="mt-1 block text-sm font-medium leading-6 text-foreground no-underline hover:text-cinnabar"
+            >
+              {current.title}
+            </Link>
             <p className="mt-0.5 text-xs text-muted">
-              {book.chapters} 章 · {book.cards} 张实体卡
+              {current.chapters} 章 · {current.cards} 张实体卡
+            </p>
+            <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+              <Link
+                href={`/study?book=${encodeURIComponent(current.id)}`}
+                className="text-muted no-underline hover:text-cinnabar"
+              >
+                学习 →
+              </Link>
+              <Link
+                href={`/review?book=${encodeURIComponent(current.id)}`}
+                className="text-muted no-underline hover:text-cinnabar"
+              >
+                核页 →
+              </Link>
             </p>
           </>
         ) : (

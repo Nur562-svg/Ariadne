@@ -8,6 +8,7 @@ import StudyScopeCounts from "@/components/StudyScopeCounts";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 import StickyModeGate from "@/components/desk/StickyModeGate";
+import LastOpenedTouch from "@/components/LastOpenedTouch";
 
 export const dynamic = "force-dynamic";
 
@@ -135,6 +136,10 @@ async function StudyBody({
         defaultMode="all"
         nonDefaultModes={["ungraded", "unknown"]}
       />
+      {/* T21 续开指针轻触：有效范围（?book= 或 ?card= 反查书）才写同 bookId；不写非法书。 */}
+      {scopeBook ? (
+        <LastOpenedTouch bookId={scopeBook.id} deskHref={deskHref} />
+      ) : null}
       <header>
         <h1 className="brand-rule pb-2 text-3xl font-bold">学习 · 本机自评</h1>
         <p className="mt-3 text-sm leading-7 text-muted">
@@ -177,55 +182,61 @@ async function StudyBody({
         />
       </header>
 
-      {/* 章过滤（config 派生；有书时以上下文书为准；保留当前队列档）。单卡范围固定，隐藏章芯片。 */}
-      {!scopedCard && chipChapters.length > 0 ? (
-        <div className="mt-6 flex flex-wrap items-center gap-2">
-          <Link
-            href={`/study${qs({ chapter: null })}`}
-            className={`rounded-full border px-3 py-1 text-sm no-underline ${
-              !activeChapter
-                ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
-                : "border-line text-muted hover:text-foreground"
-            }`}
-          >
-            全部章节
-          </Link>
-          {chipChapters.map((c) => (
-            <Link
-              key={c.id}
-              href={`/study${qs({ chapter: c.id })}`}
-              className={`rounded-full border px-3 py-1 text-sm no-underline ${
-                activeChapter?.id === c.id
-                  ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
-                  : "border-line text-muted hover:text-foreground"
-              }`}
-            >
-              {c.id}
-            </Link>
-          ))}
-        </div>
-      ) : null}
+      {/* T21 D：章芯片行 + 三档 tablist 收进 position:sticky 实底工具带（bg-card + border-b）。
+          仅 CSS 钉住——长队列下滚时章芯片/档位仍可见；与 T20 StickyModeGate（URL 档位记忆 replace 补档）
+          职责正交，各司其职，勿删 StickyModeGate。 */}
+      <div className="sticky top-0 z-10 -mx-8 mt-6 border-b border-line bg-card px-8 py-3">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          {/* 章过滤（config 派生；有书时以上下文书为准；保留当前队列档）。单卡范围固定，隐藏章芯片。 */}
+          {!scopedCard && chipChapters.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <Link
+                href={`/study${qs({ chapter: null })}`}
+                className={`rounded-full border px-3 py-1 text-sm no-underline ${
+                  !activeChapter
+                    ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
+                    : "border-line text-muted hover:text-foreground"
+                }`}
+              >
+                全部章节
+              </Link>
+              {chipChapters.map((c) => (
+                <Link
+                  key={c.id}
+                  href={`/study${qs({ chapter: c.id })}`}
+                  className={`rounded-full border px-3 py-1 text-sm no-underline ${
+                    activeChapter?.id === c.id
+                      ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
+                      : "border-line text-muted hover:text-foreground"
+                  }`}
+                >
+                  {c.id}
+                </Link>
+              ))}
+            </div>
+          ) : null}
 
-      {/* 队列三档：全部 | 未评 | 不熟再练（本机态过滤，非 FSRS）。
-          分段控件留呼吸感：段间 gap + 段内横向 padding，inactive 不贴 active 朱红 pill。 */}
-      <div
-        role="tablist"
-        aria-label="练习队列"
-        className="mt-6 inline-flex items-center gap-2 rounded-lg border border-line bg-card p-1.5"
-      >
-        {MODES.map(([m, label]) => (
-          <Link
-            key={m}
-            role="tab"
-            aria-selected={mode === m}
-            href={`/study${qs({ mode: m })}`}
-            className={`rounded-md px-5 py-1.5 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
-              mode === m ? "bg-cinnabar text-white" : "text-muted hover:text-foreground"
-            }`}
+          {/* 队列三档：全部 | 未评 | 不熟再练（本机态过滤，非 FSRS）。 */}
+          <div
+            role="tablist"
+            aria-label="练习队列"
+            className="inline-flex items-center gap-2 rounded-lg border border-line bg-card p-1.5"
           >
-            {label}
-          </Link>
-        ))}
+            {MODES.map(([m, label]) => (
+              <Link
+                key={m}
+                role="tab"
+                aria-selected={mode === m}
+                href={`/study${qs({ mode: m })}`}
+                className={`rounded-md px-5 py-1.5 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
+                  mode === m ? "bg-cinnabar text-white" : "text-muted hover:text-foreground"
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
 
       <p className="mt-6 text-sm text-muted">{atoms.length} 个知识原子</p>

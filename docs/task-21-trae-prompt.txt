@@ -1,0 +1,52 @@
+按 docs/task-21-desk-library-shelf-continuity.md 实现 Task 21 desk-library-shelf-continuity-01。模型用 DeepSeek-V4-Pro。
+
+════════════════════════════════════
+体量要求（硬 · 读完再动手）
+════════════════════════════════════
+这不是 Task 08–10 那种「改两个 CTA / 迁一个路由」的小刀，也不是只给书库写一行「上次打开」。用户要约 1 小时的刀，不要 5–10 分钟收工。DeepSeek-V4-Pro 若 5–15 分钟就收工，说明漏做了。目标约 60–90 分钟真实编码：多文件协调（last-opened helper · 书桌/开书面写点 · 书库客户岛「继续上次」+ 每书 LocalProgress 池计数 · Sidebar 在读跟 last-opened 可点 · study/review 章芯片+三档 CSS sticky 工具带 · 空库/失效指针恢复 · 多路由自测）。必须做完 brief 里 IN 的 A+B+C+D+E 全部，不要只做其中一角。验收按全部段检查。
+
+前置：先 git log -1 --oneline 确认 tip 已含 Task 20（目标 cd527df 或其后；feat desk-session-continuity-01：session-continuity.ts、StickyModeGate、Study/HeYe 本标签续位、空态作用域恢复、焦点）。若仍停在仅 T19（619f7b0）或工作树无 T20 文件，停下来对齐，不要开工。不要 push。先读 docs/frontend-aesthetics.md。对照已有：书库 page.tsx、Sidebar、LocalProgressStrip、DocumentPane、DeskSurfaceBridge、StickyModeGate、session-continuity.ts、study/review 页章芯片+三档、DeskShellClient、layout。
+
+产品身份：顾客自带材料 → 可考知识原子。书架要能续开上次书桌，并诚实显示本机练/核计数——不是掌握度仪表盘，也不是题库营销页。免疫学 seed 是验收语料，不是把产品做成免疫学 demo。
+
+════════════════════════════════════
+做（按顺序 · 多步交付）
+════════════════════════════════════
+
+【步骤 1 · A last-opened 指针】
+1) 新增 apps/web/lib/last-opened.ts（名可微调）：专用 localStorage key（如 ariadne.desk.last-opened.v1）存 { bookId, deskHref?, page?, at }。禁止改名 ariadne.study.v1 / ariadne.heye.v1；禁止复用 ariadne.desk.session.v1（那是 T20 sessionStorage 游标桶）。提供 load/save/clear；隐私模式 try/catch。
+2) /desk?book= 成功命中已注册书时 saveLastOpened（写在 DocumentPane 或 DeskSurfaceBridge 或薄客户岛，选一处清晰）。鼓励有效 /study?book=、/review?book= 轻触同 bookId。非法/未注册不写。
+
+【步骤 2 · B 书库继续上次 + 架上本机计数】
+1) / 书库保留种子库存（章节/实体卡/知识原子）。新增客户岛：合法 last-opened 时顶栏「继续上次：《书名》→」进书桌（次级可链学习/核）；每书传入该书 atoms/items 池，渲染 LocalProgressStrip（或同口径），免责「仅这个浏览器 · 非掌握度 · 非 Due」。
+2) 禁止掌握%、圆环仪表盘、「已掌握」营销绿条、Due 角标。上次打开用 muted 小字即可，勿第三颗大红主按钮抢「打开书桌」。
+
+【步骤 3 · C 侧栏在读 + D sticky 工具带 + E 恢复/build】
+1) layout 传多书摘要；Sidebar 客户端读 last-opened 显示在读（失效回落 books[0]/空库）；在读可点书桌，鼓励学习/核次级链带 ?book=。
+2) /study 与 /review：章芯片行 + 三档 tablist 包进 position:sticky; top:0 实底工具带（bg-card + border-b border-line）。这与 T20 StickyModeGate（URL 档位记忆）职责不同——注释写清；保留 StickyModeGate。
+3) 空库：ingest CTA + 效用步骤，无营销 hero。失效 last-opened：clear + 回落（可选琥珀提示）。按 brief 自测；pnpm --filter web build PASS；不要 push；确认无 FSRS、无 Clew API 真写入、无 verified:true、无掌握%、study/heye key 未改名。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–20：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模、TOC、Clew 会话条/本轮变更/章池 compact、卡页 CitePeek、/review 章芯片+三档+同页批量+同页跳、/study 三档+键盘环+CitePeek、卡枢纽 ?card=、本页卡轨与翻页 ?page=、作用域 LocalProgress、ingest 状态机与就绪三连、书库三连、T20 sessionStorage 续位 + StickyModeGate + 空态作用域恢复 + 焦点、collectStudyAtoms、collectCiteQueue、cardsCitingPage、loadAllChapterPages、ariadne.study.v1、ariadne.heye.v1、ariadne.desk.session.v1。勿 verified:true 过关。A+B+C+D+E 范围保持完整。
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+真 FSRS / ts-fsrs / Due 调度；Clew LLM/API / ProposalCard 真写入；改 seed verified:true；掌握% / 假仪表盘 / Due 角标；改名 ariadne.study.v1 / ariadne.heye.v1；把 last-opened 塞进 study/heye store；复用 session 游标桶当跨日书库指针；Clew QueuePanel 大改 / Clew 拖宽 / 窄屏 DeskShell 大重构；OCR 句级高亮 / 页图 Canvas；exam-anchor 题库/模考 UI；⌘K 全命令面板；ingest 迁壳/管线大改；新章 ch08+；nur-landing / 营销 hero；擅自 push。
+
+════════════════════════════════════
+审美
+════════════════════════════════════
+朱红唯一强调色；精炼书桌；卡片仅在「卡本身是交互」时用；效用文；无营销 hero。琥珀仅作未核实/存疑/警告/失效指针。继续上次是效用主链，不要三颗大红并排——书桌主 CTA + 次级文字链。「上次打开」用 muted 小字。sticky 工具带实底无透明叠字、无装饰阴影炫技。
+
+════════════════════════════════════
+成功标准（回复时勾 · 全部段）
+════════════════════════════════════
+- 多文件改动（last-opened + 书库客户岛 + Sidebar + study/review sticky + 开书写点…），不是只加一行「上次打开」
+- /desk 开书后回 / 可见继续上次；每书有本机 LocalProgress 且无掌握%；Sidebar 在读跟 last-opened 可点；study/review 下滚档位条钉住；StickyModeGate/T20 续位未毁；空/坏恢复诚实
+- T07–20 回归未毁（含 T18 键盘环、T19 CitePeek、T20 续位）；build PASS；未 push；study/heye localStorage key 未破
+- 回复含：改动文件列表、build 结果、A/B/C/D/E 说明、自测路由摘要
+
+做完简短列出以上证据，等验收；不要 push。

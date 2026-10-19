@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { loadBooks, loadCards } from "@/lib/entities";
+import { collectStudyAtoms, loadBooks, loadCards } from "@/lib/entities";
+import { collectCiteQueue } from "@/lib/heye";
+import LocalProgressStrip from "@/components/LocalProgressStrip";
+import LibraryContinuity from "@/components/LibraryContinuity";
 
 /**
  * 书库页（书架）：DeskShell 中栏，从 config/books.json 派生，不硬编码任何书名/章节 copy。
@@ -18,6 +21,11 @@ export default function Library() {
           书库还空着。上传教材 PDF、在本机跑完 OCR 解析与实体卡抽取，再把书目注册进
           <span className="mono text-sm"> config/books.json </span>，即可在书桌阅读、进入卡浏览器与学习环。
         </p>
+        <ol className="mt-8 max-w-md space-y-2 text-sm text-foreground/85">
+          <li>1 · 上传教材 PDF，本机跑 OCR 解析。</li>
+          <li>2 · 抽取实体卡与知识原子。</li>
+          <li>3 · 注册书目进 config/books.json，开书桌阅读、进学习环 / 核页。</li>
+        </ol>
         <Link
           href="/ingest"
           className="mt-10 inline-block rounded-md bg-cinnabar px-5 py-2.5 text-white no-underline"
@@ -35,11 +43,16 @@ export default function Library() {
         教材 → 知识原子 / 实体卡 → 可复习。打开一本书进入书桌（三栏学习面）；citation 仍 fail-closed（未验证保留琥珀 p.N / p.?）。
       </p>
 
-      <ul className="mt-10 space-y-4">
+      {/* T21 B1：合法 last-opened → 顶栏「继续上次」进书桌（次级学习/核）；失效 → clear + 琥珀提示。 */}
+      <LibraryContinuity books={books.map((b) => ({ id: b.id, title: b.title }))} />
+
+      <ul className="mt-6 space-y-4">
         {books.map((b) => {
           const cards = loadCards({ bookId: b.id });
           const atoms = cards.reduce((n, c) => n + c.atoms.length, 0);
           const deskHref = `/desk?book=${encodeURIComponent(b.id)}`;
+          const studyHref = `/study?book=${encodeURIComponent(b.id)}`;
+          const reviewHref = `/review?book=${encodeURIComponent(b.id)}`;
           return (
             <li key={b.id} className="rounded-lg border border-line bg-card p-5">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -71,6 +84,14 @@ export default function Library() {
                 ))}
               </dl>
               <p className="mt-4 text-xs leading-6 text-muted">章 {b.chapterIds.join(" · ")}</p>
+              {/* T21 B2：每书本机练/核计数（传该书 atoms/items 池；无掌握% / 圆环 / Due 角标）。 */}
+              <LocalProgressStrip
+                atoms={collectStudyAtoms({ bookId: b.id }).map((a) => ({ cardId: a.cardId, atomId: a.atomId }))}
+                items={collectCiteQueue({ bookId: b.id }).map((it) => ({ key: it.key }))}
+                scopeLabel="本书"
+                studyHref={studyHref}
+                reviewHref={reviewHref}
+              />
               <p className="mt-2 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-sm">
                 <Link
                   href={`/entities?book=${encodeURIComponent(b.id)}`}
@@ -79,13 +100,13 @@ export default function Library() {
                   卡浏览器 →
                 </Link>
                 <Link
-                  href={`/study?book=${encodeURIComponent(b.id)}`}
+                  href={studyHref}
                   className="text-muted no-underline hover:text-cinnabar"
                 >
                   学习环 →
                 </Link>
                 <Link
-                  href={`/review?book=${encodeURIComponent(b.id)}`}
+                  href={reviewHref}
                   className="text-muted no-underline hover:text-cinnabar"
                 >
                   核页 →
