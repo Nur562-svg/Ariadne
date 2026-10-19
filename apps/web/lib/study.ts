@@ -66,6 +66,22 @@ export function saveGrade(key: string, k: 0 | 1): GradeMap {
   return next;
 }
 
+/**
+ * 删除一条评分（T25 撤销用）：本评分为新增（无 prevGrade）时回退即删 key。
+ * 隐私模式写失败不阻塞；广播让页头计数等订阅组件跟上。
+ */
+export function deleteGrade(key: string): GradeMap {
+  const next = { ...loadGrades() };
+  delete next[key];
+  try {
+    window.localStorage.setItem(STUDY_STORE_KEY, JSON.stringify(next));
+  } catch {
+    /* 写失败不阻塞；返回值仍供本会话使用 */
+  }
+  emitGradesChanged();
+  return next;
+}
+
 /** 按队列档位过滤原子：ungraded = 无本机记录；unknown = 记录存在且 k===0（不熟）。 */
 export function filterAtomsByMode(
   atoms: StudyAtom[],

@@ -1,15 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Cite } from "@/lib/entities";
 import { CiteChip } from "@/components/CiteChip";
+
+/** Popover width (w-72 = 18rem). Used for horizontal clamp. */
+const POPOVER_W = 288;
+/** Height estimate before first measure; also flip threshold when space below is tight. */
+const EST_H = 240;
+const MARGIN = 8;
+const GAP = 4;
 
 /**
  * CitePeek lite（T17）：CiteChip 旁边一枚「摘」按钮，点开轻量浮层看引文全貌与诚实状态。
  * - cite 单击深链保持原样（chip 仍是主路径）；旁钮不抢导航。
  * - 浮层只有 quote / p.N / p.? 诚实句 + 深链（书桌 / 核本页 / 核本卡）。
  * - 禁止 OCR 句级高亮、页图、Canvas；Esc / 点外关闭；无花哨动画。
+ * - T25 debt：fixed 定位 + 上下翻转，避免父级 overflow 裁切底部链接。
  */
 export default function CitePeek({
   cite,
@@ -25,23 +33,132 @@ export default function CitePeek({
   cardId?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
   const rootRef = useRef<HTMLSpanElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  /** 关闭中守卫：close() 把焦点归还「摘」时，focusin 拉回逻辑必须让路（否则焦点被拽回层内）。 */
+  const closingRef = useRef(false);
 
   /** T24 D：Esc / 点外关闭后焦点归还「摘」按钮（不滚动页面），键盘环不断线。 */
   function close() {
+    closingRef.current = true;
     setOpen(false);
     toggleRef.current?.focus({ preventScroll: true });
   }
 
-  // Esc 关闭；点外关闭由透明遮罩承担。
-  useEffect(() => {
-    if (!open) return;
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") close();
+  /** Place dialog with fixed coords from toggle; flip above when space below is tight. */
+  function placePopover() {
+    const btn = toggleRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const h = dialogRef.current?.offsetHeight || EST_H;
+    const spaceBelow = vh - rect.bottom - MARGIN;
+    const spaceAbove = rect.top - MARGIN;
+    const placeAbove = spaceBelow < EST_H && spaceAbove > spaceBelow;
+
+    let top: number;
+    if (placeAbove) {
+      top = Math.max(MARGIN, rect.top - GAP - h);
+    } else {
+      top = Math.min(rect.bottom + GAP, Math.max(MARGIN, vh - MARGIN - h));
     }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+
+    let left = rect.left;
+    if (left + POPOVER_W > vw - MARGIN) left = vw - MARGIN - POPOVER_W;
+    if (left < MARGIN) left = MARGIN;
+
+    setPos({ top, left });
+  }
+
+  // Recalculate on open + window/scroll (passive) so fixed coords stay aligned.
+  useLayoutEffect(() => {
+    if (!open) return;
+    placePopover();
+    const id = requestAnimationFrame(() => placePopover());
+    const onReposition = () => placePopover();
+    window.addEventListener("resize", onReposition, { passive: true });
+    // capture: nested scroll parents (desk center column) also fire scroll
+    window.addEventListener("scroll", onReposition, { passive: true, capture: true });
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener("resize", onReposition);
+      window.removeEventListener("scroll", onReposition, true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // T25 C：焦点陷阱——双层防护。
+  // ① keydown：Tab/Shift+Tab 在 dialog 内循环（栈底/栈顶 preventDefault 包边）。
+  // ② focusin：任何路径焦点落到层外（含各类默认导航漏网）→ 立即拉回层内；
+  //    close() 归位「摘」时由 closingRef 让路，T24 归位行为不变。
+  // 陷阱只圈浮层本身，触发钮「摘」在层外，不含入；不重做摘录内容。
+  useEffect(() => {
+    if (!open) {
+      closingRef.current = false;
+      return;
+    }
+    closingRef.current = false;
+    const dlg = dialogRef.current;
+    function focusableEls(): HTMLElement[] {
+      if (!dlg) return [];
+      return Array.from(
+        dlg.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+    }
+    // 开层：焦点移入第一个可聚焦控件（深链链接）；全无则落在浮层容器（tabIndex=-1）。
+    const els = focusableEls();
+    (els[0] ?? dlg)?.focus({ preventScroll: true });
+
+    function pullBack() {
+      if (!dlg || closingRef.current) return;
+      if (dlg.contains(document.activeElement)) return;
+      const f = focusableEls();
+      (f[0] ?? dlg).focus({ preventScroll: true });
+    }
+
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        close();
+        return;
+      }
+      if (e.key !== "Tab" || !dlg) return;
+      const f = focusableEls();
+      if (f.length === 0) {
+        e.preventDefault();
+        dlg.focus({ preventScroll: true });
+        return;
+      }
+      const firstEl = f[0];
+      const lastEl = f[f.length - 1];
+      const active = document.activeElement;
+      const inside = dlg.contains(active);
+      if (e.shiftKey) {
+        if (!inside || active === firstEl) {
+          e.preventDefault();
+          lastEl.focus({ preventScroll: true });
+        }
+      } else {
+        if (!inside || active === lastEl) {
+          e.preventDefault();
+          firstEl.focus({ preventScroll: true });
+        }
+      }
+      // 兜底：部分宿主在事件派发后自行移动焦点且不发 focusin——
+      // 事件循环后再校验一次焦点位置，逃出即拉回（真实浏览器为 no-op）。
+      setTimeout(pullBack, 0);
+    }
+    // 捕获阶段监听：兼容不冒泡的合成 keydown / 宿主实现（真实浏览器行为一致）。
+    document.addEventListener("keydown", onKey, true);
+    document.addEventListener("focusin", pullBack, true);
+    return () => {
+      document.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("focusin", pullBack, true);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -61,7 +178,7 @@ export default function CitePeek({
       <CiteChip cite={cite} q={q} deskBookId={deskBookId} />
       <button
         ref={toggleRef}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => (open ? close() : setOpen(true))}
         aria-expanded={open}
         aria-label="查看引用摘录"
         title="查看引用摘录（不离开本页）"
@@ -80,9 +197,13 @@ export default function CitePeek({
             tabIndex={-1}
           />
           <div
+            ref={dialogRef}
             role="dialog"
+            aria-modal="true"
             aria-label="引用摘录"
-            className="absolute left-0 top-7 z-30 w-72 rounded-lg border border-line bg-card p-3 shadow-md"
+            tabIndex={-1}
+            style={{ top: pos.top, left: pos.left }}
+            className="fixed z-30 w-72 max-h-[min(70vh,20rem)] overflow-y-auto rounded-lg border border-line bg-card p-3 shadow-md outline-none focus-visible:ring-2 focus-visible:ring-cinnabar/40"
           >
             <div className="flex items-baseline justify-between gap-2">
               <span className="mono text-xs">

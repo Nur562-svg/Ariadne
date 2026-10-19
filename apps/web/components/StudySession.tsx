@@ -7,6 +7,7 @@ import CitePeek from "@/components/CitePeek";
 import {
   atomKey,
   countPoolGrades,
+  deleteGrade,
   filterAtomsByMode,
   loadGrades,
   orderAtoms,
@@ -18,6 +19,38 @@ import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadLastOpened } from "@/lib/last-opened";
 import { loadReturn, type ReturnEntry } from "@/lib/return-stack";
 import { isEditableTarget } from "@/lib/keyboard";
+import SessionKeyHint from "@/components/SessionKeyHint";
+
+/**
+ * 档位芯片（T25 A）：认识/不熟/未评 本机计数，可点切到对应档
+ * （认识→全部、不熟→不熟再练、未评→未评；URL 规则与 sticky 三档一致）。
+ * 扫视控件，非掌握色环；仅在空/完成态出现，练中不插队。
+ */
+function StudyModeChips({
+  pool,
+  hrefs,
+}: {
+  pool: { known: number; unknown: number; ungraded: number };
+  hrefs: { all: string; unknown: string; ungraded: string };
+}) {
+  const rows: [string, number, string, string][] = [
+    ["认识", pool.known, hrefs.all, "切到「全部」档"],
+    ["不熟", pool.unknown, hrefs.unknown, "切到「不熟再练」档"],
+    ["未评", pool.ungraded, hrefs.ungraded, "切到「未评」档"],
+  ];
+  const chipCls =
+    "rounded-full border border-line px-3 py-1 text-xs no-underline text-muted transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none";
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-2">
+      <span className="text-xs text-muted">本范围本机：</span>
+      {rows.map(([label, n, href, title]) => (
+        <Link key={label} href={href} title={title} className={chipCls}>
+          {label} {n}
+        </Link>
+      ))}
+    </div>
+  );
+}
 
 /**
  * atom 自评环：prompt → 揭示 answer → 自评 认识/不熟 → 下一个。
@@ -38,6 +71,7 @@ export default function StudySession({
   cardHref,
   allHref,
   unknownHref,
+  ungradedHref,
   deskPageHint,
   deskBookId,
   scopeKey,
@@ -60,6 +94,8 @@ export default function StudySession({
   /** 「只练不熟」与空队列回链：同范围切档 URL。 */
   allHref: string;
   unknownHref: string;
+  /** 档位芯片「未评」目标：同范围 ?mode=ungraded（T25 A）。 */
+  ungradedHref: string;
   /** 单卡首个有页 cite 页码（服务端给）：完成/空态回书桌本页的页来源之一。 */
   deskPageHint?: number | null;
   /** 当前范围书 id（scopeBook，含单卡反查）：回书桌本页 / last-opened 回落以它为准。 */
@@ -81,6 +117,14 @@ export default function StudySession({
   const [lastOpenedPage, setLastOpenedPage] = useState<number | null>(null);
   /** 「回到刚才」return 短链（出发写于书桌/卡枢纽）。 */
   const [ret, setRet] = useState<ReturnEntry | null>(null);
+  /**
+   * 本轮撤销栈（T25 B，薄；组件态，不跨会话持久化）：
+   * 每次评分压入 { key, prev, idx }——prev=被覆盖的旧档（null=原无记录），idx=评分时游标。
+   * u/z 弹栈回退；换范围/再来一轮即清空。
+   */
+  const [undoStack, setUndoStack] = useState<
+    { key: string; prev: 0 | 1 | null; idx: number }[]
+  >([]);
   const questionRef = useRef<HTMLElement | null>(null);
 
   /** 同书 last-opened 页码 + return 短链（客户端读，SSR 不读 localStorage/sessionStorage）。 */
@@ -114,7 +158,9 @@ export default function StudySession({
   }
 
   /**
-   * 键盘环（T18）：空格 揭示（已揭示 no-op）；1/j 认识、2/k 不熟（未揭示先揭示一次）。
+   * 键盘环（T18 基础 + T25 B 对称）：空格 揭示（已揭示 no-op）；1/j 认识、2/k 不熟
+   * （未揭示先揭示一次）；←/[/→/] 在本轮 order 内回看/前进（不改评分，切题即收起答案，
+   * 边界 no-op）；u/z 撤销本轮最后一次评分（无栈 no-op）。
    * 挂在 window，可编辑目标静默；空队列/完成态直接忽略，不拦浏览器默认。
    */
   useEffect(() => {
@@ -140,12 +186,29 @@ export default function StudySession({
           return;
         }
         grade(0);
+      } else if (e.key === "ArrowLeft" || e.key === "[") {
+        // 回看：只动游标，不动评分；收起答案让回看者先见题面。
+        e.preventDefault();
+        if (idx > 0) {
+          setRevealed(false);
+          setIdx(idx - 1);
+        }
+      } else if (e.key === "ArrowRight" || e.key === "]") {
+        // 前进：不越过最后一题（完成态只能靠评分自然到达）。
+        e.preventDefault();
+        if (idx < order.length - 1) {
+          setRevealed(false);
+          setIdx(idx + 1);
+        }
+      } else if (e.key === "u" || e.key === "z") {
+        e.preventDefault();
+        undo();
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, order, idx, revealed]);
+  }, [ready, order, idx, revealed, grades, undoStack]);
 
   /** 游标写回：ready 后 idx 每次变化写 sessionStorage（续位用；跨刷新保留于本标签）。 */
   useEffect(() => {
@@ -176,7 +239,7 @@ export default function StudySession({
     return <p className="mt-8 text-sm text-muted">正在读取本机自评进度…</p>;
   }
 
-  /** 队列空（档位过滤后无原子）：诚实说明 + 切档 / 回书桌 / 核页。 */
+  /** 队列空（档位过滤后无原子）：诚实说明 + 一颗主 CTA + 次级文字链 + 档位芯片（本机计数可切档）。 */
   if (order.length === 0) {
     return (
       <section className="mt-10 rounded-lg border border-line bg-card p-6">
@@ -187,10 +250,13 @@ export default function StudySession({
             : mode === "unknown"
               ? "当前范围没有标「不熟」的原子。先在「全部」或「未评」里标几张不熟，再回来只练它们。"
               : "当前范围没有可练的原子。"}
-          本范围累计（仅这个浏览器）：认识 {pool.known} · 不熟 {pool.unknown} · 未评{" "}
-          {pool.ungraded}。
         </p>
-        <div className="mt-5 flex flex-wrap items-center gap-3">
+        <StudyModeChips
+          pool={pool}
+          hrefs={{ all: allHref, unknown: unknownHref, ungraded: ungradedHref }}
+        />
+        {/* T25 A densify：一颗朱红主 CTA，其余一律次级文字链（勿一排多颗实心按钮）。 */}
+        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
           {mode !== "all" ? (
             <Link
               href={allHref}
@@ -203,49 +269,33 @@ export default function StudySession({
             <>
               <Link
                 href={cardHref}
-                className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline hover:border-cinnabar hover:text-cinnabar"
-              >
-                回本卡
-              </Link>
-              <Link
-                href={reviewHref}
-                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
-              >
-                核本卡
-              </Link>
-              <Link
-                href={deskBackHref}
                 className="text-sm text-muted no-underline hover:text-cinnabar"
               >
-                {deskBackLabel}
+                回本卡 →
               </Link>
-              {ret ? (
-                <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
-                  回到刚才 →
-                </Link>
-              ) : null}
-            </>
-          ) : (
-            <>
-              <Link
-                href={deskBackHref}
-                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
-              >
-                {deskBackLabel}
-              </Link>
-              {ret ? (
-                <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
-                  回到刚才 →
-                </Link>
-              ) : null}
               <Link
                 href={reviewHref}
-                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+                className="text-sm text-muted no-underline hover:text-cinnabar"
               >
-                去核页
+                核本卡 →
               </Link>
             </>
+          ) : (
+            <Link
+              href={reviewHref}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              去核页 →
+            </Link>
           )}
+          <Link href={deskBackHref} className="text-sm text-muted no-underline hover:text-cinnabar">
+            {deskBackLabel}
+          </Link>
+          {ret ? (
+            <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
+              回到刚才 →
+            </Link>
+          ) : null}
         </div>
       </section>
     );
@@ -259,12 +309,39 @@ export default function StudySession({
 
   function grade(k: 0 | 1) {
     if (!cur) return;
-    const next = saveGrade(atomKey(cur), k);
+    const key = atomKey(cur);
+    // 压撤销栈：读盘面最新值当 prev（避免闭包陈旧）；idx 记评分时游标，供 u/z 回退。
+    setUndoStack((s) => [...s, { key, prev: loadGrades()[key]?.k ?? null, idx }]);
+    const next = saveGrade(key, k);
     setGrades(next);
     setRun((r) => ({ known: r.known + (k === 1 ? 1 : 0), unknown: r.unknown + (k === 0 ? 1 : 0) }));
     if (cur.cite?.page != null) setLastAtomPage(cur.cite.page);
     setRevealed(false);
     setIdx((i) => i + 1);
+  }
+
+  /**
+   * 撤销本轮最后一次评分（T25 B，u/z）：写回 prevGrade（原无记录则删 key）、
+   * 游标回到评分时位置、本轮 run 计数回滚（扣掉应用档，补回被覆盖的旧档）。
+   * 无栈 no-op；栈不跨会话，refresh 后即清。
+   */
+  function undo() {
+    const last = undoStack[undoStack.length - 1];
+    if (!last) return;
+    const applied = loadGrades()[last.key]?.k;
+    setRun((r) => {
+      let known = r.known;
+      let unknown = r.unknown;
+      if (applied === 1) known = Math.max(0, known - 1);
+      else if (applied === 0) unknown = Math.max(0, unknown - 1);
+      if (last.prev === 1) known += 1;
+      else if (last.prev === 0) unknown += 1;
+      return { known, unknown };
+    });
+    setGrades(last.prev == null ? deleteGrade(last.key) : saveGrade(last.key, last.prev));
+    setUndoStack((s) => s.slice(0, -1));
+    setRevealed(false);
+    setIdx(last.idx);
   }
 
   function restart() {
@@ -277,6 +354,7 @@ export default function StudySession({
     setRevealed(false);
     setRun({ known: 0, unknown: 0 });
     setResumed(false);
+    setUndoStack([]);
   }
 
   if (done || !cur) {
@@ -284,16 +362,19 @@ export default function StudySession({
       <section className="mt-10 rounded-lg border border-line bg-card p-6">
         <h2 className="text-xl font-semibold">本轮完成</h2>
         <p className="mt-3 text-sm leading-7 text-foreground/90">
-          共 {order.length} 个原子 · 认识 {run.known} · 不熟 {run.unknown}。
-          本范围累计（仅这个浏览器，跨刷新保留）：认识 {pool.known} · 不熟 {pool.unknown} · 未评{" "}
-          {pool.ungraded}。
+          共 {order.length} 个原子 · 本轮 认识 {run.known} · 不熟 {run.unknown}。
         </p>
         {resumed ? (
           <p aria-live="polite" className="mt-2 text-xs leading-5 text-muted">
             已从本标签续上（完成态）；本轮 run 计数不持久化，从 0 起。
           </p>
         ) : null}
-        <div className="mt-5 flex flex-wrap items-center gap-3">
+        <StudyModeChips
+          pool={pool}
+          hrefs={{ all: allHref, unknown: unknownHref, ungraded: ungradedHref }}
+        />
+        {/* T25 A densify：一颗朱红主 CTA（再来一轮），其余一律次级文字链。 */}
+        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
           <button
             onClick={restart}
             className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-opacity hover:opacity-90 motion-reduce:transition-none"
@@ -303,58 +384,42 @@ export default function StudySession({
           {mode !== "unknown" ? (
             <Link
               href={unknownHref}
-              className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline hover:border-cinnabar hover:text-cinnabar"
+              className="text-sm text-muted no-underline hover:text-cinnabar"
             >
-              只练不熟
+              只练不熟 →
             </Link>
           ) : null}
           {cardHref ? (
             <>
               <Link
                 href={cardHref}
-                className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline hover:border-cinnabar hover:text-cinnabar"
-              >
-                回本卡
-              </Link>
-              <Link
-                href={reviewHref}
-                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
-              >
-                核本卡
-              </Link>
-              <Link
-                href={deskBackHref}
                 className="text-sm text-muted no-underline hover:text-cinnabar"
               >
-                {deskBackLabel}
+                回本卡 →
               </Link>
-              {ret ? (
-                <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
-                  回到刚才 →
-                </Link>
-              ) : null}
-            </>
-          ) : (
-            <>
-              <Link
-                href={deskBackHref}
-                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
-              >
-                {deskBackLabel}
-              </Link>
-              {ret ? (
-                <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
-                  回到刚才 →
-                </Link>
-              ) : null}
               <Link
                 href={reviewHref}
-                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:text-foreground"
+                className="text-sm text-muted no-underline hover:text-cinnabar"
               >
-                去核页
+                核本卡 →
               </Link>
             </>
+          ) : (
+            <Link
+              href={reviewHref}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              去核页 →
+            </Link>
           )}
+          <Link href={deskBackHref} className="text-sm text-muted no-underline hover:text-cinnabar">
+            {deskBackLabel}
+          </Link>
+          {ret ? (
+            <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
+              回到刚才 →
+            </Link>
+          ) : null}
         </div>
       </section>
     );
@@ -463,10 +528,17 @@ export default function StudySession({
       <p className="mt-4 text-xs text-muted">
         范围：{scopeLabel} · 评分只记本机浏览器（非 FSRS 调度）；citation 徽章语义不变（未验证仍为琥珀）。
       </p>
-      <p className="mt-1 text-xs text-muted">
-        键：空格 显示答案 · <span className="mono">1</span>/<span className="mono">j</span> 认识 ·{" "}
-        <span className="mono">2</span>/<span className="mono">k</span> 不熟（未显示时先显示）。
-      </p>
+      {/* T25 B：键说明一族风格（muted 小字 + mono 键帽），含 ←→ 回看与 u 撤销。 */}
+      <SessionKeyHint
+        className="mt-1"
+        keys={[
+          ["空格", "显示答案"],
+          ["1/j", "认识"],
+          ["2/k", "不熟"],
+          ["←/→", "回看/前进"],
+          ["u", "撤销本轮最后一评"],
+        ]}
+      />
     </section>
   );
 }

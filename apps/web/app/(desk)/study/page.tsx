@@ -335,6 +335,7 @@ async function StudyBody({
           cardHref={cardHref}
           allHref={`/study${qs({ mode: "all" })}`}
           unknownHref={`/study${qs({ mode: "unknown" })}`}
+          ungradedHref={`/study${qs({ mode: "ungraded" })}`}
           deskPageHint={deskPageHint}
           deskBookId={scopeBook?.id}
         />

@@ -18,6 +18,48 @@ import {
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadReturn, type ReturnEntry } from "@/lib/return-stack";
 import { isEditableTarget } from "@/lib/keyboard";
+import SessionKeyHint from "@/components/SessionKeyHint";
+
+/**
+ * 档位芯片（T25 A）：待核/已对/存疑 本机计数，可点切档（URL 规则与 sticky 三档一致）；
+ * 当前档高亮。扫视控件，非掌握色环；仅在池空/档内空态出现，核中不插队。
+ */
+function HeYeModeChips({
+  counts,
+  mode,
+  hrefs,
+}: {
+  counts: { open: number; checked: number; doubt: number };
+  mode: HeYeMode;
+  hrefs: Record<HeYeMode, string | undefined>;
+}) {
+  const rows: [HeYeMode, string, number][] = [
+    ["open", "待核", counts.open],
+    ["checked", "已对", counts.checked],
+    ["doubt", "存疑", counts.doubt],
+  ];
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-2">
+      {rows.map(([m, label, n]) => {
+        const cls = `rounded-full border px-3 py-1 text-xs no-underline transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
+          mode === m
+            ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
+            : "border-line text-muted hover:border-cinnabar hover:text-cinnabar"
+        }`;
+        const text = `${label} ${n}`;
+        return hrefs[m] ? (
+          <Link key={m} href={hrefs[m] as string} className={cls}>
+            {text}
+          </Link>
+        ) : (
+          <span key={m} className={cls}>
+            {text}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 /**
  * 核页对页会话（/review 中栏，客户端）：
@@ -36,6 +78,8 @@ export default function HeYeSession({
   studyHref,
   deskPageHref,
   openHref,
+  checkedHref,
+  doubtHref,
   clearChapterHref,
   scopeKey,
 }: {
@@ -55,6 +99,10 @@ export default function HeYeSession({
   deskPageHref?: string;
   /** 空档「回待核」链（同范围 ?mode=open）。 */
   openHref?: string;
+  /** 档位芯片「已对」目标：同范围 ?mode=checked（T25 A）。 */
+  checkedHref?: string;
+  /** 档位芯片「存疑」目标：同范围 ?mode=doubt（T25 A）。 */
+  doubtHref?: string;
   /** 章范围清章回全书核页（/review?chapter=null 等价）——池空/档空时限宽范围。 */
   clearChapterHref?: string;
   /** 续位作用域（与父级 remount key 一致）：`${book|all}:${card|all}:${page|all}:${chapter|all}:${mode}`。 */
@@ -96,8 +144,13 @@ export default function HeYeSession({
 
   /** 当前档可见队列（本机态过滤，保持全池顺序）。 */
   const visible = useMemo(() => filterItemsByMode(items, store, mode), [items, store, mode]);
-  /** 全池累计（本范围，纯本机态）：待核 / 已对 / 存疑。 */
+  /** 全池累计（本范围，本机态）：待核 / 已对 / 存疑。 */
   const counts = useMemo(() => countPoolMarks(items, store), [items, store]);
+  /** 档位芯片目标（T25 A）：池空/档内空态渲染，缺 href 退化为纯计数 chip。 */
+  const modeChipHrefs: Record<HeYeMode, string | undefined> = useMemo(
+    () => ({ open: openHref, checked: checkedHref, doubt: doubtHref }),
+    [openHref, checkedHref, doubtHref],
+  );
   /** key → 全池下标（标完跳下一条用）。 */
   const posOf = useMemo(() => {
     const m = new Map<string, number>();
@@ -180,7 +233,7 @@ export default function HeYeSession({
 
   // ---- 空态分支 ----
 
-  /** 服务端池空：本范围没有「有页码但未抽查」的引用。 */
+  /** 服务端池空：本范围没有「有页码但未抽查」的引用。一颗主 CTA + 次级文字链 + 档位芯片。 */
   if (items.length === 0) {
     return (
       <div className="mt-8">
@@ -188,18 +241,36 @@ export default function HeYeSession({
           这个范围（{scopeLabel}）没有待核 cite——没有「有页码但未抽查」的引用，
           或数据尚未解析出来。
         </p>
-        <div className="mt-8 flex flex-wrap items-center gap-5">
+        <HeYeModeChips counts={counts} mode={mode} hrefs={modeChipHrefs} />
+        {/* T25 A densify：每分支只留一颗朱红主 CTA，其余次级文字链。 */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+          {cardHref ? (
+            <Link
+              href={cardHref}
+              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            >
+              回本卡 →
+            </Link>
+          ) : deskPageHref ? (
+            <Link
+              href={studyHref ?? "/study"}
+              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            >
+              去学习环 /study →
+            </Link>
+          ) : (
+            <Link
+              href="/desk"
+              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            >
+              回书桌 →
+            </Link>
+          )}
           {cardHref ? (
             <>
               <Link
-                href={cardHref}
-                className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-              >
-                回本卡 →
-              </Link>
-              <Link
                 href={studyHref ?? "/study"}
-                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-sm text-muted no-underline hover:text-cinnabar"
               >
                 去学习本卡 →
               </Link>
@@ -213,35 +284,19 @@ export default function HeYeSession({
               ) : null}
             </>
           ) : deskPageHref ? (
-            <>
-              <Link
-                href={studyHref ?? "/study"}
-                className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-              >
-                去学习环 /study →
-              </Link>
-              <Link
-                href={deskPageHref}
-                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-              >
-                回书桌本页 →
-              </Link>
-            </>
+            <Link
+              href={deskPageHref}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              回书桌本页 →
+            </Link>
           ) : (
-            <>
-              <Link
-                href="/desk"
-                className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-              >
-                回书桌 →
-              </Link>
-              <Link
-                href={studyHref ?? "/study"}
-                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-              >
-                去学习环 /study →
-              </Link>
-            </>
+            <Link
+              href={studyHref ?? "/study"}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              去学习环 /study →
+            </Link>
           )}
           {clearChapterHref ? (
             <Link
@@ -265,8 +320,9 @@ export default function HeYeSession({
     );
   }
 
-  /** 档内空：open 空 = 本范围全标完；checked/doubt 空 = 还没有对应记录。 */
+  /** 档内空：open 空 = 本范围全标完（诚实绿条保留）；checked/doubt 空 = 还没有对应记录。 */
   if (visible.length === 0) {
+    const backToOpen = mode !== "open" && openHref;
     return (
       <div className="mt-8">
         {mode === "open" ? (
@@ -288,44 +344,49 @@ export default function HeYeSession({
             先在「待核」档里逐条核对，标过的项会出现在这里。
           </p>
         )}
-        <div className="mt-6 flex flex-wrap items-center gap-4">
-          {mode !== "open" && openHref ? (
+        <HeYeModeChips counts={counts} mode={mode} hrefs={modeChipHrefs} />
+        {/* T25 A densify：一颗主 CTA（回待核档 / 去学习环），其余次级文字链。 */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+          {backToOpen ? (
             <Link
               href={openHref}
               className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
             >
               回待核档 →
             </Link>
+          ) : (
+            <Link
+              href={studyHref ?? "/study"}
+              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            >
+              去学习环 →
+            </Link>
+          )}
+          {backToOpen ? (
+            <Link
+              href={studyHref ?? "/study"}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              {cardHref ? "去学习本卡 →" : "去学习环 →"}
+            </Link>
           ) : null}
           {cardHref ? (
-            <Link
-              href={cardHref}
-              className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-            >
+            <Link href={cardHref} className="text-sm text-muted no-underline hover:text-cinnabar">
               回本卡 →
             </Link>
           ) : null}
           {deskPageHref ? (
             <Link
               href={deskPageHref}
-              className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+              className="text-sm text-muted no-underline hover:text-cinnabar"
             >
               回书桌本页 →
             </Link>
           ) : (
-            <Link
-              href="/desk"
-              className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-            >
+            <Link href="/desk" className="text-sm text-muted no-underline hover:text-cinnabar">
               回书桌 →
             </Link>
           )}
-          <Link
-            href={studyHref ?? "/study"}
-            className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-          >
-            {cardHref ? "去学习本卡 →" : "去学习环 →"}
-          </Link>
           {clearChapterHref ? (
             <Link
               href={clearChapterHref}
@@ -412,16 +473,24 @@ export default function HeYeSession({
           </button>
         </nav>
       </div>
-      <p className="mt-1 text-xs text-muted">
-        键：<span className="mono">1</span> 已对 · <span className="mono">2</span> 存疑 ·{" "}
-        <span className="mono">←</span>/<span className="mono">→</span> 上下条
-        {mode === "open" && samePageOpen.length >= 1 ? (
-          <>
-            {" "}
-            · <span className="mono">b</span> 同页批量
-          </>
-        ) : null}
-      </p>
+      {/* T25 B：键说明与 study 对齐一族风格（muted 小字 + mono 键帽）；b 仅待核档。 */}
+      <SessionKeyHint
+        className="mt-1"
+        keys={
+          mode === "open" && samePageOpen.length >= 1
+            ? [
+                ["1", "已对"],
+                ["2", "存疑"],
+                ["←/→", "上下条"],
+                ["b", "同页批量"],
+              ]
+            : [
+                ["1", "已对"],
+                ["2", "存疑"],
+                ["←/→", "上下条"],
+              ]
+        }
+      />
 
       {resumed ? (
         <p

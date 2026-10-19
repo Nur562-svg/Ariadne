@@ -1,0 +1,53 @@
+按 docs/task-25-desk-daily-empty-kbd-shelf.md 实现 Task 25 desk-daily-empty-kbd-shelf-01。模型用 DeepSeek-V4-Pro。
+
+════════════════════════════════════
+体量要求（硬 · 读完再动手）
+════════════════════════════════════
+这不是 Task 08–10 那种「改两个 CTA / 迁一个路由」的小刀，也不是只改空态一句文案或只给 CitePeek 加 aria-modal。用户要约 1 小时的刀，不要 5–10 分钟收工。DeepSeek-V4-Pro 若 5–15 分钟就收工，说明漏做了。目标约 60–90 分钟真实编码：多文件协调（练/核空·完成 densify 主 CTA+档位芯片计数 · 学习环 ←→ 回看 + u 撤销 + KeyHint · CitePeek 焦点陷阱 · 书库每书续开 p.N · 注册成功打开书桌 CTA · 空错/回归自测）。必须做完 brief 里 IN 的 A+B+C+D+E 全部，不要只做其中一角。验收按全部段检查。
+
+前置：先 git log -1 --oneline 确认 tip 为 a654438（或其后仍含 T24）：feat desk-paper-rail-progress-port-01——progress-port.ts、ProgressPortability、PageCardRailMarks、ChapterPageReader sticky、CitePeek Esc 焦点归位、view-continuity。若仍停在仅 T23（741f733）或更早、或工作树无 T24 文件，停下来对齐，不要开工。不要 push。先读 docs/frontend-aesthetics.md。对照已有：StudySession / HeYeSession 空态与键盘环、CitePeek、LibraryContinuity、RegisterMaterialButton、last-opened / recent-books、return-stack、StickyModeGate、T18 键盘、T20 续位、T21 sticky、T22 register、T23 回程、T24 纸面/轨/导出。
+
+产品身份：顾客自带材料 → 可考知识原子。日用路径是书桌读页 → 练/核 → 空了知道下一步、键能回看撤销、架上续开、导入立刻进书桌——不是掌握度仪表盘，也不是题库营销页。免疫学 seed 是验收语料。QueuePanel stub 故意保留。禁止重做 CitePeek 内容；禁止 OCR 句级/页图 Canvas；禁止 ⌘K。
+
+════════════════════════════════════
+做（按顺序 · 多步交付）
+════════════════════════════════════
+
+【步骤 1 · A 练/核空·完成 densify + B 学习环键盘对称】
+1) StudySession 队列空 / 本轮完成：只留一颗朱红主 CTA（按档诚实下一动作——如未评空→「切到全部」；完成态→「再来一轮」）；回书桌本页 / 回到刚才 / 核页 / 回本卡等改为次级文字链，勿一排多颗实心按钮。空态加档位芯片带本机计数（认识 n · 不熟 n · 未评 n）可点切到对应 ?mode=（URL 规则与 sticky 三档一致）。禁止掌握%、色环、Due。
+2) HeYeSession 池空 / 档内空：对称——一颗主 CTA + 次级链；待核/已对/存疑芯片带计数可点。open 全标完的诚实绿条保留。
+3) StudySession 键盘：保留 Space / 1·j / 2·k。新增 ←/→（可同时认 [/]）在本轮 order 内回看/前进，不改评分；切题时 revealed=false；边界 no-op。新增 u（或 z）撤销本轮最后一次评分：薄 undoStack {key, prevGrade}[]；撤销写回 prevGrade（或删 key）、idx--、run 计数回滚、游标跟上。无栈 no-op。可编辑目标静默；空/完成态忽略键。不要持久化 undo 跨会话；不要改 heye 撤销（本刀仅 study）。
+4) 薄 KeyHint（新 SessionKeyHint.tsx 或内联）：Study 底栏写清「空格 显示 · 1/j 认识 · 2/k 不熟 · ←→ 回看 · u 撤销」；HeYe 底栏保持/对齐同族风格。不是 ⌘K / ShortcutSheet。
+
+【步骤 2 · C CitePeek 焦点陷阱 + D 架上续开】
+1) CitePeek：打开时 aria-modal="true"，焦点移入浮层第一个可聚焦控件（preventScroll）。Tab/Shift+Tab 在 dialog 内焦点循环。Esc / 点外关闭后焦点归还「摘」（保留 T24）。禁止重做摘录文案、链、OCR、页图。
+2) 新客户岛（建议 ShelfBookContinuity）：挂书库每书卡「打开书桌」旁。读 loadRecentBooks/loadLastOpened，若该书有 page → 次级「续开 p.N →」→ /desk?book=&page=；无 page 不渲染。主 CTA「打开书桌」仍可 /desk?book=。不要第二颗大红；不要重做 ProgressPortability / LocalProgressStrip。
+
+【步骤 3 · E 导入首开 + 回归】
+1) RegisterMaterialButton：成功后去掉「刷新后即可开书桌」；改为可点「打开书桌 →」链到 /desk?book={bookId}（可附学习/核次级文字链）。router.refresh() 保留；与 ready 三连文案对齐。冲突/网络琥珀保留。
+2) 按 brief 自测；pnpm --filter web build PASS；不要 push；确认无 FSRS、无 Clew API 真写入、无 verified:true、无掌握%、QueuePanel 未大改、CitePeek 内容未重做（仅焦点陷阱）、T24 sticky/轨/导出未毁、T23 return/换书未毁、study/heye/session/recent/return/view 桶边界清晰。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–24：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模、TOC、Clew 会话条/本轮变更/章池 compact、卡页 CitePeek 内容与深链、/review 章芯片+三档+同页批量+同页跳、/study 三档+键盘环+CitePeek、卡枢纽 ?card= 与 atoms 与 CardHubReturnLinks、本页卡轨与翻页 ?page=、作用域 LocalProgress、ingest 状态机与就绪三连与注册进书库、书库三连、T20 sessionStorage 续位 + StickyModeGate + 空态作用域恢复、T21 last-opened + LibraryContinuity + Sidebar 在读 + sticky 工具带、T22 register API + 章清单 + recent-books + Sidebar 换书、T23 return-stack + ReturnNav + BookSwitcher + study 回书桌本页、T24 sticky 页铬 + PageCardRailMarks + progress-port + CitePeek Esc 归位 + view.v1、collectStudyAtoms、collectCiteQueue、cardsCitingPage、loadAllChapterPages、ariadne.study.v1、ariadne.heye.v1、ariadne.desk.session.v1、ariadne.desk.last-opened.v1、ariadne.desk.recent-books.v1、ariadne.desk.return.v1、ariadne.desk.view.v1。勿 verified:true 过关。勿静默覆盖 seed 章。A+B+C+D+E 范围保持完整。
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+真 FSRS / ts-fsrs / Due 调度；Clew LLM/API / ProposalCard 真写入；改 seed verified:true；掌握% / 假仪表盘 / Due 角标；改名 ariadne.study.v1 / ariadne.heye.v1；重做 CitePeek 内容（本刀只加焦点陷阱，保留 T24 Esc 归位）；OCR 句级高亮 / 页图 Canvas；Clew QueuePanel 大改（stub 故意）/ Clew 拖宽 / 窄屏 DeskShell 大重构；云端 OCR / 改 parse·extract；register API 大重构 / 静默覆盖章 id；exam-anchor 题库/模考 UI；PWA / offline；⌘K 全命令面板 / ShortcutSheet；重做中栏 LocalProgressStrip / progress-port / 回程栈 / 换书 / 纸面 sticky / 卡轨本机态；HeYe 跨会话撤销大做；新章 ch08+ seed 内容；nur-landing / 营销 hero；擅自 push。
+
+════════════════════════════════════
+审美
+════════════════════════════════════
+朱红唯一强调色；精炼书桌；卡片仅在「卡本身是交互」时用；效用文；无营销 hero。琥珀仅作未核实/存疑/警告/注册失败。空态一颗主 CTA + 次级文字，不要按钮墙。档位芯片是扫视控件，勿做成掌握色环。CitePeek 仍是轻量浮层，陷阱不可见（无额外华丽 chrome）。架上「续开 p.N」是次级朱红文字链，对齐 LibraryContinuity「继续上次」呼吸感。KeyHint 用 muted 小字 + mono 键帽，勿大面板。焦点环用现有 focus-visible:outline-cinnabar。
+
+════════════════════════════════════
+成功标准（回复时勾 · 全部段）
+════════════════════════════════════
+- 多文件改动（Study/HeYe 空态 + study 键对称/撤销 + CitePeek 陷阱 + ShelfBookContinuity + Register CTA…），不是只改一处文案
+- 空态一颗主 CTA + 芯片计数；study ←→ 回看与 u 撤销可用；CitePeek Tab 不逃出且 Esc 归位；书库有 page 的书见续开；注册成功可开书桌；坏路径不擦库
+- T07–24 回归未毁（含 T18 键盘、T19/T24 CitePeek、T20 续位、T21 sticky、T22 register、T23 return/换书、T24 sticky/轨/导出）；build PASS；未 push；study/heye key 未破
+- 回复含：改动文件列表、build 结果、A/B/C/D/E 说明（undo 规则 · Tab 陷阱行为 · 续开 href）、自测路由摘要
+
+做完简短列出以上证据，等验收；不要 push。

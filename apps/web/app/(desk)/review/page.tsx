@@ -371,6 +371,8 @@ async function ReviewBody({
         studyHref={studyHref}
         deskPageHref={deskPageHref}
         openHref={`/review${qs({ mode: "open" })}`}
+        checkedHref={`/review${qs({ mode: "checked" })}`}
+        doubtHref={`/review${qs({ mode: "doubt" })}`}
         clearChapterHref={clearChapterHref}
       />
     </div>

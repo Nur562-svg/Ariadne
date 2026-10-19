@@ -4,6 +4,7 @@ import { collectCiteQueue } from "@/lib/heye";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
+import ShelfBookContinuity from "@/components/ShelfBookContinuity";
 
 /**
  * 书库页（书架）：DeskShell 中栏，从 config/books.json 派生，不硬编码任何书名/章节 copy。
@@ -66,12 +67,16 @@ export default function Library() {
                     {b.title}
                   </Link>
                 </h2>
-                <Link
-                  href={deskHref}
-                  className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
-                >
-                  打开书桌 →
-                </Link>
+                {/* T25 D：主 CTA「打开书桌」旁的次级续开链（该书记录带停留页时才出现，勿第二颗大红）。 */}
+                <span className="flex flex-wrap items-center gap-4">
+                  <Link
+                    href={deskHref}
+                    className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
+                  >
+                    打开书桌 →
+                  </Link>
+                  <ShelfBookContinuity bookId={b.id} />
+                </span>
               </div>
               <dl className="mt-4 grid grid-cols-3 gap-4 text-center sm:max-w-md">
                 {[
