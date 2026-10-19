@@ -1,7 +1,14 @@
 import Link from "next/link";
 import type { Material, MaterialStage } from "@/lib/entities";
-import { deriveMaterialStage, loadBooks, loadMaterials } from "@/lib/entities";
+import {
+  deriveMaterialStage,
+  loadBooks,
+  loadMaterials,
+  materialChapterHasBlocks,
+  materialChapterHasCards,
+} from "@/lib/entities";
 import IngestUpload from "@/components/IngestUpload";
+import RegisterMaterialButton from "@/components/RegisterMaterialButton";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +34,7 @@ const STAGE_UI: Record<MaterialStage, { label: string; badge: string; hint: (m: 
     label: "已抽取 · 未注册书库",
     badge: "border-line bg-card text-foreground",
     hint: () =>
-      "实体卡已生成。把章节注册进 config/chapter.json + config/books.json 后即为 ready（注册后可在书桌打开）。",
+      "实体卡已生成。点下方「注册进书库 →」一键把章写入 config/chapter.json + config/books.json（本机落盘），刷新后即为 ready 并在书桌可见。",
   },
   ready: {
     label: "就绪 · 已在书库",
@@ -55,7 +62,7 @@ export default function IngestPage() {
         <li><span className="mono mr-1 text-cinnabar">1</span>上传 PDF + 填写 pageOffset 与章物理页范围（此处）→ 状态 <span className="mono">uploaded</span>，PDF 落盘 data/uploads/（已 gitignore）。</li>
         <li><span className="mono mr-1 text-cinnabar">2</span>本机（macOS）跑 <span className="mono">pnpm parse &lt;ch&gt;</span> —— Apple Vision OCR，产出 data/chapters/&lt;ch&gt;.blocks.json → <span className="mono">parsed</span>。</li>
         <li><span className="mono mr-1 text-cinnabar">3</span>本机跑 <span className="mono">pnpm extract -- &lt;ch&gt;</span> —— LLM 直连抽取实体卡 → <span className="mono">extracted</span>。</li>
-        <li><span className="mono mr-1 text-cinnabar">4</span>把章注册进 config/chapter.json 与 config/books.json → <span className="mono">ready</span>，书库 / 卡浏览器 / 学习环直接可用（无需改 React 代码）。</li>
+        <li><span className="mono mr-1 text-cinnabar">4</span>在 extracted 物料上点「注册进书库 →」，一键写入 config/chapter.json 与 config/books.json → <span className="mono">ready</span>，书库 / 卡浏览器 / 学习环直接可用（无需改 React 代码）。</li>
       </ol>
 
       <section className="mt-10">
@@ -86,10 +93,30 @@ export default function IngestPage() {
                   <p className="mt-2 text-xs text-muted">
                     章范围：{m.chapters.map((c) => `${c.id} 物理页 ${c.physicalStart}–${c.physicalEnd}`).join(" · ")}
                   </p>
+                  {/* T22 A：每章清单（id · 标题 · 物理页起止 · blocks/有 无 · cards 有/无）。
+                      blocks/cards 均由「本物料」磁盘事实推导（fail-closed，禁止假进度条 / 假 OCR 动画）。 */}
+                  <ul className="mt-3 space-y-1 border-l-2 border-line pl-4">
+                    {m.chapters.map((c) => {
+                      const hasBlocks = materialChapterHasBlocks(m, c.id);
+                      const hasCards = materialChapterHasCards(m, c.id);
+                      return (
+                        <li
+                          key={c.id}
+                          className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 text-xs text-muted"
+                        >
+                          <span className="mono text-foreground/80">{c.id}</span>
+                          <span className="text-foreground/80">{c.title}</span>
+                          <span className="mono">页 {c.physicalStart}–{c.physicalEnd}</span>
+                          <span>blocks {hasBlocks ? "有" : "无"}</span>
+                          <span>cards {hasCards ? "有" : "无"}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
                   <p className="mt-3 text-sm leading-7 text-foreground/90">{ui.hint(m)}</p>
                   {stage === "ready" || stage === "extracted" ? (
                     (() => {
-                      // extracted 按状态机语义 = 尚未全部注册进书库，恒链书库并说明先注册
+                      // ready → 显示就绪三连（反查该书）；extracted → 一键注册进书库（T22 C）。
                       const book = stage === "ready" ? findDeskBook(m) : undefined;
                       return (
                         <p className="mt-3">
@@ -116,17 +143,7 @@ export default function IngestPage() {
                               </Link>
                             </span>
                           ) : (
-                            <>
-                              <Link
-                                href="/"
-                                className="inline-block rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
-                              >
-                                去书库 →
-                              </Link>
-                              <span className="ml-3 text-xs text-muted">
-                                先注册进 config/books.json，书桌才能打开这本书。
-                              </span>
-                            </>
+                            <RegisterMaterialButton materialId={m.id} title={m.title} />
                           )}
                         </p>
                       );

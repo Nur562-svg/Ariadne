@@ -9,6 +9,7 @@ import ChapterPageReader from "@/components/desk/ChapterPageReader";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import CitePeek from "@/components/CitePeek";
 import { useDeskContext } from "@/components/desk/DeskContext";
+import { touchLastOpened } from "@/lib/last-opened";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -173,6 +174,18 @@ export default function DocumentPane({
       window.history.replaceState(window.history.state, "", url);
     }
   }, [readingPage, mode, book.id]);
+
+  /**
+   * T22 D：翻页时把当前停留页写进续开/最近栈（换书后再回来能回原位，被换下书 entry 保留）。
+   * 只写本机 localStorage（touchLastOpened），不写 seed / 不写 verified；非法 book 回落时不写。
+   */
+  useEffect(() => {
+    if (invalidBook || readingPage == null) return;
+    touchLastOpened(book.id, {
+      deskHref: `/desk?book=${encodeURIComponent(book.id)}`,
+      page: readingPage,
+    });
+  }, [readingPage, book.id, invalidBook]);
 
   /** 当前页的 citing 卡与待核数（服务端索引表按 pageNo 查；翻页随动）。 */
   const pageCitingCards =

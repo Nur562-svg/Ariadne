@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { loadLastOpened, subscribeLastOpened } from "@/lib/last-opened";
+import {
+  loadLastOpened,
+  loadRecentBooks,
+  subscribeLastOpened,
+  type LastOpened,
+} from "@/lib/last-opened";
 
 /** 侧栏「在读书目」摘要（(desk) layout 服务端算好传入多书，客户端据 last-opened 选一本）。 */
 export type SidebarBook = {
@@ -40,6 +45,7 @@ function isActive(pathname: string, href: string) {
 export default function Sidebar({ books }: { books?: SidebarBook[] }) {
   const pathname = usePathname();
   const [current, setCurrent] = useState<SidebarBook | undefined>(books?.[0]);
+  const [recent, setRecent] = useState<LastOpened[]>([]);
 
   useEffect(() => {
     function sync() {
@@ -49,6 +55,7 @@ export default function Sidebar({ books }: { books?: SidebarBook[] }) {
         : undefined;
       // 有效 last-opened → 该书；无效/无 → 首本（有书时）或 undefined（空库文案）。
       setCurrent(book ?? books?.[0]);
+      setRecent(loadRecentBooks());
     }
     sync();
     return subscribeLastOpened(sync);
@@ -115,7 +122,8 @@ export default function Sidebar({ books }: { books?: SidebarBook[] }) {
             <p className="text-[11px] text-muted">在读书目</p>
             <Link
               href={`/desk?book=${encodeURIComponent(current.id)}`}
-              className="mt-1 block text-sm font-medium leading-6 text-foreground no-underline hover:text-cinnabar"
+              title={current.title}
+              className="mt-1 block truncate text-sm font-medium leading-6 text-foreground no-underline hover:text-cinnabar"
             >
               {current.title}
             </Link>
@@ -136,6 +144,36 @@ export default function Sidebar({ books }: { books?: SidebarBook[] }) {
                 核页 →
               </Link>
             </p>
+            {/* T22 D：多书换书入口（薄 disclosure，非书单墙）；换书保留被换下书的停留页（读最近栈 deskHref/page）。 */}
+            {books && books.length >= 2 ? (
+              <details className="mt-2">
+                <summary className="cursor-pointer list-none text-xs text-muted transition-colors hover:text-cinnabar [&::-webkit-details-marker]:hidden">
+                  换书 ▾
+                </summary>
+                <ul className="mt-1 space-y-0.5 border-l-2 border-line pl-3">
+                  {books
+                    .filter((b) => b.id !== current.id)
+                    .map((b) => {
+                      const entry = recent.find((e) => e.bookId === b.id);
+                      const href =
+                        entry?.page != null
+                          ? `/desk?book=${encodeURIComponent(b.id)}&page=${entry.page}`
+                          : entry?.deskHref || `/desk?book=${encodeURIComponent(b.id)}`;
+                      return (
+                        <li key={b.id}>
+                          <Link
+                            href={href}
+                            title={b.title}
+                            className="block truncate text-xs text-muted no-underline hover:text-cinnabar"
+                          >
+                            {b.title}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </details>
+            ) : null}
           </>
         ) : (
           <p className="text-xs leading-6 text-muted">

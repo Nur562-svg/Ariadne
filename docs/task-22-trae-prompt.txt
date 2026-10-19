@@ -1,0 +1,53 @@
+按 docs/task-22-desk-ingest-shelf-register.md 实现 Task 22 desk-ingest-shelf-register-01。模型用 DeepSeek-V4-Pro。
+
+════════════════════════════════════
+体量要求（硬 · 读完再动手）
+════════════════════════════════════
+这不是 Task 08–10 那种「改两个 CTA / 迁一个路由」的小刀，也不是只给 ingest 写一句「去改 books.json」。用户要约 1 小时的刀，不要 5–10 分钟收工。DeepSeek-V4-Pro 若 5–15 分钟就收工，说明漏做了。目标约 60–90 分钟真实编码：多文件协调（物料章清单 densify · register API 合并 chapter.json+books.json · ingest 上架 CTA · 注册后 ready 三连+书架可见 · 最近书栈+书桌/侧栏换书诚实 · 长标题 truncate · 冲突/空错恢复 · 多路由自测）。必须做完 brief 里 IN 的 A+B+C+D+E 全部，不要只做其中一角。验收按全部段检查。
+
+前置：先 git log -1 --oneline 确认 tip 已含 Task 21（目标「T21 tip or later」——feat desk-library-shelf-continuity-01：last-opened.ts、LibraryContinuity、LastOpenedTouch、Sidebar 在读跟 last-opened、study/review sticky 工具带）。若仍停在仅 T20（cd527df）或更早、或工作树无 T21 文件，停下来对齐，不要开工。不要 push。先读 docs/frontend-aesthetics.md。对照已有：ingest page、IngestUpload、deriveMaterialStage、materialChapterHasBlocks/Cards、loadBooks/loadChapters、last-opened.ts、LibraryContinuity、Sidebar、DocumentPane、LocalProgressStrip、study/review sticky、StickyModeGate、session-continuity.ts。
+
+产品身份：顾客自带材料 → 可考知识原子。导入后必须能上架进书库并在书桌续开——不是手改 JSON 才能用，也不是掌握度仪表盘或题库营销页。免疫学 seed 是验收语料，不是把产品做成免疫学 demo；注册时禁止覆盖 seed 章 id（ch01–ch07）。
+
+════════════════════════════════════
+做（按顺序 · 多步交付）
+════════════════════════════════════
+
+【步骤 1 · A 章清单诚实 + B register API】
+1) /ingest 每条物料卡：增加章清单（id · 标题 · 物理页起止 · blocks 有/无 · cards 有/无）。禁止假 % 进度条、假 OCR 动画。状态机 uploaded/parsed/extracted/ready/failed 语义不变。
+2) 新增 POST 注册接口（建议 /api/ingest/register，逻辑可抽 lib/register-book.ts）：入参 materialId（可选 bookId/title）；校验物料为 extracted；合并写入 config/chapter.json 与 config/books.json。章 id 已存在 → 整单失败（不半写、不覆盖 seed）。默认新 bookId 新书；bookId 冲突则失败。source 指向该物料 PDF。返回 { ok, bookId, chapterIds }。本机写盘，诚实说明非云同步。
+
+【步骤 2 · C 注册 CTA + 注册后连续性】
+1) extracted 物料：主 CTA「注册进书库 →」（一颗朱红实心）；muted「写入 config · 本机」。成功后 router.refresh → ready 三连（书桌｜学习｜核页，复用 T18 模式）。
+2) / 书库出现新书；LocalProgress 对空池诚实。可选轻触 last-opened，勿抢「继续上次」主视觉。
+3) 自测可用 synthetic extracted 物料（章 id 如 ch-t22-demo，勿用 ch01–ch07）；验收后可删 fixture。
+
+【步骤 3 · D 最近栈+换书 + E 冲突/回归】
+1) 扩展薄最近栈（例 ariadne.desk.recent-books.v1，或同文件扩展）：最多约 5 条；loadLastOpened() 仍返回栈顶（T21 LibraryContinuity / Sidebar 在读不毁）。禁止改名 ariadne.study.v1 / ariadne.heye.v1；禁止复用 ariadne.desk.session.v1。
+2) books.length>=2：书桌书名旁和/或 Sidebar 在读区提供薄换书入口；换书写栈顶并保留被换下书的 page/deskHref。Sidebar 长书名 truncate + title 悬停全文。
+3) 冲突/非法注册：琥珀错误 + 4xx；seed 章表未改。按 brief 自测；pnpm --filter web build PASS；不要 push；确认无 FSRS、无 Clew API 真写入、无 verified:true、无掌握%、study/heye key 未改名。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–21：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模、TOC、Clew 会话条/本轮变更/章池 compact、卡页 CitePeek、/review 章芯片+三档+同页批量+同页跳、/study 三档+键盘环+CitePeek、卡枢纽 ?card=、本页卡轨与翻页 ?page=、作用域 LocalProgress、ingest 状态机与就绪三连、书库三连、T20 sessionStorage 续位 + StickyModeGate + 空态作用域恢复 + 焦点、T21 last-opened + LibraryContinuity + Sidebar 在读 + sticky 工具带、collectStudyAtoms、collectCiteQueue、cardsCitingPage、loadAllChapterPages、ariadne.study.v1、ariadne.heye.v1、ariadne.desk.session.v1、ariadne.desk.last-opened.v1。勿 verified:true 过关。勿静默覆盖 seed 章。A+B+C+D+E 范围保持完整。
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+真 FSRS / ts-fsrs / Due 调度；Clew LLM/API / ProposalCard 真写入；改 seed verified:true；掌握% / 假仪表盘 / Due 角标；改名 ariadne.study.v1 / ariadne.heye.v1；复用 session 游标桶当最近栈；静默覆盖已有 chapter id / 改坏 immunology seed；云端 OCR / 改 parse·extract 管线；Clew QueuePanel 大改 / Clew 拖宽 / 窄屏 DeskShell 大重构；OCR 句级高亮 / 页图 Canvas；exam-anchor 题库/模考 UI；PWA / offline；进度 JSON 导出大做；重做 CitePeek / Study↔desk 回程条大 densify；⌘K 全命令面板；新章 ch08+ seed 内容；nur-landing / 营销 hero；擅自 push。
+
+════════════════════════════════════
+审美
+════════════════════════════════════
+朱红唯一强调色；精炼书桌；卡片仅在「卡本身是交互」时用；效用文；无营销 hero。琥珀仅作未核实/存疑/警告/冲突。注册主 CTA 一颗朱红；三连次级文字链。换书是效用入口，不要书单墙或第三颗大红并排抢「打开书桌」。章清单紧凑可读，无假进度炫技。sticky / 在读 / 继续上次视觉语言与 T21 一致。
+
+════════════════════════════════════
+成功标准（回复时勾 · 全部段）
+════════════════════════════════════
+- 多文件改动（章清单 + register API + 注册 CTA + 最近栈 + 换书 + truncate…），不是只加一句「去改 books.json」
+- /ingest 章清单诚实；extracted 可注册进书库；冲突拒绝且 seed 未毁；书架出现新书+ready 三连；多书换书保留他书续开；T21 last-opened/LibraryContinuity/Sidebar 在读/sticky 未毁
+- T07–21 回归未毁（含 T18 键盘环、T19 CitePeek、T20 续位）；build PASS；未 push；study/heye localStorage key 未破
+- 回复含：改动文件列表、build 结果、A/B/C/D/E 说明（register 冲突策略 · 最近栈与 T21 边界）、自测路由摘要
+
+做完简短列出以上证据，等验收；不要 push。
