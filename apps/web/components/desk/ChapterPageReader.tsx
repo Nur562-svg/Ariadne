@@ -95,11 +95,13 @@ export default function ChapterPageReader({
    * 练本页（T27 B）：M = 本页 citing 卡 atoms 合计——与 collectStudyAtoms({page}) /
    * DocumentPane pageAtoms 同池同口径（卡/字段/原子 cite 任一命中即整卡入池）。
    * 链接带 book+chapter+page（page 属当前章）；M=0 诚实 muted，不造假链。
+   * T28 C：显式 &mode=all（保留 book/chapter/page）——从书桌进练本页不被
+   * StickyModeGate restore 成 unknown 空队列，落页即看得见池。
    */
   const pageAtomCount = (citingCards ?? []).reduce((n, c) => n + c.atomCount, 0);
   const studyPageHref =
     bookId && curPage != null
-      ? `/study?book=${encodeURIComponent(bookId)}&chapter=${encodeURIComponent(chapterId)}&page=${curPage}`
+      ? `/study?book=${encodeURIComponent(bookId)}&chapter=${encodeURIComponent(chapterId)}&page=${curPage}&mode=all`
       : undefined;
 
   /** 薄跳页（T26 A）：输入印刷页号；未命中琥珀提示，不改当前页。 */

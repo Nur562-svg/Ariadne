@@ -83,6 +83,7 @@ export default function StudySession({
   allHref,
   unknownHref,
   ungradedHref,
+  widenPageHref,
   deskPageHint,
   deskBookId,
   scopeKey,
@@ -107,6 +108,11 @@ export default function StudySession({
   unknownHref: string;
   /** 档位芯片「未评」目标：同范围 ?mode=ungraded（T25 A）。 */
   ungradedHref: string;
+  /**
+   * T28 C：本页档空的放宽链（清 page + mode=all，服务端拼好）——空档区次级文字链
+   * 「清本页，看本章全部 →」；仅有效 pageNum 时传入。仍只保留一颗实心主 CTA。
+   */
+  widenPageHref?: string;
   /** 单卡首个有页 cite 页码（服务端给）：完成/空态回书桌本页的页来源之一。 */
   deskPageHint?: number | null;
   /** 当前范围书 id（scopeBook，含单卡反查）：回书桌本页 / last-opened 回落以它为准。 */
@@ -250,16 +256,17 @@ export default function StudySession({
     return <p className="mt-8 text-sm text-muted">正在读取本机自评进度…</p>;
   }
 
-  /** 队列空（档位过滤后无原子）：诚实说明 + 一颗主 CTA + 次级文字链 + 档位芯片（本机计数可切档）。 */
+  /** 队列空（档位过滤后无原子）：诚实说明 + 一颗主 CTA + 次级文字链 + 档位芯片（本机计数可切档）。
+   *  T28 C：文案必须报池大小与本档计数——池里有原子但本档为 0 时，禁止说成「这个范围没有原子」。 */
   if (order.length === 0) {
     return (
       <section className="mt-10 rounded-lg border border-line bg-card p-6">
         <h2 className="text-xl font-semibold">这个队列是空的</h2>
         <p className="mt-3 text-sm leading-7 text-foreground/90">
           {mode === "ungraded"
-            ? "当前范围的原子都评过了——没有未评的。"
+            ? `本范围有 ${atoms.length} 个原子，未评的是 ${pool.ungraded}——都评过了，没有未评的原子可练。`
             : mode === "unknown"
-              ? "当前范围没有标「不熟」的原子。先在「全部」或「未评」里标几张不熟，再回来只练它们。"
+              ? `本范围有 ${atoms.length} 个原子，标「不熟」的是 ${pool.unknown}。先在「全部」或「未评」里标几张不熟，再回来只练它们。`
               : "当前范围没有可练的原子。"}
         </p>
         <StudyModeChips
@@ -275,6 +282,15 @@ export default function StudySession({
               className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90"
             >
               切到「全部」
+            </Link>
+          ) : null}
+          {/* T28 C：本页过滤时并列放宽链（清 page 落全部档；次级文字，不加第二颗实心）。 */}
+          {widenPageHref ? (
+            <Link
+              href={widenPageHref}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              清本页，看本章全部 →
             </Link>
           ) : null}
           {cardHref ? (
@@ -541,7 +557,8 @@ export default function StudySession({
       <p className="mt-4 text-xs text-muted">
         范围：{scopeLabel} · 评分只记本机浏览器（非 FSRS 调度）；citation 徽章语义不变（未验证仍为琥珀）。
       </p>
-      {/* T25 B：键说明一族风格（muted 小字 + mono 键帽），含 ←→ 回看与 u 撤销。 */}
+      {/* T25 B：键说明一族风格（muted 小字 + mono 键帽），含 ←→ 回看与 u 撤销。
+          T28 F：补本页环 sticky 键（g 清本页 / ⇧[] 切章——裸 [ ] 仍是回看/前进，不受影响）。 */}
       <SessionKeyHint
         className="mt-1"
         keys={[
@@ -550,6 +567,8 @@ export default function StudySession({
           ["2/k", "不熟"],
           ["←/→", "回看/前进"],
           ["u", "撤销本轮最后一评"],
+          ["g", "清本页（本页过滤时）"],
+          ["⇧[ ⇧]", "切章"],
         ]}
       />
     </section>

@@ -171,6 +171,12 @@ export default function CitePeek({
   const reviewPageHref = known
     ? `/review?${deskBookId ? `book=${encodeURIComponent(deskBookId)}&` : ""}page=${cite.page}`
     : undefined;
+  /** T28 D：练本页深链（cite.page 与 deskBookId 都在才有）——显式 mode=all，
+   *  与书桌练本页同款：落页队列可见，不被 sticky restore 成档空。 */
+  const studyPageHref =
+    known && deskBookId
+      ? `/study?book=${encodeURIComponent(deskBookId)}&page=${cite.page}&mode=all`
+      : undefined;
   const reviewCardHref = cardId ? `/review?card=${encodeURIComponent(cardId)}` : undefined;
 
   return (
@@ -239,6 +245,14 @@ export default function CitePeek({
                   className="text-muted no-underline hover:text-cinnabar"
                 >
                   核本页 →
+                </Link>
+              ) : null}
+              {studyPageHref ? (
+                <Link
+                  href={studyPageHref}
+                  className="text-muted no-underline hover:text-cinnabar"
+                >
+                  练本页 →
                 </Link>
               ) : null}
               {reviewCardHref ? (

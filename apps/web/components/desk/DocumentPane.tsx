@@ -249,21 +249,32 @@ export default function DocumentPane({
     [heyePool, readingPage],
   );
 
-  /** 本页有引用（卡或 heye）才用本页池；否则回落本章。 */
-  const usePageScope = readingPage != null && (pageCitingCards.length > 0 || pageHeYe.length > 0);
-  const stripAtoms = usePageScope ? pageAtoms : chapterAtoms;
-  const stripItems = usePageScope ? pageHeYe : chapterHeYe;
-  const stripScopeLabel = usePageScope
-    ? `本页 p.${readingPage}`
-    : activeChapter
-      ? `本章 ${activeChapter.id}`
-      : "本书";
-  // T27 B：usePageScope 时「练此范围 →」必须落 /study?book=&chapter=&page=（与核对称）——
-  // 标签标「本页 p.N」而链接只到章练即是撒谎；pageAtoms 与 collectStudyAtoms({page}) 同口径。
+  /**
+   * T28 B：练/核本页作用域拆开——本页有可练原子（citing 卡 atoms，与 collectStudyAtoms({page})
+   * 同口径）才算「练本页」；本页有待核 cite 才算「核本页」。heye-only 页不再把空练池标成「本页」。
+   * strip 池 / 标签 / href 三处同口径（Clew progress* 同步走这套）。
+   */
+  const studyPageScope = readingPage != null && pageAtoms.length > 0;
+  const reviewPageScope = readingPage != null && pageHeYe.length > 0;
+  const stripAtoms = studyPageScope ? pageAtoms : chapterAtoms;
+  const stripItems = reviewPageScope ? pageHeYe : chapterHeYe;
+  const chapterSideLabel = activeChapter ? `本章 ${activeChapter.id}` : "本书";
+  const stripScopeLabel =
+    studyPageScope && reviewPageScope
+      ? `本页 p.${readingPage}`
+      : reviewPageScope
+        ? `练${chapterSideLabel} · 核 p.${readingPage}`
+        : studyPageScope
+          ? `练 p.${readingPage} · 核${chapterSideLabel}`
+          : chapterSideLabel;
+  // T27 B + T28 C：练侧深链显式 mode=all（保留 book/chapter[/page]）——从书桌进练不会被
+  // StickyModeGate restore 成 unknown 空队列；核侧仅 reviewPageScope 时带 page（heye-only 练不带页）。
   const stripStudyHref = `/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}${
-    usePageScope ? `&page=${readingPage}` : ""
+    studyPageScope ? `&page=${readingPage}` : ""
+  }&mode=all`;
+  const stripReviewHref = `/review?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=open${
+    reviewPageScope ? `&page=${readingPage}` : ""
   }`;
-  const stripReviewHref = `/review?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=open${usePageScope ? `&page=${readingPage}` : ""}`;
 
   /** 同步 Clew 上下文（书/章/当前页/可见卡名/示例 cite 页/表面/当前卡 + T19 章/页进度池）。 */
   useEffect(() => {
@@ -322,8 +333,8 @@ export default function DocumentPane({
             {book.chapterIds.length} 章 · {cards.length} 张实体卡 ·{" "}
             {cards.reduce((n, c) => n + c.atoms.length, 0)} 个知识原子
           </p>
-          {/* T27 B：书头学习链至少带章（不裸 /study?book= 丢章）；本页池时并列「练本页」
-              深链（带 page，与 Strip/卡轨同池同口径）。 */}
+          {/* T27 B + T28 B：书头学习链至少带章（不裸 /study?book= 丢章）；仅 studyPageScope
+              （本页有可练原子）才并列「练本页」深链——heye-only 页练走本章，不出这条链。 */}
           <span className="flex flex-wrap items-baseline gap-4">
             <Link
               href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}`}
@@ -331,7 +342,7 @@ export default function DocumentPane({
             >
               学习环 · 自评 →
             </Link>
-            {usePageScope ? (
+            {studyPageScope ? (
               <Link
                 href={stripStudyHref}
                 className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
@@ -341,7 +352,7 @@ export default function DocumentPane({
             ) : null}
           </span>
         </div>
-        {/* 作用域本机进度：本章（默认为当前选中章）/ 本页（阅读时如有引用）；可点进同范围练核。 */}
+        {/* 作用域本机进度：练/核各自判本页（T28 B）；可点进同范围练核。 */}
         <LocalProgressStrip
           atoms={stripAtoms}
           items={stripItems}
@@ -349,7 +360,18 @@ export default function DocumentPane({
           studyHref={stripStudyHref}
           reviewHref={stripReviewHref}
         />
-        {readingPage != null && !usePageScope ? (
+        {/* T28 B：heye-only / 单侧本页的诚实说明（muted，不加新强调色）。 */}
+        {reviewPageScope && !studyPageScope ? (
+          <p className="text-xs text-muted">
+            本页有待核 cite、无可练原子——练走{chapterSideLabel}，核走本页。
+          </p>
+        ) : null}
+        {studyPageScope && !reviewPageScope ? (
+          <p className="text-xs text-muted">
+            本页暂无待核 cite——核侧按{chapterSideLabel} 统计。
+          </p>
+        ) : null}
+        {readingPage != null && !studyPageScope && !reviewPageScope ? (
           <p className="text-xs text-muted">本页暂无引用卡 · 显示本章进度。</p>
         ) : null}
         <p className="mt-1 text-sm text-muted">

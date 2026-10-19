@@ -81,6 +81,7 @@ export default function HeYeSession({
   checkedHref,
   doubtHref,
   clearChapterHref,
+  clearPageHref,
   scopeKey,
 }: {
   /** 全池待核队列（服务端 collectCiteQueue，已按页码排序；本机态过滤在客户端）。 */
@@ -105,6 +106,11 @@ export default function HeYeSession({
   doubtHref?: string;
   /** 章范围清章回全书核页（/review?chapter=null 等价）——池空/档空时限宽范围。 */
   clearChapterHref?: string;
+  /**
+   * T28 A：本页过滤放宽链（/review?book=&chapter= 只删 page，留书/章/档）——
+   * 池空/档内空两处次级「清本页 →」；仅有效 pageNum 时由父页传入，不新增第二颗实心主按钮。
+   */
+  clearPageHref?: string;
   /** 续位作用域（与父级 remount key 一致）：`${book|all}:${card|all}:${page|all}:${chapter|all}:${mode}`。 */
   scopeKey: string;
 }) {
@@ -306,6 +312,15 @@ export default function HeYeSession({
               清章看全章节 →
             </Link>
           ) : null}
+          {/* T28 A：本页过滤放宽（次级文字链，不新增第二颗实心主按钮）。 */}
+          {clearPageHref ? (
+            <Link
+              href={clearPageHref}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              清本页 →
+            </Link>
+          ) : null}
           {ret ? (
             <Link
               href={ret.href}
@@ -395,6 +410,15 @@ export default function HeYeSession({
               清章看全章节 →
             </Link>
           ) : null}
+          {/* T28 A：本页过滤放宽（档内空同款次级链）。 */}
+          {clearPageHref ? (
+            <Link
+              href={clearPageHref}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              清本页 →
+            </Link>
+          ) : null}
           {ret ? (
             <Link
               href={ret.href}
@@ -473,7 +497,8 @@ export default function HeYeSession({
           </button>
         </nav>
       </div>
-      {/* T25 B：键说明与 study 对齐一族风格（muted 小字 + mono 键帽）；b 仅待核档。 */}
+      {/* T25 B：键说明与 study 对齐一族风格（muted 小字 + mono 键帽）；b 仅待核档。
+          T28 F：补本页环 sticky 键（g 清本页 / ⇧[] 切章；题内本无裸 [ ]，无冲突）。 */}
       <SessionKeyHint
         className="mt-1"
         keys={
@@ -483,11 +508,15 @@ export default function HeYeSession({
                 ["2", "存疑"],
                 ["←/→", "上下条"],
                 ["b", "同页批量"],
+                ["g", "清本页（本页过滤时）"],
+                ["⇧[ ⇧]", "切章"],
               ]
             : [
                 ["1", "已对"],
                 ["2", "存疑"],
                 ["←/→", "上下条"],
+                ["g", "清本页（本页过滤时）"],
+                ["⇧[ ⇧]", "切章"],
               ]
         }
       />

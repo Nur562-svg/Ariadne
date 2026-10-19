@@ -12,8 +12,10 @@ import type { HeYeMode } from "@/lib/heye-store";
 import HeYeSession from "@/components/HeYeSession";
 import HeYeScopeCounts from "@/components/HeYeScopeCounts";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
+import SessionKeyHint from "@/components/SessionKeyHint";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 import StickyModeGate from "@/components/desk/StickyModeGate";
+import StickyPageLoopKeys from "@/components/desk/StickyPageLoopKeys";
 import LastOpenedTouch from "@/components/LastOpenedTouch";
 
 export const dynamic = "force-dynamic";
@@ -139,20 +141,26 @@ async function ReviewBody({
   /** 无页时回书桌的兜底深链。 */
   const deskHref = scopeBook ? `/desk?book=${encodeURIComponent(scopeBook.id)}` : "/desk";
 
-  /** ?book= 时章芯片只显示该书 chapterIds（对齐 study）；单卡范围固定，隐藏章芯片。 */
-  const chipChapters = book
-    ? chapters.filter((c) => book.chapterIds.includes(c.id))
+  /** T28 A densify：章芯片按可解析书（?book= 或卡反查 scopeBook）过滤，有书不铺全库；单卡范围固定，隐藏章芯片。 */
+  const chipChapters = scopeBook
+    ? chapters.filter((c) => scopeBook.chapterIds.includes(c.id))
     : chapters;
 
-  /** qs helper：切换章 / 档位时保留 book / card / page / chapter / mode 的合理组合。 */
-  const qs = (opts?: { chapter?: string | null; mode?: HeYeMode }) => {
+  /**
+   * qs helper（T28 A 对齐 study）：切章（含「全部章节」清章）即离页——不把旧章印刷页
+   * 残留进新作用域 URL；只改档位时保留 page；clearPage 只删 page（留书/章/档）。
+   */
+  const qs = (opts?: { chapter?: string | null; mode?: HeYeMode; clearPage?: boolean }) => {
     const p = new URLSearchParams();
     if (book) p.set("book", book.id);
     if (card) p.set("card", card.id);
-    if (pageNum != null) p.set("page", String(pageNum));
+    const switchingChapter = opts?.chapter !== undefined;
+    if (!switchingChapter && !opts?.clearPage && pageNum != null) {
+      p.set("page", String(pageNum));
+    }
     const ch = card
       ? undefined
-      : opts?.chapter !== undefined
+      : switchingChapter
         ? (opts.chapter ?? undefined)
         : (effChapter?.id ?? undefined);
     if (ch) p.set("chapter", ch);
@@ -161,6 +169,60 @@ async function ReviewBody({
     const s = p.toString();
     return s ? `?${s}` : "";
   };
+
+  /** T28 A/E：本页过滤的放宽链——只删 page，留书/章/档（仅有效 pageNum 时给，含单卡 mismatch 放宽）。 */
+  const clearPageHref = pageNum != null ? `/review${qs({ clearPage: true })}` : undefined;
+
+  /**
+   * T28 F：⇧[ / ⇧] 切章目标（章芯片顺序；「全部章节」时下一章 = 第一章，首/末边界 undefined → no-op）。
+   */
+  const chipIndex = chipChapters.findIndex((c) => c.id === effChapter?.id);
+  const prevChapterHref =
+    chipIndex > 0 ? `/review${qs({ chapter: chipChapters[chipIndex - 1].id })}` : undefined;
+  const nextChapterHref =
+    chipIndex >= 0 && chipIndex < chipChapters.length - 1
+      ? `/review${qs({ chapter: chipChapters[chipIndex + 1].id })}`
+      : chipIndex === -1 && chipChapters.length > 0
+        ? `/review${qs({ chapter: chipChapters[0].id })}`
+        : undefined;
+
+  /**
+   * 作用域进度（T18 分列；T28 B 对齐书桌双作用域）：有效 page 时练侧仍与
+   * collectStudyAtoms({page}) 同池（T27 不回退），但练/核各自判本页——
+   * 本页无可练原子时练侧回落章/书池、标签如实分写，与书桌同页打开时不互谎。
+   */
+  const pageStudyAtoms = collectStudyAtoms({
+    cardId: card?.id,
+    bookId: book?.id,
+    chapterId: effChapter?.id,
+    page: pageNum ?? undefined,
+  });
+  const scopeStudyAtoms =
+    pageNum != null
+      ? collectStudyAtoms({ cardId: card?.id, bookId: book?.id, chapterId: effChapter?.id })
+      : pageStudyAtoms;
+  const scopeItems =
+    pageNum != null
+      ? collectCiteQueue({ cardId: card?.id, bookId: book?.id, chapterId: effChapter?.id })
+      : items;
+  const stripStudyPageScope = pageNum != null && !card && pageStudyAtoms.length > 0;
+  const stripHeYePageScope = pageNum != null && !card && items.length > 0;
+  const sideScopeLabel = effChapter ? `本章 ${effChapter.id}` : book ? "本书" : "全部";
+  const stripScopeLabel = card
+    ? "本卡"
+    : stripStudyPageScope && stripHeYePageScope
+      ? `本页 p.${pageNum}`
+      : stripHeYePageScope
+        ? `练${sideScopeLabel} · 核 p.${pageNum}`
+        : stripStudyPageScope
+          ? `练 p.${pageNum} · 核${sideScopeLabel}`
+          : sideScopeLabel;
+
+  /** T28 F：sticky 键说明——只列当前实际可用的本页环键（无页不给 g，单卡不给切章）。 */
+  const stickyKeys: [string, string][] = [
+    ...(pageNum != null && !card ? ([["g", "清本页"]] as [string, string][]) : []),
+    ...(!card && chipChapters.length > 0 ? ([["⇧[ ⇧]", "切章"]] as [string, string][]) : []),
+  ];
 
   /** 章范围空态用于清章回全书核页（T19/T20）：仅在章范围且非单卡时给出。 */
   const clearChapterHref = effChapter && !card ? `/review${qs({ chapter: null })}` : undefined;
@@ -211,6 +273,14 @@ async function ReviewBody({
         {invalidPage ? (
           <p className="mt-2 text-sm text-status-warn">
             page 参数「{pageParam}」需为正整数——页过滤未生效，已按{scopeLabel}统计。
+          </p>
+        ) : null}
+        {/* T28 E：合法孤儿页（零待核 cite）琥珀点名本页 + 放宽（清本页见 HeYeSession 空态次级链），
+            不静默落到通用「这个范围没有」空态。 */}
+        {pageNum != null && !invalidPage && !card && items.length === 0 ? (
+          <p className="mt-2 text-sm text-status-warn">
+            本页 p.{pageNum} 暂无待核 cite——没有「有页码但未抽查」的引用落在这一印刷页；
+            可清本页放宽到{sideScopeLabel}，或换到更宽的范围。
           </p>
         ) : null}
         {invalidChapter ? (
@@ -279,34 +349,48 @@ async function ReviewBody({
       </header>
 
       {/* 作用域进度（T18：同范围练+核分列；本页即核环，不重复核链）。
-          T27 soft：有效 page 时练侧与 collectStudyAtoms({page}) / study Strip 同池，
-          标签「本页 p.N」——禁止页过滤开着却报本章 练 未评。 */}
+          T27 soft：有效 page 时练侧与 collectStudyAtoms({page}) / study Strip 同池。
+          T28 B：练/核各自判本页——heye-only 页练侧回落章/书池，标签分写，与书桌同页不互谎。 */}
       <LocalProgressStrip
-        atoms={collectStudyAtoms({
-          cardId: card?.id,
-          bookId: book?.id,
-          chapterId: effChapter?.id,
-          page: pageNum ?? undefined,
-        }).map((a) => ({ cardId: a.cardId, atomId: a.atomId }))}
-        items={items.map((it) => ({ key: it.key }))}
-        scopeLabel={
-          card
-            ? "本卡"
-            : pageNum != null
-              ? `本页 p.${pageNum}`
-              : effChapter
-                ? `本章 ${effChapter.id}`
-                : book
-                  ? "本书"
-                  : "全部"
-        }
+        atoms={(card || stripStudyPageScope ? pageStudyAtoms : scopeStudyAtoms).map((a) => ({
+          cardId: a.cardId,
+          atomId: a.atomId,
+        }))}
+        items={(card || stripHeYePageScope ? items : scopeItems).map((it) => ({ key: it.key }))}
+        scopeLabel={stripScopeLabel}
       />
 
+      {/* T28 F：sticky 键盘岛——g 聚焦「清本页」，⇧[ / ⇧] 按章芯片顺序切章（切章即离页）；
+          题内裸 [ / ] 回看/前进归 HeYeSession 自己的键盘环，本岛不拦截。 */}
+      <StickyPageLoopKeys
+        clearPageSelector={pageNum != null && !card ? "a[data-sticky-clear-page]" : undefined}
+        prevChapterHref={!card && chipChapters.length > 0 ? prevChapterHref : undefined}
+        nextChapterHref={!card && chipChapters.length > 0 ? nextChapterHref : undefined}
+      />
       {/* T21 D：章芯片行 + 三档 tablist 收进 position:sticky 实底工具带（bg-card + border-b）。
           仅 CSS 钉住——长队列下滚时章芯片/档位仍可见；与 T20 StickyModeGate（URL 档位记忆 replace 补档）
           职责正交，各司其职，勿删 StickyModeGate。 */}
       <div className="sticky top-0 z-10 -mx-8 mt-6 border-b border-line bg-card px-8 py-3">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          {/* T28 A：本页范围铬（与 study 同族 pill）+「清本页」（只删 page，留书/章/档；改档留页）。 */}
+          {clearPageHref && !card ? (
+            <span className="flex items-center gap-2">
+              <span
+                aria-current="true"
+                className="rounded-full border border-cinnabar bg-cinnabar-soft px-3 py-1 text-sm text-cinnabar"
+              >
+                本页 p.{pageNum}
+              </span>
+              <Link
+                href={clearPageHref}
+                data-sticky-clear-page=""
+                aria-keyshortcuts="g"
+                className="text-xs text-muted no-underline transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+              >
+                清本页 →
+              </Link>
+            </span>
+          ) : null}
           {/* 章过滤（对齐 study；单卡范围固定，隐藏章芯片）。 */}
           {!card && chipChapters.length > 0 ? (
             <div className="flex flex-wrap items-center gap-2">
@@ -373,6 +457,9 @@ async function ReviewBody({
               {deskPageHref ? "回书桌本页 →" : "回书桌 →"}
             </Link>
           </div>
+
+          {/* T28 F：本页环键说明（与练/核底栏 SessionKeyHint 同族，只列当前实际可用的键）。 */}
+          {stickyKeys.length > 0 ? <SessionKeyHint keys={stickyKeys} /> : null}
         </div>
       </div>
 
@@ -390,6 +477,7 @@ async function ReviewBody({
         checkedHref={`/review${qs({ mode: "checked" })}`}
         doubtHref={`/review${qs({ mode: "doubt" })}`}
         clearChapterHref={clearChapterHref}
+        clearPageHref={clearPageHref}
       />
     </div>
   );

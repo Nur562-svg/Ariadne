@@ -6,8 +6,10 @@ import type { StudyMode } from "@/lib/study";
 import StudySession from "@/components/StudySession";
 import StudyScopeCounts from "@/components/StudyScopeCounts";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
+import SessionKeyHint from "@/components/SessionKeyHint";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 import StickyModeGate from "@/components/desk/StickyModeGate";
+import StickyPageLoopKeys from "@/components/desk/StickyPageLoopKeys";
 import ReturnNav from "@/components/desk/ReturnNav";
 import LastOpenedTouch from "@/components/LastOpenedTouch";
 
@@ -82,9 +84,18 @@ async function StudyBody({
   const mode: StudyMode =
     modeParam === "ungraded" || modeParam === "unknown" ? modeParam : "all";
 
-  /** ?book= 时章芯片只显示该书 chapterIds（T07 行为）；单卡范围固定，隐藏章芯片。 */
-  const chipChapters = activeBook
-    ? chapters.filter((c) => activeBook.chapterIds.includes(c.id))
+  /** 章 → 书反查：无 ?book= 时也能让 CiteChip 深链回对应书的书桌章页。 */
+  const bookByChapter: Record<string, string> = {};
+  for (const b of books) for (const ch of b.chapterIds) bookByChapter[ch] = b.id;
+
+  /** 卡所在书（chapterId 反查）：单卡范围的章页深链与回书桌都以它为准（可受 ?book= 覆盖）。 */
+  const cardBookId = scopedCard?.chapterId ? bookByChapter[scopedCard.chapterId] : undefined;
+  const scopeBook = activeBook ?? (cardBookId ? books.find((b) => b.id === cardBookId) : undefined);
+
+  /** T28 A densify：章芯片按可解析书（?book= 或单卡反查 scopeBook）过滤，有书不铺全库；
+   *  单卡范围固定，隐藏章芯片。当前章朱红；切章即离页（study qs 已有，勿回退）。 */
+  const chipChapters = scopeBook
+    ? chapters.filter((c) => scopeBook.chapterIds.includes(c.id))
     : chapters;
 
   /**
@@ -106,14 +117,6 @@ async function StudyBody({
    *  T27 C：两键都纳入 page——本页队列的续位/档位记忆不与章/书队列互串。 */
   const studyScopeKey = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}:${pageNum ?? "all"}:${mode}`;
   const studyStickyScope = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}:${pageNum ?? "all"}`;
-
-  /** 章 → 书反查：无 ?book= 时也能让 CiteChip 深链回对应书的书桌章页。 */
-  const bookByChapter: Record<string, string> = {};
-  for (const b of books) for (const ch of b.chapterIds) bookByChapter[ch] = b.id;
-
-  /** 卡所在书（chapterId 反查）：单卡范围的章页深链与回书桌都以它为准（可受 ?book= 覆盖）。 */
-  const cardBookId = scopedCard?.chapterId ? bookByChapter[scopedCard.chapterId] : undefined;
-  const scopeBook = activeBook ?? (cardBookId ? books.find((b) => b.id === cardBookId) : undefined);
 
   /**
    * 精确回书桌页优先级（T27 C）：?page= 本页 > 单卡首个有页 cite（cites → fields → atoms）；
@@ -161,6 +164,30 @@ async function StudyBody({
     const s = p.toString();
     return s ? `?${s}` : "";
   };
+
+  /**
+   * T28 C：本页档空时的放宽链——清 page 且落「全部」档（清本页即看得见池）；
+   * 仅有效 pageNum 时传给 StudySession 空档区当次级文字链。
+   */
+  const widenPageHref =
+    pageNum != null ? `/study${qs({ clearPage: true, mode: "all" })}` : undefined;
+
+  /** T28 F：⇧[ / ⇧] 切章目标（章芯片顺序；「全部章节」时下一章 = 第一章，首/末边界 undefined → no-op）。 */
+  const chipIndex = chipChapters.findIndex((c) => c.id === activeChapter?.id);
+  const prevChapterHref =
+    chipIndex > 0 ? `/study${qs({ chapter: chipChapters[chipIndex - 1].id })}` : undefined;
+  const nextChapterHref =
+    chipIndex >= 0 && chipIndex < chipChapters.length - 1
+      ? `/study${qs({ chapter: chipChapters[chipIndex + 1].id })}`
+      : chipIndex === -1 && chipChapters.length > 0
+        ? `/study${qs({ chapter: chipChapters[0].id })}`
+        : undefined;
+
+  /** T28 F：sticky 键说明——只列当前实际可用的本页环键（无页不给 g，单卡不给切章）。 */
+  const stickyKeys: [string, string][] = [
+    ...(pageNum != null ? ([["g", "清本页"]] as [string, string][]) : []),
+    ...(!scopedCard && chipChapters.length > 0 ? ([["⇧[ ⇧]", "切章"]] as [string, string][]) : []),
+  ];
 
   /** 范围文案（T27 C）：有效页优先标「本页 p.N」（Strip/会话条同此口径）；单卡仍卡名。 */
   const scopeLabel = scopedCard
@@ -238,6 +265,14 @@ async function StudyBody({
             {activeChapter ? activeChapter.title : (activeBook?.title ?? "全部已注册书目")}出题。
           </p>
         ) : null}
+        {/* T28 E：合法孤儿页（零知识原子）琥珀点名本页 + 放宽（下方空态主 CTA「换到本章全部」即放宽链），
+            与 review 同族，不静默落到通用「这个范围还没有」空态。 */}
+        {pageNum != null && !invalidPage && !scopedCard && atoms.length === 0 ? (
+          <p className="mt-2 text-sm text-status-warn">
+            本页 p.{pageNum} 暂无可练知识原子——这一印刷页没有卡引用它；可清本页放宽到
+            {activeChapter ? activeChapter.title : (activeBook?.title ?? "全部书目")}。
+          </p>
+        ) : null}
         {scopedCard && atoms.length === 0 && scopedCard.atoms.length > 0 ? (
           <p className="mt-2 text-sm text-status-warn">
             卡「{scopedCard.name_zh}」不在当前 book / chapter
@@ -269,6 +304,13 @@ async function StudyBody({
         />
       </header>
 
+      {/* T28 F：sticky 键盘岛——g 聚焦「清本页」，⇧[ / ⇧] 按章芯片顺序切章（切章即离页）；
+          题内裸 [ / ] 回看/前进归 StudySession 自己的键盘环，本岛只认 Shift 组合不拦截。 */}
+      <StickyPageLoopKeys
+        clearPageSelector={pageNum != null ? "a[data-sticky-clear-page]" : undefined}
+        prevChapterHref={!scopedCard && chipChapters.length > 0 ? prevChapterHref : undefined}
+        nextChapterHref={!scopedCard && chipChapters.length > 0 ? nextChapterHref : undefined}
+      />
       {/* T21 D：章芯片行 + 三档 tablist 收进 position:sticky 实底工具带（bg-card + border-b）。
           仅 CSS 钉住——长队列下滚时章芯片/档位仍可见；与 T20 StickyModeGate（URL 档位记忆 replace 补档）
           职责正交，各司其职，勿删 StickyModeGate。 */}
@@ -285,6 +327,8 @@ async function StudyBody({
               </span>
               <Link
                 href={`/study${qs({ clearPage: true })}`}
+                data-sticky-clear-page=""
+                aria-keyshortcuts="g"
                 className="text-xs text-muted no-underline transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 清本页 →
@@ -351,6 +395,9 @@ async function StudyBody({
               showReturn={false}
             />
           </div>
+
+          {/* T28 F：本页环键说明（与练/核底栏 SessionKeyHint 同族，只列当前实际可用的键）。 */}
+          {stickyKeys.length > 0 ? <SessionKeyHint keys={stickyKeys} /> : null}
         </div>
       </div>
 
@@ -433,6 +480,7 @@ async function StudyBody({
           allHref={`/study${qs({ mode: "all" })}`}
           unknownHref={`/study${qs({ mode: "unknown" })}`}
           ungradedHref={`/study${qs({ mode: "ungraded" })}`}
+          widenPageHref={widenPageHref}
           deskPageHint={deskPageHint}
           deskBookId={scopeBook?.id}
         />
