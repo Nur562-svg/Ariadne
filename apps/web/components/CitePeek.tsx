@@ -1,0 +1,275 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { Cite } from "@/lib/entities";
+import { CiteChip } from "@/components/CiteChip";
+
+/** Popover width (w-72 = 18rem). Used for horizontal clamp. */
+const POPOVER_W = 288;
+/** Height estimate before first measure; also flip threshold when space below is tight. */
+const EST_H = 240;
+const MARGIN = 8;
+const GAP = 4;
+
+/**
+ * CitePeek lite（T17）：CiteChip 旁边一枚「摘」按钮，点开轻量浮层看引文全貌与诚实状态。
+ * - cite 单击深链保持原样（chip 仍是主路径）；旁钮不抢导航。
+ * - 浮层只有 quote / p.N / p.? 诚实句 + 深链（书桌 / 核本页 / 核本卡）。
+ * - 禁止 OCR 句级高亮、页图、Canvas；Esc / 点外关闭；无花哨动画。
+ * - T25 debt：fixed 定位 + 上下翻转，避免父级 overflow 裁切底部链接。
+ */
+export default function CitePeek({
+  cite,
+  q,
+  deskBookId,
+  cardId,
+}: {
+  cite?: Cite;
+  q?: string;
+  /** 书桌语境：有页时「在书桌打开」与「核本页」都带 book=。 */
+  deskBookId?: string;
+  /** 卡上下文：「核本卡」链 /review?card=。 */
+  cardId?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const rootRef = useRef<HTMLSpanElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  /** 关闭中守卫：close() 把焦点归还「摘」时，focusin 拉回逻辑必须让路（否则焦点被拽回层内）。 */
+  const closingRef = useRef(false);
+
+  /** T24 D：Esc / 点外关闭后焦点归还「摘」按钮（不滚动页面），键盘环不断线。 */
+  function close() {
+    closingRef.current = true;
+    setOpen(false);
+    toggleRef.current?.focus({ preventScroll: true });
+  }
+
+  /** Place dialog with fixed coords from toggle; flip above when space below is tight. */
+  function placePopover() {
+    const btn = toggleRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const h = dialogRef.current?.offsetHeight || EST_H;
+    const spaceBelow = vh - rect.bottom - MARGIN;
+    const spaceAbove = rect.top - MARGIN;
+    const placeAbove = spaceBelow < EST_H && spaceAbove > spaceBelow;
+
+    let top: number;
+    if (placeAbove) {
+      top = Math.max(MARGIN, rect.top - GAP - h);
+    } else {
+      top = Math.min(rect.bottom + GAP, Math.max(MARGIN, vh - MARGIN - h));
+    }
+
+    let left = rect.left;
+    if (left + POPOVER_W > vw - MARGIN) left = vw - MARGIN - POPOVER_W;
+    if (left < MARGIN) left = MARGIN;
+
+    setPos({ top, left });
+  }
+
+  // Recalculate on open + window/scroll (passive) so fixed coords stay aligned.
+  useLayoutEffect(() => {
+    if (!open) return;
+    placePopover();
+    const id = requestAnimationFrame(() => placePopover());
+    const onReposition = () => placePopover();
+    window.addEventListener("resize", onReposition, { passive: true });
+    // capture: nested scroll parents (desk center column) also fire scroll
+    window.addEventListener("scroll", onReposition, { passive: true, capture: true });
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener("resize", onReposition);
+      window.removeEventListener("scroll", onReposition, true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // T25 C：焦点陷阱——双层防护。
+  // ① keydown：Tab/Shift+Tab 在 dialog 内循环（栈底/栈顶 preventDefault 包边）。
+  // ② focusin：任何路径焦点落到层外（含各类默认导航漏网）→ 立即拉回层内；
+  //    close() 归位「摘」时由 closingRef 让路，T24 归位行为不变。
+  // 陷阱只圈浮层本身，触发钮「摘」在层外，不含入；不重做摘录内容。
+  useEffect(() => {
+    if (!open) {
+      closingRef.current = false;
+      return;
+    }
+    closingRef.current = false;
+    const dlg = dialogRef.current;
+    function focusableEls(): HTMLElement[] {
+      if (!dlg) return [];
+      return Array.from(
+        dlg.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+    }
+    // 开层：焦点移入第一个可聚焦控件（深链链接）；全无则落在浮层容器（tabIndex=-1）。
+    const els = focusableEls();
+    (els[0] ?? dlg)?.focus({ preventScroll: true });
+
+    function pullBack() {
+      if (!dlg || closingRef.current) return;
+      if (dlg.contains(document.activeElement)) return;
+      const f = focusableEls();
+      (f[0] ?? dlg).focus({ preventScroll: true });
+    }
+
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        close();
+        return;
+      }
+      if (e.key !== "Tab" || !dlg) return;
+      const f = focusableEls();
+      if (f.length === 0) {
+        e.preventDefault();
+        dlg.focus({ preventScroll: true });
+        return;
+      }
+      const firstEl = f[0];
+      const lastEl = f[f.length - 1];
+      const active = document.activeElement;
+      const inside = dlg.contains(active);
+      if (e.shiftKey) {
+        if (!inside || active === firstEl) {
+          e.preventDefault();
+          lastEl.focus({ preventScroll: true });
+        }
+      } else {
+        if (!inside || active === lastEl) {
+          e.preventDefault();
+          firstEl.focus({ preventScroll: true });
+        }
+      }
+      // 兜底：部分宿主在事件派发后自行移动焦点且不发 focusin——
+      // 事件循环后再校验一次焦点位置，逃出即拉回（真实浏览器为 no-op）。
+      setTimeout(pullBack, 0);
+    }
+    // 捕获阶段监听：兼容不冒泡的合成 keydown / 宿主实现（真实浏览器行为一致）。
+    document.addEventListener("keydown", onKey, true);
+    document.addEventListener("focusin", pullBack, true);
+    return () => {
+      document.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("focusin", pullBack, true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  if (!cite) return null;
+  const known = cite.page != null;
+  const deskPageHref =
+    known && deskBookId
+      ? `/desk?book=${encodeURIComponent(deskBookId)}&page=${cite.page}`
+      : undefined;
+  const reviewPageHref = known
+    ? `/review?${deskBookId ? `book=${encodeURIComponent(deskBookId)}&` : ""}page=${cite.page}`
+    : undefined;
+  /** T28 D：练本页深链（cite.page 与 deskBookId 都在才有）——显式 mode=all，
+   *  与书桌练本页同款：落页队列可见，不被 sticky restore 成档空。 */
+  const studyPageHref =
+    known && deskBookId
+      ? `/study?book=${encodeURIComponent(deskBookId)}&page=${cite.page}&mode=all`
+      : undefined;
+  const reviewCardHref = cardId ? `/review?card=${encodeURIComponent(cardId)}` : undefined;
+
+  return (
+    <span ref={rootRef} className="relative inline-flex items-center gap-1">
+      <CiteChip cite={cite} q={q} deskBookId={deskBookId} />
+      <button
+        ref={toggleRef}
+        onClick={() => (open ? close() : setOpen(true))}
+        aria-expanded={open}
+        aria-label="查看引用摘录"
+        title="查看引用摘录（不离开本页）"
+        className="mono rounded border border-line px-1 text-[10px] leading-4 text-muted transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+      >
+        摘
+      </button>
+
+      {open ? (
+        <>
+          {/* 点外关闭遮罩（透明，不抢视觉）。 */}
+          <button
+            aria-label="关闭摘录浮层"
+            onClick={close}
+            className="fixed inset-0 z-20 cursor-default"
+            tabIndex={-1}
+          />
+          <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="引用摘录"
+            tabIndex={-1}
+            style={{ top: pos.top, left: pos.left }}
+            className="fixed z-30 w-72 max-h-[min(70vh,20rem)] overflow-y-auto rounded-lg border border-line bg-card p-3 shadow-md outline-none focus-visible:ring-2 focus-visible:ring-cinnabar/40"
+          >
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="mono text-xs">
+                {known ? `p.${cite.page}` : "p.?"}
+              </span>
+              <span
+                className={`text-[11px] leading-5 ${cite.verified ? "text-muted" : "text-status-warn"}`}
+              >
+                {cite.verified
+                  ? "seed 已抽查"
+                  : "教材抽查未核（seed）· 与本机核页标记无关"}
+              </span>
+            </div>
+            <p className="mt-2 text-xs leading-6 text-foreground/90">
+              {cite.quote ? (
+                cite.quote.length > 120 ? `“${cite.quote.slice(0, 120)}…”` : `“${cite.quote}”`
+              ) : (
+                <span className="text-muted">无摘录原文——按页码到原文核对。</span>
+              )}
+            </p>
+            <nav className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-line pt-2 text-xs">
+              {deskPageHref ? (
+                <Link
+                  href={deskPageHref}
+                  className="text-cinnabar no-underline hover:underline underline-offset-4"
+                >
+                  在书桌打开 →
+                </Link>
+              ) : null}
+              {reviewPageHref ? (
+                <Link
+                  href={reviewPageHref}
+                  className="text-muted no-underline hover:text-cinnabar"
+                >
+                  核本页 →
+                </Link>
+              ) : null}
+              {studyPageHref ? (
+                <Link
+                  href={studyPageHref}
+                  className="text-muted no-underline hover:text-cinnabar"
+                >
+                  练本页 →
+                </Link>
+              ) : null}
+              {reviewCardHref ? (
+                <Link
+                  href={reviewCardHref}
+                  className="text-muted no-underline hover:text-cinnabar"
+                >
+                  核本卡 →
+                </Link>
+              ) : null}
+              {!known ? (
+                <span className="text-status-warn">未找到确切页码，禁止伪造定位。</span>
+              ) : null}
+            </nav>
+          </div>
+        </>
+      ) : null}
+    </span>
+  );
+}

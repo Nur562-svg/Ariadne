@@ -1,0 +1,16 @@
+{
+  "name": "ariadne",
+  "private": true,
+  "description": "教材 → 知识原子/实体卡 → 可复习。当前书：《免疫学基础与病原生物学》第3版",
+  "scripts": {
+    "parse": ".venv/bin/python scripts/parse_chapter.py",
+    "extract": "node scripts/extract_cards.mjs",
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint"
+  },
+  "devDependencies": {
+    "@ai-sdk/openai-compatible": "^1.0.0",
+    "ai": "^5.0.0"
+  }
+}
