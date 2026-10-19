@@ -3,6 +3,7 @@ import { collectStudyAtoms, loadBooks, loadCards } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
+import ProgressPortability from "@/components/ProgressPortability";
 
 /**
  * 书库页（书架）：DeskShell 中栏，从 config/books.json 派生，不硬编码任何书名/章节 copy。
@@ -117,6 +118,9 @@ export default function Library() {
           );
         })}
       </ul>
+
+      {/* T24 C：书库效用区「本机进度带走」——导出/导入 study+heye JSON（纯客户端，非云同步）。 */}
+      <ProgressPortability />
 
       <p className="mt-10 text-sm text-muted">
         导入新书：<Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">/ingest 上传 PDF</Link>

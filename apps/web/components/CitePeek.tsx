@@ -26,15 +26,23 @@ export default function CitePeek({
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLSpanElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  /** T24 D：Esc / 点外关闭后焦点归还「摘」按钮（不滚动页面），键盘环不断线。 */
+  function close() {
+    setOpen(false);
+    toggleRef.current?.focus({ preventScroll: true });
+  }
 
   // Esc 关闭；点外关闭由透明遮罩承担。
   useEffect(() => {
     if (!open) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") close();
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   if (!cite) return null;
@@ -52,6 +60,7 @@ export default function CitePeek({
     <span ref={rootRef} className="relative inline-flex items-center gap-1">
       <CiteChip cite={cite} q={q} deskBookId={deskBookId} />
       <button
+        ref={toggleRef}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label="查看引用摘录"
@@ -66,7 +75,7 @@ export default function CitePeek({
           {/* 点外关闭遮罩（透明，不抢视觉）。 */}
           <button
             aria-label="关闭摘录浮层"
-            onClick={() => setOpen(false)}
+            onClick={close}
             className="fixed inset-0 z-20 cursor-default"
             tabIndex={-1}
           />

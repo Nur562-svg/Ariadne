@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import type { PageCitingCard, PageDoc } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
+import PageCardRailMarks from "@/components/desk/PageCardRailMarks";
 import { isEditableTarget } from "@/lib/keyboard";
 import { saveReturn } from "@/lib/return-stack";
 
@@ -30,6 +31,11 @@ function hitSummary(h: PageCitingCard["hits"][number]): string {
  * 禁止编造段落——正文只有 OCR 原文。
  * desk-page-card-loop（T15）：正文下加「本页相关实体卡」次级扫视轨（页 → 卡闭环），
  * 轨顶「核本页」入口 /review?book=&page=；翻页时 DocumentPane 按 pageNo 换轨内容。
+ * paper-rail-progress-port（T24 A/B）：
+ * - 章/页/翻页收进 sticky 实底工具带（bg-card + border-b，与 T21 study/review 工具带同族），
+ *   长 OCR 滚动时页铬仍在；T18 ←/→ 键盘翻页与可编辑目标静默逻辑不变。
+ * - 卡轨每卡在「练」旁补薄「核」链 /review?card=&book=，出发写 T23 return 短链；
+ * - 每卡挂 PageCardRailMarks 本机练/核薄计数；命中摘要最多 2 条（CitePeek 旁路不变）。
  */
 export default function ChapterPageReader({
   pages,
@@ -41,6 +47,7 @@ export default function ChapterPageReader({
   bookId,
   citingCards,
   pendingPageCount,
+  variant = "full",
 }: {
   /** 当前书全部印刷页（page != null，带 chapterId）。 */
   pages: PageDoc[];
@@ -56,6 +63,8 @@ export default function ChapterPageReader({
   citingCards?: PageCitingCard[];
   /** 当前印刷页的待核 cite 数（0 → 「核本页」诚实禁用）。 */
   pendingPageCount?: number;
+  /** sticky 工具带贴合方式：full = 章页整宽模式（吃掉中栏 px-8）；column = 分栏右列（吃掉 pl-6）。 */
+  variant?: "full" | "column";
 }) {
   const chPages = pages
     .filter((p) => p.chapterId === chapterId && p.page != null)
@@ -116,36 +125,39 @@ export default function ChapterPageReader({
 
   return (
     <section aria-label="章页阅读">
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 className="text-sm font-semibold text-muted">章页（OCR 原文）</h2>
-        <label className="flex items-baseline gap-2 text-sm text-muted">
-          章节
-          <select
-            value={chapterId}
-            onChange={(e) => switchChapter(e.target.value)}
-            className="rounded-lg border border-line bg-background px-2 py-1 text-sm text-foreground outline-none focus:border-cinnabar"
-          >
-            {chapters.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.id} · {c.title}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      {!pg ? (
-        <p className="mt-4 text-sm text-muted">这一章还没有解析出的印刷页。</p>
-      ) : (
-        <>
-          <header className="mt-3 flex flex-wrap items-baseline justify-between gap-3">
-            <h3 className="text-xl font-bold">
+      {/* T24 A：sticky 页铬（实底 bg-card + border-b，与 T21 study/review 工具带同族，不做第三套 chrome）。
+          full 模式吃掉中栏 px-8 撑满整宽；column 模式吃掉分栏右列 pl-6。长 OCR 滚动时章/页/翻页仍在。 */}
+      <div
+        className={`sticky top-0 z-10 border-b border-line bg-card py-3 ${
+          variant === "column" ? "-ml-6 pl-6 pr-1" : "-mx-8 px-8"
+        }`}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <h2 className="text-sm font-semibold text-muted">章页（OCR 原文）</h2>
+          <label className="flex items-baseline gap-2 text-sm text-muted">
+            章节
+            <select
+              value={chapterId}
+              onChange={(e) => switchChapter(e.target.value)}
+              className="rounded-lg border border-line bg-background px-2 py-1 text-sm text-foreground outline-none focus:border-cinnabar"
+            >
+              {chapters.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.id} · {c.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        {pg ? (
+          <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 className="text-base font-bold">
               印刷页 p.{pg.page}
-              <span className="ml-3 text-sm font-normal text-muted">
+              <span className="ml-3 text-xs font-normal text-muted">
                 PDF 物理页 {pg.physicalPage} · {pg.chapterId}
               </span>
             </h3>
-            <nav className="flex gap-3 text-sm" aria-label="翻页" title="键盘：←/→ 翻页">
+            <nav className="flex items-baseline gap-3 text-sm" aria-label="翻页" title="键盘：←/→ 翻页">
               {prev ? (
                 <button
                   onClick={() => onPageChange(prev.page as number)}
@@ -168,11 +180,16 @@ export default function ChapterPageReader({
                 </button>
               ) : null}
             </nav>
-          </header>
-          <article className="mt-4 whitespace-pre-wrap rounded-lg border border-line bg-card p-6 text-[15px] leading-9">
-            {pg.text}
-          </article>
-        </>
+          </div>
+        ) : null}
+      </div>
+
+      {!pg ? (
+        <p className="mt-4 text-sm text-muted">这一章还没有解析出的印刷页。</p>
+      ) : (
+        <article className="mt-4 whitespace-pre-wrap rounded-lg border border-line bg-card p-6 text-[15px] leading-9">
+          {pg.text}
+        </article>
       )}
 
       {/* 本页相关实体卡轨（次级扫视面：页 → 卡 → 枢纽；空态诚实，不造假卡）。 */}
@@ -227,23 +244,35 @@ export default function ChapterPageReader({
                           练
                         </Link>
                       ) : null}
-                      {c.hits[0] ? (
-                        <div className="mt-0.5 flex items-center gap-1">
+                      {bookId ? (
+                        <Link
+                          href={`/review?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}`}
+                          onClick={rememberDeskReturn}
+                          className="ml-2 text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                          title={`核《${c.nameZh}》的 cite`}
+                        >
+                          核
+                        </Link>
+                      ) : null}
+                      {/* T24 B：本机练/核薄计数（只读 study/heye 桶；无掌握% / 色环 / Due）。 */}
+                      <PageCardRailMarks cardId={c.cardId} atomCount={c.atomCount} />
+                      {c.hits.slice(0, 2).map((h, i) => (
+                        <div key={`${h.source}:${h.label}:${i}`} className="mt-0.5 flex items-center gap-1">
                           <span className="min-w-0 truncate text-xs text-muted">
-                            {hitSummary(c.hits[0])}
+                            {hitSummary(h)}
                           </span>
                           {/* T19：轨上 Peek——cite 由 hit 原样字段构造（page/verified 不编造）。 */}
                           <CitePeek
                             cite={{
-                              page: c.hits[0].page,
-                              quote: c.hits[0].quote,
-                              verified: c.hits[0].verified,
+                              page: h.page,
+                              quote: h.quote,
+                              verified: h.verified,
                             }}
                             deskBookId={bookId}
                             cardId={c.cardId}
                           />
                         </div>
-                      ) : null}
+                      ))}
                     </div>
                     <span className="mono shrink-0 text-[11px] text-muted">
                       {KIND_ZH[c.kind] ?? c.kind}
@@ -252,7 +281,7 @@ export default function ChapterPageReader({
                 ))}
               </ul>
               <p className="mt-2 text-xs leading-5 text-muted">
-                「摘」可浮层看 quote 与抽查状态；从「核本页」进核页可对本印刷页逐条核对。
+                「摘」可浮层看 quote 与抽查状态；「核」进核本卡、「核本页」逐条对本印刷页；练/核计数仅本浏览器记录。
               </p>
             </>
           )}

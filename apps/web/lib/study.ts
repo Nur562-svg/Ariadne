@@ -46,6 +46,11 @@ function emitGradesChanged() {
   for (const l of listeners) l();
 }
 
+/** 进度导入（lib/progress-port）等绕过 saveGrade 的外部整键写入后广播，让订阅组件重读本机库。 */
+export function notifyGradesExternalChange(): void {
+  emitGradesChanged();
+}
+
 /**
  * 写一条评分并广播。返回最新 GradeMap；隐私模式写失败时仍返回内存态并广播，
  * 本机进度仅本会话有效，不阻塞自评。

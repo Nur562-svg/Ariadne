@@ -53,6 +53,11 @@ function emitHeYeStoreChanged() {
   for (const l of listeners) l();
 }
 
+/** 进度导入（lib/progress-port）等绕过 setHeYeMark 的外部整键写入后广播，让订阅组件重读本机库。 */
+export function notifyHeYeExternalChange(): void {
+  emitHeYeStoreChanged();
+}
+
 /** 单条打标（写 localStorage + 广播），返回最新 store。 */
 export function setHeYeMark(key: string, s: HeYeMark["s"]): HeYeStore {
   const next = { ...loadHeYeStore(), [key]: { s, t: Date.now() } as HeYeMark };

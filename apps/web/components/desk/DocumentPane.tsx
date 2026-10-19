@@ -11,6 +11,7 @@ import LocalProgressStrip from "@/components/LocalProgressStrip";
 import CitePeek from "@/components/CitePeek";
 import { useDeskContext } from "@/components/desk/DeskContext";
 import { touchLastOpened } from "@/lib/last-opened";
+import { loadViewMode, saveViewMode } from "@/lib/view-continuity";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -140,13 +141,29 @@ export default function DocumentPane({
   const invalidPage = initialPage != null && !deepPage;
 
   const [mode, setMode] = useState<Mode>(
-    deepPage ? (initialMode ?? "pages") : "cards",
+    deepPage ? (initialMode ?? "pages") : (initialMode ?? "cards"),
   );
   const [section, setSection] = useState<SectionId>("map");
   const [chapterId, setChapterId] = useState<string>(
     deepPage?.chapterId ?? chapters[0]?.id ?? "",
   );
   const [pageNo, setPageNo] = useState<number | null>(deepPage?.page ?? null);
+
+  /**
+   * T24 A 加分项：无 URL 深链（?page= / ?mode=）时，从 ariadne.desk.view.v1
+   * 续住本标签页上次的中栏模式；URL 深链时 URL 胜出（不读桶）。
+   */
+  useEffect(() => {
+    if (deepPage || initialMode) return;
+    const saved = loadViewMode();
+    if (saved && saved !== "cards") setMode(saved);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** 模式变化即写回 view.v1（独立桶，与 session/return 分界）。 */
+  useEffect(() => {
+    saveViewMode(mode);
+  }, [mode]);
 
   const firstPageOf = (chId: string) =>
     pages
@@ -398,6 +415,7 @@ export default function DocumentPane({
             bookId={book.id}
             citingCards={pageCitingCards}
             pendingPageCount={pagePendingCount}
+            variant="full"
           />
           <p className="mt-4 text-xs text-muted">
             当前段「{SECTIONS.find((s) => s.id === section)?.label}」已按规则过滤实体卡（{visibleCards.length} 张）；
@@ -425,6 +443,7 @@ export default function DocumentPane({
               bookId={book.id}
               citingCards={pageCitingCards}
               pendingPageCount={pagePendingCount}
+              variant="column"
             />
           </div>
         </div>
