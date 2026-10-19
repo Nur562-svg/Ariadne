@@ -292,13 +292,18 @@ export function cardsCitingPage(page: number, opts?: { bookId?: string }): PageC
  * - cardId + bookId / chapterId：要求卡属于该范围（一致性约束）——不属于则空数组，
  *   由页面诚实回落（卡不存在 / 范围不匹配都给警告文案），不静默放宽。
  * - 仅 bookId / chapterId（无 cardId）：原行为不变（按书 / 章过滤全库）。
+ * - page（T27 A）：与上述范围取交集后，只保留 cardsCitingPage(page, {bookId}) 命中卡的
+ *   全部 atoms——口径与书桌本页池（DocumentPane pageAtoms）一致：卡 cites / 字段 cite /
+ *   原子 cite 任一命中该印刷页即整卡入池，不是「仅 atom.cite.page === N」。
+ *   page + cardId：卡须 citing 该页且属范围，否则空数组（页面侧琥珀诚实）。
  */
 export function collectStudyAtoms(opts?: {
   chapterId?: string;
   bookId?: string;
   cardId?: string;
+  page?: number;
 }): StudyAtom[] {
-  const { cardId, ...scope } = opts ?? {};
+  const { cardId, page, ...scope } = opts ?? {};
 
   let cards: EntityCard[];
   if (cardId != null) {
@@ -314,6 +319,14 @@ export function collectStudyAtoms(opts?: {
     cards = [card];
   } else {
     cards = loadCards(scope);
+  }
+
+  // page 过滤（T27 A）：与 cardsCitingPage 同口径的卡级命中（见上注释），交集不留分叉。
+  if (page != null) {
+    const citingIds = new Set(
+      cardsCitingPage(page, { bookId: scope.bookId }).map((c) => c.cardId),
+    );
+    cards = cards.filter((c) => citingIds.has(c.id));
   }
 
   return cards.flatMap((c) =>

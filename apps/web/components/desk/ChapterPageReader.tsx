@@ -91,6 +91,16 @@ export default function ChapterPageReader({
     bookId && curPage != null
       ? `/review?book=${encodeURIComponent(bookId)}&page=${curPage}`
       : undefined;
+  /**
+   * 练本页（T27 B）：M = 本页 citing 卡 atoms 合计——与 collectStudyAtoms({page}) /
+   * DocumentPane pageAtoms 同池同口径（卡/字段/原子 cite 任一命中即整卡入池）。
+   * 链接带 book+chapter+page（page 属当前章）；M=0 诚实 muted，不造假链。
+   */
+  const pageAtomCount = (citingCards ?? []).reduce((n, c) => n + c.atomCount, 0);
+  const studyPageHref =
+    bookId && curPage != null
+      ? `/study?book=${encodeURIComponent(bookId)}&chapter=${encodeURIComponent(chapterId)}&page=${curPage}`
+      : undefined;
 
   /** 薄跳页（T26 A）：输入印刷页号；未命中琥珀提示，不改当前页。 */
   const [jumpDraft, setJumpDraft] = useState("");
@@ -428,19 +438,35 @@ export default function ChapterPageReader({
             <h4 className="text-xs font-semibold tracking-wider text-muted">
               本页相关实体卡 · {citingCards.length}
             </h4>
-            {reviewPageHref ? (
-              pendingPageCount != null && pendingPageCount > 0 ? (
-                <Link
-                  href={reviewPageHref}
-                  onClick={rememberDeskReturn}
-                  className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
-                >
-                  核本页（{pendingPageCount}）→
-                </Link>
-              ) : (
-                <span className="text-xs text-muted">本页暂无待核 cite</span>
-              )
-            ) : null}
+            <span className="flex flex-wrap items-baseline gap-3">
+              {/* T27 B：练本页对称核本页（同族次级文字链；出发写 return 与核本页一致）。 */}
+              {studyPageHref && citingCards.length > 0 ? (
+                pageAtomCount > 0 ? (
+                  <Link
+                    href={studyPageHref}
+                    onClick={rememberDeskReturn}
+                    className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+                  >
+                    练本页（{pageAtomCount}）→
+                  </Link>
+                ) : (
+                  <span className="text-xs text-muted">本页暂无可练原子</span>
+                )
+              ) : null}
+              {reviewPageHref ? (
+                pendingPageCount != null && pendingPageCount > 0 ? (
+                  <Link
+                    href={reviewPageHref}
+                    onClick={rememberDeskReturn}
+                    className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+                  >
+                    核本页（{pendingPageCount}）→
+                  </Link>
+                ) : (
+                  <span className="text-xs text-muted">本页暂无待核 cite</span>
+                )
+              ) : null}
+            </span>
           </div>
           {citingCards.length === 0 ? (
             <p className="mt-2 text-xs leading-6 text-muted">

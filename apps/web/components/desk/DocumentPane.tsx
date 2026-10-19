@@ -258,7 +258,11 @@ export default function DocumentPane({
     : activeChapter
       ? `本章 ${activeChapter.id}`
       : "本书";
-  const stripStudyHref = `/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}`;
+  // T27 B：usePageScope 时「练此范围 →」必须落 /study?book=&chapter=&page=（与核对称）——
+  // 标签标「本页 p.N」而链接只到章练即是撒谎；pageAtoms 与 collectStudyAtoms({page}) 同口径。
+  const stripStudyHref = `/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}${
+    usePageScope ? `&page=${readingPage}` : ""
+  }`;
   const stripReviewHref = `/review?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=open${usePageScope ? `&page=${readingPage}` : ""}`;
 
   /** 同步 Clew 上下文（书/章/当前页/可见卡名/示例 cite 页/表面/当前卡 + T19 章/页进度池）。 */
@@ -318,12 +322,24 @@ export default function DocumentPane({
             {book.chapterIds.length} 章 · {cards.length} 张实体卡 ·{" "}
             {cards.reduce((n, c) => n + c.atoms.length, 0)} 个知识原子
           </p>
-          <Link
-            href={`/study?book=${encodeURIComponent(book.id)}`}
-            className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-          >
-            学习环 · 自评 →
-          </Link>
+          {/* T27 B：书头学习链至少带章（不裸 /study?book= 丢章）；本页池时并列「练本页」
+              深链（带 page，与 Strip/卡轨同池同口径）。 */}
+          <span className="flex flex-wrap items-baseline gap-4">
+            <Link
+              href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}`}
+              className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+            >
+              学习环 · 自评 →
+            </Link>
+            {usePageScope ? (
+              <Link
+                href={stripStudyHref}
+                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                练本页 p.{readingPage} →
+              </Link>
+            ) : null}
+          </span>
         </div>
         {/* 作用域本机进度：本章（默认为当前选中章）/ 本页（阅读时如有引用）；可点进同范围练核。 */}
         <LocalProgressStrip

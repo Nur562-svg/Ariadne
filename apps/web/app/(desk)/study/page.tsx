@@ -31,7 +31,13 @@ const MODES: [StudyMode, string][] = [
 export default function StudyPage({
   searchParams,
 }: {
-  searchParams: Promise<{ book?: string; chapter?: string; mode?: string; card?: string }>;
+  searchParams: Promise<{
+    book?: string;
+    chapter?: string;
+    mode?: string;
+    card?: string;
+    page?: string;
+  }>;
 }) {
   const chapters = loadChapters();
   const books = loadBooks();
@@ -47,7 +53,13 @@ async function StudyBody({
   chapters,
   books,
 }: {
-  searchParams: Promise<{ book?: string; chapter?: string; mode?: string; card?: string }>;
+  searchParams: Promise<{
+    book?: string;
+    chapter?: string;
+    mode?: string;
+    card?: string;
+    page?: string;
+  }>;
   chapters: ReturnType<typeof loadChapters>;
   books: ReturnType<typeof loadBooks>;
 }) {
@@ -56,6 +68,7 @@ async function StudyBody({
     chapter: chapterId,
     mode: modeParam,
     card: cardId,
+    page: pageParam,
   } = await searchParams;
   const activeBook = bookId ? books.find((b) => b.id === bookId) : undefined;
   const activeChapter = chapterId ? chapters.find((c) => c.id === chapterId) : undefined;
@@ -63,6 +76,9 @@ async function StudyBody({
   /** ?card= 单卡范围（找不到卡 → 诚实回落书/全部范围）。 */
   const scopedCard = cardId != null ? loadCard(cardId) : undefined;
   const invalidCard = cardId != null && !scopedCard;
+  /** ?page= 本页范围（T27 C）：正整数才生效；非法 → 琥珀警告 + 页过滤不生效（对齐 review）。 */
+  const pageNum = pageParam != null && /^\d+$/.test(pageParam) ? Number(pageParam) : null;
+  const invalidPage = pageParam != null && pageNum == null;
   const mode: StudyMode =
     modeParam === "ungraded" || modeParam === "unknown" ? modeParam : "all";
 
@@ -71,15 +87,25 @@ async function StudyBody({
     ? chapters.filter((c) => activeBook.chapterIds.includes(c.id))
     : chapters;
 
+  /**
+   * 本页池（T27 A/C）：collectStudyAtoms({page}) 口径 = cardsCitingPage 命中卡全部 atoms，
+   * 与书桌 Strip / 卡轨「练本页」同池；page+card 不匹配 → 空队列 + 页面琥珀诚实。
+   */
   const atoms = collectStudyAtoms(
     scopedCard
-      ? { cardId: scopedCard.id, bookId: activeBook?.id, chapterId: activeChapter?.id }
-      : { bookId: activeBook?.id, chapterId: activeChapter?.id },
+      ? {
+          cardId: scopedCard.id,
+          bookId: activeBook?.id,
+          chapterId: activeChapter?.id,
+          page: pageNum ?? undefined,
+        }
+      : { bookId: activeBook?.id, chapterId: activeChapter?.id, page: pageNum ?? undefined },
   );
 
-  /** T20 续位 / sticky 作用域：cursor 含 mode（与 StudySession remount key 对齐），sticky 不含 mode。 */
-  const studyScopeKey = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}:${mode}`;
-  const studyStickyScope = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}`;
+  /** T20 续位 / sticky 作用域：cursor 含 mode（与 StudySession remount key 对齐），sticky 不含 mode；
+   *  T27 C：两键都纳入 page——本页队列的续位/档位记忆不与章/书队列互串。 */
+  const studyScopeKey = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}:${pageNum ?? "all"}:${mode}`;
+  const studyStickyScope = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}:${pageNum ?? "all"}`;
 
   /** 章 → 书反查：无 ?book= 时也能让 CiteChip 深链回对应书的书桌章页。 */
   const bookByChapter: Record<string, string> = {};
@@ -89,48 +115,79 @@ async function StudyBody({
   const cardBookId = scopedCard?.chapterId ? bookByChapter[scopedCard.chapterId] : undefined;
   const scopeBook = activeBook ?? (cardBookId ? books.find((b) => b.id === cardBookId) : undefined);
 
-  /** 单卡首个有页 cite 页码（cites → fields → atoms）：完成/空态「回书桌本页」的第二优先页源。 */
-  const deskPageHint = scopedCard
-    ? (scopedCard.cites.find((c) => c.page != null)?.page ??
-      scopedCard.fields.find((f) => f.cite?.page != null)?.cite?.page ??
-      scopedCard.atoms.find((a) => a.cite?.page != null)?.cite?.page ??
-      null)
-    : null;
-  /** LastOpenedTouch 精确页：有页才写带 page 的 deskHref；无页保持「同书保留原页」，不擦书桌精确页。 */
+  /**
+   * 精确回书桌页优先级（T27 C）：?page= 本页 > 单卡首个有页 cite（cites → fields → atoms）；
+   * 都无 → null（回书桌不带页，同书保留原页，不擦书桌精确页）。
+   */
+  const deskPageHint =
+    pageNum ??
+    (scopedCard
+      ? (scopedCard.cites.find((c) => c.page != null)?.page ??
+        scopedCard.fields.find((f) => f.cite?.page != null)?.cite?.page ??
+        scopedCard.atoms.find((a) => a.cite?.page != null)?.cite?.page ??
+        null)
+      : null);
+  /** LastOpenedTouch 精确页：有页才写带 page 的 deskHref。 */
   const deskPageHrefForTouch =
     deskPageHint != null && scopeBook
       ? `/desk?book=${encodeURIComponent(scopeBook.id)}&page=${deskPageHint}`
       : undefined;
 
-  const qs = (opts?: { chapter?: string | null; mode?: StudyMode }) => {
+  /**
+   * qs helper（T27 C）：默认保留 card/book/chapter/mode/page；
+   * - 切章（含「全部章节」清章）即离页——不把旧章印刷页残留在新作用域 URL；
+   * - clearPage 只清 page（清本页，留书/章/档）。
+   */
+  const qs = (opts?: {
+    chapter?: string | null;
+    mode?: StudyMode;
+    clearPage?: boolean;
+  }) => {
     const p = new URLSearchParams();
     if (scopedCard) p.set("card", scopedCard.id);
     if (activeBook) p.set("book", activeBook.id);
+    const switchingChapter = opts?.chapter !== undefined;
     const ch = scopedCard
       ? undefined
-      : opts?.chapter === undefined
-        ? activeChapter?.id
-        : (opts.chapter ?? undefined);
+      : switchingChapter
+        ? (opts.chapter ?? undefined)
+        : activeChapter?.id;
     if (ch) p.set("chapter", ch);
+    if (!switchingChapter && !opts?.clearPage && pageNum != null) {
+      p.set("page", String(pageNum));
+    }
     const m = opts?.mode ?? mode;
     if (m !== "all") p.set("mode", m);
     const s = p.toString();
     return s ? `?${s}` : "";
   };
 
+  /** 范围文案（T27 C）：有效页优先标「本页 p.N」（Strip/会话条同此口径）；单卡仍卡名。 */
   const scopeLabel = scopedCard
     ? `卡《${scopedCard.name_zh}》${scopeBook ? ` · 《${scopeBook.title}》` : ""}`
-    : (activeChapter?.title ?? activeBook?.title ?? "全部已注册书目");
-  const deskHref = scopeBook ? `/desk?book=${encodeURIComponent(scopeBook.id)}` : "/desk";
-  /** 单卡 → 核本卡（兼书）；书/全范围 → 核页深链。T26 C：书范围带章（?chapter=），
-   *  换环不丢作用域——不再只给裸 /review?book=。 */
+    : pageNum != null
+      ? `本页 p.${pageNum}`
+      : (activeChapter?.title ?? activeBook?.title ?? "全部已注册书目");
+  const deskHref = scopeBook
+    ? `/desk?book=${encodeURIComponent(scopeBook.id)}${pageNum != null ? `&page=${pageNum}` : ""}`
+    : "/desk";
+  /**
+   * 单卡 → 核本卡（兼书）；书/全范围 → 核页深链。T26 C 带章；T27 D：有效页带 page
+   * （本页练完核本页，不落到丢页的章/全书）；无书有页（手写 URL）→ 仅 ?page=。
+   */
   const reviewHref = scopedCard
     ? `/review?card=${encodeURIComponent(scopedCard.id)}${activeBook ? `&book=${encodeURIComponent(activeBook.id)}` : ""}`
-    : activeBook
-      ? `/review?book=${encodeURIComponent(activeBook.id)}${
-          activeChapter ? `&chapter=${encodeURIComponent(activeChapter.id)}` : ""
-        }`
-      : "/review";
+    : pageNum != null
+      ? activeBook
+        ? `/review?book=${encodeURIComponent(activeBook.id)}${
+            activeChapter ? `&chapter=${encodeURIComponent(activeChapter.id)}` : ""
+          }&page=${pageNum}`
+        : `/review?page=${pageNum}`
+      : activeBook
+        ? `/review?book=${encodeURIComponent(activeBook.id)}${
+            activeChapter ? `&chapter=${encodeURIComponent(activeChapter.id)}` : ""
+          }`
+        : "/review";
   /** 完成/空态「回本卡」（仅 ?card= 时展示）。 */
   const cardHref = scopedCard ? `/desk/card/${encodeURIComponent(scopedCard.id)}` : undefined;
 
@@ -143,6 +200,7 @@ async function StudyBody({
           book: scopeBook ? { id: scopeBook.id, title: scopeBook.title } : undefined,
           chapter: activeChapter ? { id: activeChapter.id, title: activeChapter.title } : undefined,
           card: scopedCard ? { id: scopedCard.id, name_zh: scopedCard.name_zh } : undefined,
+          page: pageNum ?? undefined,
           citePages: [],
         }}
       />
@@ -174,28 +232,39 @@ async function StudyBody({
             没有卡 id「{cardId}」——已按{activeBook?.title ?? "全部已注册书目"}出题，卡范围未生效。
           </p>
         ) : null}
+        {invalidPage ? (
+          <p className="mt-2 text-sm text-status-warn">
+            page 参数「{pageParam}」需为正整数——页过滤未生效，已按
+            {activeChapter ? activeChapter.title : (activeBook?.title ?? "全部已注册书目")}出题。
+          </p>
+        ) : null}
         {scopedCard && atoms.length === 0 && scopedCard.atoms.length > 0 ? (
           <p className="mt-2 text-sm text-status-warn">
-            卡「{scopedCard.name_zh}」不在当前 book / chapter 范围内——按空队列处理。
+            卡「{scopedCard.name_zh}」不在当前 book / chapter
+            {pageNum != null ? " / page" : ""} 范围内——按空队列处理。
           </p>
         ) : null}
         <StudyScopeCounts atoms={atoms} />
-        {/* 作用域进度（T18：同范围练+核分列；本页即练环，不重复练链）。 */}
+        {/* 作用域进度（T18：同范围练+核分列；本页即练环，不重复练链）。
+            T27 C：有效页时练/核两列都是本页池（collectCiteQueue 同样带 page），标签「本页 p.N」。 */}
         <LocalProgressStrip
           atoms={atoms.map((a) => ({ cardId: a.cardId, atomId: a.atomId }))}
           items={collectCiteQueue({
             cardId: scopedCard?.id,
             bookId: activeBook?.id,
             chapterId: activeChapter?.id,
+            page: pageNum ?? undefined,
           }).map((it) => ({ key: it.key }))}
           scopeLabel={
             scopedCard
               ? "本卡"
-              : activeChapter
-                ? `本章 ${activeChapter.id}`
-                : activeBook
-                  ? "本书"
-                  : "全部"
+              : pageNum != null
+                ? `本页 p.${pageNum}`
+                : activeChapter
+                  ? `本章 ${activeChapter.id}`
+                  : activeBook
+                    ? "本书"
+                    : "全部"
           }
         />
       </header>
@@ -205,7 +274,24 @@ async function StudyBody({
           职责正交，各司其职，勿删 StickyModeGate。 */}
       <div className="sticky top-0 z-10 -mx-8 mt-6 border-b border-line bg-card px-8 py-3">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          {/* 章过滤（config 派生；有书时以上下文书为准；保留当前队列档）。单卡范围固定，隐藏章芯片。 */}
+          {/* T27 C：本页范围铬——有效页 pill 标注（与章芯片同族）+「清本页」（清 page，留书/章/档）。 */}
+          {pageNum != null ? (
+            <span className="flex items-center gap-2">
+              <span
+                aria-current="true"
+                className="rounded-full border border-cinnabar bg-cinnabar-soft px-3 py-1 text-sm text-cinnabar"
+              >
+                本页 p.{pageNum}
+              </span>
+              <Link
+                href={`/study${qs({ clearPage: true })}`}
+                className="text-xs text-muted no-underline transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+              >
+                清本页 →
+              </Link>
+            </span>
+          ) : null}
+          {/* 章过滤（config 派生；有书时以上下文书为准；保留当前队列档；切章即离页）。单卡范围固定，隐藏章芯片。 */}
           {!scopedCard && chipChapters.length > 0 ? (
             <div className="flex flex-wrap items-center gap-2">
               <Link
@@ -296,8 +382,16 @@ async function StudyBody({
                 </Link>
               </>
             ) : null}
-            {/* T20 空态作用域恢复（有章芯片时）：换到全部章节（清 chapter）或全部书目（清 book/chapter）。 */}
-            {!scopedCard && (activeChapter || activeBook) ? (
+            {/* T27 C：本页空 → 主 CTA 优先放宽（清 page 留 chapter/book，一颗实心）；
+                非本页范围才走 T20 章程恢复主 CTA。 */}
+            {pageNum != null ? (
+              <Link
+                href={`/study${qs({ clearPage: true })}`}
+                className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+              >
+                {activeChapter ? "换到本章全部 →" : activeBook ? "换到本书全部 →" : "换到全部书目 →"}
+              </Link>
+            ) : !scopedCard && (activeChapter || activeBook) ? (
               activeChapter ? (
                 <Link
                   href={`/study${qs({ chapter: null })}`}

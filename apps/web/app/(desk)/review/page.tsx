@@ -118,14 +118,19 @@ async function ReviewBody({
 
   const cardHref = card ? `/desk/card/${encodeURIComponent(card.id)}` : undefined;
   /** T26 C：去学习环带作用域——非单卡时至少 ?book=（有书），有 effChapter 再 &chapter=；
-   *  禁止裸 "/study"（换环丢书）。单卡仍 ?card=（兼书）。 */
+   *  禁止裸 "/study"（换环丢书）。单卡仍 ?card=（兼书）。
+   *  T27 D：有效 pageNum 时带 &page=——本页核完去练仍落本页池，不落到丢页的章/全书。 */
   const studyHref = card
     ? `/study?card=${encodeURIComponent(card.id)}${book ? `&book=${encodeURIComponent(book.id)}` : ""}`
-    : book
-      ? `/study?book=${encodeURIComponent(book.id)}${
-          effChapter ? `&chapter=${encodeURIComponent(effChapter.id)}` : ""
-        }`
-      : "/study";
+    : pageNum != null
+      ? `/study?${
+          book ? `book=${encodeURIComponent(book.id)}&` : ""
+        }${effChapter ? `chapter=${encodeURIComponent(effChapter.id)}&` : ""}page=${pageNum}`
+      : book
+        ? `/study?book=${encodeURIComponent(book.id)}${
+            effChapter ? `&chapter=${encodeURIComponent(effChapter.id)}` : ""
+          }`
+        : "/study";
   /** 回书桌本页（书范围且 page 合法时）：/desk?book=&page= 章页定位。 */
   const deskPageHref =
     pageNum != null && scopeBook
@@ -273,22 +278,27 @@ async function ReviewBody({
         </p>
       </header>
 
-      {/* 作用域进度（T18：同范围练+核分列；本页即核环，不重复核链）。 */}
+      {/* 作用域进度（T18：同范围练+核分列；本页即核环，不重复核链）。
+          T27 soft：有效 page 时练侧与 collectStudyAtoms({page}) / study Strip 同池，
+          标签「本页 p.N」——禁止页过滤开着却报本章 练 未评。 */}
       <LocalProgressStrip
         atoms={collectStudyAtoms({
           cardId: card?.id,
           bookId: book?.id,
           chapterId: effChapter?.id,
+          page: pageNum ?? undefined,
         }).map((a) => ({ cardId: a.cardId, atomId: a.atomId }))}
         items={items.map((it) => ({ key: it.key }))}
         scopeLabel={
           card
             ? "本卡"
-            : effChapter
-              ? `本章 ${effChapter.id}`
-              : book
-                ? "本书"
-                : "全部"
+            : pageNum != null
+              ? `本页 p.${pageNum}`
+              : effChapter
+                ? `本章 ${effChapter.id}`
+                : book
+                  ? "本书"
+                  : "全部"
         }
       />
 
