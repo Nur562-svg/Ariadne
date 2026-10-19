@@ -26,8 +26,19 @@ export type RegisterResult =
   | { ok: true; bookId: string; chapterIds: string[] }
   | { ok: false; error: string; status: number };
 
-function readRawConfig(rel: string): unknown {
-  const file = path.join(repoRoot(), "config", rel);
+// config 文件名白名单：read/write 只接受这两个字面量，阻断 rel 参数拼接路径的穿越面
+const CONFIG_FILE_ALLOWLIST = ["chapter.json", "books.json"] as const;
+type ConfigFileName = (typeof CONFIG_FILE_ALLOWLIST)[number];
+
+function configPath(rel: ConfigFileName): string {
+  if (!(CONFIG_FILE_ALLOWLIST as readonly string[]).includes(rel)) {
+    throw new Error(`config 文件名不在白名单：${rel}`);
+  }
+  return path.join(repoRoot(), "config", rel);
+}
+
+function readRawConfig(rel: ConfigFileName): unknown {
+  const file = configPath(rel);
   if (!fs.existsSync(file)) return undefined;
   try {
     return JSON.parse(fs.readFileSync(file, "utf8"));
@@ -36,8 +47,8 @@ function readRawConfig(rel: string): unknown {
   }
 }
 
-function writeRawConfig(rel: string, obj: unknown): void {
-  const file = path.join(repoRoot(), "config", rel);
+function writeRawConfig(rel: ConfigFileName, obj: unknown): void {
+  const file = configPath(rel);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, JSON.stringify(obj, null, 2) + "\n");
 }
