@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { HeYeItem } from "@/lib/heye";
-import type { PageDoc } from "@/lib/entities";
+import type { Cite, PageDoc } from "@/lib/entities";
+import CitePeek from "@/components/CitePeek";
 import {
   countPoolMarks,
   filterItemsByMode,
@@ -278,10 +279,15 @@ export default function HeYeSession({
   const pg = pageByNo.get(cur.page);
   const deskHref = `/desk?${cur.bookId ? `book=${encodeURIComponent(cur.bookId)}&` : ""}page=${cur.page}`;
 
-  /** 同页其余待核（全池，同一印刷页、未标、不含当前条）——批量清同页。 */
+  /** 同页其余待核（全池，同一印刷页、未标、不含当前条）——批量清同页 / 可点跳条。 */
   const samePageOpen = items.filter(
     (it) => it.page === cur.page && !store[it.key] && it.key !== cur.key,
   );
+  /**
+   * 当前条的 Cite 快照：队列定义即 seed verified===false。
+   * 禁止改写成 true——「本机已对」只进 localStorage，与 seed 抽查态无关。
+   */
+  const curCite: Cite = { page: cur.page, quote: cur.quote, verified: false };
 
   function go(nextIdx: number) {
     setIndex(Math.max(0, Math.min(visible.length - 1, nextIdx)));
@@ -367,7 +373,11 @@ export default function HeYeSession({
             </Link>
             <span className="ml-2 text-muted">
               {cur.sourceLabel}
-              {cur.chapterId ? ` · ${cur.chapterId}` : ""} · 引 p.{cur.page}
+              {cur.chapterId ? ` · ${cur.chapterId}` : ""} · 引
+            </span>
+            {/* Peek 为旁路深链：quote 正文仍在下方 blockquote；verified 恒 false（见 curCite 注释）。 */}
+            <span className="ml-1">
+              <CitePeek cite={curCite} deskBookId={cur.bookId} cardId={cur.cardId} />
             </span>
           </p>
 
@@ -418,7 +428,8 @@ export default function HeYeSession({
             </button>
           </div>
 
-          {/* 同页批量（次级加速器，仅待核档；只写本浏览器，不等同 seed verified）。 */}
+          {/* 同页批量 + 同页跳核列表（次级加速器，仅待核档；只写本浏览器，不等同 seed verified）。
+              T19：samePageOpen 条可点跳（open 档下均在本档可见；点击只 go 定位、不写任何本机态）。 */}
           {mode === "open" && samePageOpen.length >= 1 ? (
             <div className="mt-4 border-t border-line pt-3">
               <button
@@ -427,9 +438,32 @@ export default function HeYeSession({
               >
                 本页其余 {samePageOpen.length} 条一并「本机已对」→
               </button>
+              <p className="mt-2 text-xs font-medium text-muted">本页其余待核条目（点击定位，不批量打标）：</p>
+              <ul className="mt-1 space-y-0.5">
+                {samePageOpen.map((it) => (
+                  <li key={it.key}>
+                    <button
+                      onClick={() => {
+                        // 跳转到该项在本档中的下标；不在本档（如已切档）则忽略——open 档下恒可跳。
+                        const vi = visible.findIndex((v) => v.key === it.key);
+                        if (vi >= 0) go(vi);
+                      }}
+                      className="max-w-full truncate text-left text-xs leading-5 text-muted transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+                    >
+                      <span className="font-medium text-foreground/75">{it.cardName}</span>
+                      <span className="ml-1">· {it.sourceLabel}</span>
+                      {it.quote ? (
+                        <span className="ml-1">
+                          · “{it.quote.length > 36 ? `${it.quote.slice(0, 36)}…` : it.quote}”
+                        </span>
+                      ) : null}
+                    </button>
+                  </li>
+                ))}
+              </ul>
               <p className="mt-1.5 text-xs leading-6 text-muted">
-                批量只写本浏览器（localStorage），表示你拿 quote 对着 OCR 页看过；
-                它不等于教材侧「抽查 verified」，也不显示「本页已全核」。
+                点击条目只跳定位，不改本机态；批量只写本浏览器（localStorage），表示你拿 quote
+                对着 OCR 页看过；它不等于教材侧「抽查 verified」，也不显示「本页已全核」。
               </p>
             </div>
           ) : null}

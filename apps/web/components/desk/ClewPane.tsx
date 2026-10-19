@@ -253,7 +253,12 @@ export default function ClewPane() {
           </div>
         </>
       ) : tab === "changes" ? (
-        <ChangesPanel since={sessionStartedAt} studyHref={studyHref} reviewHref={reviewHref} />
+        <ChangesPanel
+          since={sessionStartedAt}
+          clew={clew}
+          studyHref={studyHref}
+          reviewHref={reviewHref}
+        />
       ) : (
         <QueuePanel reviewHref={reviewHref} studyHref={studyHref} />
       )}
@@ -268,10 +273,13 @@ export default function ClewPane() {
 /** 本轮变更：未接模型诚实空心——只读本浏览器 session 开始以来的 study/heye 标记。 */
 function ChangesPanel({
   since,
+  clew,
   studyHref,
   reviewHref,
 }: {
   since: number;
+  /** T19：Clew compact 进度条接上下文池（书桌 DocumentPane 随章/页写）；无池 → 全局计数。 */
+  clew: ClewContextData;
   studyHref: string;
   reviewHref: string;
 }) {
@@ -324,7 +332,21 @@ function ChangesPanel({
         这里没有可确认的写入提议；下列只读本浏览器本轮自评/核页标记。
       </p>
 
-      <LocalProgressStrip compact />
+      {/* T19 Clew compact 章作用域：有池（DocumentPane 随章/页写）按池收窄，数字应明显小于全书；
+          无池保持全局计数并给一句诚实说明。scopeLabel/href 与中栏 Strip 同一来源。 */}
+      <LocalProgressStrip
+        compact
+        atoms={clew.progressAtoms}
+        items={clew.progressItems}
+        scopeLabel={clew.progressScopeLabel}
+        studyHref={clew.progressStudyHref}
+        reviewHref={clew.progressReviewHref}
+      />
+      {!clew.progressAtoms && !clew.progressItems ? (
+        <p className="mt-1 text-[11px] leading-5 text-muted">
+          未定位章 · 全书本机记录；到书桌打开书目后按章/页收窄。
+        </p>
+      ) : null}
 
       {shown.length === 0 ? (
         <div className="mt-6 border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">

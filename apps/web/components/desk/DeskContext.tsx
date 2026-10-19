@@ -24,6 +24,18 @@ export type ClewContextData = {
   card?: { id: string; name_zh: string };
   /** 当前表面：书桌 / 本卡 / 学习 / 核页 / 书架。 */
   surface?: DeskSurface;
+  /**
+   * T19 章/页作用域本机进度池：与中栏 LocalProgressStrip 同一键集（DocumentPane 随翻章/翻页写）。
+   * ClewPane 的 LocalProgressStrip compact 据此收窄计数（有池时数字应明显小于全书）；
+   * 无池（书架 / study / review 薄桥）→ 全局计数 + 诚实「未定位章」说明。
+   */
+  progressAtoms?: { cardId: string; atomId: string }[];
+  progressItems?: { key: string }[];
+  /** 池作用域标注（「本章 ch01」/「本页 p.N」），与中栏 Strip 一致。 */
+  progressScopeLabel?: string;
+  /** 同范围练 / 核入口（可选；未定位章等无池态不传）。 */
+  progressStudyHref?: string;
+  progressReviewHref?: string;
 };
 
 type DeskContextValue = {

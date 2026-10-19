@@ -7,6 +7,7 @@ import SectionToc, { SECTIONS } from "@/components/desk/SectionToc";
 import type { SectionId } from "@/components/desk/SectionToc";
 import ChapterPageReader from "@/components/desk/ChapterPageReader";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
+import CitePeek from "@/components/CitePeek";
 import { useDeskContext } from "@/components/desk/DeskContext";
 
 const KIND_ZH: Record<string, string> = {
@@ -56,7 +57,8 @@ function groupByKind(cards: EntityCard[]): { kind: string; items: EntityCard[] }
 }
 
 function CardCard({ card, bookId }: { card: EntityCard; bookId?: string }) {
-  const citePage = card.cites.find((x) => x.page != null)?.page ?? null;
+  /** 主 cite（卡级第一条有页引用）；无页则没有可 Peek 的定位，不渲染。 */
+  const primaryCite = card.cites.find((x) => x.page != null);
   return (
     <div className="block h-full rounded-lg border border-line bg-card p-4 transition-shadow hover:shadow-md">
       <Link href={`/desk/card/${card.id}`} className="block no-underline">
@@ -69,20 +71,23 @@ function CardCard({ card, bookId }: { card: EntityCard; bookId?: string }) {
         {card.name_en && <p className="mono mt-0.5 text-xs text-muted">{card.name_en}</p>}
         <p className="mt-2 text-sm leading-6 text-foreground/85">{card.one_liner}</p>
       </Link>
-      <div className="mt-2 flex items-baseline justify-between gap-2">
+      <div className="mt-2 flex items-center justify-between gap-2">
         <p className="min-w-0 text-xs text-muted">
           {card.atoms.length} 个原子 · {card.chapterId ?? ""}
-          {citePage != null ? ` · 引 p.${citePage}` : ""}
           {card.cites.some((x) => x.page == null) ? " · 部分未验证 p.?" : ""}
         </p>
-        {bookId ? (
-          <Link
-            href={`/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}`}
-            className="shrink-0 text-xs text-cinnabar no-underline hover:underline underline-offset-4"
-          >
-            练 →
-          </Link>
-        ) : null}
+        <span className="flex shrink-0 items-center gap-2">
+          {/* 主 cite 旁轻量 Peek（T19 鼓励项）：不新增颜色，不抢「练」主链；无页则不渲染。 */}
+          {primaryCite ? <CitePeek cite={primaryCite} deskBookId={bookId} cardId={card.id} /> : null}
+          {bookId ? (
+            <Link
+              href={`/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}`}
+              className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+            >
+              练 →
+            </Link>
+          ) : null}
+        </span>
       </div>
     </div>
   );
@@ -222,7 +227,7 @@ export default function DocumentPane({
   const stripStudyHref = `/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}`;
   const stripReviewHref = `/review?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=open${usePageScope ? `&page=${readingPage}` : ""}`;
 
-  /** 同步 Clew 上下文（书/章/当前页/可见卡名/示例 cite 页/表面/当前卡）。 */
+  /** 同步 Clew 上下文（书/章/当前页/可见卡名/示例 cite 页/表面/当前卡 + T19 章/页进度池）。 */
   useEffect(() => {
     const citePages = [
       ...new Set(
@@ -241,8 +246,26 @@ export default function DocumentPane({
       // 书桌面：card = 当前过滤后第一张可见卡（会话条可点回跳；非精确「当前强调」）。
       card: firstCard ? { id: firstCard.id, name_zh: firstCard.name_zh } : undefined,
       surface: "desk",
+      // T19：把与中栏 Strip 同一章/页键集写进上下文——Clew compact 随翻章/翻页收窄，
+      // 数字与中栏一致且明显小于全书全局计数。
+      progressAtoms: stripAtoms,
+      progressItems: stripItems.map((it) => ({ key: it.key })),
+      progressScopeLabel: stripScopeLabel,
+      progressStudyHref: stripStudyHref,
+      progressReviewHref: stripReviewHref,
     });
-  }, [book, activeChapter, readingPage, visibleCards, setClew]);
+  }, [
+    book,
+    activeChapter,
+    readingPage,
+    visibleCards,
+    setClew,
+    stripAtoms,
+    stripItems,
+    stripScopeLabel,
+    stripStudyHref,
+    stripReviewHref,
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">

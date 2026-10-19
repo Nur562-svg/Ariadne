@@ -216,6 +216,10 @@ export type PageCiteHit = {
   source: "card" | "field" | "atom";
   label: string;
   quote?: string;
+  /** 原样自 cite.page（与查询页一致），供轨上 CitePeek 构造一致 Cite。 */
+  page: number;
+  /** 原样自 cite.verified（seed 抽查态，勿编造；不等于本机核页标记）。 */
+  verified: boolean;
 };
 
 /** 页 → 卡反向索引的一条结果：轻量卡摘要（不进完整 atoms/fields，控制 payload）。 */
@@ -246,7 +250,14 @@ export function cardsCitingPage(page: number, opts?: { bookId?: string }): PageC
       const key = `${source}|${label}|${(cite.quote ?? "").trim().replace(/\s+/g, " ")}`;
       if (seen.has(key)) return;
       seen.add(key);
-      hits.push({ source, label, quote: cite.quote });
+      // page/verified 原样取自 cite（已保证 cite.page === page，勿改值、勿编造抽查态）。
+      hits.push({
+        source,
+        label,
+        quote: cite.quote,
+        page: cite.page as number,
+        verified: cite.verified,
+      });
     };
     for (const x of c.cites) push(x, "card", "卡引用");
     for (const f of c.fields) push(f.cite, "field", `字段 · ${f.label}`);

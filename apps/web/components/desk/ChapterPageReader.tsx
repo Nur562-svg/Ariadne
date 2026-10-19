@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import type { PageCitingCard, PageDoc } from "@/lib/entities";
+import CitePeek from "@/components/CitePeek";
 import { isEditableTarget } from "@/lib/keyboard";
 
 const KIND_ZH: Record<string, string> = {
@@ -186,39 +187,56 @@ export default function ChapterPageReader({
               本页暂无 seed 卡引用本印刷页。
             </p>
           ) : (
-            <ul className="mt-2 space-y-2">
-              {citingCards.map((c) => (
-                <li
-                  key={c.cardId}
-                  className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 border-t border-line pt-2 first:border-t-0 first:pt-0"
-                >
-                  <div className="min-w-0">
-                    <Link
-                      href={`/desk/card/${encodeURIComponent(c.cardId)}`}
-                      className="text-sm font-medium text-foreground no-underline hover:text-cinnabar"
-                    >
-                      {c.nameZh}
-                    </Link>
-                    {c.atomCount > 0 && bookId ? (
+            <>
+              <ul className="mt-2 space-y-2">
+                {citingCards.map((c) => (
+                  <li
+                    key={c.cardId}
+                    className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 border-t border-line pt-2 first:border-t-0 first:pt-0"
+                  >
+                    <div className="min-w-0">
                       <Link
-                        href={`/study?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}`}
-                        className="ml-2 text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+                        href={`/desk/card/${encodeURIComponent(c.cardId)}`}
+                        className="text-sm font-medium text-foreground no-underline hover:text-cinnabar"
                       >
-                        练
+                        {c.nameZh}
                       </Link>
-                    ) : null}
-                    {c.hits[0] ? (
-                      <p className="mt-0.5 truncate text-xs text-muted">
-                        {hitSummary(c.hits[0])}
-                      </p>
-                    ) : null}
-                  </div>
-                  <span className="mono shrink-0 text-[11px] text-muted">
-                    {KIND_ZH[c.kind] ?? c.kind}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                      {c.atomCount > 0 && bookId ? (
+                        <Link
+                          href={`/study?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}`}
+                          className="ml-2 text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+                        >
+                          练
+                        </Link>
+                      ) : null}
+                      {c.hits[0] ? (
+                        <div className="mt-0.5 flex items-center gap-1">
+                          <span className="min-w-0 truncate text-xs text-muted">
+                            {hitSummary(c.hits[0])}
+                          </span>
+                          {/* T19：轨上 Peek——cite 由 hit 原样字段构造（page/verified 不编造）。 */}
+                          <CitePeek
+                            cite={{
+                              page: c.hits[0].page,
+                              quote: c.hits[0].quote,
+                              verified: c.hits[0].verified,
+                            }}
+                            deskBookId={bookId}
+                            cardId={c.cardId}
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+                    <span className="mono shrink-0 text-[11px] text-muted">
+                      {KIND_ZH[c.kind] ?? c.kind}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs leading-5 text-muted">
+                「摘」可浮层看 quote 与抽查状态；从「核本页」进核页可对本印刷页逐条核对。
+              </p>
+            </>
           )}
         </section>
       ) : null}

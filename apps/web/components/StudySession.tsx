@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { StudyAtom } from "@/lib/entities";
-import { CiteChip } from "@/components/CiteChip";
+import CitePeek from "@/components/CitePeek";
 import {
   atomKey,
   countPoolGrades,
@@ -322,7 +322,13 @@ export default function StudySession({
             <p className="text-sm leading-7 text-foreground/90">{cur.answer}</p>
             {cur.cite ? (
               <div className="mt-2">
-                <CiteChip cite={cur.cite} q={cur.answer.slice(0, 24)} deskBookId={curDeskBookId} />
+                {/* T19：裸 CiteChip → CitePeek（旁路「摘」浮层 + 深链）；无 cite 不渲染。 */}
+                <CitePeek
+                  cite={cur.cite}
+                  q={cur.answer.slice(0, 24)}
+                  deskBookId={curDeskBookId}
+                  cardId={cur.cardId}
+                />
               </div>
             ) : null}
           </div>
