@@ -134,7 +134,14 @@ export function loadCards(opts?: { chapterId?: string; bookId?: string }): Entit
   if (opts?.bookId) {
     const book = loadBooks().find((b) => b.id === opts.bookId);
     if (!book) return [];
-    allowed = new Set(book.chapterIds);
+    // bookId + chapterId：交集——章须属于该书，否则空（与 collectCiteQueue 一致）。
+    // 仅 bookId 时保持全书章；仅 chapterId（无 book）走下方分支。
+    if (opts.chapterId) {
+      if (!book.chapterIds.includes(opts.chapterId)) return [];
+      allowed = new Set([opts.chapterId]);
+    } else {
+      allowed = new Set(book.chapterIds);
+    }
   } else if (opts?.chapterId) {
     allowed = new Set([opts.chapterId]);
   }

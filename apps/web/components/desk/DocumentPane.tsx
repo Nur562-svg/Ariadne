@@ -339,6 +339,15 @@ export default function DocumentPane({
         <p className="mt-1 text-sm text-muted">
           过渡文档 · 六段讲义生成管线未接入；章页是 OCR 原文，不是萃取讲义。
         </p>
+        {/* T26 D：稀疏注册书诚实条——已注册但尚无卡/尚无 OCR 页；次级 /ingest 链，
+            不阻断概览与模式切换（琥珀 = 稀疏/存疑族，不与朱砂动作色混用）。 */}
+        {cards.length === 0 || pages.length === 0 ? (
+          <p className="mt-3 rounded-lg border border-amber-300 bg-status-warn-bg px-4 py-3 text-sm leading-7 text-status-warn">
+            {cards.length === 0 ? <>这本书已注册，但还没有萃取出的实体卡——各段会显示为空。</> : null}
+            {pages.length === 0 ? <>这本书还没有解析出 OCR 印刷页——章页 / 分栏暂读不了。</> : null}
+            可到 <Link href="/ingest" className="underline underline-offset-4">/ingest</Link> 上传并解析教材。
+          </p>
+        ) : null}
         {invalidPage ? (
           <p className="mt-3 rounded-lg border border-amber-300 bg-status-warn-bg px-4 py-3 text-sm leading-7 text-status-warn">
             本书已解析的 OCR 里没有印刷页 p.{initialPage}——可能该页未解析或不属于本书。
@@ -415,6 +424,7 @@ export default function DocumentPane({
             bookId={book.id}
             citingCards={pageCitingCards}
             pendingPageCount={pagePendingCount}
+            onOpenOverview={() => setSection("overview")}
             variant="full"
           />
           <p className="mt-4 text-xs text-muted">
@@ -443,6 +453,7 @@ export default function DocumentPane({
               bookId={book.id}
               citingCards={pageCitingCards}
               pendingPageCount={pagePendingCount}
+              onOpenOverview={() => setSection("overview")}
               variant="column"
             />
           </div>
@@ -486,6 +497,8 @@ function OverviewPanel({
       <ul className="mt-3 space-y-2">
         {chapters.map((c) => {
           const count = pages.filter((p) => p.chapterId === c.id).length;
+          /* T26 D：章行如实报「页 + 卡」；0 页章写「无 OCR 页」，不造「0 页」假计数感。 */
+          const cardCount = cards.filter((k) => k.chapterId === c.id).length;
           return (
             <li key={c.id}>
               <button
@@ -495,7 +508,9 @@ function OverviewPanel({
                 <span className="text-sm font-medium text-foreground">
                   {c.id} · {c.title}
                 </span>
-                <span className="mono shrink-0 text-xs text-muted">{count} 页 →</span>
+                <span className="mono shrink-0 text-xs text-muted">
+                  {count > 0 ? `${count} 页` : "无 OCR 页"} · {cardCount} 卡 →
+                </span>
               </button>
             </li>
           );

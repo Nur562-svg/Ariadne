@@ -22,29 +22,40 @@ import { isEditableTarget } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
 
 /**
- * 档位芯片（T25 A）：认识/不熟/未评 本机计数，可点切到对应档
+ * 档位芯片（T25 A + T26 C）：认识/不熟/未评 本机计数，可点切到对应档
  * （认识→全部、不熟→不熟再练、未评→未评；URL 规则与 sticky 三档一致）。
- * 扫视控件，非掌握色环；仅在空/完成态出现，练中不插队。
+ * 当前档朱红 soft 高亮（对齐 HeYeModeChips）；扫视控件，非掌握色环；
+ * 仅在空/完成态出现，练中不插队。
  */
 function StudyModeChips({
   pool,
+  mode,
   hrefs,
 }: {
   pool: { known: number; unknown: number; ungraded: number };
+  mode: StudyMode;
   hrefs: { all: string; unknown: string; ungraded: string };
 }) {
-  const rows: [string, number, string, string][] = [
-    ["认识", pool.known, hrefs.all, "切到「全部」档"],
-    ["不熟", pool.unknown, hrefs.unknown, "切到「不熟再练」档"],
-    ["未评", pool.ungraded, hrefs.ungraded, "切到「未评」档"],
+  const rows: { label: string; m: StudyMode; n: number; href: string; title: string }[] = [
+    { label: "认识", m: "all", n: pool.known, href: hrefs.all, title: "切到「全部」档" },
+    { label: "不熟", m: "unknown", n: pool.unknown, href: hrefs.unknown, title: "切到「不熟再练」档" },
+    { label: "未评", m: "ungraded", n: pool.ungraded, href: hrefs.ungraded, title: "切到「未评」档" },
   ];
-  const chipCls =
-    "rounded-full border border-line px-3 py-1 text-xs no-underline text-muted transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none";
   return (
     <div className="mt-4 flex flex-wrap items-center gap-2">
       <span className="text-xs text-muted">本范围本机：</span>
-      {rows.map(([label, n, href, title]) => (
-        <Link key={label} href={href} title={title} className={chipCls}>
+      {rows.map(({ label, m, n, href, title }) => (
+        <Link
+          key={label}
+          href={href}
+          title={title}
+          aria-current={mode === m ? "true" : undefined}
+          className={`rounded-full border px-3 py-1 text-xs no-underline transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
+            mode === m
+              ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
+              : "border-line text-muted hover:border-cinnabar hover:text-cinnabar"
+          }`}
+        >
           {label} {n}
         </Link>
       ))}
@@ -253,6 +264,7 @@ export default function StudySession({
         </p>
         <StudyModeChips
           pool={pool}
+          mode={mode}
           hrefs={{ all: allHref, unknown: unknownHref, ungraded: ungradedHref }}
         />
         {/* T25 A densify：一颗朱红主 CTA，其余一律次级文字链（勿一排多颗实心按钮）。 */}
@@ -371,6 +383,7 @@ export default function StudySession({
         ) : null}
         <StudyModeChips
           pool={pool}
+          mode={mode}
           hrefs={{ all: allHref, unknown: unknownHref, ungraded: ungradedHref }}
         />
         {/* T25 A densify：一颗朱红主 CTA（再来一轮），其余一律次级文字链。 */}

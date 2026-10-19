@@ -256,7 +256,7 @@ export default function HeYeSession({
               href={studyHref ?? "/study"}
               className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
             >
-              去学习环 /study →
+              去学习环 →
             </Link>
           ) : (
             <Link

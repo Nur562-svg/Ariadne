@@ -122,11 +122,14 @@ async function StudyBody({
     ? `卡《${scopedCard.name_zh}》${scopeBook ? ` · 《${scopeBook.title}》` : ""}`
     : (activeChapter?.title ?? activeBook?.title ?? "全部已注册书目");
   const deskHref = scopeBook ? `/desk?book=${encodeURIComponent(scopeBook.id)}` : "/desk";
-  /** 单卡 → 核本卡（兼书）；书/全范围 → 原核页深链。 */
+  /** 单卡 → 核本卡（兼书）；书/全范围 → 核页深链。T26 C：书范围带章（?chapter=），
+   *  换环不丢作用域——不再只给裸 /review?book=。 */
   const reviewHref = scopedCard
     ? `/review?card=${encodeURIComponent(scopedCard.id)}${activeBook ? `&book=${encodeURIComponent(activeBook.id)}` : ""}`
     : activeBook
-      ? `/review?book=${encodeURIComponent(activeBook.id)}`
+      ? `/review?book=${encodeURIComponent(activeBook.id)}${
+          activeChapter ? `&chapter=${encodeURIComponent(activeChapter.id)}` : ""
+        }`
       : "/review";
   /** 完成/空态「回本卡」（仅 ?card= 时展示）。 */
   const cardHref = scopedCard ? `/desk/card/${encodeURIComponent(scopedCard.id)}` : undefined;

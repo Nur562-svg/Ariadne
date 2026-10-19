@@ -117,9 +117,15 @@ async function ReviewBody({
   }
 
   const cardHref = card ? `/desk/card/${encodeURIComponent(card.id)}` : undefined;
+  /** T26 C：去学习环带作用域——非单卡时至少 ?book=（有书），有 effChapter 再 &chapter=；
+   *  禁止裸 "/study"（换环丢书）。单卡仍 ?card=（兼书）。 */
   const studyHref = card
     ? `/study?card=${encodeURIComponent(card.id)}${book ? `&book=${encodeURIComponent(book.id)}` : ""}`
-    : "/study";
+    : book
+      ? `/study?book=${encodeURIComponent(book.id)}${
+          effChapter ? `&chapter=${encodeURIComponent(effChapter.id)}` : ""
+        }`
+      : "/study";
   /** 回书桌本页（书范围且 page 合法时）：/desk?book=&page= 章页定位。 */
   const deskPageHref =
     pageNum != null && scopeBook
