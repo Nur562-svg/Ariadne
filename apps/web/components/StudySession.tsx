@@ -18,7 +18,7 @@ import {
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadLastOpened } from "@/lib/last-opened";
 import { loadReturn, type ReturnEntry } from "@/lib/return-stack";
-import { isEditableTarget } from "@/lib/keyboard";
+import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
 
 /**
@@ -183,6 +183,8 @@ export default function StudySession({
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (silentKeyTarget(e.target)) return;
+      // 「摘」浮层开着：让路（不评分、不切题）——关掉浮层即恢复（review-fix-integrity E）。
+      if (isPeekOpen()) return;
       if (!ready || order.length === 0 || idx >= order.length) return;
       if (e.key === " ") {
         e.preventDefault();

@@ -19,3 +19,13 @@ export function isEditableTarget(target: EventTarget | null): boolean {
   }
   return false;
 }
+
+/**
+ * CitePeek「摘」浮层打开时置位（CitePeek 在 open effect 里 set / cleanup 清；
+ * 旗标本体挂 document.body.dataset.ariadnePeek）。会话级键盘环
+ * （StudySession / HeYeSession / StickyPageLoopKeys / ChapterPageReader 纸面键）
+ * 开头读它让路：浮层开着不评分、不切题/章/页，关掉即恢复。
+ */
+export function isPeekOpen(): boolean {
+  return typeof document !== "undefined" && document.body.dataset.ariadnePeek === "1";
+}

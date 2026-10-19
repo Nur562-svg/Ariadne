@@ -29,11 +29,18 @@ export default function StickyModeGate({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const done = useRef(false);
+  /**
+   * 审计 + 最小修（review-fix-integrity G）：App Router 软导航改 qs 时本组件**不重挂**，
+   * 旧 `done = useRef(false)` 换范围后永真 → 新作用域的 sticky 档位记忆永不补齐。
+   * 改为按 `${kind}:${scopeKey}` 记忆——同一范围只跑一次（StrictMode 双跑抵御依旧），
+   * 换书/章/卡/页（scopeKey 变）即重新对齐 URL 与 sticky。
+   */
+  const doneFor = useRef<string | null>(null);
 
   useEffect(() => {
-    if (done.current) return;
-    done.current = true;
+    const gateKey = `${kind}:${scopeKey}`;
+    if (doneFor.current === gateKey) return;
+    doneFor.current = gateKey;
 
     const validModes = [defaultMode, ...nonDefaultModes];
     const mode = searchParams.get("mode");

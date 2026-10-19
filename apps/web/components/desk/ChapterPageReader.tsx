@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { PageCitingCard, PageDoc } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import PageCardRailMarks from "@/components/desk/PageCardRailMarks";
 import SessionKeyHint from "@/components/SessionKeyHint";
-import { isEditableTarget } from "@/lib/keyboard";
+import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import { saveReturn } from "@/lib/return-stack";
 
 const KIND_ZH: Record<string, string> = {
@@ -79,9 +79,23 @@ export default function ChapterPageReader({
   /** sticky 工具带贴合方式：full = 章页整宽模式（吃掉中栏 px-8）；column = 分栏右列（吃掉 pl-6）。 */
   variant?: "full" | "column";
 }) {
-  const chPages = pages
-    .filter((p) => p.chapterId === chapterId && p.page != null)
-    .sort((a, b) => (a.page ?? 0) - (b.page ?? 0));
+  /**
+   * 章内页索引（review-fix-integrity G4）：全书 pages 的 filter+sort 收进 useMemo，
+   * 按 chapterId 一处建索引——chPages / 章首页末页 / 邻章扫描全走 Map，
+   * 跳页输入每敲一键、翻页重渲染不再 O(章×页) 重复排序。
+   */
+  const pagesByChapter = useMemo(() => {
+    const m = new Map<string, PageDoc[]>();
+    for (const p of pages) {
+      if (p.page == null || p.chapterId == null) continue;
+      const arr = m.get(p.chapterId);
+      if (arr) arr.push(p);
+      else m.set(p.chapterId, [p]);
+    }
+    for (const arr of m.values()) arr.sort((a, b) => (a.page ?? 0) - (b.page ?? 0));
+    return m;
+  }, [pages]);
+  const chPages = pagesByChapter.get(chapterId) ?? [];
   const idx = chPages.findIndex((p) => p.page === pageNo);
   const pg = idx >= 0 ? chPages[idx] : chPages[0];
   const prev = idx > 0 ? chPages[idx - 1] : undefined;
@@ -131,24 +145,17 @@ export default function ChapterPageReader({
 
   function switchChapter(id: string) {
     setJumpError(null);
-    const first = pages
-      .filter((p) => p.chapterId === id && p.page != null)
-      .sort((a, b) => (a.page ?? 0) - (b.page ?? 0))[0];
+    const first = pagesByChapter.get(id)?.[0];
     onChapterChange(id, first?.page ?? null);
   }
 
-  /** 章首页 / 章末页（按本书 pages 真数据；无页章返回 null）。 */
+  /** 章首页 / 章末页（按索引 O(1)；无页章返回 null）。 */
   function firstPageOf(chId: string): number | null {
-    const p = pages
-      .filter((x) => x.chapterId === chId && x.page != null)
-      .sort((a, b) => (a.page ?? 0) - (b.page ?? 0))[0];
-    return p?.page ?? null;
+    return pagesByChapter.get(chId)?.[0]?.page ?? null;
   }
   function lastPageOf(chId: string): number | null {
-    const arr = pages
-      .filter((x) => x.chapterId === chId && x.page != null)
-      .sort((a, b) => (a.page ?? 0) - (b.page ?? 0));
-    return arr.length > 0 ? (arr[arr.length - 1].page as number) : null;
+    const arr = pagesByChapter.get(chId);
+    return arr != null && arr.length > 0 ? (arr[arr.length - 1].page as number) : null;
   }
 
   /**
@@ -205,6 +212,9 @@ export default function ChapterPageReader({
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (silentKeyTarget(e.target)) return;
+      // 「摘」浮层开着（含卡轨上的 CitePeek）：纸面键让路——不翻页、不切章、不抢跳页焦点
+      // （review-fix-integrity E）；关掉浮层即恢复。
+      if (isPeekOpen()) return;
       if (e.key === "ArrowLeft") {
         if (prev) {
           e.preventDefault();

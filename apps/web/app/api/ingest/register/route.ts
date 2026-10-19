@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "缺少 materialId" }, { status: 400 });
   }
 
-  const result = registerBook({
+  const result = await registerBook({
     materialId,
     bookId: typeof b.bookId === "string" && b.bookId.trim() ? b.bookId.trim() : undefined,
     title: typeof b.title === "string" ? b.title : undefined,

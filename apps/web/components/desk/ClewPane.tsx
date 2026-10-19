@@ -69,18 +69,10 @@ export default function ClewPane() {
   const [draft, setDraft] = useState("");
   const threadRef = useRef<HTMLDivElement>(null);
 
-  // 本轮变更面板：订阅两个本机 store，随打标刷新（只读）。
-  const [, setTick] = useState(0);
-  useEffect(
-    () =>
-      subscribeStudyGrades(() => setTick((n) => n + 1)),
-    [],
-  );
-  useEffect(
-    () =>
-      subscribeHeYeStore(() => setTick((n) => n + 1)),
-    [],
-  );
+  // 审计结论（review-fix-integrity G）：外层曾同时订阅 study/heye 两 store 打 tick，
+  // 但 ClewPane 自身渲染只消费 clew context（书/章/页/卡），不读任何本机 store——
+  // 那两路订阅只会让整个右栏（含三 tab 与 stub 对话）每评一题/每标一条全量重渲染。
+  // 订阅唯一合法消费者是 ChangesPanel（自带订阅+读盘），故删除外层双订阅，收敛为单路。
 
   const suggestions = buildSuggestions(clew);
 

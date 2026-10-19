@@ -126,6 +126,24 @@ export function loadBooks(): BookConfig[] {
   return cfg?.books ?? [];
 }
 
+/**
+ * 单卡最小 shape 校验（review-fix-integrity F）：缺硬字段/数组不是数组的卡 skip + warn，
+ * 不让一张坏卡在 cardsCitingPage / collectStudyAtoms / EntityCardDetail 里炸成整站 500。
+ * 只查下游真正解引用的字段（id/name_zh/fields/cites/atoms），不做 schema 全验。
+ */
+function isUsableCard(c: unknown): c is EntityCard {
+  if (c === null || typeof c !== "object" || Array.isArray(c)) return false;
+  const o = c as Record<string, unknown>;
+  return (
+    typeof o.id === "string" &&
+    o.id.length > 0 &&
+    typeof o.name_zh === "string" &&
+    Array.isArray(o.fields) &&
+    Array.isArray(o.cites) &&
+    Array.isArray(o.atoms)
+  );
+}
+
 export function loadCards(opts?: { chapterId?: string; bookId?: string }): EntityCard[] {
   const dir = path.join(repoRoot(), "data", "cards");
   const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")) : [];
@@ -150,9 +168,24 @@ export function loadCards(opts?: { chapterId?: string; bookId?: string }): Entit
   for (const f of files.sort()) {
     const chapterId = f.replace(/\.entities\.json$/, "");
     if (allowed && !allowed.has(chapterId)) continue;
-    const doc = readJson<{ cards?: EntityCard[] }>(path.join(dir, f));
-    if (!doc?.cards) continue;
-    for (const c of doc.cards) cards.push({ ...c, chapterId } as EntityCard);
+    // 逐文件韧性（review-fix-integrity F）：readJson 吞 parse 错返回 undefined →
+    // skip + warn（不静默消失）；根非对象 / cards 非数组同理，绝不拖垮整站。
+    const doc = readJson<{ cards?: unknown }>(path.join(dir, f));
+    if (!doc || typeof doc !== "object" || !Array.isArray(doc.cards)) {
+      console.warn(`[loadCards] data/cards/${f} 不是含 cards 数组的合法 JSON——整文件跳过`);
+      continue;
+    }
+    let skipped = 0;
+    for (const c of doc.cards) {
+      if (!isUsableCard(c)) {
+        skipped++;
+        continue;
+      }
+      cards.push({ ...c, chapterId } as EntityCard);
+    }
+    if (skipped > 0) {
+      console.warn(`[loadCards] data/cards/${f}: ${skipped} 张卡缺硬字段（id/name_zh/fields/cites/atoms），已跳过`);
+    }
   }
   return cards;
 }

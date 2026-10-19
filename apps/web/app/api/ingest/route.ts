@@ -7,6 +7,12 @@ export const runtime = "nodejs";
 
 const MAX_PDF_BYTES = 200 * 1024 * 1024; // 扫描版 PDF 上限（诚实限制，避免无界写盘）
 
+/**
+ * 单并发护栏（review-fix-integrity C）：同一时刻只接受一个上传在途，
+ * 第二个请求 429「忙」——本地单用户工具，不做队列。auth 仍 OUT（产品决策）。
+ */
+let ingestInflight = false;
+
 type ChapterRow = { id: string; title: string; physicalStart: number; physicalEnd: number };
 
 function validateChapters(raw: unknown): ChapterRow[] | string {
@@ -34,11 +40,70 @@ function validateChapters(raw: unknown): ChapterRow[] | string {
 }
 
 /**
+ * 流式落盘（review-fix-integrity C）：不把整份 PDF `arrayBuffer()` 进内存，
+ * 边读边写 createWriteStream（带 backpressure）；%PDF- 魔数用首 5 字节检一次，
+ * 流中累计字节超上限即中止。失败时由调用方清理半截文件。
+ */
+async function streamPdfToFile(pdfLike: File, dest: string): Promise<void> {
+  const reader = pdfLike.stream().getReader();
+  const out = fs.createWriteStream(dest);
+  let writeError: Error | null = null;
+  out.on("error", (e) => {
+    writeError = e;
+  });
+  try {
+    let header = Buffer.alloc(0);
+    let received = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (!value || value.byteLength === 0) continue;
+      if (header.length < 5) {
+        header = Buffer.concat([header, Buffer.from(value.subarray(0, 5 - header.length))]);
+        if (header.length >= 5 && header.toString("latin1") !== "%PDF-") {
+          throw new Error("文件不是有效 PDF（缺少 %PDF- 头）");
+        }
+      }
+      received += value.byteLength;
+      if (received > MAX_PDF_BYTES) {
+        throw new Error(`PDF 超过 ${Math.round(MAX_PDF_BYTES / 1024 / 1024)}MB 上限`);
+      }
+      if (writeError) throw writeError;
+      if (!out.write(Buffer.from(value))) {
+        await new Promise<void>((resolve) => out.once("drain", () => resolve()));
+      }
+    }
+    if (writeError) throw writeError;
+    await new Promise<void>((resolve) => out.end(() => resolve()));
+    if (writeError) throw writeError;
+  } catch (e) {
+    out.destroy();
+    await reader.cancel().catch(() => {});
+    throw e instanceof Error ? e : new Error(String(e));
+  }
+}
+
+/**
  * 上传教材 PDF：落盘 data/uploads/（gitignore），写 data/materials/<id>.material.json，
  * 状态只写 uploaded（或 failed）——parsed/extracted/ready 一律由「本物料」磁盘事实推导
  * （artifactBaseline 绑定：seed 同名章产物不算本 job），本接口不做任何 OCR / 抽取，不存在"假云端成功"。
  */
 export async function POST(req: Request) {
+  if (ingestInflight) {
+    return NextResponse.json(
+      { error: "已有一个上传在进行中，请等它完成再试（本服务单并发上传）" },
+      { status: 429 },
+    );
+  }
+  ingestInflight = true;
+  try {
+    return await handleUpload(req);
+  } finally {
+    ingestInflight = false;
+  }
+}
+
+async function handleUpload(req: Request): Promise<Response> {
   let form: FormData;
   try {
     form = await req.formData();
@@ -47,10 +112,14 @@ export async function POST(req: Request) {
   }
 
   const title = String(form.get("title") ?? "").trim();
-  const pageOffset = Number(form.get("pageOffset"));
+  const pageOffsetRaw = form.get("pageOffset");
+  const pageOffset = Number(pageOffsetRaw);
   if (!title) return NextResponse.json({ error: "缺少书名 title" }, { status: 400 });
-  if (!Number.isInteger(pageOffset) || pageOffset < 0) {
-    return NextResponse.json({ error: "pageOffset 必须是非负整数（书页 = PDF 物理页 − pageOffset）" }, { status: 400 });
+  if (pageOffsetRaw == null || !Number.isInteger(pageOffset) || pageOffset < 0) {
+    return NextResponse.json(
+      { error: "pageOffset 必须是非负整数（书页 = PDF 物理页 − pageOffset）" },
+      { status: 400 },
+    );
   }
 
   let chapters: ChapterRow[];
@@ -64,7 +133,7 @@ export async function POST(req: Request) {
 
   const pdf = form.get("pdf");
   const pdfLike = pdf as File | null;
-  if (!pdfLike || typeof pdfLike.arrayBuffer !== "function" || pdfLike.size === 0) {
+  if (!pdfLike || typeof pdfLike.stream !== "function" || pdfLike.size === 0) {
     return NextResponse.json({ error: "缺少 PDF 文件" }, { status: 400 });
   }
   if (!pdfLike.name.toLowerCase().endsWith(".pdf")) {
@@ -95,22 +164,33 @@ export async function POST(req: Request) {
   fs.mkdirSync(uploadsDir, { recursive: true });
   fs.mkdirSync(materialsDir, { recursive: true });
 
-  const buf = Buffer.from(await pdfLike.arrayBuffer());
-  if (buf.subarray(0, 5).toString("latin1") !== "%PDF-") {
-    return NextResponse.json({ error: "文件不是有效 PDF（缺少 %PDF 头）" }, { status: 400 });
+  const pdfDest = path.join(repoRoot(), material.pdfFile);
+  const materialDest = path.join(materialsDir, `${id}.material.json`);
+  try {
+    await streamPdfToFile(pdfLike, pdfDest);
+    fs.writeFileSync(materialDest, JSON.stringify(material, null, 2) + "\n");
+  } catch (e) {
+    // 失败清理：不留半截 PDF / 孤儿物料档案。
+    for (const f of [pdfDest, materialDest]) {
+      try {
+        fs.unlinkSync(f);
+      } catch {
+        /* 可能尚未创建 */
+      }
+    }
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "PDF 落盘失败" },
+      { status: 400 },
+    );
   }
-  fs.writeFileSync(path.join(repoRoot(), material.pdfFile), buf);
-  fs.writeFileSync(
-    path.join(materialsDir, `${id}.material.json`),
-    JSON.stringify(material, null, 2) + "\n",
-  );
 
   return NextResponse.json(
     {
       ok: true,
       material,
       stage: "uploaded",
-      next: `在本机（macOS）跑：.venv/bin/python scripts/parse_chapter.py ${chapters.map((c) => c.id).join(" ")}（Apple Vision OCR），再 pnpm extract -- <ch>。Ariadne 目前没有云端 OCR，未跑解析不会标记 parsed。`,
+      // next 说真话：本机解析用的是这份上传的 PDF（--pdf 指到实际落盘路径），不是 seed 那本。
+      next: `在本机（macOS）对这份上传的 PDF 跑：.venv/bin/python scripts/parse_chapter.py --pdf ${material.pdfFile} ${chapters.map((c) => c.id).join(" ")}（Apple Vision OCR），再 pnpm extract -- <ch>。Ariadne 目前没有云端 OCR，未跑解析不会标记 parsed。`,
     },
     { status: 201 },
   );

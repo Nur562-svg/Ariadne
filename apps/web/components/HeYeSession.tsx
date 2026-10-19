@@ -6,9 +6,9 @@ import type { HeYeItem } from "@/lib/heye";
 import type { Cite, PageDoc } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import {
+  clearHeYeMarks,
   countPoolMarks,
   filterItemsByMode,
-  HEYE_STORE_KEY,
   loadHeYeStore,
   setHeYeMark,
   setHeYeMarks,
@@ -17,7 +17,7 @@ import {
 } from "@/lib/heye-store";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadReturn, type ReturnEntry } from "@/lib/return-stack";
-import { isEditableTarget } from "@/lib/keyboard";
+import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
 
 /**
@@ -182,6 +182,8 @@ export default function HeYeSession({
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (silentKeyTarget(e.target)) return;
+      // 「摘」浮层开着：让路（不打标、不切条）——关掉浮层即恢复（review-fix-integrity E）。
+      if (isPeekOpen()) return;
       if (visible.length === 0) return;
       if (e.key === "1") {
         e.preventDefault();
@@ -224,14 +226,23 @@ export default function HeYeSession({
     else setIndex(Math.min(index, nv.length - 1));
   }
 
+  /**
+   * 清除本机核页记录（review-fix-integrity G）：先 confirm（原生浏览器确认，勿新模态皮），
+   * 只清**当前范围**（items 池内 keys）——其它书/范围的记录不动；文案如实说明范围与
+   * 「只清本浏览器 localStorage，不影响 seed 抽查 verified」。无可清项则 no-op。
+   */
   function resetStore() {
-    const next: HeYeStore = {};
-    try {
-      window.localStorage.removeItem(HEYE_STORE_KEY);
-    } catch {
-      /* 隐私模式等写不进去：会话内已清即可 */
-    }
-    setStore(next);
+    const scopedKeys = items.filter((it) => store[it.key]).map((it) => it.key);
+    if (scopedKeys.length === 0) return;
+    const total = Object.keys(store).length;
+    const outside = total - scopedKeys.length;
+    const ok = window.confirm(
+      outside > 0
+        ? `清除本范围（${scopeLabel}）的 ${scopedKeys.length} 条本机核页记录？其它书/范围的 ${outside} 条保留。只清本浏览器（localStorage），不影响教材侧「抽查 verified」。`
+        : `清除本范围（${scopeLabel}）的 ${scopedKeys.length} 条本机核页记录？本浏览器的全部核页记录都在此范围内。只清本浏览器（localStorage），不影响教材侧「抽查 verified」。`,
+    );
+    if (!ok) return;
+    setStore(clearHeYeMarks(scopedKeys));
     clearCursor("heye", scopeKey);
     setIndex(0);
     setResumed(false);

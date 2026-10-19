@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { isEditableTarget } from "@/lib/keyboard";
+import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 
 /**
  * study/review sticky 工具带键盘岛（T28 F）：
@@ -29,6 +29,8 @@ export default function StickyPageLoopKeys({
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (isEditableTarget(e.target)) return;
+      // 「摘」浮层开着：让路（不聚焦清本页、不切章路由）——关掉即恢复（review-fix-integrity E）。
+      if (isPeekOpen()) return;
       if (e.key === "g" && !e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey) {
         if (!clearPageSelector) return; // 无本页过滤：g 让位（no-op，不抢浏览器默认行为）。
         const el = document.querySelector<HTMLElement>(clearPageSelector);

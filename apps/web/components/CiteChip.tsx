@@ -24,11 +24,9 @@ export function CiteChip({
   const cls = cite.verified
     ? "text-muted hover:text-cinnabar border-line"
     : "cite-unverified text-status-warn border-amber-300";
-  const href = !known
-    ? "#"
-    : deskBookId
-      ? `/desk?book=${encodeURIComponent(deskBookId)}&page=${cite.page}`
-      : `/viewer/${cite.page}${q ? `?q=${encodeURIComponent(q)}` : ""}`;
+  const href = deskBookId
+    ? `/desk?book=${encodeURIComponent(deskBookId)}&page=${cite.page}`
+    : `/viewer/${cite.page}${q ? `?q=${encodeURIComponent(q)}` : ""}`;
   const title = !known
     ? "未验证：未找到确切页码，禁止伪造"
     : deskBookId
@@ -36,6 +34,18 @@ export function CiteChip({
       : cite.verified
         ? `跳转到印刷页 ${cite.page}`
         : `印刷页 p.${cite.page}（待抽查验证）`;
+  // fail-closed（review-fix-integrity E）：无页码不是链接——渲染 <span>（同视觉、同琥珀族），
+  // 禁止 href="#" 假链（点击跳页顶 / 污染 URL 锚点）。有页仍走 Link 深链。
+  if (!known) {
+    return (
+      <span
+        title={title}
+        className={`mono inline-flex items-center rounded border px-1.5 py-0.5 text-xs ${cls}`}
+      >
+        {label}
+      </span>
+    );
+  }
   return (
     <Link
       href={href}

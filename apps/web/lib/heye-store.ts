@@ -74,6 +74,24 @@ export function setHeYeMarks(keys: string[], s: HeYeMark["s"]): HeYeStore {
   return saveHeYeStore(next);
 }
 
+/**
+ * 范围清除（review-fix-integrity G）：只删给定 keys（当前队列范围的 citeKey），
+ * 其它书/范围的记录保留；keys 为空等价于无操作。与整钥 removeItem 不同，
+ * 「清除本范围核页记录」不再误伤全局。
+ */
+export function clearHeYeMarks(keys: string[]): HeYeStore {
+  const next = { ...loadHeYeStore() };
+  let changed = false;
+  for (const k of keys) {
+    if (k in next) {
+      delete next[k];
+      changed = true;
+    }
+  }
+  if (changed) emitHeYeStoreChanged();
+  return saveHeYeStore(next);
+}
+
 /** 按档位过滤：open=无记录；checked=已对；doubt=存疑（保持传入顺序）。 */
 export function filterItemsByMode<T extends HeYeFilterable>(
   items: T[],

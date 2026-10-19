@@ -138,6 +138,18 @@ for (const [i, chunk] of chunks.entries()) {
   process.stderr.write(`  + ${cards.length} cards\n`);
 }
 
+// review-fix-integrity F：全部 chunk 失败（或无可抽页）→ all 为空——拒绝用空数组
+// 覆盖已有的 data/cards/<ch>.entities.json（旧好数据会被抹掉、物料状态被降级）；
+// dry-run 仍可打印。非零退出让流水线感知失败。
+if (!dry && all.length === 0) {
+  const out0 = path.join(ROOT, "data/cards", `${chapterId}.entities.json`);
+  const hadOld = fs.existsSync(out0);
+  console.error(
+    `extracted 0 cards (chunks=${chunks.length})——${hadOld ? `拒绝覆盖已有 ${out0}` : "无产出"}；中止，不写盘`,
+  );
+  process.exit(1);
+}
+
 const doc = {
   source: `data/chapters/${chapterId}.blocks.json`,
   book: blocksDoc.book,

@@ -1,12 +1,12 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { loadCard, loadCards } from "@/lib/entities";
+import { loadCard } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import { EntityCardDetail } from "@/components/EntityCardDetail";
 
-export function generateStaticParams() {
-  return loadCards().map((c) => ({ id: c.id }));
-}
+// review-fix-integrity F：卡是本机可变数据（重抽取即变），与 /entities、desk 数据页同策略
+// force-dynamic——去掉会过期的 generateStaticParams（构建期冻结卡面/待核计数）。
+export const dynamic = "force-dynamic";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",

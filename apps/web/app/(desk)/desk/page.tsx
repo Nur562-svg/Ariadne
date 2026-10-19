@@ -79,6 +79,7 @@ export default async function DeskPage({
         />
       ) : null}
       <DocumentPane
+        key={`${book.id}:${initialPage ?? ""}`}
         book={book}
         books={books.map((b) => ({ id: b.id, title: b.title }))}
         chapters={chapters}

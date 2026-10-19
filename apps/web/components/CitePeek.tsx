@@ -95,12 +95,15 @@ export default function CitePeek({
   // ② focusin：任何路径焦点落到层外（含各类默认导航漏网）→ 立即拉回层内；
   //    close() 归位「摘」时由 closingRef 让路，T24 归位行为不变。
   // 陷阱只圈浮层本身，触发钮「摘」在层外，不含入；不重做摘录内容。
+  // review-fix-integrity E：开浮层时置 body 旗标（ariadnePeek），会话级键盘环
+  // （练/核/sticky/纸面）读 isPeekOpen() 让路；关闭/卸载即清，Esc/Tab trap 行为不变。
   useEffect(() => {
     if (!open) {
       closingRef.current = false;
       return;
     }
     closingRef.current = false;
+    document.body.dataset.ariadnePeek = "1";
     const dlg = dialogRef.current;
     function focusableEls(): HTMLElement[] {
       if (!dlg) return [];
@@ -156,6 +159,7 @@ export default function CitePeek({
     document.addEventListener("keydown", onKey, true);
     document.addEventListener("focusin", pullBack, true);
     return () => {
+      delete document.body.dataset.ariadnePeek;
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("focusin", pullBack, true);
     };
