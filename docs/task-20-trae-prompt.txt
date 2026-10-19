@@ -1,0 +1,53 @@
+按 docs/task-20-desk-session-continuity.md 实现 Task 20 desk-session-continuity-01。模型用 DeepSeek-V4-Pro。
+
+════════════════════════════════════
+体量要求（硬 · 读完再动手）
+════════════════════════════════════
+这不是 Task 08–10 那种「改两个 CTA / 迁一个路由」的小刀，也不是只给 StudySession 写一行 sessionStorage.setItem(idx)。用户要约 1 小时的刀，不要 5–10 分钟收工。DeepSeek-V4-Pro 若 5–15 分钟就收工，说明漏做了。目标约 60–90 分钟真实编码：多文件协调（session-continuity helper · StudySession 续位/写回/restart 清/横幅 · HeYeSession 对称 · StickyModeGate 无 ?mode= replace · study/review 页空态章级恢复 · 续位与切条焦点归位 + aria-live · 多路由自测）。必须做完 brief 里 IN 的 A+B+C+D+E 全部，不要只做其中一角。验收按全部段检查。
+
+前置：先 git log -1 --oneline 确认 tip 已含 Task 19（目标 619f7b0 或其后；feat desk-cite-honesty-densify-01：CitePeek 跨面、本页跳核、Clew 章作用域 compact）。若仍停在仅 T18（28fb35e）或工作树无 T19 文件（Study/HeYe CitePeek、DeskContext progressAtoms 等），停下来对齐，不要开工。不要 push。先读 docs/frontend-aesthetics.md。对照已有：StudySession / HeYeSession / study/page / review/page / study.ts / heye-store.ts / keyboard.ts / LocalProgressStrip / CitePeek。
+
+产品身份：顾客自带材料 → 可考知识原子。练/核会话要在同一标签内刷新不丢位；档位要 sticky；空态要能按范围恢复——不是假掌握仪表盘，也不是题库营销页。免疫学 seed 是验收语料，不是把产品做成免疫学 demo。
+
+════════════════════════════════════
+做（按顺序 · 多步交付）
+════════════════════════════════════
+
+【步骤 1 · A sessionStorage 队列续位】
+1) 新增 apps/web/lib/session-continuity.ts（名可微调）：只用 sessionStorage；可用单桶 key（如 ariadne.desk.session.v1）存 study/heye cursor map + sticky mode map。禁止新建 localStorage 进度 key；禁止改名 ariadne.study.v1 / ariadne.heye.v1。scopeKey 与父级 remount key 对齐。提供 load/save/clear；隐私模式 try/catch。
+2) StudySession：order 冻结后恢复 cursor 并 clamp 到 [0, order.length]；idx 变化写回；restart 先 clear 再从 0；续位时诚实小字「已从本标签续上…」。
+3) HeYeSession：对称；resetStore 清游标；go/mark 后写回。
+
+【步骤 2 · B sticky mode】
+1) 薄客户端 StickyModeGate（名可调）挂 /study 与 /review：合法 ?mode= 存在 → 用之并 save sticky（scope 不含 mode）；无 ?mode= → 读 sticky，若 ≠ 默认（study=all / heye=open）则 router.replace 补 mode，保留 book/chapter/card/page。
+2) 非法 mode 仍走现有琥珀警告 + 回落，不要被 sticky 写成非法值。勿整页改成 client component。
+
+【步骤 3 · C 空态作用域恢复 + D 焦点 + E build】
+1) study 页 atoms 空：有章芯片时加「全部章节」/换章恢复链；Study 档空/完成与 HeYe 池空/档空理顺书桌·核·练·open 主次，鼓励章级次级链；禁止假掌握绿条。
+2) 续练文案 aria-live=polite；续位后与切到新题后 focus 当前题主容器（tabIndex=-1）。保留 T18 键盘环与 isEditableTarget。
+3) 按 brief 自测；pnpm --filter web build PASS；不要 push；确认无 FSRS、无 Clew API 真写入、无 verified:true、无新 localStorage 进度仓、study/heye key 未改名。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–19：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模、TOC、Clew 会话条/本轮变更/章池 compact、卡页 CitePeek、/review 章芯片+三档+同页批量+同页跳、/study 三档+键盘环+CitePeek、卡枢纽 ?card=、本页卡轨与翻页 ?page=、作用域 LocalProgress、ingest 状态机与就绪三连、书库三连、collectStudyAtoms、collectCiteQueue、cardsCitingPage、loadAllChapterPages、ariadne.study.v1、ariadne.heye.v1。勿 verified:true 过关。A+B+C+D+E 范围保持完整。
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+真 FSRS / ts-fsrs / Due 调度；Clew LLM/API / ProposalCard 真写入；改 seed verified:true；掌握% / 假仪表盘；新建 localStorage 进度仓（游标必须 sessionStorage）；书库 last-opened / 架上进度大做；OCR 句级高亮 / 页图 Canvas；exam-anchor 题库/模考 UI；⌘K 全命令面板；Clew 拖宽 / 窄屏 DeskShell 大重构；ingest 迁壳/管线大改；新章 ch08+；nur-landing / 营销 hero；擅自 push。
+
+════════════════════════════════════
+审美
+════════════════════════════════════
+朱红唯一强调色；精炼书桌；卡片仅在「卡本身是交互」时用；效用文；无营销 hero。琥珀仅作未核实/存疑/警告。续练横幅是 muted 小字/左边线提示，不要第三颗大红主按钮。sticky replace 应无闪烁营销动画。
+
+════════════════════════════════════
+成功标准（回复时勾 · 全部段）
+════════════════════════════════════
+- 多文件改动（session-continuity + StudySession + HeYeSession + StickyModeGate + study/review 页…），不是只写一行 setItem
+- /study 刷新可续位；/review 对称；sticky 无 mode 可补档且 URL 有 mode 时胜出；空/完成态有作用域恢复；续位/切条焦点在当前题
+- T07–19 回归未毁（含 T18 键盘环、T19 CitePeek/同页跳/Clew 章池）；build PASS；未 push；study/heye localStorage key 未破；无新 localStorage 进度仓
+- 回复含：改动文件列表、build 结果、A/B/C/D 说明、自测路由摘要
+
+做完简短列出以上证据，等验收；不要 push。

@@ -7,6 +7,7 @@ import StudySession from "@/components/StudySession";
 import StudyScopeCounts from "@/components/StudyScopeCounts";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
+import StickyModeGate from "@/components/desk/StickyModeGate";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +75,10 @@ async function StudyBody({
       : { bookId: activeBook?.id, chapterId: activeChapter?.id },
   );
 
+  /** T20 续位 / sticky 作用域：cursor 含 mode（与 StudySession remount key 对齐），sticky 不含 mode。 */
+  const studyScopeKey = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}:${mode}`;
+  const studyStickyScope = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}`;
+
   /** 章 → 书反查：无 ?book= 时也能让 CiteChip 深链回对应书的书桌章页。 */
   const bookByChapter: Record<string, string> = {};
   for (const b of books) for (const ch of b.chapterIds) bookByChapter[ch] = b.id;
@@ -122,6 +127,13 @@ async function StudyBody({
           card: scopedCard ? { id: scopedCard.id, name_zh: scopedCard.name_zh } : undefined,
           citePages: [],
         }}
+      />
+      {/* T20 sticky 档位：无 ?mode= 时读本标签记忆补档（replace，不整页刷新）；有合法 ?mode= 时胜出并写回。 */}
+      <StickyModeGate
+        kind="study"
+        scopeKey={studyStickyScope}
+        defaultMode="all"
+        nonDefaultModes={["ungraded", "unknown"]}
       />
       <header>
         <h1 className="brand-rule pb-2 text-3xl font-bold">学习 · 本机自评</h1>
@@ -225,9 +237,9 @@ async function StudyBody({
             <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
               /ingest
             </Link>{" "}
-            上传并解析教材，或换一个章过滤。
+            上传并解析教材，或换一个更宽的范围。
           </p>
-          <div className="mt-6 flex flex-wrap items-center gap-4">
+          <div className="mt-6 flex flex-wrap items-center gap-5">
             {cardHref ? (
               <>
                 <Link
@@ -244,10 +256,30 @@ async function StudyBody({
                 </Link>
               </>
             ) : null}
+            {/* T20 空态作用域恢复（有章芯片时）：换到全部章节（清 chapter）或全部书目（清 book/chapter）。 */}
+            {!scopedCard && (activeChapter || activeBook) ? (
+              activeChapter ? (
+                <Link
+                  href={`/study${qs({ chapter: null })}`}
+                  className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+                >
+                  换到全部章节 →
+                </Link>
+              ) : (
+                <Link
+                  href="/study"
+                  className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+                >
+                  看全部书目 →
+                </Link>
+              )
+            ) : null}
             <Link
               href={deskHref}
               className={`text-sm no-underline hover:underline underline-offset-4 ${
-                cardHref ? "text-muted hover:text-cinnabar" : "text-cinnabar"
+                cardHref || (!scopedCard && (activeChapter || activeBook))
+                  ? "text-muted hover:text-cinnabar"
+                  : "text-cinnabar"
               }`}
             >
               回书桌 →
@@ -256,7 +288,8 @@ async function StudyBody({
         </div>
       ) : (
         <StudySession
-          key={`${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}:${mode}`}
+          key={studyScopeKey}
+          scopeKey={studyScopeKey}
           atoms={atoms}
           scopeLabel={scopeLabel}
           diffLabel={DIFF_ZH}

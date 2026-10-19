@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { StudyAtom } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import {
@@ -14,6 +14,7 @@ import {
   type GradeMap,
   type StudyMode,
 } from "@/lib/study";
+import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { isEditableTarget } from "@/lib/keyboard";
 
 /**
@@ -35,6 +36,7 @@ export default function StudySession({
   cardHref,
   allHref,
   unknownHref,
+  scopeKey,
 }: {
   /** 当前范围全池（未按档位过滤；档位在客户端按本机评分过滤）。 */
   atoms: StudyAtom[];
@@ -54,6 +56,8 @@ export default function StudySession({
   /** 「只练不熟」与空队列回链：同范围切档 URL。 */
   allHref: string;
   unknownHref: string;
+  /** 续位作用域（与父级 remount key 一致）：`${card|all}:${book|all}:${chapter|all}:${mode}`。 */
+  scopeKey: string;
 }) {
   const [grades, setGrades] = useState<GradeMap>({});
   const [order, setOrder] = useState<StudyAtom[]>([]);
@@ -61,14 +65,24 @@ export default function StudySession({
   const [idx, setIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [run, setRun] = useState({ known: 0, unknown: 0 });
+  /** 本标签续位标记（恢复游标 >0 时置位）——用于诚实续练文案。 */
+  const [resumed, setResumed] = useState(false);
+  const questionRef = useRef<HTMLElement | null>(null);
 
-  // 挂载后读本机评分并冻结本轮队列（SSR 不读 localStorage，避免水合不一致）。
+  // 挂载后读本机评分并冻结本轮队列（SSR 不读 localStorage，避免水合不一致）；
+  // 同时恢复本标签会话游标（clamp 到 [0, order.length]，>0 视为续练）。
   useEffect(() => {
     const g = loadGrades();
+    const ordered = orderAtoms(filterAtomsByMode(atoms, g, mode));
     setGrades(g);
-    setOrder(orderAtoms(filterAtomsByMode(atoms, g, mode)));
+    setOrder(ordered);
+    const saved = loadCursor("study", scopeKey);
+    if (saved != null && saved > 0) {
+      setIdx(Math.min(saved, ordered.length));
+      setResumed(true);
+    }
     setReady(true);
-  }, [atoms, mode]);
+  }, [atoms, mode, scopeKey]);
 
   /** 可编辑目标（输入框/文本域/下拉/富文本）不拦截键盘（含 activeElement 兜底）。 */
   function silentKeyTarget(target: EventTarget | null): boolean {
@@ -108,6 +122,17 @@ export default function StudySession({
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, order, idx, revealed]);
+
+  /** 游标写回：ready 后 idx 每次变化写 sessionStorage（续位用；跨刷新保留于本标签）。 */
+  useEffect(() => {
+    if (!ready) return;
+    saveCursor("study", scopeKey, idx);
+  }, [ready, idx, scopeKey]);
+
+  /** 焦点跟当前题：续位后 / 每次切题，焦点落到题面主容器（tabIndex=-1，屏幕阅读器可读）。 */
+  useEffect(() => {
+    if (ready && idx < order.length) questionRef.current?.focus({ preventScroll: true });
+  }, [ready, idx, order.length]);
 
   const pool = useMemo(() => countPoolGrades(atoms, grades), [atoms, grades]);
 
@@ -200,12 +225,14 @@ export default function StudySession({
 
   function restart() {
     // 用最新本机评分重新过滤（如「不熟再练」里已转认识的不再出现），重置本轮。
+    clearCursor("study", scopeKey);
     const g = loadGrades();
     setGrades(g);
     setOrder(orderAtoms(filterAtomsByMode(atoms, g, mode)));
     setIdx(0);
     setRevealed(false);
     setRun({ known: 0, unknown: 0 });
+    setResumed(false);
   }
 
   if (done || !cur) {
@@ -217,6 +244,11 @@ export default function StudySession({
           本范围累计（仅这个浏览器，跨刷新保留）：认识 {pool.known} · 不熟 {pool.unknown} · 未评{" "}
           {pool.ungraded}。
         </p>
+        {resumed ? (
+          <p aria-live="polite" className="mt-2 text-xs leading-5 text-muted">
+            已从本标签续上（完成态）；本轮 run 计数不持久化，从 0 起。
+          </p>
+        ) : null}
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <button
             onClick={restart}
@@ -299,7 +331,20 @@ export default function StudySession({
         <div className="h-0.5 bg-cinnabar" style={{ width: `${progress}%` }} />
       </div>
 
-      <article className="mt-6 rounded-lg border border-line bg-card p-6">
+      {resumed ? (
+        <p
+          aria-live="polite"
+          className="mt-2 border-l-2 border-line pl-3 text-xs leading-5 text-muted"
+        >
+          已从本标签续上：第 {idx + 1} / {order.length} 个原子（仅当前标签会话，非跨设备同步）。
+        </p>
+      ) : null}
+
+      <article
+        ref={questionRef}
+        tabIndex={-1}
+        className="mt-6 rounded-lg border border-line bg-card p-6 outline-none focus-visible:ring-2 focus-visible:ring-cinnabar/40"
+      >
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
           <Link
             href={`/desk/card/${encodeURIComponent(cur.cardId)}`}

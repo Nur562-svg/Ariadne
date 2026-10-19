@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { HeYeItem } from "@/lib/heye";
 import type { Cite, PageDoc } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
@@ -15,6 +15,7 @@ import {
   type HeYeMode,
   type HeYeStore,
 } from "@/lib/heye-store";
+import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { isEditableTarget } from "@/lib/keyboard";
 
 /**
@@ -34,6 +35,8 @@ export default function HeYeSession({
   studyHref,
   deskPageHref,
   openHref,
+  clearChapterHref,
+  scopeKey,
 }: {
   /** 全池待核队列（服务端 collectCiteQueue，已按页码排序；本机态过滤在客户端）。 */
   items: HeYeItem[];
@@ -51,14 +54,38 @@ export default function HeYeSession({
   deskPageHref?: string;
   /** 空档「回待核」链（同范围 ?mode=open）。 */
   openHref?: string;
+  /** 章范围清章回全书核页（/review?chapter=null 等价）——池空/档空时限宽范围。 */
+  clearChapterHref?: string;
+  /** 续位作用域（与父级 remount key 一致）：`${book|all}:${card|all}:${page|all}:${chapter|all}:${mode}`。 */
+  scopeKey: string;
 }) {
   const [store, setStore] = useState<HeYeStore>({});
   const [index, setIndex] = useState(0);
+  /** 本标签续位标记（恢复游标时置位），用于诚实续练文案。 */
+  const [resumed, setResumed] = useState(false);
+  const citeRef = useRef<HTMLElement | null>(null);
 
   // 挂载后读本机态（SSR 不读 localStorage，避免水合不一致）；换范围/档位由父级 key 重挂载。
+  // 同时恢复本标签会话游标并 clamp 到可见队列（filterItemsByMode 同步可用）。
   useEffect(() => {
-    setStore(loadHeYeStore());
+    const s = loadHeYeStore();
+    setStore(s);
+    const saved = loadCursor("heye", scopeKey);
+    if (saved != null) {
+      const nv = filterItemsByMode(items, s, mode);
+      if (nv.length > 0) {
+        setIndex(Math.max(0, Math.min(saved, nv.length - 1)));
+        // 仅当恢复到 >0 的推进位置才提示「续上」（对称 StudySession），避免「仅刷新」误显。
+        if (saved > 0) setResumed(true);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /** 游标写回：index 每次变化写 sessionStorage（续位用；go/mark 都经 index 变化触发）。 */
+  useEffect(() => {
+    saveCursor("heye", scopeKey, index);
+  }, [index, scopeKey]);
 
   /** 当前档可见队列（本机态过滤，保持全池顺序）。 */
   const visible = useMemo(() => filterItemsByMode(items, store, mode), [items, store, mode]);
@@ -114,6 +141,13 @@ export default function HeYeSession({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible.length, index, mode, store]);
 
+  /** 焦点跟当前条：续位后 / 每次 jump，焦点落到左「待核引用」容器（tabIndex=-1）。 */
+  useEffect(() => {
+    if (visible.length > 0 && index < visible.length) {
+      citeRef.current?.focus({ preventScroll: true });
+    }
+  }, [index, visible.length]);
+
   /** 标完跳到下一条仍属本档的项（按全池顺序；没有则停在最后一条，空档由空态分支接管）。 */
   function advance(nextStore: HeYeStore, fromKey: string) {
     const fromPos = posOf.get(fromKey) ?? -1;
@@ -132,7 +166,9 @@ export default function HeYeSession({
       /* 隐私模式等写不进去：会话内已清即可 */
     }
     setStore(next);
+    clearCursor("heye", scopeKey);
     setIndex(0);
+    setResumed(false);
   }
 
   // ---- 空态分支 ----
@@ -200,6 +236,14 @@ export default function HeYeSession({
               </Link>
             </>
           )}
+          {clearChapterHref ? (
+            <Link
+              href={clearChapterHref}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              清章看全章节 →
+            </Link>
+          ) : null}
         </div>
       </div>
     );
@@ -266,6 +310,14 @@ export default function HeYeSession({
           >
             {cardHref ? "去学习本卡 →" : "去学习环 →"}
           </Link>
+          {clearChapterHref ? (
+            <Link
+              href={clearChapterHref}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              清章看全章节 →
+            </Link>
+          ) : null}
         </div>
       </div>
     );
@@ -346,9 +398,23 @@ export default function HeYeSession({
         ) : null}
       </p>
 
+      {resumed ? (
+        <p
+          aria-live="polite"
+          className="mt-2 border-l-2 border-line pl-3 text-xs leading-5 text-muted"
+        >
+          已从本标签续上：第 {i + 1} / {visible.length} 条（仅当前标签会话，非跨设备同步）。
+        </p>
+      ) : null}
+
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {/* 左：cite 上下文 */}
-        <section aria-label="待核引用" className="min-w-0">
+        <section
+          ref={citeRef}
+          tabIndex={-1}
+          aria-label="待核引用"
+          className="min-w-0 outline-none focus-visible:ring-2 focus-visible:ring-cinnabar/40"
+        >
           <div className="flex items-baseline justify-between gap-3">
             <h2 className="text-sm font-semibold text-muted">待核引用</h2>
             {mark ? (

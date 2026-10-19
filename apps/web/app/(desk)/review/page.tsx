@@ -13,6 +13,7 @@ import HeYeSession from "@/components/HeYeSession";
 import HeYeScopeCounts from "@/components/HeYeScopeCounts";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
+import StickyModeGate from "@/components/desk/StickyModeGate";
 
 export const dynamic = "force-dynamic";
 
@@ -86,6 +87,10 @@ async function ReviewBody({
   /** 有效章范围：单卡范围固定（隐藏章芯片，章过滤不生效）。 */
   const effChapter = !card && activeChapter && !chapterOutsideBook ? activeChapter : undefined;
 
+  /** T20 续位 / sticky 作用域：cursor 含 mode（与 HeYeSession remount key 对齐），sticky 不含 mode。 */
+  const heyeScopeKey = `${book?.id ?? "all"}:${card?.id ?? "all"}:${pageNum ?? "all"}:${effChapter?.id ?? "all"}:${mode}`;
+  const heyeStickyScope = `${book?.id ?? "all"}:${card?.id ?? "all"}:${pageNum ?? "all"}:${effChapter?.id ?? "all"}`;
+
   const items = collectCiteQueue({
     cardId: card?.id,
     bookId: book?.id,
@@ -143,6 +148,9 @@ async function ReviewBody({
     return s ? `?${s}` : "";
   };
 
+  /** 章范围空态用于清章回全书核页（T19/T20）：仅在章范围且非单卡时给出。 */
+  const clearChapterHref = effChapter && !card ? `/review${qs({ chapter: null })}` : undefined;
+
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">
       {/* 核页面薄桥：Clew 会话条显示核页范围（书/章/页/卡）。 */}
@@ -157,6 +165,13 @@ async function ReviewBody({
           card: card ? { id: card.id, name_zh: card.name_zh } : undefined,
           citePages: [],
         }}
+      />
+      {/* T20 sticky 档位：无 ?mode= 时读本标签记忆补档（replace）；有合法 ?mode= 时胜出并写回。 */}
+      <StickyModeGate
+        kind="heye"
+        scopeKey={heyeStickyScope}
+        defaultMode="open"
+        nonDefaultModes={["checked", "doubt"]}
       />
       <header>
         <h1 className="brand-rule pb-2 text-3xl font-bold">核页 · 本机对页</h1>
@@ -314,7 +329,8 @@ async function ReviewBody({
       </div>
 
       <HeYeSession
-        key={`${book?.id ?? "all"}:${card?.id ?? "all"}:${pageNum ?? "all"}:${effChapter?.id ?? "all"}:${mode}`}
+        key={heyeScopeKey}
+        scopeKey={heyeScopeKey}
         items={items}
         pages={pages}
         scopeLabel={scopeLabel}
@@ -323,6 +339,7 @@ async function ReviewBody({
         studyHref={studyHref}
         deskPageHref={deskPageHref}
         openHref={`/review${qs({ mode: "open" })}`}
+        clearChapterHref={clearChapterHref}
       />
     </div>
   );
