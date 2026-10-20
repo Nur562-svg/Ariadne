@@ -34,7 +34,7 @@ const STAGE_UI: Record<MaterialStage, { label: string; badge: string; hint: (m: 
     label: "已抽取 · 未注册书库",
     badge: "border-line bg-card text-foreground",
     hint: () =>
-      "实体卡已生成。点下方「注册进书库 →」一键把章写入 config/chapter.json + config/books.json（本机落盘），刷新后即为 ready 并在书桌可见。",
+      "实体卡已生成。点下方「注册进书库 →」一键把章写入 config/chapter.json + config/books.json（本机落盘）；注册成功后这里直接给出「打开书桌 →」，即可开章页读页、练卡、核 cite——无需刷新等待。",
   },
   ready: {
     label: "就绪 · 已在书库",

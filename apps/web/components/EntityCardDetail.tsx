@@ -55,6 +55,7 @@ export function EntityCardDetail({
   backHref,
   backLabel,
   deskBookId,
+  deskCardHref,
   pendingCiteCount,
   confusionLinks,
   heyePoolKeys,
@@ -62,12 +63,15 @@ export function EntityCardDetail({
   card: EntityCard;
   backHref: string;
   backLabel: string;
-  /** 书桌语境（/desk/card/[id]）传入书 id：CiteChip 有页时深链 /desk?book=&page=；
-   *  shell /entities 不传，保持落 /viewer。 */
+  /** 书桌语境书 id（/desk/card/[id] 与 shell /entities 反查书都传）：CiteChip 有页时深链
+   *  /desk?book=&page=、CitePeek 全套书桌链、易混 vs 深链 /desk/card/、练/核带 book=。 */
   deskBookId?: string;
+  /** T30 B：shell /entities 传入「在书桌打开本卡 →」（/desk/card/<id>）——次级文字链，
+   *  不加第二颗实心（主 CTA 仍是「练这张卡」）；desk 卡页自身不传（已在卡面）。 */
+  deskCardHref?: string;
   /** 本卡待核 cite 数（服务端 collectCiteQueue({cardId}) 计数）：0 → 诚实文案，undefined → 不预检直接可点。 */
   pendingCiteCount?: number;
-  /** 易混对象名（归一化）→ 卡 id：书桌语境下 vs 命中则链 /desk/card/[id]，否则纯文。 */
+  /** 易混对象名（归一化）→ 卡 id：有 deskBookId 时 vs 命中则链 /desk/card/[id]，否则纯文。 */
   confusionLinks?: Record<string, string>;
   /** 本卡核池键（服务端 collectCiteQueue({cardId}) 的 {key}）：LocalProgressStrip 按池计数。 */
   heyePoolKeys?: { key: string }[];
@@ -116,6 +120,14 @@ export function EntityCardDetail({
           pendingCiteCount={pendingCiteCount}
           deskBookId={deskBookId}
         />
+        {deskCardHref ? (
+          <Link
+            href={deskCardHref}
+            className="text-sm text-muted no-underline hover:text-cinnabar"
+          >
+            在书桌打开本卡 →
+          </Link>
+        ) : null}
         {deskPageHref ? (
           <Link
             href={deskPageHref}
@@ -246,8 +258,18 @@ export function EntityCardDetail({
                 </p>
               </details>
               {a.cite ? (
-                <div className="mt-2">
+                <div className="mt-2 flex flex-wrap items-center gap-3">
                   <CitePeek cite={a.cite} q={a.answer.slice(0, 24)} deskBookId={deskBookId} cardId={card.id} />
+                  {/* T30 C：原子 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（muted 文字链，
+                      非实心；与 CitePeek 浮层内「在书桌打开」同目标，这里免开浮层一步）。 */}
+                  {a.cite.page != null && deskBookId ? (
+                    <Link
+                      href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${a.cite.page}`}
+                      className="text-xs text-muted no-underline hover:text-cinnabar"
+                    >
+                      对页 →
+                    </Link>
+                  ) : null}
                 </div>
               ) : null}
             </li>

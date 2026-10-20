@@ -138,8 +138,24 @@ export default function ClewPane() {
   }
 
   const bookHref = clew.book ? `/desk?book=${encodeURIComponent(clew.book.id)}` : "/desk";
-  const studyHref = clew.book ? `/study?book=${encodeURIComponent(clew.book.id)}` : "/study";
-  const reviewHref = clew.book ? `/review?book=${encodeURIComponent(clew.book.id)}` : "/review";
+  /**
+   * T30 A：默认练/核深链认 clew.card——有当前卡（卡页=本卡；书桌=第一张可见卡）时
+   * 优先卡作用域（附 clew.book），Changes 空态 CTA 与 QueuePanel 不再把人丢到书级
+   * 丢卡；无卡保持书级 / 全局（对齐 brief：clew.card?.id 优先）。
+   */
+  const cardQ = clew.card?.id
+    ? `card=${encodeURIComponent(clew.card.id)}${clew.book ? `&book=${encodeURIComponent(clew.book.id)}` : ""}`
+    : null;
+  const studyHref = cardQ
+    ? `/study?${cardQ}`
+    : clew.book
+      ? `/study?book=${encodeURIComponent(clew.book.id)}`
+      : "/study";
+  const reviewHref = cardQ
+    ? `/review?${cardQ}`
+    : clew.book
+      ? `/review?book=${encodeURIComponent(clew.book.id)}`
+      : "/review";
   const pageHref =
     clew.book && clew.page != null
       ? `/desk?book=${encodeURIComponent(clew.book.id)}&page=${clew.page}`

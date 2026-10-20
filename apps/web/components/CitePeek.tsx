@@ -181,7 +181,10 @@ export default function CitePeek({
     known && deskBookId
       ? `/study?book=${encodeURIComponent(deskBookId)}&page=${cite.page}&mode=all`
       : undefined;
-  const reviewCardHref = cardId ? `/review?card=${encodeURIComponent(cardId)}` : undefined;
+  /** T30 C：核本卡带书语境（有 deskBookId 时 /review?book=&card=）——从卡面/摘录进核不丢书。 */
+  const reviewCardHref = cardId
+    ? `/review?${deskBookId ? `book=${encodeURIComponent(deskBookId)}&` : ""}card=${encodeURIComponent(cardId)}`
+    : undefined;
 
   return (
     <span ref={rootRef} className="relative inline-flex items-center gap-1">

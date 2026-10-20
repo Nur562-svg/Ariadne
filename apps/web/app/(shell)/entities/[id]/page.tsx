@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { loadCard } from "@/lib/entities";
+import { loadBooks, loadCard, loadCards } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import { EntityCardDetail } from "@/components/EntityCardDetail";
 
@@ -55,14 +55,38 @@ async function EntityDetail({
   const backLabel =
     kind && kind !== "全部" ? `← ${KIND_ZH[kind] ?? kind}实体卡` : "← 全部实体卡";
 
+  /**
+   * T30 B 书桌 roundtrip：与 /desk/card/[id] 同口径解析书（chapterId ∈ book.chapterIds）。
+   * 卡属已注册书 → 传 deskBookId：CitePeek 摘录「在书桌打开/练本页/核本页」、易混 vs
+   * 深链 /desk/card/、练/核带 book=——shell 详情不再是落 /viewer 的死胡同；未注册章
+   * 的卡保持无书语境（诚实不硬造书）。
+   */
+  const chapterId = card.chapterId;
+  const book = chapterId
+    ? loadBooks().find((b) => b.chapterIds.includes(chapterId))
+    : undefined;
+  /** 易混对象名（归一化）→ 卡 id：与 desk card 页同一构建，vs 命中链 /desk/card/。 */
+  const confusionLinks: Record<string, string> = {};
+  for (const c of loadCards()) {
+    const names = [c.name_zh, ...(c.aliases ?? [])];
+    for (const n of names) {
+      const key = n.trim().toLowerCase();
+      if (key) confusionLinks[key] = c.id;
+    }
+  }
+  const queue = collectCiteQueue({ cardId: card.id });
+
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 flex-1">
       <EntityCardDetail
         card={card}
         backHref={backHref}
         backLabel={backLabel}
-        pendingCiteCount={collectCiteQueue({ cardId: card.id }).length}
-        heyePoolKeys={collectCiteQueue({ cardId: card.id }).map((it) => ({ key: it.key }))}
+        deskBookId={book?.id}
+        deskCardHref={book ? `/desk/card/${encodeURIComponent(card.id)}` : undefined}
+        pendingCiteCount={queue.length}
+        confusionLinks={confusionLinks}
+        heyePoolKeys={queue.map((it) => ({ key: it.key }))}
       />
     </main>
   );

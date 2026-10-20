@@ -68,14 +68,23 @@ export default async function DeskPage({
     pendingByPage[it.page] = (pendingByPage[it.page] ?? 0) + 1;
   }
 
+  /**
+   * T30 D 续开幽灵页消毒：仅当 ?page= 落在本书已解析页（p.page === initialPage）才写进
+   * ariadne.desk.last-opened.v1 / recent-books.v1——page=999 不再进书架「续开 p.999」。
+   * 同书无有效页时 touchLastOpened 保留原页（不误伤合法停留页）；DocumentPane 的
+   * invalidPage 琥珀横幅与翻页 touchLastOpened（只跟合法 readingPage）不回退。
+   */
+  const validInitialPage =
+    initialPage != null && pages.some((p) => p.page === initialPage) ? initialPage : undefined;
+
   return (
     <>
-      {/* T21 续开指针写点：仅当命中已注册书（非法 bookId 已回落不写）。 */}
+      {/* T21 续开指针写点：仅当命中已注册书（非法 bookId 已回落不写）；page 只写合法已解析页。 */}
       {!invalidBook ? (
         <LastOpenedTouch
           bookId={book.id}
           deskHref={`/desk?book=${encodeURIComponent(book.id)}`}
-          page={initialPage}
+          page={validInitialPage}
         />
       ) : null}
       <DocumentPane
