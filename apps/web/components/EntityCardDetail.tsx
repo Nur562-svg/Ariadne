@@ -193,7 +193,19 @@ export function EntityCardDetail({
             <div key={i} className="rounded-lg border border-line bg-card p-4">
               <div className="flex items-baseline justify-between gap-3">
                 <dt className="font-semibold">{f.label}</dt>
-                <CitePeek cite={f.cite} q={f.value.slice(0, 24)} deskBookId={deskBookId} cardId={card.id} />
+                <span className="flex shrink-0 items-baseline gap-3">
+                  <CitePeek cite={f.cite} q={f.value.slice(0, 24)} deskBookId={deskBookId} cardId={card.id} />
+                  {/* T33 E：字段 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（与原子 T30 C 同族
+                      muted 文字链，非实心；与 CitePeek 浮层内「在书桌打开」同目标，免开浮层一步）。 */}
+                  {f.cite?.page != null && deskBookId ? (
+                    <Link
+                      href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${f.cite.page}`}
+                      className="text-xs text-muted no-underline hover:text-cinnabar"
+                    >
+                      对页 →
+                    </Link>
+                  ) : null}
+                </span>
               </div>
               <dd className="mt-1.5 text-sm leading-7 text-foreground/90">{f.value}</dd>
             </div>
@@ -228,6 +240,16 @@ export function EntityCardDetail({
                   </span>
                   <span className="mx-2 text-line">|</span>
                   {c.tip}
+                  {/* T33 E 可选：易混对象已可深链 + 书桌语境 → muted「练易混卡」直跳该卡练面
+                      （次级文字，非第二颗实心；与卡枢纽「练这张卡」同目标，免绕卡页一步）。 */}
+                  {vsId && deskBookId ? (
+                    <Link
+                      href={`/study?card=${encodeURIComponent(vsId)}&book=${encodeURIComponent(deskBookId)}`}
+                      className="ml-3 whitespace-nowrap text-xs text-muted no-underline hover:text-cinnabar"
+                    >
+                      练易混卡 →
+                    </Link>
+                  ) : null}
                 </li>
               );
             })}
@@ -282,6 +304,15 @@ export function EntityCardDetail({
         {card.cites.map((c, i) => (
           <span key={i} className="mr-2 inline-flex items-center gap-1">
             <CitePeek cite={c} deskBookId={deskBookId} cardId={card.id} />
+            {/* T33 E：页脚 cite 有页 + 书桌语境 → 次级「对页」（字段/原子同真，同卡不互谎）。 */}
+            {c.page != null && deskBookId ? (
+              <Link
+                href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${c.page}`}
+                className="text-xs text-muted no-underline hover:text-cinnabar"
+              >
+                对页 →
+              </Link>
+            ) : null}
             {c.quote ? <span className="text-xs">“{c.quote}”</span> : null}
           </span>
         ))}

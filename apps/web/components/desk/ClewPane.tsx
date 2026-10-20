@@ -5,12 +5,26 @@ import { useEffect, useRef, useState } from "react";
 import { useDeskContext } from "@/components/desk/DeskContext";
 import type { ClewContextData } from "@/components/desk/DeskContext";
 import { loadGrades, subscribeStudyGrades, type GradeMap } from "@/lib/study";
-import { loadHeYeStore, subscribeHeYeStore, type HeYeStore } from "@/lib/heye-store";
+import {
+  countPoolMarks,
+  loadHeYeStore,
+  subscribeHeYeStore,
+  type HeYeStore,
+} from "@/lib/heye-store";
 import { saveReturn } from "@/lib/return-stack";
-import LocalProgressStrip from "@/components/LocalProgressStrip";
+import LocalProgressStrip, { poolGrades } from "@/components/LocalProgressStrip";
 
-type Msg = { role: "user" | "assistant"; text: string } | { role: "note"; text: string };
+/** T33 D：stub 气泡内的 muted 行动链（对页/练/核）。returnTo 有值时点前写 return 短链。 */
+type ActionLink = { label: string; href: string; returnTo?: { href: string; label: string } };
+type Msg =
+  | { role: "user" | "assistant"; text: string; links?: ActionLink[] }
+  | { role: "note"; text: string };
 type Tab = "chat" | "changes" | "queue";
+
+/** T33 D：点气泡行动链时兑现发送时快照的 return（无快照 = 无可回上下文，不写）。 */
+function fireLinkReturn(l: ActionLink) {
+  if (l.returnTo) saveReturn({ ...l.returnTo, at: Date.now() });
+}
 
 const SURFACE_ZH: Record<string, string> = {
   desk: "书桌",
@@ -74,8 +88,49 @@ function stubReply(clew: ClewContextData): string {
   return `（stub · 未接模型）本地占位回复。先把中栏切到「章页」或打开一张实体卡再问，便于对照印刷页核对；本面板不生成已核对结论。`;
 }
 
-/** 本轮本机活动条目（只读 study.v1 + heye.v1，t >= sessionStartedAt；不写任何 seed/教材字段）。 */
-type Act = { t: number; kind: "study" | "heye"; text: string };
+/**
+ * 本轮本机活动条目（只读 study.v1 + heye.v1，t >= sessionStartedAt；不写任何 seed/教材字段）。
+ * T33 B：附 fail-closed 深链解析结果——study 键 `${cardId}/${atomId}` 取 cardId；
+ * heye 键 `${cardId}|${page}|…` 取 cardId+page+标记档。解析不出 → 无链（纯文行），不编造。
+ */
+type Act = {
+  t: number;
+  kind: "study" | "heye";
+  text: string;
+  /** 解析出的卡 id（study 取首段 / heye 取首段；解析失败 undefined → 该行无链）。 */
+  cardId?: string;
+  /** heye 键第二段的印刷页（正整数才采信）。 */
+  page?: number;
+  /** heye 标记档（核链 mode 选择用）。 */
+  mark?: "checked" | "doubt";
+};
+
+/**
+ * T31 B / T33 D 共用：当前上下文的 return 短链 payload（有页回书桌本页，卡表面回卡枢纽，
+ * 仅书回书级；书架/无上下文 null 不写）。key 不变（ariadne.desk.return.v1）。
+ * T33 D 把它抽成纯函数——stub 气泡在**发送时**快照 payload，点旧气泡回「当时问的」上下文。
+ */
+function clewReturnPayload(clew: ClewContextData): { href: string; label: string } | null {
+  if (clew.book && clew.page != null) {
+    return {
+      href: `/desk?book=${encodeURIComponent(clew.book.id)}&page=${clew.page}`,
+      label: `书桌 p.${clew.page}`,
+    };
+  }
+  if (clew.surface === "card" && clew.card) {
+    return {
+      href: `/desk/card/${encodeURIComponent(clew.card.id)}`,
+      label: `卡《${clew.card.name_zh}》`,
+    };
+  }
+  if (clew.book) {
+    return {
+      href: `/desk?book=${encodeURIComponent(clew.book.id)}`,
+      label: `书桌《${clew.book.title}》`,
+    };
+  }
+  return null;
+}
 
 /**
  * Clew 右栏（~400）：会话条 + 三 tab（对话 | 本轮变更 | 复习队列）+ 本地 stub 对话。
@@ -91,9 +146,10 @@ export default function ClewPane() {
   const threadRef = useRef<HTMLDivElement>(null);
 
   // 审计结论（review-fix-integrity G）：外层曾同时订阅 study/heye 两 store 打 tick，
-  // 但 ClewPane 自身渲染只消费 clew context（书/章/页/卡），不读任何本机 store——
+  // 但 ClewPane 自身渲染只消费 clew context（书/章/页/卡/表面），不读任何本机 store——
   // 那两路订阅只会让整个右栏（含三 tab 与 stub 对话）每评一题/每标一条全量重渲染。
-  // 订阅唯一合法消费者是 ChangesPanel（自带订阅+读盘），故删除外层双订阅，收敛为单路。
+  // 订阅的合法消费者是**自带订阅+读盘的面板**（ChangesPanel；T33 C 起 QueuePanel 计数同模式），
+  // 故外层仍不订阅，收敛为单路。
 
   const suggestions = buildSuggestions(clew);
 
@@ -127,10 +183,24 @@ export default function ClewPane() {
   function send(text: string) {
     const q = text.trim();
     if (!q) return;
+    /**
+     * T33 D：stub 气泡附 muted 行动链——对页（有书+页）/ 去学习环 / 去核页（T31 回落链）。
+     * 练/核链的 return payload 在发送时快照：气泡是历史，点旧气泡回「当时问的」上下文，
+     * 不随后续上下文切换漂移；无页/无书时 stubReply 文案仍走「先开章页/卡」，不伪造行动。
+     */
+    const returnTo = clewReturnPayload(clew) ?? undefined;
+    const links: ActionLink[] = [];
+    if (clew.book && clew.page != null) {
+      links.push({ label: `对页 p.${clew.page} →`, href: pageHref });
+    }
+    links.push(
+      { label: "去学习环 →", href: studyHref, returnTo },
+      { label: "去核页 →", href: reviewHref, returnTo },
+    );
     setMessages((prev) => [
       ...prev,
       { role: "user", text: q },
-      { role: "assistant", text: stubReply(clew) },
+      { role: "assistant", text: stubReply(clew), links },
     ]);
     setDraft("");
     requestAnimationFrame(() => {
@@ -183,27 +253,11 @@ export default function ClewPane() {
    * T31 B：Clew 练/核 CTA 点前写 return 短链——练/核完成态「回到刚才」能回当前上下文
    * （对齐 ChapterPageReader / CardHubReturnLinks 口径：有页回书桌本页，卡表面回卡枢纽，
    * 仅书回书级；书架/无上下文不写）。key 不变（ariadne.desk.return.v1）。
+   * T33 D：payload 逻辑抽 clewReturnPayload（stub 气泡链发送时快照同一份）。
    */
   function rememberClewReturn() {
-    if (clew.book && clew.page != null) {
-      saveReturn({
-        href: `/desk?book=${encodeURIComponent(clew.book.id)}&page=${clew.page}`,
-        label: `书桌 p.${clew.page}`,
-        at: Date.now(),
-      });
-    } else if (clew.surface === "card" && clew.card) {
-      saveReturn({
-        href: `/desk/card/${encodeURIComponent(clew.card.id)}`,
-        label: `卡《${clew.card.name_zh}》`,
-        at: Date.now(),
-      });
-    } else if (clew.book) {
-      saveReturn({
-        href: `/desk?book=${encodeURIComponent(clew.book.id)}`,
-        label: `书桌《${clew.book.title}》`,
-        at: Date.now(),
-      });
-    }
+    const p = clewReturnPayload(clew);
+    if (p) saveReturn({ ...p, at: Date.now() });
   }
 
   return (
@@ -325,6 +379,21 @@ export default function ClewPane() {
                   >
                     <span className="mono mr-1 text-[10px] text-muted">stub</span>
                     {m.text}
+                    {/* T33 D：行动链 muted 文字（非实心、非裸 URL）——对页/练/核可点；点练/核前兑现快照 return。 */}
+                    {m.links?.length ? (
+                      <span className="mt-1.5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                        {m.links.map((l) => (
+                          <Link
+                            key={`${l.label}|${l.href}`}
+                            href={l.href}
+                            onClick={() => fireLinkReturn(l)}
+                            className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                          >
+                            {l.label}
+                          </Link>
+                        ))}
+                      </span>
+                    ) : null}
                   </div>
                 ),
               )
@@ -367,6 +436,7 @@ export default function ClewPane() {
         />
       ) : (
         <QueuePanel
+          clew={clew}
           reviewHref={reviewHref}
           studyHref={studyHref}
           rememberReturn={rememberClewReturn}
@@ -420,23 +490,64 @@ function ChangesPanel({
   const acts: Act[] = [];
   for (const [key, g] of Object.entries(grades)) {
     if (typeof g?.t !== "number" || g.t < since) continue;
+    // T33 B：`${cardId}/${atomId}` 取首段 cardId（fail-closed：无斜杠/空段 → 无链纯文行）。
+    const slash = key.indexOf("/");
     acts.push({
       t: g.t,
       kind: "study",
-      text: `自评「${key.split("/")[0] ?? key}」 · ${g.k === 1 ? "认识" : "不熟"}`,
+      cardId: slash > 0 ? key.slice(0, slash) : undefined,
+      text: `自评 · ${g.k === 1 ? "认识" : "不熟"}`,
     });
   }
   for (const [key, m] of Object.entries(heye)) {
     if (typeof m?.t !== "number" || m.t < since) continue;
-    const page = /^[^|]*\|(\d+)\|/.exec(key)?.[1];
+    // T33 B：`${cardId}|${page}|…` 取 cardId + page（页段正整数才采信）+ 标记档。
+    const seg = key.split("|");
+    const pageStr = /^\d+$/.test(seg[1] ?? "") ? seg[1] : undefined;
     acts.push({
       t: m.t,
       kind: "heye",
-      text: `核页${page ? ` p.${page}` : ""} · ${m.s === "checked" ? "本机已对" : "本机存疑"}`,
+      cardId: seg[0] ? seg[0] : undefined,
+      page: pageStr != null ? Number(pageStr) : undefined,
+      mark: m.s,
+      text: `核页${pageStr != null ? ` p.${pageStr}` : ""} · ${
+        m.s === "checked" ? "本机已对" : "本机存疑"
+      }`,
     });
   }
   acts.sort((a, b) => b.t - a.t);
   const shown = acts.slice(0, 20);
+
+  /**
+   * T33 B：条目深链（fail-closed）：解析不出 cardId → 空数组（纯文行，不编造）。
+   * - study：主链开卡 /desk/card/<id>；有当前书 → 次级 /study?card=&book=&mode=all（点前 rememberReturn）。
+   * - heye：核链 /review?card=&page=&book=&mode=按标记档（checked/doubt，无标记态回落 open）；
+   *   无书时省 book=（review 面按 card+page 交集过滤）；开卡互补始终给。
+   * 客户端无卡表：只展示 mono cardId，不编造中文卡名；card 与当前书不匹配时 review 面自己诚实警告。
+   */
+  function actLinks(a: Act): { label: string; href: string; remember?: boolean }[] {
+    if (!a.cardId) return [];
+    const cardQ = `card=${encodeURIComponent(a.cardId)}`;
+    const bookQ = clew.book ? `&book=${encodeURIComponent(clew.book.id)}` : "";
+    if (a.kind === "study") {
+      const links: { label: string; href: string; remember?: boolean }[] = [
+        { label: "开卡 →", href: `/desk/card/${encodeURIComponent(a.cardId)}` },
+      ];
+      if (clew.book) {
+        links.push({ label: "练该卡 →", href: `/study?${cardQ}${bookQ}&mode=all`, remember: true });
+      }
+      return links;
+    }
+    const mode = a.mark === "checked" || a.mark === "doubt" ? a.mark : "open";
+    return [
+      {
+        label: a.page != null ? "核该页 →" : "核该卡 →",
+        href: `/review?${cardQ}${a.page != null ? `&page=${a.page}` : ""}${bookQ}&mode=${mode}`,
+        remember: true,
+      },
+      { label: "开卡 →", href: `/desk/card/${encodeURIComponent(a.cardId)}` },
+    ];
+  }
 
   return (
     <div className="flex-1 overflow-y-auto px-4 py-4">
@@ -486,14 +597,29 @@ function ChangesPanel({
           {shown.map((a, i) => (
             <li
               key={i}
-              className="flex items-baseline gap-2 rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6"
+              className="flex flex-wrap items-baseline gap-x-2 gap-y-1 rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6"
             >
               <span
                 className={`mono shrink-0 text-[10px] ${a.kind === "study" ? "text-cinnabar" : "text-status-warn"}`}
               >
                 {a.kind === "study" ? "练" : "核"}
               </span>
+              {/* T33 B densify：mono 短 id 替代「自评「生 cardId」」整串引号文案；无卡表不编中文名。 */}
+              {a.cardId ? (
+                <span className="mono shrink-0 text-[11px] text-muted">{a.cardId}</span>
+              ) : null}
               <span className="min-w-0 flex-1 text-foreground/90">{a.text}</span>
+              {/* T33 B：可点回——开卡（次级 muted）；练/核链点前 rememberReturn（与空态 CTA 同）。 */}
+              {actLinks(a).map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={l.remember ? rememberReturn : undefined}
+                  className="shrink-0 text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                >
+                  {l.label}
+                </Link>
+              ))}
               <span className="mono shrink-0 text-[10px] text-muted">
                 {new Date(a.t).toLocaleTimeString("zh-CN", { hour12: false })}
               </span>
@@ -505,23 +631,89 @@ function ChangesPanel({
   );
 }
 
-/** 复习队列：诚实跳转——核页工作台按本机三档统计；这里不生成到期/Due 文案。 */
+/**
+ * 复习队列：诚实跳转 + 当前 progress* 池本机计数（T33 C densify，非 Due）。
+ * 口径与 LocalProgressStrip / countPoolMarks / poolGrades 同一——不另写分叉计数；
+ * 无池（书架等未定位章）→ 全局已记录条数 + 诚实说明，与 Changes 空池文案同族。
+ * 不做成 Due 列表：不显示到期日、不引入 FSRS、不新建 storage。
+ */
 function QueuePanel({
+  clew,
   reviewHref,
   studyHref,
   rememberReturn,
 }: {
+  /** T33 C：读 progress* 池（各面 Bridge 写入）报当前范围本机数。 */
+  clew: ClewContextData;
   reviewHref: string;
   studyHref: string;
   /** T31 B：练/核 CTA 点前写 return 短链（回当前上下文）。 */
   rememberReturn: () => void;
 }) {
+  const [grades, setGrades] = useState<GradeMap>({});
+  const [heye, setHeYe] = useState<HeYeStore>({});
+  const [ready, setReady] = useState(false);
+
+  // 只读双 store 的唯一消费者（外层 ClewPane 已收敛为单路订阅，见其审计注释）。
+  useEffect(() => {
+    setGrades(loadGrades());
+    setHeYe(loadHeYeStore());
+    setReady(true);
+    const u1 = subscribeStudyGrades(() => setGrades(loadGrades()));
+    const u2 = subscribeHeYeStore(() => setHeYe(loadHeYeStore()));
+    return () => {
+      u1();
+      u2();
+    };
+  }, []);
+
+  const hasPool = (clew.progressAtoms?.length ?? 0) + (clew.progressItems?.length ?? 0) > 0;
+  const pool = clew.progressAtoms ? poolGrades(clew.progressAtoms, grades) : null;
+  const marks = clew.progressItems ? countPoolMarks(clew.progressItems, heye) : null;
+  const globalKnown = Object.values(grades).filter((g) => g.k === 1).length;
+  const globalUnknown = Object.values(grades).filter((g) => g.k === 0).length;
+  const globalChecked = Object.values(heye).filter((m) => m.s === "checked").length;
+  const globalDoubt = Object.values(heye).filter((m) => m.s === "doubt").length;
+
   return (
     <div className="flex-1 overflow-y-auto px-4 py-4">
       <p className="text-sm leading-7 text-foreground/90">
         复习队列 = 核页工作台（章过滤 + 本机三档：待核｜已对｜存疑）与学习环三档（全部｜未评｜不熟）。
         两者都是本机态过滤，不是到期调度——这里不显示 Due / FSRS。
       </p>
+
+      {/* T33 C：当前 progress* 池本机计数（与 Changes 内 compact Strip 同池同口径）；无池 → 全局。 */}
+      {!ready ? (
+        <p className="mt-3 text-xs leading-6 text-muted">本机进度读取中…</p>
+      ) : hasPool ? (
+        <p className="mt-3 text-xs leading-6 text-muted" aria-label="当前范围本机标记计数">
+          {clew.progressScopeLabel ? (
+            <span className="mr-2 text-foreground/80">{clew.progressScopeLabel}</span>
+          ) : null}
+          {marks ? (
+            <>
+              核 <span>待核 {marks.open}</span>
+              <span className="text-status-ok"> · 已对 {marks.checked}</span>
+              <span className="text-status-warn"> · 存疑 {marks.doubt}</span>
+            </>
+          ) : null}
+          {marks && pool ? <span className="mx-2 text-line">|</span> : null}
+          {pool ? (
+            <>
+              练 <span className="text-status-ok">认识 {pool.known}</span>
+              <span className="text-status-warn"> · 不熟 {pool.unknown}</span>
+              <span> · 未评 {pool.ungraded}</span>
+            </>
+          ) : null}
+          <span className="ml-2">· 仅这个浏览器 · 非 Due</span>
+        </p>
+      ) : (
+        <p className="mt-3 text-xs leading-6 text-muted">
+          未定位章 · 全书本机记录：练 认识 {globalKnown} · 不熟 {globalUnknown}；
+          核 已对 {globalChecked} · 存疑 {globalDoubt}。到书桌打开书目后按章/页收窄。
+        </p>
+      )}
+
       <p className="mt-3 text-xs leading-6 text-muted">
         本面板不存自己的队列；打开工作台看实时池数与本机标记。
       </p>

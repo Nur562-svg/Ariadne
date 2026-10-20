@@ -15,8 +15,11 @@ import {
   type HeYeStore,
 } from "@/lib/heye-store";
 
-/** 池内练计数（只用 cardId/atomId 键；池原子无需完整 StudyAtom）。 */
-function poolGrades(
+/**
+ * 池内练计数（只用 cardId/atomId 键；池原子无需完整 StudyAtom）。
+ * T33 C：导出供 Clew QueuePanel 复用——与条内计数同一口径，不另写一份分叉逻辑。
+ */
+export function poolGrades(
   atoms: { cardId: string; atomId: string }[],
   grades: GradeMap,
 ): { known: number; unknown: number; ungraded: number } {

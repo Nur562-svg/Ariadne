@@ -368,8 +368,15 @@ async function StudyBody({
         {/* 作用域进度（T18：同范围练+核分列；本页即练环，不重复练链）。
             T27 C：有效页时练/核两列都是本页池（collectCiteQueue 同样带 page），标签「本页 p.N」。
             T29 B/F：对齐 T28 B 口径——练/核各自判本页，单侧空回落章/书池、标签分写，
-            与书桌/核页同页打开时不互谎；孤儿页不再把空池标成「本页」。 */}
-        <LocalProgressStrip atoms={stripAtoms} items={stripItemKeys} scopeLabel={stripScopeLabel} />
+            与书桌/核页同页打开时不互谎；孤儿页不再把空池标成「本页」。
+            T33 A：交叉弱链——练面只传 reviewHref（progressReviewHref，与 Clew/Bridge 同源），
+            不传本面 studyHref（「练此范围」自指无意义）；孤儿页不带幽灵 page= 沿用 progress* 口径。 */}
+        <LocalProgressStrip
+          atoms={stripAtoms}
+          items={stripItemKeys}
+          scopeLabel={stripScopeLabel}
+          reviewHref={progressReviewHref}
+        />
       </header>
 
       {/* T28 F：sticky 键盘岛——g 聚焦「清本页」，⇧[ / ⇧] 按章芯片顺序切章（切章即离页）；
@@ -463,6 +470,14 @@ async function StudyBody({
               validPages={scopeBookValidPages}
               showReturn={false}
             />
+            {/* T33 A：交叉弱链的 sticky 延伸——长队列滚离页头后仍能去同范围核；
+                muted 次级文字（非第二颗实心朱红），href 与页头 Strip 同一 progressReviewHref。 */}
+            <Link
+              href={progressReviewHref}
+              className="text-xs text-muted no-underline transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+            >
+              去核同范围 →
+            </Link>
           </div>
 
           {/* T28 F：本页环键说明（与练/核底栏 SessionKeyHint 同族，只列当前实际可用的键）。 */}
