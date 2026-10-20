@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
+  healOpenedIfDirty,
   loadRecentBooks,
-  sanitizeOpenedPage,
   subscribeLastOpened,
   type LastOpened,
 } from "@/lib/last-opened";
@@ -16,6 +16,7 @@ import {
  * 主 CTA「打开书桌」仍在书卡上（不带页）；不出现第二颗大红按钮，
  * 不重做 ProgressPortability / LocalProgressStrip。
  * T31 C：续开读侧消毒——停留页经该书 validPages 验真，旧栈幽灵页（page=999）不再播。
+ * T32 A：消毒升级 heal——有页表且脏时单条写回剥幽灵页（盘内 peel），不再只消毒展示。
  */
 export default function ShelfBookContinuity({
   bookId,
@@ -34,8 +35,9 @@ export default function ShelfBookContinuity({
         setEntry(null);
         return;
       }
-      const sanitized = sanitizeOpenedPage(hit, validPages);
-      setEntry(sanitized.page != null ? sanitized : null);
+      // T32 A：heal 后再决定是否渲染「续开 p.N」——脏页盘内剥掉，下轮不复发。
+      const healed = healOpenedIfDirty(hit, validPages);
+      setEntry(healed.page != null ? healed : null);
     }
     sync();
     return subscribeLastOpened(sync);

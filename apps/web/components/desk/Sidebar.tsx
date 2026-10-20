@@ -4,10 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  healOpenedIfDirty,
   loadLastOpened,
   loadRecentBooks,
-  sanitizeOpenedPage,
-  saveLastOpened,
   subscribeLastOpened,
   type LastOpened,
 } from "@/lib/last-opened";
@@ -63,17 +62,18 @@ export default function Sidebar({
       const raw = loadLastOpened();
       const book = raw ? books?.find((b) => b.id === raw.bookId) : undefined;
       /**
-       * T31 C：读侧消毒——旧栈幽灵页（如历史写入的 page=999）经该书 validPages 剥掉，
-       * 续开/换书不再播；发现脏时**单条** saveLastOpened heal（只改该书条目并保序，
-       * 禁 clearLastOpened 整栈；写点已在 T30 D 封死，heal 只兜历史脏数据）。
+       * T31 C + T32 A/B：读侧消毒 + 单条 heal（helper 同口径）——旧栈幽灵页（如历史写入的
+       * page=999）经该书 validPages 剥掉并写回盘内（只改该书条目并保序，禁 clearLastOpened
+       * 整栈；写点已在 T30 D 封死，heal 只兜历史脏数据）。
        */
-      const lo = raw && book ? sanitizeOpenedPage(raw, bookValidPages?.[raw.bookId]) : raw;
-      if (raw && book && lo && lo !== raw) saveLastOpened({ ...lo, at: Date.now() });
+      const lo = raw && book ? healOpenedIfDirty(raw, bookValidPages?.[raw.bookId]) : raw;
       // 有效 last-opened → 该书；无效/无 → 首本（有书时）或 undefined（空库文案）。
       setCurrentEntry(book ? lo : null);
       setCurrent(book ?? books?.[0]);
+      // T32 B：recent 多书 heal——换书列表/侧栏在读书目引用的每条 recent，有该书页表的
+      // 脏条目同样单条写回（干净原引用返回，!== 判脏防循环；不清整栈、不改 RECENT_MAX）。
       setRecent(
-        loadRecentBooks().map((e) => sanitizeOpenedPage(e, bookValidPages?.[e.bookId])),
+        loadRecentBooks().map((e) => healOpenedIfDirty(e, bookValidPages?.[e.bookId])),
       );
     }
     sync();

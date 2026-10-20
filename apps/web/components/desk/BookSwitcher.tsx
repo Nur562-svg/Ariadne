@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
+  healOpenedIfDirty,
   loadRecentBooks,
-  sanitizeOpenedPage,
   subscribeLastOpened,
   type LastOpened,
 } from "@/lib/last-opened";
@@ -31,8 +31,10 @@ export default function BookSwitcher({
 
   useEffect(() => {
     function sync() {
+      // T32 A：换书读点从「只消毒展示」升级为 heal——有该书页表的脏条目单条写回
+      // （剥幽灵 page / 脏 deskHref page=），渲染用 heal 后 entry；干净原引用不写盘。
       setRecent(
-        loadRecentBooks().map((e) => sanitizeOpenedPage(e, bookValidPages?.[e.bookId])),
+        loadRecentBooks().map((e) => healOpenedIfDirty(e, bookValidPages?.[e.bookId])),
       );
     }
     sync();

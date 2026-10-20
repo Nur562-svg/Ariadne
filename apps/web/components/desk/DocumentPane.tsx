@@ -10,7 +10,12 @@ import BookSwitcher, { type BookSwitcherBook } from "@/components/desk/BookSwitc
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import CitePeek from "@/components/CitePeek";
 import { useDeskContext } from "@/components/desk/DeskContext";
-import { touchLastOpened } from "@/lib/last-opened";
+import {
+  healOpenedIfDirty,
+  loadLastOpened,
+  loadRecentBooks,
+  touchLastOpened,
+} from "@/lib/last-opened";
 import { loadViewMode, saveViewMode } from "@/lib/view-continuity";
 
 const KIND_ZH: Record<string, string> = {
@@ -210,6 +215,35 @@ export default function DocumentPane({
       page: readingPage,
     });
   }, [readingPage, book.id, invalidBook]);
+
+  /**
+   * T32 C：invalidPage 挂载 scrub（desk/page.tsx 以 `${book.id}:${page}` key 重挂载，一次导航
+   * 只跑一遍）——深链 ?page=999（不在本书已解析页）时：
+   * 1) 该书 last-opened / recent 条目单条 heal 剥脏 page（盘内 peel；cards 模 readingPage==null
+   *    也 scrub，不依赖翻页 touchLastOpened 兜底）；
+   * 2) URL 仍带着该非法 page= 时 replaceState 剥至书级 /desk?book=（不整页刷新、不伪造落在
+   *    某合法页；String(initialPage) 精确比对，不误伤翻页同步刚写回的合法 page）。
+   * 琥珀横幅保留；合法翻页 touchLastOpened 写点不回退；不清整栈、不动其它书条目。
+   */
+  useEffect(() => {
+    if (!invalidPage) return;
+    const validPages =
+      bookValidPages?.[book.id] ??
+      pages.flatMap((p) => (p.page != null ? [p.page as number] : []));
+    const lo = loadLastOpened();
+    if (lo?.bookId === book.id) healOpenedIfDirty(lo, validPages);
+    for (const e of loadRecentBooks()) {
+      if (e.bookId === book.id) healOpenedIfDirty(e, validPages);
+    }
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("page") === String(initialPage)) {
+      params.delete("page");
+      const qs = params.toString();
+      window.history.replaceState(window.history.state, "", `/desk${qs ? `?${qs}` : ""}`);
+    }
+    // 挂载一次即够：heal 幂等（干净原引用不写盘），URL 剥除只认本次深链的非法 page。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /** 当前页的 citing 卡与待核数（服务端索引表按 pageNo 查；翻页随动）。 */
   const pageCitingCards =

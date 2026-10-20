@@ -88,6 +88,7 @@ export default function StudySession({
   deskBookId,
   loopKeys,
   scopeKey,
+  validPages,
 }: {
   /** 当前范围全池（未按档位过滤；档位在客户端按本机评分过滤）。 */
   atoms: StudyAtom[];
@@ -125,6 +126,12 @@ export default function StudySession({
   loopKeys?: [string, string][];
   /** 续位作用域（与父级 remount key 一致）：`${card|all}:${book|all}:${chapter|all}:${mode}`。 */
   scopeKey: string;
+  /**
+   * T32 E：该书已解析印刷页[]（服务端装配）——完成/空态「回书桌本页」的 lastOpened
+   * 回落页消毒：仅当 lo.page 在表内才采用；无表 / 脏页 → 不采用（与 ReturnNav 同真，
+   * 不盲信 localStorage）。页源优先级不变：lastAtomPage ?? deskPageHint ?? lastOpenedPage。
+   */
+  validPages?: number[];
 }) {
   const [grades, setGrades] = useState<GradeMap>({});
   const [order, setOrder] = useState<StudyAtom[]>([]);
@@ -155,10 +162,14 @@ export default function StudySession({
     const scopeBookId = deskBookId ?? activeBookId;
     if (scopeBookId) {
       const lo = loadLastOpened();
-      if (lo?.bookId === scopeBookId && lo.page != null) setLastOpenedPage(lo.page);
+      // T32 E：只信有表且页在表内的 lo.page（与 ReturnNav 同真）——无表 / 脏页不采用，
+      // 完成态不把幽灵 p.999 链进书桌；页源优先级 lastAtomPage ?? deskPageHint 不变。
+      const adopt =
+        lo?.bookId === scopeBookId && lo.page != null && validPages?.includes(lo.page);
+      setLastOpenedPage(adopt ? (lo.page as number) : null);
     }
     setRet(loadReturn());
-  }, [deskBookId, activeBookId]);
+  }, [deskBookId, activeBookId, validPages]);
 
   // 挂载后读本机评分并冻结本轮队列（SSR 不读 localStorage，避免水合不一致）；
   // 同时恢复本标签会话游标（clamp 到 [0, order.length]，>0 视为续练）。

@@ -159,6 +159,19 @@ export function sanitizeOpenedPage(entry: LastOpened, validPages?: number[]): La
   };
 }
 
+/**
+ * T32 A：读侧消毒 + 单条写回（heal）——把「只消毒展示」的读点统一成「消毒且盘内 peel」。
+ * 内部 sanitizeOpenedPage；脏（sanitized !== entry）→ saveLastOpened({ ...sanitized, at: Date.now() })
+ * 只改该书条目并保序其余书（禁 clearLastOpened 整栈、禁改 key 名）；干净原引用返回
+ * （调用方以 !== / 引用稳定防 heal 循环）。validPages 缺省 = 无表 → 原引用返回不写盘。
+ * 与 T31 Sidebar / LibraryContinuity 手写 sanitize+save 同口径，收敛成一处。
+ */
+export function healOpenedIfDirty(entry: LastOpened, validPages?: number[]): LastOpened {
+  const sanitized = sanitizeOpenedPage(entry, validPages);
+  if (sanitized === entry) return entry;
+  return saveLastOpened({ ...sanitized, at: Date.now() });
+}
+
 /** 同页多组件（Sidebar 在读 / 书架续开条 / 换书列表）共享续开指针的轻量订阅。 */
 const listeners = new Set<() => void>();
 

@@ -4,9 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   clearLastOpened,
+  healOpenedIfDirty,
   loadLastOpened,
-  sanitizeOpenedPage,
-  saveLastOpened,
   subscribeLastOpened,
   type LastOpened,
 } from "@/lib/last-opened";
@@ -47,9 +46,8 @@ export default function LibraryContinuity({
         setInvalid(true);
         return;
       }
-      // T31 C：消毒 + 单条 heal（只改该书条目，不动其它书/不清整栈）。
-      const sanitized = sanitizeOpenedPage(raw, bookValidPages?.[raw.bookId]);
-      if (sanitized !== raw) saveLastOpened({ ...sanitized, at: Date.now() });
+      // T31 C + T32 A：消毒 + 单条 heal（helper 同口径；只改该书条目，不动其它书/不清整栈）。
+      const sanitized = healOpenedIfDirty(raw, bookValidPages?.[raw.bookId]);
       setInvalid(false);
       setLast(sanitized);
     }

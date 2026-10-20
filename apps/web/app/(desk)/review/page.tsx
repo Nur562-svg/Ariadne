@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import {
   collectStudyAtoms,
   loadAllChapterPages,
+  loadBookValidPages,
   loadBooks,
   loadCard,
   loadChapters,
@@ -16,6 +17,7 @@ import SessionKeyHint from "@/components/SessionKeyHint";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 import StickyModeGate from "@/components/desk/StickyModeGate";
 import StickyPageLoopKeys from "@/components/desk/StickyPageLoopKeys";
+import ReturnNav from "@/components/desk/ReturnNav";
 import LastOpenedTouch from "@/components/LastOpenedTouch";
 
 export const dynamic = "force-dynamic";
@@ -150,6 +152,8 @@ async function ReviewBody({
       : undefined;
   /** 无页时回书桌的兜底深链。 */
   const deskHref = scopeBook ? `/desk?book=${encodeURIComponent(scopeBook.id)}` : "/desk";
+  /** T32 D：该书已解析印刷页表——sticky ReturnNav lastOpened 回落页消毒（与 study 同口径）。 */
+  const scopeBookValidPages = scopeBook ? loadBookValidPages()[scopeBook.id] : undefined;
 
   /** T28 A densify：章芯片按可解析书（?book= 或卡反查 scopeBook）过滤，有书不铺全库；单卡范围固定，隐藏章芯片。 */
   const chipChapters = scopeBook
@@ -488,21 +492,19 @@ async function ReviewBody({
             ))}
           </div>
 
-          {/* T23 D：sticky 工具带回程薄链（对称 study）：?card= 回本卡；page 合法回书桌本页，否则回落回书桌。 */}
+          {/* T23 D + T32 D：sticky 工具带回程（对称 study）改用 ReturnNav——回本卡 / 回书桌
+              本页（pageHint 仅 deskPageHref 可解析时给，孤儿不给页 hint）/ lastOpened 回落页
+              经该书 validPages 消毒；showReturn=false 与 study sticky 同（「回到刚才」归
+              HeYeSession 空/完成态，勿在此重复）。 */}
           <div className="flex items-center gap-3">
-            {cardHref ? (
-              <Link href={cardHref} className="text-sm text-muted no-underline hover:text-cinnabar">
-                回本卡 →
-              </Link>
-            ) : null}
-            <Link
-              href={deskPageHref ?? deskHref}
-              className={`text-sm no-underline hover:underline underline-offset-4 ${
-                deskPageHref ? "text-cinnabar" : "text-muted hover:text-cinnabar"
-              }`}
-            >
-              {deskPageHref ? "回书桌本页 →" : "回书桌 →"}
-            </Link>
+            <ReturnNav
+              bookId={scopeBook?.id}
+              pageHint={deskPageHref ? pageNum : null}
+              deskHref={deskHref}
+              cardHref={cardHref}
+              validPages={scopeBookValidPages}
+              showReturn={false}
+            />
           </div>
 
           {/* T28 F：本页环键说明（与练/核底栏 SessionKeyHint 同族，只列当前实际可用的键）。 */}

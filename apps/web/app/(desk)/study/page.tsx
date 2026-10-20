@@ -234,7 +234,7 @@ async function StudyBody({
   /** 完成/空态「回本卡」（仅 ?card= 时展示）。 */
   const cardHref = scopedCard ? `/desk/card/${encodeURIComponent(scopedCard.id)}` : undefined;
 
-  /** T31 F：该书已解析印刷页表——ReturnNav lastOpened 回落页消毒（脏页不采用）。 */
+  /** T31 F + T32 E：该书已解析印刷页表——ReturnNav 与 StudySession 的 lastOpened 回落页消毒（脏页不采用）。 */
   const scopeBookValidPages = scopeBook ? loadBookValidPages()[scopeBook.id] : undefined;
 
   /**
@@ -554,6 +554,7 @@ async function StudyBody({
           deskPageHint={deskPageHint}
           deskBookId={scopeBook?.id}
           loopKeys={stickyKeys}
+          validPages={scopeBookValidPages}
         />
       )}
     </div>
