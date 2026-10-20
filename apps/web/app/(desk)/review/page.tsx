@@ -111,6 +111,12 @@ async function ReviewBody({
       : undefined;
   const scopeBook = book ?? cardBook;
 
+  /**
+   * T29 C 孤儿核判定：合法 pageNum（非法时 pageNum 为 null）· 非单卡 · 核池空——
+   * studyHref / deskPageHref / Clew page / HeYeSession 空态主 CTA 四处共用同一口径。
+   */
+  const orphanReview = pageNum != null && !card && items.length === 0;
+
   let scopeLabel = "全部已解析卡";
   if (book) scopeLabel = `《${book.title}》`;
   if (card) scopeLabel = `卡《${card.name_zh}》${scopeBook ? ` · 《${scopeBook.title}》` : ""}`;
@@ -121,10 +127,12 @@ async function ReviewBody({
   const cardHref = card ? `/desk/card/${encodeURIComponent(card.id)}` : undefined;
   /** T26 C：去学习环带作用域——非单卡时至少 ?book=（有书），有 effChapter 再 &chapter=；
    *  禁止裸 "/study"（换环丢书）。单卡仍 ?card=（兼书）。
-   *  T27 D：有效 pageNum 时带 &page=——本页核完去练仍落本页池，不落到丢页的章/全书。 */
+   *  T27 D：有效 pageNum 时带 &page=——本页核完去练仍落本页池，不落到丢页的章/全书。
+   *  T29 C：孤儿页不带 &page=——不把人送进 page 死环，落 book+chapter 章练；
+   *  本页有 cite（items.length>0）时仍带 &page=（T27/T28 不回退）。 */
   const studyHref = card
     ? `/study?card=${encodeURIComponent(card.id)}${book ? `&book=${encodeURIComponent(book.id)}` : ""}`
-    : pageNum != null
+    : pageNum != null && !orphanReview
       ? `/study?${
           book ? `book=${encodeURIComponent(book.id)}&` : ""
         }${effChapter ? `chapter=${encodeURIComponent(effChapter.id)}&` : ""}page=${pageNum}`
@@ -133,9 +141,11 @@ async function ReviewBody({
             effChapter ? `&chapter=${encodeURIComponent(effChapter.id)}` : ""
           }`
         : "/study";
-  /** 回书桌本页（书范围且 page 合法时）：/desk?book=&page= 章页定位。 */
+  /** 回书桌本页（书范围且 page 合法时）：/desk?book=&page= 章页定位。
+   *  T29 F 幽灵印刷页卫生：孤儿页不深链 /desk?…&page=999，回落书级 deskHref（文案「回书桌 →」）；
+   *  合法且本页池非空（或单卡）的精确回书桌保留。 */
   const deskPageHref =
-    pageNum != null && scopeBook
+    pageNum != null && scopeBook && (card || items.length > 0)
       ? `/desk?book=${encodeURIComponent(scopeBook.id)}&page=${pageNum}`
       : undefined;
   /** 无页时回书桌的兜底深链。 */
@@ -218,6 +228,36 @@ async function ReviewBody({
           ? `练 p.${pageNum} · 核${sideScopeLabel}`
           : sideScopeLabel;
 
+  /** T29 B：Strip / Clew 同源池（练/核各自判本页；单卡用卡交集池）——页内 Strip 与 Bridge progress* 共用。 */
+  const stripAtoms = (card || stripStudyPageScope ? pageStudyAtoms : scopeStudyAtoms).map((a) => ({
+    cardId: a.cardId,
+    atomId: a.atomId,
+  }));
+  const stripItemKeys = (card || stripHeYePageScope ? items : scopeItems).map((it) => ({
+    key: it.key,
+  }));
+  /**
+   * T29 B：Clew progress* 同范围练/核深链（对齐书桌 DocumentPane 规则）：练侧显式 mode=all
+   * （防 StickyModeGate 把深链回补成空档），核侧 mode=open；仅对应本页池非空才带 &page=
+   * （孤儿页不深链幽灵印刷页）。
+   */
+  const progressStudyQs = new URLSearchParams();
+  if (book) progressStudyQs.set("book", book.id);
+  if (effChapter) progressStudyQs.set("chapter", effChapter.id);
+  if (pageNum != null && stripStudyPageScope) progressStudyQs.set("page", String(pageNum));
+  progressStudyQs.set("mode", "all");
+  const progressStudyHref = card
+    ? studyHref
+    : `/study?${progressStudyQs.toString()}`;
+  const progressReviewQs = new URLSearchParams();
+  if (book) progressReviewQs.set("book", book.id);
+  if (card) progressReviewQs.set("card", card.id);
+  if (effChapter) progressReviewQs.set("chapter", effChapter.id);
+  if (pageNum != null && (card ? items.length > 0 : stripHeYePageScope))
+    progressReviewQs.set("page", String(pageNum));
+  progressReviewQs.set("mode", "open");
+  const progressReviewHref = `/review?${progressReviewQs.toString()}`;
+
   /** T28 F：sticky 键说明——只列当前实际可用的本页环键（无页不给 g，单卡不给切章）。 */
   const stickyKeys: [string, string][] = [
     ...(pageNum != null && !card ? ([["g", "清本页"]] as [string, string][]) : []),
@@ -229,7 +269,10 @@ async function ReviewBody({
 
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">
-      {/* 核页面薄桥：Clew 会话条显示核页范围（书/章/页/卡）。 */}
+      {/* 核页面薄桥：Clew 会话条显示核页范围（书/章/页/卡）。
+          T29 B：progress* 与页内 Strip 同一套池/标签/深链——Clew「本轮变化」compact 在核页
+          也显示本章/本页收窄数字，不再掉「未定位章 · 全书本机记录」。
+          T29 F：孤儿页不给 Clew 残留幽灵 p.N（头栏/建议问/stub 不提 999，会话条不深链书桌幽灵页）。 */}
       <DeskSurfaceBridge
         data={{
           surface: "review",
@@ -237,9 +280,14 @@ async function ReviewBody({
           chapter: effChapter
             ? { id: effChapter.id, title: effChapter.title }
             : undefined,
-          page: pageNum,
+          page: orphanReview ? null : pageNum,
           card: card ? { id: card.id, name_zh: card.name_zh } : undefined,
           citePages: [],
+          progressAtoms: stripAtoms,
+          progressItems: stripItemKeys,
+          progressScopeLabel: stripScopeLabel,
+          progressStudyHref: progressStudyHref,
+          progressReviewHref: progressReviewHref,
         }}
       />
       {/* T20 sticky 档位：无 ?mode= 时读本标签记忆补档（replace）；有合法 ?mode= 时胜出并写回。 */}
@@ -250,9 +298,14 @@ async function ReviewBody({
         nonDefaultModes={["checked", "doubt"]}
       />
       {/* T21/T23 续开指针轻触：有效范围（?book= 或 ?card= 反查书）才写同 bookId；不写非法书。
-          page 合法时写带 page 的 deskHref，否则回落不带 page 的兜底（同书保留原页）。 */}
+          page 合法且本页池非空时写带 page 的 deskHref，否则回落不带 page 的兜底
+          （T29 F：孤儿页不把幽灵 page=999 写进续开指针，同书保留原页）。 */}
       {scopeBook ? (
-        <LastOpenedTouch bookId={scopeBook.id} deskHref={deskPageHref ?? deskHref} page={pageNum} />
+        <LastOpenedTouch
+          bookId={scopeBook.id}
+          deskHref={deskPageHref ?? deskHref}
+          page={deskPageHref ? pageNum : undefined}
+        />
       ) : null}
       <header>
         <h1 className="brand-rule pb-2 text-3xl font-bold">核页 · 本机对页</h1>
@@ -275,9 +328,9 @@ async function ReviewBody({
             page 参数「{pageParam}」需为正整数——页过滤未生效，已按{scopeLabel}统计。
           </p>
         ) : null}
-        {/* T28 E：合法孤儿页（零待核 cite）琥珀点名本页 + 放宽（清本页见 HeYeSession 空态次级链），
+        {/* T28 E：合法孤儿页（零待核 cite）琥珀点名本页 + 放宽（T29 C：空态主 CTA 升「清本页」），
             不静默落到通用「这个范围没有」空态。 */}
-        {pageNum != null && !invalidPage && !card && items.length === 0 ? (
+        {orphanReview ? (
           <p className="mt-2 text-sm text-status-warn">
             本页 p.{pageNum} 暂无待核 cite——没有「有页码但未抽查」的引用落在这一印刷页；
             可清本页放宽到{sideScopeLabel}，或换到更宽的范围。
@@ -350,15 +403,9 @@ async function ReviewBody({
 
       {/* 作用域进度（T18：同范围练+核分列；本页即核环，不重复核链）。
           T27 soft：有效 page 时练侧与 collectStudyAtoms({page}) / study Strip 同池。
-          T28 B：练/核各自判本页——heye-only 页练侧回落章/书池，标签分写，与书桌同页不互谎。 */}
-      <LocalProgressStrip
-        atoms={(card || stripStudyPageScope ? pageStudyAtoms : scopeStudyAtoms).map((a) => ({
-          cardId: a.cardId,
-          atomId: a.atomId,
-        }))}
-        items={(card || stripHeYePageScope ? items : scopeItems).map((it) => ({ key: it.key }))}
-        scopeLabel={stripScopeLabel}
-      />
+          T28 B：练/核各自判本页——heye-only 页练侧回落章/书池，标签分写，与书桌同页不互谎。
+          T29 B：池选择收进 stripAtoms/stripItemKeys，与 Bridge progress* 同源。 */}
+      <LocalProgressStrip atoms={stripAtoms} items={stripItemKeys} scopeLabel={stripScopeLabel} />
 
       {/* T28 F：sticky 键盘岛——g 聚焦「清本页」，⇧[ / ⇧] 按章芯片顺序切章（切章即离页）；
           题内裸 [ / ] 回看/前进归 HeYeSession 自己的键盘环，本岛不拦截。 */}
@@ -478,6 +525,8 @@ async function ReviewBody({
         doubtHref={`/review${qs({ mode: "doubt" })}`}
         clearChapterHref={clearChapterHref}
         clearPageHref={clearPageHref}
+        orphanPage={orphanReview}
+        loopKeys={stickyKeys}
       />
     </div>
   );

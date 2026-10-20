@@ -8,7 +8,7 @@ import { loadGrades, subscribeStudyGrades, type GradeMap } from "@/lib/study";
 import { loadHeYeStore, subscribeHeYeStore, type HeYeStore } from "@/lib/heye-store";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 
-type Msg = { role: "user" | "assistant"; text: string };
+type Msg = { role: "user" | "assistant"; text: string } | { role: "note"; text: string };
 type Tab = "chat" | "changes" | "queue";
 
 const SURFACE_ZH: Record<string, string> = {
@@ -19,7 +19,11 @@ const SURFACE_ZH: Record<string, string> = {
   library: "书架",
 };
 
-/** 建议问：静态模板插真名（书名/章/可见实体/当前页），无 LLM。 */
+/**
+ * 建议问：静态模板插真名（书名/章/可见实体/当前页），无 LLM。
+ * T29 D：页码问句按当前表面说真话——核页问核、学习问练、书桌问中栏章页；
+ * 全部读当前 clew（Bridge 已跟 qs），无页时不残留旧页文案。
+ */
 function buildSuggestions(clew: ClewContextData): string[] {
   if (!clew.book) {
     return ["导入一本教材后，Clew 才有可问的上下文。"];
@@ -33,20 +37,36 @@ function buildSuggestions(clew: ClewContextData): string[] {
     list.push(`「${clew.chapter.title}」这一章有哪些易混概念？`);
   }
   if (clew.page != null) {
-    list.push(`中栏印刷页 p.${clew.page} 这段在讲什么？`);
+    list.push(
+      clew.surface === "review"
+        ? `p.${clew.page} 这一页的引用核到哪了？`
+        : clew.surface === "study"
+          ? `p.${clew.page} 这一页的知识原子练得怎么样？`
+          : `中栏印刷页 p.${clew.page} 这段在讲什么？`,
+    );
   }
   list.push(`这本书从哪一章开始读比较顺？`);
   return list.slice(0, 3);
 }
 
-/** stub 回复规则：有页码上下文 → 提示对页；无 → 建议先开章页/卡。绝不宣称已核/verified。 */
+/**
+ * stub 回复规则：有页码上下文 → 提示对页；无 → 建议先开章页/卡。绝不宣称已核/verified。
+ * T29 D：对照去处按当前表面说真话——核页有本页 OCR 原文，学习环有题目 CiteChip，
+ * 书桌才是「中栏章页」；不再对 study/review 说「到中栏章页看」。
+ */
 function stubReply(clew: ClewContextData): string {
   const pages = [
     ...(clew.page != null ? [clew.page] : []),
     ...clew.citePages.filter((p) => p != null),
   ];
   if (pages.length > 0) {
-    return `（stub · 未接模型）本地占位回复。可以到中栏章页或实体卡 CiteChip 对着看 p.${pages.join(
+    const where =
+      clew.surface === "review"
+        ? "本页 OCR 原文"
+        : clew.surface === "study"
+          ? "题目里的 CiteChip"
+          : "中栏章页或实体卡 CiteChip";
+    return `（stub · 未接模型）本地占位回复。可以对着${where}看 p.${pages.join(
       "、p.",
     )}；本面板不生成已核对结论，回答以教材印刷页为准。`;
   }
@@ -75,6 +95,33 @@ export default function ClewPane() {
   // 订阅唯一合法消费者是 ChangesPanel（自带订阅+读盘），故删除外层双订阅，收敛为单路。
 
   const suggestions = buildSuggestions(clew);
+
+  /**
+   * T29 D：上下文键（书/章/页）变了且线程非空 → 追加一条 muted「上下文已换到 …」
+   * （新气泡，不改写历史气泡）；首次挂载不记。progress* 池变化不改键，不触发。
+   */
+  const ctxKey = `${clew.book?.id ?? ""}|${clew.chapter?.id ?? ""}|${clew.page ?? ""}`;
+  const seenCtxKey = useRef<string | null>(null);
+  useEffect(() => {
+    if (seenCtxKey.current === ctxKey) return;
+    const first = seenCtxKey.current == null;
+    seenCtxKey.current = ctxKey;
+    if (first) return;
+    setMessages((prev) => {
+      if (prev.length === 0) return prev;
+      const label = [
+        clew.book ? `《${clew.book.title}》` : null,
+        clew.chapter ? clew.chapter.title : null,
+        clew.page != null ? `p.${clew.page}` : null,
+      ]
+        .filter(Boolean)
+        .join(" · ");
+      return [
+        ...prev,
+        { role: "note", text: `上下文已换到${label ? ` ${label}` : "书架/空范围"}` },
+      ];
+    });
+  }, [ctxKey, clew]);
 
   function send(text: string) {
     const q = text.trim();
@@ -198,7 +245,12 @@ export default function ClewPane() {
               </div>
             ) : (
               messages.map((m, i) =>
-                m.role === "user" ? (
+                m.role === "note" ? (
+                  // T29 D：上下文切换 muted 小字——不占气泡位、无新强调色，历史气泡不重写。
+                  <p key={i} className="text-center text-[11px] leading-5 text-muted">
+                    — {m.text} —
+                  </p>
+                ) : m.role === "user" ? (
                   <div
                     key={i}
                     className="rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6"

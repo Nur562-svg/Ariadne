@@ -86,6 +86,7 @@ export default function StudySession({
   widenPageHref,
   deskPageHint,
   deskBookId,
+  loopKeys,
   scopeKey,
 }: {
   /** 当前范围全池（未按档位过滤；档位在客户端按本机评分过滤）。 */
@@ -117,6 +118,11 @@ export default function StudySession({
   deskPageHint?: number | null;
   /** 当前范围书 id（scopeBook，含单卡反查）：回书桌本页 / last-opened 回落以它为准。 */
   deskBookId?: string;
+  /**
+   * T29 E：父页算好的本页环键（g 清本页 / ⇧[ ⇧] 切章；与 sticky 键岛同源 stickyKeys）——
+   * 仅当前真可用时传入；无本页过滤不列 g，无章芯片不列 ⇧[]。题内裸 [ / ] 仍是回看/前进。
+   */
+  loopKeys?: [string, string][];
   /** 续位作用域（与父级 remount key 一致）：`${card|all}:${book|all}:${chapter|all}:${mode}`。 */
   scopeKey: string;
 }) {
@@ -560,7 +566,9 @@ export default function StudySession({
         范围：{scopeLabel} · 评分只记本机浏览器（非 FSRS 调度）；citation 徽章语义不变（未验证仍为琥珀）。
       </p>
       {/* T25 B：键说明一族风格（muted 小字 + mono 键帽），含 ←→ 回看与 u 撤销。
-          T28 F：补本页环 sticky 键（g 清本页 / ⇧[] 切章——裸 [ ] 仍是回看/前进，不受影响）。 */}
+          T28 F→T29 E：本页环键（g 清本页 / ⇧[] 切章）由父页按当前真可用性传入 loopKeys
+          （与 sticky 键岛同源）——无本页过滤不列 g，无章芯片不列 ⇧[]；
+          题内裸 [ / ] 仍是回看/前进，不受影响。 */}
       <SessionKeyHint
         className="mt-1"
         keys={[
@@ -569,8 +577,7 @@ export default function StudySession({
           ["2/k", "不熟"],
           ["←/→", "回看/前进"],
           ["u", "撤销本轮最后一评"],
-          ["g", "清本页（本页过滤时）"],
-          ["⇧[ ⇧]", "切章"],
+          ...(loopKeys ?? []),
         ]}
       />
     </section>

@@ -82,6 +82,8 @@ export default function HeYeSession({
   doubtHref,
   clearChapterHref,
   clearPageHref,
+  orphanPage,
+  loopKeys,
   scopeKey,
 }: {
   /** 全池待核队列（服务端 collectCiteQueue，已按页码排序；本机态过滤在客户端）。 */
@@ -109,8 +111,19 @@ export default function HeYeSession({
   /**
    * T28 A：本页过滤放宽链（/review?book=&chapter= 只删 page，留书/章/档）——
    * 池空/档内空两处次级「清本页 →」；仅有效 pageNum 时由父页传入，不新增第二颗实心主按钮。
+   * T29 C：孤儿核（合法 page · 非单卡 · 池空）时它升为唯一朱红主 CTA，不再重复列次级。
    */
   clearPageHref?: string;
+  /**
+   * T29 C：孤儿核标志（父页服务端判定：合法 pageNum · 非单卡 · items.length===0）——
+   * 池空态主 CTA 换「清本页，换到本章核」，「去学习环」降次级（studyHref 父页已消毒无 page）。
+   */
+  orphanPage?: boolean;
+  /**
+   * T29 E：父页算好的本页环键（g 清本页 / ⇧[ ⇧] 切章；与 sticky 键岛同源 stickyKeys）——
+   * 仅当前真可用时传入；无本页过滤不列 g，无章芯片不列 ⇧[]，题内键恒保留。
+   */
+  loopKeys?: [string, string][];
   /** 续位作用域（与父级 remount key 一致）：`${book|all}:${card|all}:${page|all}:${chapter|all}:${mode}`。 */
   scopeKey: string;
 }) {
@@ -259,7 +272,10 @@ export default function HeYeSession({
           或数据尚未解析出来。
         </p>
         <HeYeModeChips counts={counts} mode={mode} hrefs={modeChipHrefs} />
-        {/* T25 A densify：每分支只留一颗朱红主 CTA，其余次级文字链。 */}
+        {/* T25 A densify：每分支只留一颗朱红主 CTA，其余次级文字链。
+            T29 C：孤儿核（合法 page · 非单卡 · 池空）且有清本页链 → 主 CTA = 清本页
+            （放宽到本章核，只删 page 留书/章/档）；「去学习环」降次级，用父页消毒过的
+            studyHref（无 page，不送回孤儿 URL）。非孤儿保持既有优先级。 */}
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           {cardHref ? (
             <Link
@@ -267,6 +283,13 @@ export default function HeYeSession({
               className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
             >
               回本卡 →
+            </Link>
+          ) : orphanPage && clearPageHref ? (
+            <Link
+              href={clearPageHref}
+              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            >
+              清本页，换到本章核 →
             </Link>
           ) : deskPageHref ? (
             <Link
@@ -300,6 +323,13 @@ export default function HeYeSession({
                 </Link>
               ) : null}
             </>
+          ) : orphanPage ? (
+            <Link
+              href={studyHref ?? "/study"}
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              去学习环 →
+            </Link>
           ) : deskPageHref ? (
             <Link
               href={deskPageHref}
@@ -323,8 +353,9 @@ export default function HeYeSession({
               清章看全章节 →
             </Link>
           ) : null}
-          {/* T28 A：本页过滤放宽（次级文字链，不新增第二颗实心主按钮）。 */}
-          {clearPageHref ? (
+          {/* T28 A：本页过滤放宽（次级文字链，不加第二颗实心）。
+              T29 C：孤儿时已升主 CTA，不再重复列这条次级。 */}
+          {clearPageHref && !orphanPage ? (
             <Link
               href={clearPageHref}
               className="text-sm text-muted no-underline hover:text-cinnabar"
@@ -509,27 +540,19 @@ export default function HeYeSession({
         </nav>
       </div>
       {/* T25 B：键说明与 study 对齐一族风格（muted 小字 + mono 键帽）；b 仅待核档。
-          T28 F：补本页环 sticky 键（g 清本页 / ⇧[] 切章；题内本无裸 [ ]，无冲突）。 */}
+          T28 F→T29 E：本页环键（g 清本页 / ⇧[] 切章）由父页按当前真可用性传入 loopKeys
+          （与 sticky 键岛同源）——无本页过滤不列 g，无章芯片不列 ⇧[]，题内键恒保留。 */}
       <SessionKeyHint
         className="mt-1"
-        keys={
-          mode === "open" && samePageOpen.length >= 1
-            ? [
-                ["1", "已对"],
-                ["2", "存疑"],
-                ["←/→", "上下条"],
-                ["b", "同页批量"],
-                ["g", "清本页（本页过滤时）"],
-                ["⇧[ ⇧]", "切章"],
-              ]
-            : [
-                ["1", "已对"],
-                ["2", "存疑"],
-                ["←/→", "上下条"],
-                ["g", "清本页（本页过滤时）"],
-                ["⇧[ ⇧]", "切章"],
-              ]
-        }
+        keys={[
+          ["1", "已对"],
+          ["2", "存疑"],
+          ["←/→", "上下条"],
+          ...(mode === "open" && samePageOpen.length >= 1
+            ? ([["b", "同页批量"]] as [string, string][])
+            : []),
+          ...(loopKeys ?? []),
+        ]}
       />
 
       {resumed ? (

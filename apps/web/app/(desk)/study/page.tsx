@@ -112,6 +112,18 @@ async function StudyBody({
         }
       : { bookId: activeBook?.id, chapterId: activeChapter?.id, page: pageNum ?? undefined },
   );
+  /** 本页核池（T29 B 对齐 review/desk 口径）：page 过滤的 collectCiteQueue，章/书回落池见下。 */
+  const heyeItems = collectCiteQueue({
+    cardId: scopedCard?.id,
+    bookId: activeBook?.id,
+    chapterId: activeChapter?.id,
+    page: pageNum ?? undefined,
+  });
+  /**
+   * T29 C/F 孤儿练判定（合法 pageNum · 非单卡 · 本页无可练原子）——deskPageHint 消毒与
+   * Clew page 共用：不把幽灵 page 深链进书桌 / 续开指针 / Clew 会话条。
+   */
+  const orphanStudy = pageNum != null && !scopedCard && atoms.length === 0;
 
   /** T20 续位 / sticky 作用域：cursor 含 mode（与 StudySession remount key 对齐），sticky 不含 mode；
    *  T27 C：两键都纳入 page——本页队列的续位/档位记忆不与章/书队列互串。 */
@@ -121,15 +133,17 @@ async function StudyBody({
   /**
    * 精确回书桌页优先级（T27 C）：?page= 本页 > 单卡首个有页 cite（cites → fields → atoms）；
    * 都无 → null（回书桌不带页，同书保留原页，不擦书桌精确页）。
+   * T29 F：孤儿页（本页无可练原子）不把幽灵 page 深链进书桌——hint 置 null，回书桌走书级。
    */
-  const deskPageHint =
-    pageNum ??
-    (scopedCard
-      ? (scopedCard.cites.find((c) => c.page != null)?.page ??
-        scopedCard.fields.find((f) => f.cite?.page != null)?.cite?.page ??
-        scopedCard.atoms.find((a) => a.cite?.page != null)?.cite?.page ??
-        null)
-      : null);
+  const deskPageHint = orphanStudy
+    ? null
+    : pageNum ??
+      (scopedCard
+        ? (scopedCard.cites.find((c) => c.page != null)?.page ??
+          scopedCard.fields.find((f) => f.cite?.page != null)?.cite?.page ??
+          scopedCard.atoms.find((a) => a.cite?.page != null)?.cite?.page ??
+          null)
+        : null);
   /** LastOpenedTouch 精确页：有页才写带 page 的 deskHref。 */
   const deskPageHrefForTouch =
     deskPageHint != null && scopeBook
@@ -196,7 +210,9 @@ async function StudyBody({
       ? `本页 p.${pageNum}`
       : (activeChapter?.title ?? activeBook?.title ?? "全部已注册书目");
   const deskHref = scopeBook
-    ? `/desk?book=${encodeURIComponent(scopeBook.id)}${pageNum != null ? `&page=${pageNum}` : ""}`
+    ? `/desk?book=${encodeURIComponent(scopeBook.id)}${
+        deskPageHint != null ? `&page=${deskPageHint}` : ""
+      }`
     : "/desk";
   /**
    * 单卡 → 核本卡（兼书）；书/全范围 → 核页深链。T26 C 带章；T27 D：有效页带 page
@@ -218,17 +234,83 @@ async function StudyBody({
   /** 完成/空态「回本卡」（仅 ?card= 时展示）。 */
   const cardHref = scopedCard ? `/desk/card/${encodeURIComponent(scopedCard.id)}` : undefined;
 
+  /**
+   * T29 B/F（T28 B 口径对齐 review/desk）：练/核各自判本页——本页无可练原子时练侧回落
+   * 章/书池，本页无待核 cite 时核侧回落；标签如实分写；孤儿页（双空）按章/书池统计，
+   * 不再把空池标成「本页 p.N」与书桌/核页同页互谎。单卡用卡交集池（标签「本卡」）。
+   */
+  const scopeStudyAtoms =
+    pageNum != null && !scopedCard
+      ? collectStudyAtoms({ bookId: activeBook?.id, chapterId: activeChapter?.id })
+      : atoms;
+  const scopeHeYeItems =
+    pageNum != null && !scopedCard
+      ? collectCiteQueue({ bookId: activeBook?.id, chapterId: activeChapter?.id })
+      : heyeItems;
+  const stripStudyPageScope = pageNum != null && !scopedCard && atoms.length > 0;
+  const stripHeYePageScope = pageNum != null && !scopedCard && heyeItems.length > 0;
+  const sideScopeLabel = activeChapter
+    ? `本章 ${activeChapter.id}`
+    : activeBook
+      ? "本书"
+      : "全部";
+  const stripScopeLabel = scopedCard
+    ? "本卡"
+    : stripStudyPageScope && stripHeYePageScope
+      ? `本页 p.${pageNum}`
+      : stripHeYePageScope
+        ? `练${sideScopeLabel} · 核 p.${pageNum}`
+        : stripStudyPageScope
+          ? `练 p.${pageNum} · 核${sideScopeLabel}`
+          : sideScopeLabel;
+  /** Strip / Clew 同源池（练/核各自判本页；单卡用卡交集池）。 */
+  const stripAtoms = (scopedCard || stripStudyPageScope ? atoms : scopeStudyAtoms).map((a) => ({
+    cardId: a.cardId,
+    atomId: a.atomId,
+  }));
+  const stripItemKeys = (scopedCard || stripHeYePageScope ? heyeItems : scopeHeYeItems).map(
+    (it) => ({ key: it.key }),
+  );
+  /**
+   * T29 B：Clew progress* 同范围练/核深链（对齐书桌 DocumentPane / review 规则）：练侧显式
+   * mode=all，核侧 mode=open；仅对应本页池非空才带 &page=（孤儿页不深链幽灵印刷页）。
+   */
+  const progressStudyQs = new URLSearchParams();
+  if (scopedCard) progressStudyQs.set("card", scopedCard.id);
+  if (activeBook) progressStudyQs.set("book", activeBook.id);
+  if (activeChapter && !scopedCard) progressStudyQs.set("chapter", activeChapter.id);
+  if (pageNum != null && (scopedCard ? atoms.length > 0 : stripStudyPageScope))
+    progressStudyQs.set("page", String(pageNum));
+  progressStudyQs.set("mode", "all");
+  const progressStudyHref = `/study?${progressStudyQs.toString()}`;
+  const progressReviewQs = new URLSearchParams();
+  if (scopedCard) progressReviewQs.set("card", scopedCard.id);
+  if (activeBook) progressReviewQs.set("book", activeBook.id);
+  if (activeChapter && !scopedCard) progressReviewQs.set("chapter", activeChapter.id);
+  if (pageNum != null && (scopedCard ? heyeItems.length > 0 : stripHeYePageScope))
+    progressReviewQs.set("page", String(pageNum));
+  progressReviewQs.set("mode", "open");
+  const progressReviewHref = `/review?${progressReviewQs.toString()}`;
+
   return (
     <div className="mx-auto w-full max-w-3xl px-8 py-10">
-      {/* 学习面薄桥：Clew 会话条显示学习范围。 */}
+      {/* 学习面薄桥：Clew 会话条显示学习范围。
+          T29 B：progress* 与页内 Strip 同一套池/标签/深链——Clew「本轮变化」compact 在练页
+          也显示本章/本页收窄数字，不再掉「未定位章 · 全书本机记录」。
+          T29 F：孤儿页不给 Clew 残留幽灵 p.N（头栏/建议问/stub 不提，会话条不深链书桌幽灵页）。 */}
       <DeskSurfaceBridge
         data={{
           surface: "study",
           book: scopeBook ? { id: scopeBook.id, title: scopeBook.title } : undefined,
           chapter: activeChapter ? { id: activeChapter.id, title: activeChapter.title } : undefined,
           card: scopedCard ? { id: scopedCard.id, name_zh: scopedCard.name_zh } : undefined,
-          page: pageNum ?? undefined,
+          page: orphanStudy ? null : (pageNum ?? undefined),
           citePages: [],
+          progressAtoms: stripAtoms,
+          progressItems: stripItemKeys,
+          progressScopeLabel: stripScopeLabel,
+          progressStudyHref: progressStudyHref,
+          progressReviewHref: progressReviewHref,
         }}
       />
       {/* T20 sticky 档位：无 ?mode= 时读本标签记忆补档（replace，不整页刷新）；有合法 ?mode= 时胜出并写回。 */}
@@ -267,7 +349,7 @@ async function StudyBody({
         ) : null}
         {/* T28 E：合法孤儿页（零知识原子）琥珀点名本页 + 放宽（下方空态主 CTA「换到本章全部」即放宽链），
             与 review 同族，不静默落到通用「这个范围还没有」空态。 */}
-        {pageNum != null && !invalidPage && !scopedCard && atoms.length === 0 ? (
+        {orphanStudy ? (
           <p className="mt-2 text-sm text-status-warn">
             本页 p.{pageNum} 暂无可练知识原子——这一印刷页没有卡引用它；可清本页放宽到
             {activeChapter ? activeChapter.title : (activeBook?.title ?? "全部书目")}。
@@ -281,27 +363,10 @@ async function StudyBody({
         ) : null}
         <StudyScopeCounts atoms={atoms} />
         {/* 作用域进度（T18：同范围练+核分列；本页即练环，不重复练链）。
-            T27 C：有效页时练/核两列都是本页池（collectCiteQueue 同样带 page），标签「本页 p.N」。 */}
-        <LocalProgressStrip
-          atoms={atoms.map((a) => ({ cardId: a.cardId, atomId: a.atomId }))}
-          items={collectCiteQueue({
-            cardId: scopedCard?.id,
-            bookId: activeBook?.id,
-            chapterId: activeChapter?.id,
-            page: pageNum ?? undefined,
-          }).map((it) => ({ key: it.key }))}
-          scopeLabel={
-            scopedCard
-              ? "本卡"
-              : pageNum != null
-                ? `本页 p.${pageNum}`
-                : activeChapter
-                  ? `本章 ${activeChapter.id}`
-                  : activeBook
-                    ? "本书"
-                    : "全部"
-          }
-        />
+            T27 C：有效页时练/核两列都是本页池（collectCiteQueue 同样带 page），标签「本页 p.N」。
+            T29 B/F：对齐 T28 B 口径——练/核各自判本页，单侧空回落章/书池、标签分写，
+            与书桌/核页同页打开时不互谎；孤儿页不再把空池标成「本页」。 */}
+        <LocalProgressStrip atoms={stripAtoms} items={stripItemKeys} scopeLabel={stripScopeLabel} />
       </header>
 
       {/* T28 F：sticky 键盘岛——g 聚焦「清本页」，⇧[ / ⇧] 按章芯片顺序切章（切章即离页）；
@@ -483,6 +548,7 @@ async function StudyBody({
           widenPageHref={widenPageHref}
           deskPageHint={deskPageHint}
           deskBookId={scopeBook?.id}
+          loopKeys={stickyKeys}
         />
       )}
     </div>
