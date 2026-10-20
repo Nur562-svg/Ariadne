@@ -518,8 +518,14 @@ export default function ChapterPageReader({
                           核
                         </Link>
                       ) : null}
-                      {/* T24 B：本机练/核薄计数（只读 study/heye 桶；无掌握% / 色环 / Due）。 */}
-                      <PageCardRailMarks cardId={c.cardId} atomCount={c.atomCount} />
+                      {/* T24 B：本机练/核薄计数（只读 study/heye 桶；无掌握% / 色环 / Due）。
+                          T34 E：分段计数可点进该卡对应档（bookId + 点前写 return，同轨「练/核」口径）。 */}
+                      <PageCardRailMarks
+                        cardId={c.cardId}
+                        atomCount={c.atomCount}
+                        bookId={bookId}
+                        rememberReturn={rememberDeskReturn}
+                      />
                       {c.hits.slice(0, 2).map((h, i) => (
                         <div key={`${h.source}:${h.label}:${i}`} className="mt-0.5 flex items-center gap-1">
                           <span className="min-w-0 truncate text-xs text-muted">

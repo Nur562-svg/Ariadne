@@ -17,6 +17,7 @@ import {
   touchLastOpened,
 } from "@/lib/last-opened";
 import { loadViewMode, saveViewMode } from "@/lib/view-continuity";
+import { saveReturn } from "@/lib/return-stack";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -64,7 +65,19 @@ function groupByKind(cards: EntityCard[]): { kind: string; items: EntityCard[] }
     .map(([kind, items]) => ({ kind, items }));
 }
 
-function CardCard({ card, bookId }: { card: EntityCard; bookId?: string }) {
+function CardCard({
+  card,
+  bookId,
+  rememberReturn,
+}: {
+  card: EntityCard;
+  bookId?: string;
+  /**
+   * T34 A：瓷砖练/核出发写 return 短链（回当前书桌——章页/分栏有阅读页写书桌 p.N，
+   * 实体卡模式写书级；对齐 ChapterPageReader.rememberDeskReturn 口径）。
+   */
+  rememberReturn?: () => void;
+}) {
   /** 主 cite（卡级第一条有页引用）；无页则没有可 Peek 的定位，不渲染。 */
   const primaryCite = card.cites.find((x) => x.page != null);
   return (
@@ -87,12 +100,33 @@ function CardCard({ card, bookId }: { card: EntityCard; bookId?: string }) {
         <span className="flex shrink-0 items-center gap-2">
           {/* 主 cite 旁轻量 Peek（T19 鼓励项）：不新增颜色，不抢「练」主链；无页则不渲染。 */}
           {primaryCite ? <CitePeek cite={primaryCite} deskBookId={bookId} cardId={card.id} /> : null}
+          {/* T34 A：主 cite 有页 + 书桌语境 → 次级「对页」直跳（与 EntityCardDetail T33 字段/页脚同族）。 */}
+          {primaryCite?.page != null && bookId ? (
+            <Link
+              href={`/desk?book=${encodeURIComponent(bookId)}&page=${primaryCite.page}`}
+              className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+            >
+              对页 →
+            </Link>
+          ) : null}
           {bookId ? (
             <Link
               href={`/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}`}
+              onClick={rememberReturn}
               className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
             >
               练 →
+            </Link>
+          ) : null}
+          {/* T34 A：练核对称——「核」次级 muted（与本页卡轨轨卡「核」同族，非第二颗实心朱红）；
+              与「练」同点前写 return。 */}
+          {bookId ? (
+            <Link
+              href={`/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}`}
+              onClick={rememberReturn}
+              className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+            >
+              核 →
             </Link>
           ) : null}
         </span>
@@ -353,6 +387,22 @@ export default function DocumentPane({
     stripReviewHref,
   ]);
 
+  /**
+   * T34 A：卡瓷砖练/核出发写 return 短链——回当前书桌：章页/分栏有阅读页写「书桌 p.N」，
+   * 实体卡模式（readingPage==null）写书级。与 ChapterPageReader.rememberDeskReturn 同口径
+   * （key 仍 ariadne.desk.return.v1），练/核完成态「回到刚才」能回书桌原位。
+   */
+  function rememberDeskCardReturn() {
+    saveReturn({
+      href:
+        readingPage != null
+          ? `/desk?book=${encodeURIComponent(book.id)}&page=${readingPage}`
+          : `/desk?book=${encodeURIComponent(book.id)}`,
+      label: readingPage != null ? `书桌 p.${readingPage}` : `书桌《${book.title}》`,
+      at: Date.now(),
+    });
+  }
+
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">
       <header>
@@ -523,7 +573,13 @@ export default function DocumentPane({
         // 默认 auto 轨道会把它列撑宽、把卡列表列压到 0 宽。
         <div className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="min-w-0">
-            <SectionCards section={section} cards={visibleCards} compact bookId={book.id} />
+            <SectionCards
+              section={section}
+              cards={visibleCards}
+              compact
+              bookId={book.id}
+              rememberReturn={rememberDeskCardReturn}
+            />
           </div>
           <div className="min-w-0 border-l border-line pl-6 max-xl:border-l-0 max-xl:pl-0">
             <ChapterPageReader
@@ -545,7 +601,12 @@ export default function DocumentPane({
           </div>
         </div>
       ) : (
-        <SectionCards section={section} cards={visibleCards} bookId={book.id} />
+        <SectionCards
+          section={section}
+          cards={visibleCards}
+          bookId={book.id}
+          rememberReturn={rememberDeskCardReturn}
+        />
       )}
     </div>
   );
@@ -650,17 +711,20 @@ function QuizPanel({
   );
 }
 
-/** 卡片区：默认网格；实体图谱按 kind 分组；compact 用于分栏窄列。卡瓷砖右上角带薄「练」链 → /study?card=。 */
+/** 卡片区：默认网格；实体图谱按 kind 分组；compact 用于分栏窄列。卡瓷砖右上角薄「练/核」链（T34 A 含 return）。 */
 function SectionCards({
   section,
   cards,
   compact,
   bookId,
+  rememberReturn,
 }: {
   section: SectionId;
   cards: EntityCard[];
   compact?: boolean;
   bookId?: string;
+  /** T34 A：卡瓷砖练/核点前写 return（DocumentPane 依当前阅读页构造）。 */
+  rememberReturn?: () => void;
 }) {
   if (cards.length === 0) {
     return (
@@ -680,7 +744,7 @@ function SectionCards({
             <ul className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
               {items.map((c) => (
                 <li key={c.id}>
-                  <CardCard card={c} bookId={bookId} />
+                  <CardCard card={c} bookId={bookId} rememberReturn={rememberReturn} />
                 </li>
               ))}
             </ul>
@@ -697,7 +761,7 @@ function SectionCards({
       <ul className={`mt-3 grid grid-cols-1 gap-4 ${compact ? "" : "md:grid-cols-2"}`}>
         {cards.map((c) => (
           <li key={c.id}>
-            <CardCard card={c} bookId={bookId} />
+            <CardCard card={c} bookId={bookId} rememberReturn={rememberReturn} />
           </li>
         ))}
       </ul>

@@ -159,14 +159,32 @@ export default function EntitySearch({
                   {c.cites.some((x) => x.page == null) ? " · 部分未验证 p.?" : ""}
                 </p>
               </Link>
-              {/* T31 E：已注册章的卡 → 次级文字「书桌打开」进卡枢纽（非第二颗实心主钮）。 */}
+              {/* T31 E：已注册章的卡 → 次级文字「书桌打开」进卡枢纽（非第二颗实心主钮）。
+                  T34 D：旁边补同口径「练 →」「核 →」（/study?card=&book= · /review?card=&book=，
+                  与卡枢纽/卡瓷砖同 href 族；无 deskBookId 不加）。 */}
               {deskBookIds?.[c.id] ? (
-                <p className="mt-2 text-xs">
+                <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs">
                   <Link
                     href={`/desk/card/${encodeURIComponent(c.id)}`}
                     className="text-muted no-underline hover:text-cinnabar"
                   >
                     书桌打开 →
+                  </Link>
+                  <Link
+                    href={`/study?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
+                      deskBookIds[c.id],
+                    )}`}
+                    className="text-muted no-underline hover:text-cinnabar"
+                  >
+                    练 →
+                  </Link>
+                  <Link
+                    href={`/review?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
+                      deskBookIds[c.id],
+                    )}`}
+                    className="text-muted no-underline hover:text-cinnabar"
+                  >
+                    核 →
                   </Link>
                 </p>
               ) : null}

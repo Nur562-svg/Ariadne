@@ -4,7 +4,7 @@ import { collectCiteQueue } from "@/lib/heye";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
-import ShelfBookContinuity from "@/components/ShelfBookContinuity";
+import ShelfBookContinuity, { ShelfBookFooterLinks } from "@/components/ShelfBookContinuity";
 
 /**
  * 书库页（书架）：DeskShell 中栏，从 config/books.json 派生，不硬编码任何书名/章节 copy。
@@ -112,18 +112,9 @@ export default function Library() {
                 >
                   卡浏览器 →
                 </Link>
-                <Link
-                  href={studyHref}
-                  className="text-muted no-underline hover:text-cinnabar"
-                >
-                  学习环 →
-                </Link>
-                <Link
-                  href={reviewHref}
-                  className="text-muted no-underline hover:text-cinnabar"
-                >
-                  核页 →
-                </Link>
+                {/* T34 C：footer 学习环/核页与「续开 p.N」同一 heal 口径（有合法续开页带
+                    &page= · 练 mode=all · 核 mode=open；无页书级）。 */}
+                <ShelfBookFooterLinks bookId={b.id} validPages={bookValidPages[b.id]} />
               </p>
             </li>
           );
