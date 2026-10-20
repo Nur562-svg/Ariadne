@@ -6,6 +6,7 @@ import { useDeskContext } from "@/components/desk/DeskContext";
 import type { ClewContextData } from "@/components/desk/DeskContext";
 import { loadGrades, subscribeStudyGrades, type GradeMap } from "@/lib/study";
 import { loadHeYeStore, subscribeHeYeStore, type HeYeStore } from "@/lib/heye-store";
+import { saveReturn } from "@/lib/return-stack";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 
 type Msg = { role: "user" | "assistant"; text: string } | { role: "note"; text: string };
@@ -139,27 +140,71 @@ export default function ClewPane() {
 
   const bookHref = clew.book ? `/desk?book=${encodeURIComponent(clew.book.id)}` : "/desk";
   /**
-   * T30 A：默认练/核深链认 clew.card——有当前卡（卡页=本卡；书桌=第一张可见卡）时
-   * 优先卡作用域（附 clew.book），Changes 空态 CTA 与 QueuePanel 不再把人丢到书级
-   * 丢卡；无卡保持书级 / 全局（对齐 brief：clew.card?.id 优先）。
+   * T31 A：供 Changes 空态 / QueuePanel 的默认练/核深链——与中栏同真，按序回落：
+   * 1) 优先 progress*（书桌=章/页 Strip 同款、卡面=本卡、study/review=同面池——各面写入）；
+   * 2) surface=card 且有卡 → T30 卡作用域（卡枢纽页不回退）；
+   * 3) 有书+页 → 本页书级（练 mode=all · 核 mode=open，与 Strip 深链同族）；
+   * 4) 书级 / 全局。
+   * 书桌面不再因段首可见卡（DocumentPane 把 card 设成 visibleCards[0]）把空态绑去
+   * 卡作用域盖过本页 progress*——同栏不互谎。
    */
-  const cardQ = clew.card?.id
-    ? `card=${encodeURIComponent(clew.card.id)}${clew.book ? `&book=${encodeURIComponent(clew.book.id)}` : ""}`
-    : null;
-  const studyHref = cardQ
-    ? `/study?${cardQ}`
-    : clew.book
-      ? `/study?book=${encodeURIComponent(clew.book.id)}`
-      : "/study";
-  const reviewHref = cardQ
-    ? `/review?${cardQ}`
-    : clew.book
-      ? `/review?book=${encodeURIComponent(clew.book.id)}`
-      : "/review";
+  const cardQ =
+    clew.surface === "card" && clew.card?.id
+      ? `card=${encodeURIComponent(clew.card.id)}${clew.book ? `&book=${encodeURIComponent(clew.book.id)}` : ""}`
+      : null;
+  const pageQ =
+    clew.book && clew.page != null
+      ? `book=${encodeURIComponent(clew.book.id)}&page=${clew.page}`
+      : null;
+  const studyHref =
+    clew.progressStudyHref ??
+    (cardQ
+      ? `/study?${cardQ}`
+      : pageQ
+        ? `/study?${pageQ}&mode=all`
+        : clew.book
+          ? `/study?book=${encodeURIComponent(clew.book.id)}`
+          : "/study");
+  const reviewHref =
+    clew.progressReviewHref ??
+    (cardQ
+      ? `/review?${cardQ}`
+      : pageQ
+        ? `/review?${pageQ}&mode=open`
+        : clew.book
+          ? `/review?book=${encodeURIComponent(clew.book.id)}`
+          : "/review");
   const pageHref =
     clew.book && clew.page != null
       ? `/desk?book=${encodeURIComponent(clew.book.id)}&page=${clew.page}`
       : bookHref;
+
+  /**
+   * T31 B：Clew 练/核 CTA 点前写 return 短链——练/核完成态「回到刚才」能回当前上下文
+   * （对齐 ChapterPageReader / CardHubReturnLinks 口径：有页回书桌本页，卡表面回卡枢纽，
+   * 仅书回书级；书架/无上下文不写）。key 不变（ariadne.desk.return.v1）。
+   */
+  function rememberClewReturn() {
+    if (clew.book && clew.page != null) {
+      saveReturn({
+        href: `/desk?book=${encodeURIComponent(clew.book.id)}&page=${clew.page}`,
+        label: `书桌 p.${clew.page}`,
+        at: Date.now(),
+      });
+    } else if (clew.surface === "card" && clew.card) {
+      saveReturn({
+        href: `/desk/card/${encodeURIComponent(clew.card.id)}`,
+        label: `卡《${clew.card.name_zh}》`,
+        at: Date.now(),
+      });
+    } else if (clew.book) {
+      saveReturn({
+        href: `/desk?book=${encodeURIComponent(clew.book.id)}`,
+        label: `书桌《${clew.book.title}》`,
+        at: Date.now(),
+      });
+    }
+  }
 
   return (
     <aside
@@ -318,9 +363,14 @@ export default function ClewPane() {
           clew={clew}
           studyHref={studyHref}
           reviewHref={reviewHref}
+          rememberReturn={rememberClewReturn}
         />
       ) : (
-        <QueuePanel reviewHref={reviewHref} studyHref={studyHref} />
+        <QueuePanel
+          reviewHref={reviewHref}
+          studyHref={studyHref}
+          rememberReturn={rememberClewReturn}
+        />
       )}
 
       <p className="border-t border-line px-4 py-2 text-xs text-muted">
@@ -336,12 +386,15 @@ function ChangesPanel({
   clew,
   studyHref,
   reviewHref,
+  rememberReturn,
 }: {
   since: number;
   /** T19：Clew compact 进度条接上下文池（书桌 DocumentPane 随章/页写）；无池 → 全局计数。 */
   clew: ClewContextData;
   studyHref: string;
   reviewHref: string;
+  /** T31 B：练/核 CTA 点前写 return 短链（回当前上下文）。 */
+  rememberReturn: () => void;
 }) {
   const [, setTick] = useState(0);
   const [grades, setGrades] = useState<GradeMap>({});
@@ -412,10 +465,18 @@ function ChangesPanel({
         <div className="mt-6 border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
           本轮还没有本机标记——去学习环自评或核页对页后回到这里。
           <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-            <Link href={studyHref} className="text-cinnabar no-underline hover:underline underline-offset-4">
+            <Link
+              href={studyHref}
+              onClick={rememberReturn}
+              className="text-cinnabar no-underline hover:underline underline-offset-4"
+            >
               去学习环自评 →
             </Link>
-            <Link href={reviewHref} className="text-cinnabar no-underline hover:underline underline-offset-4">
+            <Link
+              href={reviewHref}
+              onClick={rememberReturn}
+              className="text-cinnabar no-underline hover:underline underline-offset-4"
+            >
               去核页对页 →
             </Link>
           </p>
@@ -445,7 +506,16 @@ function ChangesPanel({
 }
 
 /** 复习队列：诚实跳转——核页工作台按本机三档统计；这里不生成到期/Due 文案。 */
-function QueuePanel({ reviewHref, studyHref }: { reviewHref: string; studyHref: string }) {
+function QueuePanel({
+  reviewHref,
+  studyHref,
+  rememberReturn,
+}: {
+  reviewHref: string;
+  studyHref: string;
+  /** T31 B：练/核 CTA 点前写 return 短链（回当前上下文）。 */
+  rememberReturn: () => void;
+}) {
   return (
     <div className="flex-1 overflow-y-auto px-4 py-4">
       <p className="text-sm leading-7 text-foreground/90">
@@ -458,12 +528,14 @@ function QueuePanel({ reviewHref, studyHref }: { reviewHref: string; studyHref: 
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <Link
           href={reviewHref}
+          onClick={rememberReturn}
           className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
         >
           打开核页工作台 →
         </Link>
         <Link
           href={studyHref}
+          onClick={rememberReturn}
           className="text-sm text-muted no-underline hover:text-cinnabar"
         >
           去学习环 →

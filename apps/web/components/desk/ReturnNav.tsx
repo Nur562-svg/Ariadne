@@ -18,6 +18,7 @@ export default function ReturnNav({
   pageHint,
   deskHref,
   cardHref,
+  validPages,
   showReturn = true,
 }: {
   /** 当前范围书 id（缺省则只能回 /desk，不带 book/page）。 */
@@ -28,6 +29,11 @@ export default function ReturnNav({
   deskHref: string;
   /** ?card= 时回本卡链（/desk/card/<id>）。 */
   cardHref?: string;
+  /**
+   * T31 F：该书已解析印刷页[]（服务端装配）——lastOpened 回落页消毒：lo.page 不在表内
+   * 不采用（无表时同样只信 pageHint，不盲信 localStorage）。pageHint（服务端可信）仍优先。
+   */
+  validPages?: number[];
   /** 是否渲染「回到刚才」（sticky 工具带设 false，完成/空态设 true）。 */
   showReturn?: boolean;
 }) {
@@ -39,10 +45,15 @@ export default function ReturnNav({
       setPage(pageHint);
     } else if (bookId) {
       const lo = loadLastOpened();
-      if (lo?.bookId === bookId && lo.page != null) setPage(lo.page);
+      // T31 F：只信有表且页在表内的 lo.page；无表 / 脏页 → 不采用（回落 deskHref 书级）。
+      if (lo?.bookId === bookId && lo.page != null && validPages?.includes(lo.page)) {
+        setPage(lo.page);
+      } else {
+        setPage(null);
+      }
     }
     if (showReturn) setRet(loadReturn());
-  }, [bookId, pageHint, showReturn]);
+  }, [bookId, pageHint, showReturn, validPages]);
 
   const deskPageHref =
     page != null && bookId ? `/desk?book=${encodeURIComponent(bookId)}&page=${page}` : undefined;

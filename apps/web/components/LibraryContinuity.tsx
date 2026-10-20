@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import {
   clearLastOpened,
   loadLastOpened,
+  sanitizeOpenedPage,
+  saveLastOpened,
   subscribeLastOpened,
   type LastOpened,
 } from "@/lib/last-opened";
@@ -15,32 +17,45 @@ import {
  * 失效（bookId 已不在书库）→ clear + 回落 + 琥珀提示。
  * 「继续上次」是效用主链（朱红文字，非第三颗大红按钮）；「上次打开」用 muted 小字。
  * 不出现掌握 % / 圆环 / 营销绿条。
+ * T31 C/D：读侧消毒——旧栈幽灵页（page=999）经该书 validPages 剥掉（脏时单条 heal，
+ * 禁 clearLastOpened 整栈）；消毒后仍有合法停留页 → 学习/核次级链带 &page=（练 mode=all ·
+ * 核 mode=open，与 Strip 深链同族），无页保持书级。
  */
-export default function LibraryContinuity({ books }: { books: { id: string; title: string }[] }) {
+export default function LibraryContinuity({
+  books,
+  bookValidPages,
+}: {
+  books: { id: string; title: string }[];
+  /** T31 C：bookId → 已解析印刷页[]（服务端装配）——读侧幽灵页消毒。 */
+  bookValidPages?: Record<string, number[]>;
+}) {
   const [last, setLast] = useState<LastOpened | null>(null);
   const [invalid, setInvalid] = useState(false);
 
   useEffect(() => {
     function sync() {
-      const lo = loadLastOpened();
-      if (!lo) {
+      const raw = loadLastOpened();
+      if (!raw) {
         setLast(null);
         setInvalid(false);
         return;
       }
-      if (!books.some((b) => b.id === lo.bookId)) {
+      if (!books.some((b) => b.id === raw.bookId)) {
         // 失效指针：书已不在书库 → 清除并诚实提示（可选琥珀）。
         clearLastOpened();
         setLast(null);
         setInvalid(true);
         return;
       }
+      // T31 C：消毒 + 单条 heal（只改该书条目，不动其它书/不清整栈）。
+      const sanitized = sanitizeOpenedPage(raw, bookValidPages?.[raw.bookId]);
+      if (sanitized !== raw) saveLastOpened({ ...sanitized, at: Date.now() });
       setInvalid(false);
-      setLast(lo);
+      setLast(sanitized);
     }
     sync();
     return subscribeLastOpened(sync);
-  }, [books]);
+  }, [books, bookValidPages]);
 
   if (invalid) {
     return (
@@ -65,13 +80,17 @@ export default function LibraryContinuity({ books }: { books: { id: string; titl
           继续上次：《{book.title}》 →
         </Link>
         <Link
-          href={`/study?book=${encodeURIComponent(book.id)}`}
+          href={`/study?book=${encodeURIComponent(book.id)}${
+            last.page != null ? `&page=${last.page}&mode=all` : ""
+          }`}
           className="text-sm text-muted no-underline hover:text-cinnabar"
         >
           学习环 →
         </Link>
         <Link
-          href={`/review?book=${encodeURIComponent(book.id)}`}
+          href={`/review?book=${encodeURIComponent(book.id)}${
+            last.page != null ? `&page=${last.page}&mode=open` : ""
+          }`}
           className="text-sm text-muted no-underline hover:text-cinnabar"
         >
           核页 →

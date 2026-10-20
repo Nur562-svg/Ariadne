@@ -15,11 +15,14 @@ export default function EntitySearch({
   cards,
   kindLabel,
   activeKind,
+  deskBookIds,
 }: {
   cards: EntityCard[];
   kindLabel: Record<string, string>;
   /** Current list kind filter (URL ?kind=); preserved on card → detail so back can restore it. */
   activeKind?: string;
+  /** T31 E：cardId → 已注册书 id（服务端反查）——有值的卡给次级「书桌打开 →」卡枢纽链。 */
+  deskBookIds?: Record<string, string>;
 }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
@@ -129,14 +132,18 @@ export default function EntitySearch({
       ) : (
         <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {hits.map((c) => (
-            <li key={c.id}>
+            <li
+              key={c.id}
+              className="rounded-lg border border-line bg-card p-5 transition-shadow hover:shadow-md"
+            >
+              {/* 主链：整卡进 shell 详情（保留 kind qs）。卡样式移到 li，避免「书桌打开」嵌套 <a>。 */}
               <Link
                 href={
                   activeKind && activeKind !== "全部"
                     ? `/entities/${c.id}?kind=${encodeURIComponent(activeKind)}`
                     : `/entities/${c.id}`
                 }
-                className="block h-full rounded-lg border border-line bg-card p-5 no-underline transition-shadow hover:shadow-md"
+                className="block h-full no-underline"
               >
                 <div className="flex items-baseline justify-between gap-2">
                   <h2 className="text-lg font-semibold text-foreground">{c.name_zh}</h2>
@@ -152,6 +159,17 @@ export default function EntitySearch({
                   {c.cites.some((x) => x.page == null) ? " · 部分未验证 p.?" : ""}
                 </p>
               </Link>
+              {/* T31 E：已注册章的卡 → 次级文字「书桌打开」进卡枢纽（非第二颗实心主钮）。 */}
+              {deskBookIds?.[c.id] ? (
+                <p className="mt-2 text-xs">
+                  <Link
+                    href={`/desk/card/${encodeURIComponent(c.id)}`}
+                    className="text-muted no-underline hover:text-cinnabar"
+                  >
+                    书桌打开 →
+                  </Link>
+                </p>
+              ) : null}
             </li>
           ))}
         </ul>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { collectStudyAtoms, loadBooks, loadCards } from "@/lib/entities";
+import { collectStudyAtoms, loadBooks, loadBookValidPages, loadCards } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
@@ -14,6 +14,8 @@ export const dynamic = "force-dynamic";
 
 export default function Library() {
   const books = loadBooks();
+  /** T31 C：各书已解析印刷页集合——继续上次 / 每书「续开 p.N」读侧幽灵页消毒。 */
+  const bookValidPages = loadBookValidPages();
 
   if (books.length === 0) {
     return (
@@ -46,8 +48,12 @@ export default function Library() {
         教材 → 知识原子 / 实体卡 → 可复习。打开一本书进入书桌（三栏学习面）；citation 仍 fail-closed（未验证保留琥珀 p.N / p.?）。
       </p>
 
-      {/* T21 B1：合法 last-opened → 顶栏「继续上次」进书桌（次级学习/核）；失效 → clear + 琥珀提示。 */}
-      <LibraryContinuity books={books.map((b) => ({ id: b.id, title: b.title }))} />
+      {/* T21 B1：合法 last-opened → 顶栏「继续上次」进书桌（次级学习/核）；失效 → clear + 琥珀提示。
+          T31 C：传 validPages——旧栈幽灵页读侧消毒（脏时单条 heal）。 */}
+      <LibraryContinuity
+        books={books.map((b) => ({ id: b.id, title: b.title }))}
+        bookValidPages={bookValidPages}
+      />
 
       <ul className="mt-6 space-y-4">
         {books.map((b) => {
@@ -75,7 +81,7 @@ export default function Library() {
                   >
                     打开书桌 →
                   </Link>
-                  <ShelfBookContinuity bookId={b.id} />
+                  <ShelfBookContinuity bookId={b.id} validPages={bookValidPages[b.id]} />
                 </span>
               </div>
               <dl className="mt-4 grid grid-cols-3 gap-4 text-center sm:max-w-md">

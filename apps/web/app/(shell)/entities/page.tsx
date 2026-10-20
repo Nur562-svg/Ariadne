@@ -57,6 +57,18 @@ async function EntityList({
   const all = loadCards({ bookId: activeBook?.id, chapterId: activeChapter?.id });
   const cards = !kind || kind === "全部" ? all : all.filter((c) => c.kind === kind);
 
+  /**
+   * T31 E：列表卡 → 书桌反查（chapterId ∈ book.chapterIds，与 T30 B / desk 卡页同口径）——
+   * 已注册章的卡传 deskBookId，瓷砖给次级「书桌打开 →」/desk/card/<id>；未注册章保持纯 shell。
+   */
+  const bookByChapter: Record<string, string> = {};
+  for (const b of books) for (const ch of b.chapterIds) bookByChapter[ch] = b.id;
+  const deskBookIds: Record<string, string> = {};
+  for (const c of cards) {
+    const bid = c.chapterId ? bookByChapter[c.chapterId] : undefined;
+    if (bid) deskBookIds[c.id] = bid;
+  }
+
   /** 保留当前 book/chapter 过滤：book 恒保留；chapter 用 null 显式清除，默认继承当前。 */
   const qs = (opts?: { chapter?: string | null; kind?: string }) => {
     const p = new URLSearchParams();
@@ -128,7 +140,7 @@ async function EntityList({
         ))}
       </div>
 
-      <EntitySearch cards={cards} kindLabel={KIND_ZH} activeKind={kind} />
+      <EntitySearch cards={cards} kindLabel={KIND_ZH} activeKind={kind} deskBookIds={deskBookIds} />
     </>
   );
 }

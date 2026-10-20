@@ -238,6 +238,25 @@ export function findPageByPrinted(printedPage: number): PageDoc | undefined {
   return loadAllChapterPages().find((p) => p.page === printedPage);
 }
 
+/**
+ * T31 C：各书「已解析印刷页」集合（bookId → 印刷页升序列表，loadAllChapterPages ∩ 书 chapterIds）。
+ * 服务端装配一次，经 props 下传给续开/换书/回程等读侧消费组件做幽灵页消毒
+ * （与 lib/last-opened 的 sanitizeOpenedPage 配套；客户端不读 fs，不造全量校验库）。
+ */
+export function loadBookValidPages(): Record<string, number[]> {
+  const books = loadBooks();
+  const pages = loadAllChapterPages();
+  const out: Record<string, number[]> = {};
+  for (const b of books) {
+    const ids = new Set(b.chapterIds);
+    out[b.id] = pages
+      .filter((p) => p.chapterId != null && ids.has(p.chapterId as string) && p.page != null)
+      .map((p) => p.page as number)
+      .sort((x, y) => x - y);
+  }
+  return out;
+}
+
 /** 学习环视图模型：卡片的所有原子扁平化，带卡/章上下文。 */
 export type StudyAtom = {
   cardId: string;

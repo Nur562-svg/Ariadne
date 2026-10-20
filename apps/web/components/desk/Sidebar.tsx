@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import {
   loadLastOpened,
   loadRecentBooks,
+  sanitizeOpenedPage,
+  saveLastOpened,
   subscribeLastOpened,
   type LastOpened,
 } from "@/lib/last-opened";
@@ -42,24 +44,41 @@ function isActive(pathname: string, href: string) {
  * T21（desk-library-shelf-continuity）：在读书目不再死取 books[0]，
  * 客户端据 last-opened 选「在读」书（失效回落首本/空库），书名可点进书桌，并给学习/核次级链（?book=）。
  */
-export default function Sidebar({ books }: { books?: SidebarBook[] }) {
+export default function Sidebar({
+  books,
+  bookValidPages,
+}: {
+  books?: SidebarBook[];
+  /** T31 C：bookId → 已解析印刷页[]（服务端 loadBookValidPages 装配）——读侧幽灵页消毒。 */
+  bookValidPages?: Record<string, number[]>;
+}) {
   const pathname = usePathname();
   const [current, setCurrent] = useState<SidebarBook | undefined>(books?.[0]);
+  /** 消毒后的在读条目（含合法停留页）；无效/无记录 → null。 */
+  const [currentEntry, setCurrentEntry] = useState<LastOpened | null>(null);
   const [recent, setRecent] = useState<LastOpened[]>([]);
 
   useEffect(() => {
     function sync() {
-      const lo = loadLastOpened();
-      const book = lo
-        ? books?.find((b) => b.id === lo.bookId)
-        : undefined;
+      const raw = loadLastOpened();
+      const book = raw ? books?.find((b) => b.id === raw.bookId) : undefined;
+      /**
+       * T31 C：读侧消毒——旧栈幽灵页（如历史写入的 page=999）经该书 validPages 剥掉，
+       * 续开/换书不再播；发现脏时**单条** saveLastOpened heal（只改该书条目并保序，
+       * 禁 clearLastOpened 整栈；写点已在 T30 D 封死，heal 只兜历史脏数据）。
+       */
+      const lo = raw && book ? sanitizeOpenedPage(raw, bookValidPages?.[raw.bookId]) : raw;
+      if (raw && book && lo && lo !== raw) saveLastOpened({ ...lo, at: Date.now() });
       // 有效 last-opened → 该书；无效/无 → 首本（有书时）或 undefined（空库文案）。
+      setCurrentEntry(book ? lo : null);
       setCurrent(book ?? books?.[0]);
-      setRecent(loadRecentBooks());
+      setRecent(
+        loadRecentBooks().map((e) => sanitizeOpenedPage(e, bookValidPages?.[e.bookId])),
+      );
     }
     sync();
     return subscribeLastOpened(sync);
-  }, [books]);
+  }, [books, bookValidPages]);
 
   return (
     <aside className="flex h-full w-[248px] shrink-0 flex-col border-r border-line bg-card">
@@ -131,14 +150,20 @@ export default function Sidebar({ books }: { books?: SidebarBook[] }) {
               {current.chapters} 章 · {current.cards} 张实体卡
             </p>
             <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+              {/* T31 D：合法停留页（消毒后）→ 学习/核页次级链带 page，落本页池；
+                  练侧显式 mode=all 防 sticky 档位回补空档（与 Strip 深链同族）；无页保持书级。 */}
               <Link
-                href={`/study?book=${encodeURIComponent(current.id)}`}
+                href={`/study?book=${encodeURIComponent(current.id)}${
+                  currentEntry?.page != null ? `&page=${currentEntry.page}&mode=all` : ""
+                }`}
                 className="text-muted no-underline hover:text-cinnabar"
               >
                 学习 →
               </Link>
               <Link
-                href={`/review?book=${encodeURIComponent(current.id)}`}
+                href={`/review?book=${encodeURIComponent(current.id)}${
+                  currentEntry?.page != null ? `&page=${currentEntry.page}&mode=open` : ""
+                }`}
                 className="text-muted no-underline hover:text-cinnabar"
               >
                 核页 →

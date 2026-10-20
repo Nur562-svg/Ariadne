@@ -12,10 +12,13 @@ import type { ClewContextData } from "@/components/desk/DeskContext";
  */
 export default function DeskShellClient({
   sidebarBooks,
+  bookValidPages,
   clewInitial,
   children,
 }: {
   sidebarBooks?: SidebarBook[];
+  /** T31 C：bookId → 已解析印刷页[]（服务端装配）——Sidebar 读侧幽灵页消毒用。 */
+  bookValidPages?: Record<string, number[]>;
   clewInitial: ClewContextData;
   children: React.ReactNode;
 }) {
@@ -23,7 +26,7 @@ export default function DeskShellClient({
     <DeskContextProvider initial={clewInitial}>
       {/* 桌面三栏壳：Sidebar/Clew 固定宽，中栏最小 420px；窄视口横向滚动，绝不把中栏压成 0。 */}
       <div className="flex h-dvh overflow-x-auto overflow-y-hidden">
-        <Sidebar books={sidebarBooks} />
+        <Sidebar books={sidebarBooks} bookValidPages={bookValidPages} />
         <main className="min-w-[420px] flex-1 overflow-y-auto">{children}</main>
         <ClewPane />
       </div>

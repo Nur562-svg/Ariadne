@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   cardsCitingPage,
   loadAllChapterPages,
+  loadBookValidPages,
   loadBooks,
   loadCards,
   loadChapters,
@@ -101,6 +102,7 @@ export default async function DeskPage({
         citingByPage={citingByPage}
         pendingByPage={pendingByPage}
         heyePool={bookQueue.map((it) => ({ key: it.key, cardId: it.cardId, page: it.page }))}
+        bookValidPages={loadBookValidPages()}
       />
     </>
   );

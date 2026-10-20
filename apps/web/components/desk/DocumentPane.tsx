@@ -113,6 +113,7 @@ export default function DocumentPane({
   citingByPage,
   pendingByPage,
   heyePool,
+  bookValidPages,
 }: {
   book: BookConfig;
   /** 全部已注册书（T23 换书用）；书名旁 ≥2 本时显示「换书 ▾」。 */
@@ -132,6 +133,8 @@ export default function DocumentPane({
   pendingByPage?: Record<number, number>;
   /** 本书核池轻量项（服务端 collectCiteQueue({bookId})；带 cardId/page 供客户端按章/页过滤）。 */
   heyePool?: { key: string; cardId: string; page: number }[];
+  /** T31 C：bookId → 已解析印刷页[]（服务端装配）——BookSwitcher 换书读侧幽灵页消毒。 */
+  bookValidPages?: Record<string, number[]>;
 }) {
   const { setClew } = useDeskContext();
 
@@ -321,7 +324,13 @@ export default function DocumentPane({
       <header>
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
           <h1 className="brand-rule pb-2 text-3xl font-bold">{book.title}</h1>
-          {books ? <BookSwitcher books={books} currentBookId={book.id} /> : null}
+          {books ? (
+            <BookSwitcher
+              books={books}
+              currentBookId={book.id}
+              bookValidPages={bookValidPages}
+            />
+          ) : null}
         </div>
         {invalidBook ? (
           <p className="mt-2 text-sm text-status-warn">
@@ -446,7 +455,12 @@ export default function DocumentPane({
           }}
         />
       ) : section === "quiz" ? (
-        <QuizPanel bookId={book.id} atomCount={cards.reduce((n, c) => n + c.atoms.length, 0)} />
+        <QuizPanel
+          bookId={book.id}
+          atomCount={cards.reduce((n, c) => n + c.atoms.length, 0)}
+          studyHref={stripStudyHref}
+          reviewHref={stripReviewHref}
+        />
       ) : mode === "pages" ? (
         <div className="mt-8">
           <ChapterPageReader
@@ -558,8 +572,22 @@ function OverviewPanel({
   );
 }
 
-/** 自测面板：学习环本机自评 + 核页本机对页（两者均已可用；均非 FSRS 到期调度）。 */
-function QuizPanel({ bookId, atomCount }: { bookId: string; atomCount: number }) {
+/**
+ * 自测面板：学习环本机自评 + 核页本机对页（两者均已可用；均非 FSRS 到期调度）。
+ * T31 B：练/核深链吃 Strip 同款章/页 scope（book+chapter 恒在，本页有池才带 page）——
+ * 禁止裸 /study?book= / /review?book= 丢章。
+ */
+function QuizPanel({
+  bookId,
+  atomCount,
+  studyHref,
+  reviewHref,
+}: {
+  bookId: string;
+  atomCount: number;
+  studyHref: string;
+  reviewHref: string;
+}) {
   return (
     <section className="mt-8 max-w-xl rounded-lg border border-line bg-card p-6">
       <h2 className="text-sm font-semibold">自测与核对</h2>
@@ -572,13 +600,13 @@ function QuizPanel({ bookId, atomCount }: { bookId: string; atomCount: number })
       </p>
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <Link
-          href={`/study?book=${encodeURIComponent(bookId)}`}
+          href={studyHref}
           className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
         >
           去学习环自评 →
         </Link>
         <Link
-          href={`/review?book=${encodeURIComponent(bookId)}`}
+          href={reviewHref}
           className="text-sm text-muted no-underline hover:text-cinnabar"
         >
           去核页 →

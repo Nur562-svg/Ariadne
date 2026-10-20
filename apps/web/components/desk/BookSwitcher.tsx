@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { loadRecentBooks, subscribeLastOpened, type LastOpened } from "@/lib/last-opened";
+import {
+  loadRecentBooks,
+  sanitizeOpenedPage,
+  subscribeLastOpened,
+  type LastOpened,
+} from "@/lib/last-opened";
 
 export type BookSwitcherBook = { id: string; title: string };
 
@@ -10,23 +15,29 @@ export type BookSwitcherBook = { id: string; title: string };
  * 书桌书名旁薄换书（T23 D，客户端）：books>=2 时在 DocumentPane 书名旁补 documents 换书入口，
  * 与 T22 Sidebar 换书视觉同族（「换书 ▾」disclosure + 缩进列表，非书单墙）。
  * 复用最近栈 deskHref / page——换下书仍带回它的停留页，换书后再回来不丢页。
+ * T31 C：换书读侧消毒——带页 href 经该书 validPages 剥幽灵页（旧栈 page=999 不再深链）。
  */
 export default function BookSwitcher({
   books,
   currentBookId,
+  bookValidPages,
 }: {
   books: BookSwitcherBook[];
   currentBookId: string;
+  /** T31 C：bookId → 已解析印刷页[]（服务端装配）——换书读侧幽灵页消毒。 */
+  bookValidPages?: Record<string, number[]>;
 }) {
   const [recent, setRecent] = useState<LastOpened[]>([]);
 
   useEffect(() => {
     function sync() {
-      setRecent(loadRecentBooks());
+      setRecent(
+        loadRecentBooks().map((e) => sanitizeOpenedPage(e, bookValidPages?.[e.bookId])),
+      );
     }
     sync();
     return subscribeLastOpened(sync);
-  }, []);
+  }, [bookValidPages]);
 
   if (books.length < 2) return null;
   const others = books.filter((b) => b.id !== currentBookId);

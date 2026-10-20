@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { collectStudyAtoms, loadBooks, loadCard, loadChapters } from "@/lib/entities";
+import { collectStudyAtoms, loadBookValidPages, loadBooks, loadCard, loadChapters } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import type { StudyMode } from "@/lib/study";
 import StudySession from "@/components/StudySession";
@@ -234,6 +234,9 @@ async function StudyBody({
   /** 完成/空态「回本卡」（仅 ?card= 时展示）。 */
   const cardHref = scopedCard ? `/desk/card/${encodeURIComponent(scopedCard.id)}` : undefined;
 
+  /** T31 F：该书已解析印刷页表——ReturnNav lastOpened 回落页消毒（脏页不采用）。 */
+  const scopeBookValidPages = scopeBook ? loadBookValidPages()[scopeBook.id] : undefined;
+
   /**
    * T29 B/F（T28 B 口径对齐 review/desk）：练/核各自判本页——本页无可练原子时练侧回落
    * 章/书池，本页无待核 cite 时核侧回落；标签如实分写；孤儿页（双空）按章/书池统计，
@@ -457,6 +460,7 @@ async function StudyBody({
               pageHint={deskPageHint}
               deskHref={deskHref}
               cardHref={cardHref}
+              validPages={scopeBookValidPages}
               showReturn={false}
             />
           </div>
@@ -525,6 +529,7 @@ async function StudyBody({
               bookId={scopeBook?.id}
               pageHint={deskPageHint}
               deskHref={deskHref}
+              validPages={scopeBookValidPages}
               showReturn
             />
           </div>
