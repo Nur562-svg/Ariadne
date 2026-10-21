@@ -172,8 +172,9 @@ export default function CitePeek({
     known && deskBookId
       ? `/desk?book=${encodeURIComponent(deskBookId)}&page=${cite.page}`
       : undefined;
+  /** T35 A：核本页显式 mode=open（只改导航 href；quote/trap/定位不动）——落可见待核池，不被 sticky 空档回补。 */
   const reviewPageHref = known
-    ? `/review?${deskBookId ? `book=${encodeURIComponent(deskBookId)}&` : ""}page=${cite.page}`
+    ? `/review?${deskBookId ? `book=${encodeURIComponent(deskBookId)}&` : ""}page=${cite.page}&mode=open`
     : undefined;
   /** T28 D：练本页深链（cite.page 与 deskBookId 都在才有）——显式 mode=all，
    *  与书桌练本页同款：落页队列可见，不被 sticky restore 成档空。 */
@@ -181,9 +182,10 @@ export default function CitePeek({
     known && deskBookId
       ? `/study?book=${encodeURIComponent(deskBookId)}&page=${cite.page}&mode=all`
       : undefined;
-  /** T30 C：核本卡带书语境（有 deskBookId 时 /review?book=&card=）——从卡面/摘录进核不丢书。 */
+  /** T30 C：核本卡带书语境（有 deskBookId 时 /review?book=&card=）——从卡面/摘录进核不丢书。
+   *  T35 A：显式 mode=open（同上，只改 href）。 */
   const reviewCardHref = cardId
-    ? `/review?${deskBookId ? `book=${encodeURIComponent(deskBookId)}&` : ""}card=${encodeURIComponent(cardId)}`
+    ? `/review?${deskBookId ? `book=${encodeURIComponent(deskBookId)}&` : ""}card=${encodeURIComponent(cardId)}&mode=open`
     : undefined;
 
   return (

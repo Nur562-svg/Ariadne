@@ -364,7 +364,16 @@ async function StudyBody({
             {pageNum != null ? " / page" : ""} 范围内——按空队列处理。
           </p>
         ) : null}
-        <StudyScopeCounts atoms={atoms} />
+        {/* T35 C：页头范围计数可点——与 sticky 三档 tablist / StudySession allHref·unknownHref·
+            ungradedHref 同一 qs({ mode }) 口径（保留 card/book/chapter/page）；N=0 纯文。 */}
+        <StudyScopeCounts
+          atoms={atoms}
+          hrefs={{
+            all: `/study${qs({ mode: "all" })}`,
+            unknown: `/study${qs({ mode: "unknown" })}`,
+            ungraded: `/study${qs({ mode: "ungraded" })}`,
+          }}
+        />
         {/* 作用域进度（T18：同范围练+核分列；本页即练环，不重复练链）。
             T27 C：有效页时练/核两列都是本页池（collectCiteQueue 同样带 page），标签「本页 p.N」。
             T29 B/F：对齐 T28 B 口径——练/核各自判本页，单侧空回落章/书池、标签分写，

@@ -77,12 +77,16 @@ export function EntityCardDetail({
   heyePoolKeys?: { key: string }[];
 }) {
   const stats = citeStats(card);
+  /**
+   * T35 A/B：卡枢纽练/核显式默认档（练 mode=all · 核 mode=open）——CardHubReturnLinks /
+   * 本卡 Strip 消费同一对 href；本标签 sticky 停在非默认空档时从卡面进练/核仍落可见池。
+   */
   const studyHref = deskBookId
-    ? `/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(deskBookId)}`
-    : `/study?card=${encodeURIComponent(card.id)}`;
+    ? `/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(deskBookId)}&mode=all`
+    : `/study?card=${encodeURIComponent(card.id)}&mode=all`;
   const reviewHref = deskBookId
-    ? `/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(deskBookId)}`
-    : `/review?card=${encodeURIComponent(card.id)}`;
+    ? `/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(deskBookId)}&mode=open`
+    : `/review?card=${encodeURIComponent(card.id)}&mode=open`;
   const normName = (s: string) => s.trim().toLowerCase();
   /** 「在书桌打开本页」（仅书桌语境 + 首个有页 cite）：/desk?book=&page= 章页定位。 */
   const firstPage = firstPagedCitePage(card);
@@ -241,10 +245,11 @@ export function EntityCardDetail({
                   <span className="mx-2 text-line">|</span>
                   {c.tip}
                   {/* T33 E 可选：易混对象已可深链 + 书桌语境 → muted「练易混卡」直跳该卡练面
-                      （次级文字，非第二颗实心；与卡枢纽「练这张卡」同目标，免绕卡页一步）。 */}
+                      （次级文字，非第二颗实心；与卡枢纽「练这张卡」同目标，免绕卡页一步）。
+                      T35 B：显式 mode=all。 */}
                   {vsId && deskBookId ? (
                     <Link
-                      href={`/study?card=${encodeURIComponent(vsId)}&book=${encodeURIComponent(deskBookId)}`}
+                      href={`/study?card=${encodeURIComponent(vsId)}&book=${encodeURIComponent(deskBookId)}&mode=all`}
                       className="ml-3 whitespace-nowrap text-xs text-muted no-underline hover:text-cinnabar"
                     >
                       练易混卡 →

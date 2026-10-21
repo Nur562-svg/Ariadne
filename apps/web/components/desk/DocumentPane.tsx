@@ -109,9 +109,10 @@ function CardCard({
               对页 →
             </Link>
           ) : null}
+          {/* T35 B：瓷砖「练」显式 mode=all——打开可见池入口写出默认档，挡住 sticky 非默认空档。 */}
           {bookId ? (
             <Link
-              href={`/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}`}
+              href={`/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}&mode=all`}
               onClick={rememberReturn}
               className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
             >
@@ -119,10 +120,10 @@ function CardCard({
             </Link>
           ) : null}
           {/* T34 A：练核对称——「核」次级 muted（与本页卡轨轨卡「核」同族，非第二颗实心朱红）；
-              与「练」同点前写 return。 */}
+              与「练」同点前写 return。T35 A：显式 mode=open。 */}
           {bookId ? (
             <Link
-              href={`/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}`}
+              href={`/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}&mode=open`}
               onClick={rememberReturn}
               className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
@@ -427,10 +428,12 @@ export default function DocumentPane({
             {cards.reduce((n, c) => n + c.atoms.length, 0)} 个知识原子
           </p>
           {/* T27 B + T28 B：书头学习链至少带章（不裸 /study?book= 丢章）；仅 studyPageScope
-              （本页有可练原子）才并列「练本页」深链——heye-only 页练走本章，不出这条链。 */}
+              （本页有可练原子）才并列「练本页」深链——heye-only 页练走本章，不出这条链。
+              T35 B：「学习环 · 自评」显式 mode=all（对齐同页 stripStudyHref）——本标签 sticky
+              停在 unknown/ungraded 空档时点书头入口仍落可见全部池。 */}
           <span className="flex flex-wrap items-baseline gap-4">
             <Link
-              href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}`}
+              href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=all`}
               className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
             >
               学习环 · 自评 →
@@ -544,6 +547,10 @@ export default function DocumentPane({
           atomCount={cards.reduce((n, c) => n + c.atoms.length, 0)}
           studyHref={stripStudyHref}
           reviewHref={stripReviewHref}
+          atoms={stripAtoms}
+          items={stripItems}
+          scopeLabel={stripScopeLabel}
+          rememberReturn={rememberDeskCardReturn}
         />
       ) : mode === "pages" ? (
         <div className="mt-8">
@@ -671,17 +678,30 @@ function OverviewPanel({
  * 自测面板：学习环本机自评 + 核页本机对页（两者均已可用；均非 FSRS 到期调度）。
  * T31 B：练/核深链吃 Strip 同款章/页 scope（book+chapter 恒在，本页有池才带 page）——
  * 禁止裸 /study?book= / /review?book= 丢章。
+ * T35 E densify：① 练/核点前写 return（有阅读页→书桌 p.N，否则书级——TOC 切「自测」时常
+ * mode=cards、readingPage 为 null，诚实落书级）；② 嵌 LocalProgressStrip 吃当前 strip* 池/标签/
+ * href——静态门户变可见本机数；③ 仍一颗朱红主 CTA，「去核页」次级；href 已含 mode=all/open。
  */
 function QuizPanel({
   bookId,
   atomCount,
   studyHref,
   reviewHref,
+  atoms,
+  items,
+  scopeLabel,
+  rememberReturn,
 }: {
   bookId: string;
   atomCount: number;
   studyHref: string;
   reviewHref: string;
+  /** T35 E：当前 strip 池（与书头 Strip / Clew progress* 同源）。 */
+  atoms: { cardId: string; atomId: string }[];
+  items: { key: string }[];
+  scopeLabel: string;
+  /** T35 E：练/核点前写 return（DocumentPane 依当前阅读页构造，同 CardCard 口径）。 */
+  rememberReturn: () => void;
 }) {
   return (
     <section className="mt-8 max-w-xl rounded-lg border border-line bg-card p-6">
@@ -693,15 +713,26 @@ function QuizPanel({
       <p className="mt-1 text-sm leading-7 text-muted">
         核页已可用：把卡片引用逐条对着该页 OCR 原文核对，标「本机已对 / 存疑」——只记本机，不回写教材数据。
       </p>
+      {/* T35 E：当前范围本机进度（练 认识/不熟/未评 · 核 待核/已对/存疑）——与书头 Strip 同池同口径；
+          条末弱链即练/核入口的同范围版本，不另加实心。 */}
+      <LocalProgressStrip
+        atoms={atoms}
+        items={items}
+        scopeLabel={scopeLabel}
+        studyHref={studyHref}
+        reviewHref={reviewHref}
+      />
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <Link
           href={studyHref}
+          onClick={rememberReturn}
           className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
         >
           去学习环自评 →
         </Link>
         <Link
           href={reviewHref}
+          onClick={rememberReturn}
           className="text-sm text-muted no-underline hover:text-cinnabar"
         >
           去核页 →

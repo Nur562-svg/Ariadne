@@ -101,9 +101,14 @@ export default function ChapterPageReader({
   const prev = idx > 0 ? chPages[idx - 1] : undefined;
   const next = idx >= 0 && idx < chPages.length - 1 ? chPages[idx + 1] : undefined;
   const curPage = pg?.page ?? null;
+  /**
+   * T35 A：核本页显式 mode=open——「打开可见待核池」入口写出默认档，挡住 StickyModeGate
+   * 在无 ?mode= 时把本标签 sticky 的 checked/doubt 空档回补回来（与 DocumentPane
+   * stripReviewHref / Shelf 核本页同族）。
+   */
   const reviewPageHref =
     bookId && curPage != null
-      ? `/review?book=${encodeURIComponent(bookId)}&page=${curPage}`
+      ? `/review?book=${encodeURIComponent(bookId)}&page=${curPage}&mode=open`
       : undefined;
   /**
    * 练本页（T27 B）：M = 本页 citing 卡 atoms 合计——与 collectStudyAtoms({page}) /
@@ -499,9 +504,11 @@ export default function ChapterPageReader({
                       >
                         {c.nameZh}
                       </Link>
+                      {/* T35 A/B：轨行「练」「核」写出默认档（练 mode=all · 核 mode=open）——
+                          从轨进卡范围落可见池，不被 sticky 非默认空档撒谎。 */}
                       {c.atomCount > 0 && bookId ? (
                         <Link
-                          href={`/study?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}`}
+                          href={`/study?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}&mode=all`}
                           onClick={rememberDeskReturn}
                           className="ml-2 text-xs text-cinnabar no-underline hover:underline underline-offset-4"
                         >
@@ -510,7 +517,7 @@ export default function ChapterPageReader({
                       ) : null}
                       {bookId ? (
                         <Link
-                          href={`/review?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}`}
+                          href={`/review?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}&mode=open`}
                           onClick={rememberDeskReturn}
                           className="ml-2 text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                           title={`核《${c.nameZh}》的 cite`}

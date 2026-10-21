@@ -401,7 +401,16 @@ async function ReviewBody({
             </>
           ) : null}
           {" "}
-          <HeYeScopeCounts items={items} />
+          {/* T35 D：页头范围计数可点——与 sticky 三档 tablist / HeYeSession openHref·checkedHref·
+              doubtHref 同一 qs({ mode }) 口径（保留 book/card/chapter/page）；N=0 纯文。 */}
+          <HeYeScopeCounts
+            items={items}
+            hrefs={{
+              open: `/review${qs({ mode: "open" })}`,
+              checked: `/review${qs({ mode: "checked" })}`,
+              doubt: `/review${qs({ mode: "doubt" })}`,
+            }}
+          />
         </p>
       </header>
 

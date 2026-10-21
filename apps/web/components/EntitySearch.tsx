@@ -161,7 +161,8 @@ export default function EntitySearch({
               </Link>
               {/* T31 E：已注册章的卡 → 次级文字「书桌打开」进卡枢纽（非第二颗实心主钮）。
                   T34 D：旁边补同口径「练 →」「核 →」（/study?card=&book= · /review?card=&book=，
-                  与卡枢纽/卡瓷砖同 href 族；无 deskBookId 不加）。 */}
+                  与卡枢纽/卡瓷砖同 href 族；无 deskBookId 不加）。
+                  T35 A/B：显式默认档（练 mode=all · 核 mode=open）——落可见池，不被 sticky 空档撒谎。 */}
               {deskBookIds?.[c.id] ? (
                 <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs">
                   <Link
@@ -173,7 +174,7 @@ export default function EntitySearch({
                   <Link
                     href={`/study?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
                       deskBookIds[c.id],
-                    )}`}
+                    )}&mode=all`}
                     className="text-muted no-underline hover:text-cinnabar"
                   >
                     练 →
@@ -181,7 +182,7 @@ export default function EntitySearch({
                   <Link
                     href={`/review?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
                       deskBookIds[c.id],
-                    )}`}
+                    )}&mode=open`}
                     className="text-muted no-underline hover:text-cinnabar"
                   >
                     核 →

@@ -42,13 +42,15 @@ export default async function DeskCardPage({
    * T30 A：与 EntityCardDetail 本卡 Strip / 动作条同一套池与深链——卡面 Clew
    * 「本轮变化」compact 标「本卡」+ 本卡数字，不再掉「未定位章 · 全书本机记录」；
    * 练/核深链与动作条同口径（card= 兼 book=）。
+   * T35 A/B：显式默认档（练 mode=all · 核 mode=open）——与 EntityCardDetail 动作条 href 同真，
+   * Clew 卡面 CTA 进练/核不被 sticky 非默认空档撒谎。
    */
   const progressStudyHref = book
-    ? `/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(book.id)}`
-    : `/study?card=${encodeURIComponent(card.id)}`;
+    ? `/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(book.id)}&mode=all`
+    : `/study?card=${encodeURIComponent(card.id)}&mode=all`;
   const progressReviewHref = book
-    ? `/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(book.id)}`
-    : `/review?card=${encodeURIComponent(card.id)}`;
+    ? `/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(book.id)}&mode=open`
+    : `/review?card=${encodeURIComponent(card.id)}&mode=open`;
 
   return (
     <div className="mx-auto w-full max-w-3xl px-8 py-10">
