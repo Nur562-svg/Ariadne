@@ -13,6 +13,7 @@ import type { HeYeMode } from "@/lib/heye-store";
 import HeYeSession from "@/components/HeYeSession";
 import HeYeScopeCounts from "@/components/HeYeScopeCounts";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
+import { withQsMode } from "@/lib/qs-mode";
 import SessionKeyHint from "@/components/SessionKeyHint";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 import StickyModeGate from "@/components/desk/StickyModeGate";
@@ -419,12 +420,25 @@ async function ReviewBody({
           T28 B：练/核各自判本页——heye-only 页练侧回落章/书池，标签分写，与书桌同页不互谎。
           T29 B：池选择收进 stripAtoms/stripItemKeys，与 Bridge progress* 同源。
           T33 A：交叉弱链——核面只传 studyHref（progressStudyHref，与 Clew/Bridge 同源），
-          不传本面 reviewHref（「核此范围」自指无意义）；孤儿页不带幽灵 page= 沿用 progress* 口径。 */}
+          不传本面 reviewHref（「核此范围」自指无意义）；孤儿页不带幽灵 page= 沿用 progress* 口径。
+          T36 B（对称 study）：池分段可点——核侧三档与 HeYeScopeCounts/sticky 同一 qs({ mode })
+          （保留 book/card/chapter/page）；练侧三档从 progressStudyHref mode-swap（单卡时
+          progressStudyHref 即卡作用域 studyHref，withQsMode 补 mode 同族）；N=0 / 无池纯文。 */}
       <LocalProgressStrip
         atoms={stripAtoms}
         items={stripItemKeys}
         scopeLabel={stripScopeLabel}
         studyHref={progressStudyHref}
+        heyeModeHrefs={{
+          open: `/review${qs({ mode: "open" })}`,
+          checked: `/review${qs({ mode: "checked" })}`,
+          doubt: `/review${qs({ mode: "doubt" })}`,
+        }}
+        studyModeHrefs={{
+          all: withQsMode(progressStudyHref, "all"),
+          unknown: withQsMode(progressStudyHref, "unknown"),
+          ungraded: withQsMode(progressStudyHref, "ungraded"),
+        }}
       />
 
       {/* T28 F：sticky 键盘岛——g 聚焦「清本页」，⇧[ / ⇧] 按章芯片顺序切章（切章即离页）；

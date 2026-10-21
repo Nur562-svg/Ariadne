@@ -8,6 +8,7 @@ import type { SectionId } from "@/components/desk/SectionToc";
 import ChapterPageReader from "@/components/desk/ChapterPageReader";
 import BookSwitcher, { type BookSwitcherBook } from "@/components/desk/BookSwitcher";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
+import { withQsMode } from "@/lib/qs-mode";
 import CitePeek from "@/components/CitePeek";
 import { useDeskContext } from "@/components/desk/DeskContext";
 import {
@@ -448,13 +449,25 @@ export default function DocumentPane({
             ) : null}
           </span>
         </div>
-        {/* 作用域本机进度：练/核各自判本页（T28 B）；可点进同范围练核。 */}
+        {/* 作用域本机进度：练/核各自判本页（T28 B）；可点进同范围练核。
+            T36 C：池分段可点——三档 href 从条末 stripStudyHref/stripReviewHref 派生
+            （withQsMode 只换 mode；book/chapter[/page] 范围与条末完全同池同真）。 */}
         <LocalProgressStrip
           atoms={stripAtoms}
           items={stripItems}
           scopeLabel={stripScopeLabel}
           studyHref={stripStudyHref}
           reviewHref={stripReviewHref}
+          studyModeHrefs={{
+            all: withQsMode(stripStudyHref, "all"),
+            unknown: withQsMode(stripStudyHref, "unknown"),
+            ungraded: withQsMode(stripStudyHref, "ungraded"),
+          }}
+          heyeModeHrefs={{
+            open: withQsMode(stripReviewHref, "open"),
+            checked: withQsMode(stripReviewHref, "checked"),
+            doubt: withQsMode(stripReviewHref, "doubt"),
+          }}
         />
         {/* T28 B：heye-only / 单侧本页的诚实说明（muted，不加新强调色）。 */}
         {reviewPageScope && !studyPageScope ? (
@@ -714,13 +727,24 @@ function QuizPanel({
         核页已可用：把卡片引用逐条对着该页 OCR 原文核对，标「本机已对 / 存疑」——只记本机，不回写教材数据。
       </p>
       {/* T35 E：当前范围本机进度（练 认识/不熟/未评 · 核 待核/已对/存疑）——与书头 Strip 同池同口径；
-          条末弱链即练/核入口的同范围版本，不另加实心。 */}
+          条末弱链即练/核入口的同范围版本，不另加实心。
+          T36 C：分段可点——三档从本面板 studyHref/reviewHref（= strip* 同源）mode-swap 派生。 */}
       <LocalProgressStrip
         atoms={atoms}
         items={items}
         scopeLabel={scopeLabel}
         studyHref={studyHref}
         reviewHref={reviewHref}
+        studyModeHrefs={{
+          all: withQsMode(studyHref, "all"),
+          unknown: withQsMode(studyHref, "unknown"),
+          ungraded: withQsMode(studyHref, "ungraded"),
+        }}
+        heyeModeHrefs={{
+          open: withQsMode(reviewHref, "open"),
+          checked: withQsMode(reviewHref, "checked"),
+          doubt: withQsMode(reviewHref, "doubt"),
+        }}
       />
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <Link

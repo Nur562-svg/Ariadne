@@ -6,6 +6,7 @@ import type { StudyMode } from "@/lib/study";
 import StudySession from "@/components/StudySession";
 import StudyScopeCounts from "@/components/StudyScopeCounts";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
+import { withQsMode } from "@/lib/qs-mode";
 import SessionKeyHint from "@/components/SessionKeyHint";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 import StickyModeGate from "@/components/desk/StickyModeGate";
@@ -379,12 +380,25 @@ async function StudyBody({
             T29 B/F：对齐 T28 B 口径——练/核各自判本页，单侧空回落章/书池、标签分写，
             与书桌/核页同页打开时不互谎；孤儿页不再把空池标成「本页」。
             T33 A：交叉弱链——练面只传 reviewHref（progressReviewHref，与 Clew/Bridge 同源），
-            不传本面 studyHref（「练此范围」自指无意义）；孤儿页不带幽灵 page= 沿用 progress* 口径。 */}
+            不传本面 studyHref（「练此范围」自指无意义）；孤儿页不带幽灵 page= 沿用 progress* 口径。
+            T36 B：池分段可点——练侧三档与 StudyScopeCounts/sticky 同一 qs({ mode })（保留
+            card/book/chapter/page）；核侧三档从 progressReviewHref mode-swap（withQsMode 只换
+            mode，不另写 scope 解析）；N=0 / 无池分段纯文。交叉弱链口径不变。 */}
         <LocalProgressStrip
           atoms={stripAtoms}
           items={stripItemKeys}
           scopeLabel={stripScopeLabel}
           reviewHref={progressReviewHref}
+          studyModeHrefs={{
+            all: `/study${qs({ mode: "all" })}`,
+            unknown: `/study${qs({ mode: "unknown" })}`,
+            ungraded: `/study${qs({ mode: "ungraded" })}`,
+          }}
+          heyeModeHrefs={{
+            open: withQsMode(progressReviewHref, "open"),
+            checked: withQsMode(progressReviewHref, "checked"),
+            doubt: withQsMode(progressReviewHref, "doubt"),
+          }}
         />
       </header>
 

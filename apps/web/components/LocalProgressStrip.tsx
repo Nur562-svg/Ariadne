@@ -14,6 +14,8 @@ import {
   subscribeHeYeStore,
   type HeYeStore,
 } from "@/lib/heye-store";
+import type { StudyScopeHrefs } from "@/components/StudyScopeCounts";
+import type { HeYeScopeHrefs } from "@/components/HeYeScopeCounts";
 
 /**
  * 池内练计数（只用 cardId/atomId 键；池原子无需完整 StudyAtom）。
@@ -35,10 +37,20 @@ export function poolGrades(
 }
 
 /**
+ * T36 A 共用小 helper withQsMode(href, mode)（URLSearchParams 只换 mode 档）见 lib/qs-mode.ts——
+ * 放无 "use client" 的 lib 供 server 页面（study/review/书架/卡详情）与 client 岛共用；
+ * 分段深链一律从同一对 progress* 与 strip* href 派生，不出现第二套 book/chapter/page 解析。
+ */
+
+/**
  * 跨面本机进度条（T17）：练（认识/不熟/未评）+ 核（待核/已对/存疑）分列。
  * 只读 ariadne.study.v1 / ariadne.heye.v1 本机记录，不引入新存储，不合成掌握度。
  * - atoms / items 传池时按池范围计数（书桌书头、卡枢纽）；
  * - 不传池时只显示本机已记录的项（未评/待核需池，省略，不编数）。
+ * T36 A：池分段可点——有池且有对应 mode href 时，分段 N>0 变文字链进同范围档
+ * （练：认识→all · 不熟→unknown · 未评→ungraded；核：待核→open · 已对→checked ·
+ * 存疑→doubt），视觉对齐 StudyScopeCounts/HeYeScopeCounts 的 seg 族；N=0 / 无 href /
+ * 无池（global 已记录计数）→ 纯文，不编全书假档链。条末「练/核此范围」保留不动。
  * 免责固定：仅这个浏览器 · 非掌握度 · 非 Due · 与 seed verified 无关。
  */
 export default function LocalProgressStrip({
@@ -48,6 +60,8 @@ export default function LocalProgressStrip({
   scopeLabel,
   studyHref,
   reviewHref,
+  studyModeHrefs,
+  heyeModeHrefs,
 }: {
   /** 范围池：练的原子（只要 cardId/atomId 做键）。缺省 → 全局已记录计数。 */
   atoms?: { cardId: string; atomId: string }[];
@@ -61,6 +75,10 @@ export default function LocalProgressStrip({
   studyHref?: string;
   /** 同范围核入口。 */
   reviewHref?: string;
+  /** T36 A：练池三档深链（all/unknown/ungraded）——仅池计数消费；global 分段不链。 */
+  studyModeHrefs?: StudyScopeHrefs;
+  /** T36 A：核池三档深链（open/checked/doubt）——仅池计数消费；global 分段不链。 */
+  heyeModeHrefs?: HeYeScopeHrefs;
 }) {
   const [grades, setGrades] = useState<GradeMap>({});
   const [heye, setHeYe] = useState<HeYeStore>({});
@@ -96,19 +114,55 @@ export default function LocalProgressStrip({
   const globalChecked = Object.values(heye).filter((m) => m.s === "checked").length;
   const globalDoubt = Object.values(heye).filter((m) => m.s === "doubt").length;
 
+  /**
+   * T36 A 分段：N>0 且有 href → 文字链（同色 + hover 下划线，对齐 ScopeCounts seg 族）；
+   * 否则纯文。href 只在有池时采信——global 已记录计数没有对应档池，不编假档链。
+   */
+  function seg(n: number, label: string, href: string | undefined, toneCls: string) {
+    const text = (
+      <>
+        {label} {n}
+      </>
+    );
+    if (href && n > 0) {
+      return (
+        <Link
+          href={href}
+          className={`${toneCls} no-underline hover:underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-cinnabar`}
+        >
+          {text}
+        </Link>
+      );
+    }
+    return <span className={toneCls}>{text}</span>;
+  }
+
   const studyPart = (
     <>
-      练 <span className="text-status-ok">认识 {pool ? pool.known : globalKnown}</span>
-      <span className="text-status-warn"> · 不熟 {pool ? pool.unknown : globalUnknown}</span>
-      {pool ? <span> · 未评 {pool.ungraded}</span> : null}
+      练{" "}
+      {seg(pool ? pool.known : globalKnown, "认识", pool ? studyModeHrefs?.all : undefined, "text-status-ok")}
+      <span className="text-status-warn"> · </span>
+      {seg(pool ? pool.unknown : globalUnknown, "不熟", pool ? studyModeHrefs?.unknown : undefined, "text-status-warn")}
+      {pool ? (
+        <>
+          <span> · </span>
+          {seg(pool.ungraded, "未评", studyModeHrefs?.ungraded, "")}
+        </>
+      ) : null}
     </>
   );
   const heyePart = (
     <>
       核{" "}
-      {marks ? <span>待核 {marks.open}</span> : null}
-      <span className="text-status-ok"> · 已对 {marks ? marks.checked : globalChecked}</span>
-      <span className="text-status-warn"> · 存疑 {marks ? marks.doubt : globalDoubt}</span>
+      {marks ? (
+        <>
+          {seg(marks.open, "待核", heyeModeHrefs?.open, "")}
+          <span className="text-status-ok"> · </span>
+        </>
+      ) : null}
+      {seg(marks ? marks.checked : globalChecked, "已对", marks ? heyeModeHrefs?.checked : undefined, "text-status-ok")}
+      <span className="text-status-warn"> · </span>
+      {seg(marks ? marks.doubt : globalDoubt, "存疑", marks ? heyeModeHrefs?.doubt : undefined, "text-status-warn")}
     </>
   );
 

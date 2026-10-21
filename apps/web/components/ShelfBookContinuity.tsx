@@ -85,6 +85,8 @@ export default function ShelfBookContinuity({
  * （useHealedRecentBookPage 共用，无第二套解析）：该书有合法续开页时带 &page=
  * （练 mode=all · 核 mode=open，对齐 LibraryContinuity）；无页保持书级 /study?book= ·
  * /review?book=。LocalProgressStrip 的「本书」书级 href 不动（全书池诚实）。
+ * T36 D：无页书级链也补默认档（&mode=all / &mode=open）——本标签 sticky 停在非默认
+ * 空档时，footer 入口与书架 Strip 条末同真，不被档位记忆吞成空队列。
  */
 export function ShelfBookFooterLinks({
   bookId,
@@ -95,11 +97,11 @@ export function ShelfBookFooterLinks({
 }) {
   const page = useHealedRecentBookPage(bookId, validPages);
   const studyHref = `/study?book=${encodeURIComponent(bookId)}${
-    page != null ? `&page=${page}&mode=all` : ""
-  }`;
+    page != null ? `&page=${page}` : ""
+  }&mode=all`;
   const reviewHref = `/review?book=${encodeURIComponent(bookId)}${
-    page != null ? `&page=${page}&mode=open` : ""
-  }`;
+    page != null ? `&page=${page}` : ""
+  }&mode=open`;
   return (
     <>
       <Link href={studyHref} className="text-muted no-underline hover:text-cinnabar">

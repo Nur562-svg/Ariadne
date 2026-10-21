@@ -3,6 +3,7 @@ import type { EntityCard } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import CardHubReturnLinks from "@/components/CardHubReturnLinks";
+import { withQsMode } from "@/lib/qs-mode";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
 
@@ -181,13 +182,25 @@ export function EntityCardDetail({
         )}
       </section>
 
-      {/* 跨面本机进度：本卡原子（练）+ 本卡核池（核）；条末弱链进同范围练/核（不重复动作条主 CTA）。 */}
+      {/* 跨面本机进度：本卡原子（练）+ 本卡核池（核）；条末弱链进同范围练/核（不重复动作条主 CTA）。
+          T36 C：本卡池分段可点——三档从条末 studyHref/reviewHref（?card=&book=&mode=* 同族）
+          mode-swap 派生，N=0 / 无池分段纯文。 */}
       <LocalProgressStrip
         atoms={card.atoms.map((a) => ({ cardId: card.id, atomId: a.id }))}
         items={heyePoolKeys}
         scopeLabel="本卡"
         studyHref={studyHref}
         reviewHref={reviewHref}
+        studyModeHrefs={{
+          all: withQsMode(studyHref, "all"),
+          unknown: withQsMode(studyHref, "unknown"),
+          ungraded: withQsMode(studyHref, "ungraded"),
+        }}
+        heyeModeHrefs={{
+          open: withQsMode(reviewHref, "open"),
+          checked: withQsMode(reviewHref, "checked"),
+          doubt: withQsMode(reviewHref, "doubt"),
+        }}
       />
 
       <section className="mt-8">

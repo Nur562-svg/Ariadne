@@ -5,6 +5,7 @@ import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
 import ShelfBookContinuity, { ShelfBookFooterLinks } from "@/components/ShelfBookContinuity";
+import { withQsMode } from "@/lib/qs-mode";
 
 /**
  * 书库页（书架）：DeskShell 中栏，从 config/books.json 派生，不硬编码任何书名/章节 copy。
@@ -60,8 +61,11 @@ export default function Library() {
           const cards = loadCards({ bookId: b.id });
           const atoms = cards.reduce((n, c) => n + c.atoms.length, 0);
           const deskHref = `/desk?book=${encodeURIComponent(b.id)}`;
-          const studyHref = `/study?book=${encodeURIComponent(b.id)}`;
-          const reviewHref = `/review?book=${encodeURIComponent(b.id)}`;
+          /* T36 D：书级练/核显式默认档（练 mode=all · 核 mode=open）——本标签 sticky 停在
+             unknown/ungraded/doubt 空档时，从书架条末进练/核仍落可见池；条末仍书级（不伪装本页，
+             有续开页的精确页练核走 ShelfBookContinuity 页级链，与 T34 C 一致，只补默认 mode）。 */
+          const studyHref = `/study?book=${encodeURIComponent(b.id)}&mode=all`;
+          const reviewHref = `/review?book=${encodeURIComponent(b.id)}&mode=open`;
           return (
             <li key={b.id} className="rounded-lg border border-line bg-card p-5">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -97,13 +101,25 @@ export default function Library() {
                 ))}
               </dl>
               <p className="mt-4 text-xs leading-6 text-muted">章 {b.chapterIds.join(" · ")}</p>
-              {/* T21 B2：每书本机练/核计数（传该书 atoms/items 池；无掌握% / 圆环 / Due 角标）。 */}
+              {/* T21 B2：每书本机练/核计数（传该书 atoms/items 池；无掌握% / 圆环 / Due 角标）。
+                  T36 D：书级池分段可点——三档从条末书级 href mode-swap（?book=&mode=*）；
+                  N=0 纯文，无池不出现（书架恒传本书池）。 */}
               <LocalProgressStrip
                 atoms={collectStudyAtoms({ bookId: b.id }).map((a) => ({ cardId: a.cardId, atomId: a.atomId }))}
                 items={collectCiteQueue({ bookId: b.id }).map((it) => ({ key: it.key }))}
                 scopeLabel="本书"
                 studyHref={studyHref}
                 reviewHref={reviewHref}
+                studyModeHrefs={{
+                  all: withQsMode(studyHref, "all"),
+                  unknown: withQsMode(studyHref, "unknown"),
+                  ungraded: withQsMode(studyHref, "ungraded"),
+                }}
+                heyeModeHrefs={{
+                  open: withQsMode(reviewHref, "open"),
+                  checked: withQsMode(reviewHref, "checked"),
+                  doubt: withQsMode(reviewHref, "doubt"),
+                }}
               />
               <p className="mt-2 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-sm">
                 <Link

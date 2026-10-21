@@ -13,6 +13,7 @@ import {
 } from "@/lib/heye-store";
 import { saveReturn } from "@/lib/return-stack";
 import LocalProgressStrip, { poolGrades } from "@/components/LocalProgressStrip";
+import { withQsMode } from "@/lib/qs-mode";
 
 /** T33 D：stub 气泡内的 muted 行动链（对页/练/核）。returnTo 有值时点前写 return 短链。 */
 type ActionLink = { label: string; href: string; returnTo?: { href: string; label: string } };
@@ -557,7 +558,9 @@ function ChangesPanel({
       </p>
 
       {/* T19 Clew compact 章作用域：有池（DocumentPane 随章/页写）按池收窄，数字应明显小于全书；
-          无池保持全局计数并给一句诚实说明。scopeLabel/href 与中栏 Strip 同一来源。 */}
+          无池保持全局计数并给一句诚实说明。scopeLabel/href 与中栏 Strip 同一来源。
+          T36 E：有 progress* href 时下传 mode 分段——有池分段 N>0 可点进同范围档；
+          无 progress*（未定位章）不下传，全局计数保持纯文。 */}
       <LocalProgressStrip
         compact
         atoms={clew.progressAtoms}
@@ -565,6 +568,24 @@ function ChangesPanel({
         scopeLabel={clew.progressScopeLabel}
         studyHref={clew.progressStudyHref}
         reviewHref={clew.progressReviewHref}
+        studyModeHrefs={
+          clew.progressStudyHref
+            ? {
+                all: withQsMode(clew.progressStudyHref, "all"),
+                unknown: withQsMode(clew.progressStudyHref, "unknown"),
+                ungraded: withQsMode(clew.progressStudyHref, "ungraded"),
+              }
+            : undefined
+        }
+        heyeModeHrefs={
+          clew.progressReviewHref
+            ? {
+                open: withQsMode(clew.progressReviewHref, "open"),
+                checked: withQsMode(clew.progressReviewHref, "checked"),
+                doubt: withQsMode(clew.progressReviewHref, "doubt"),
+              }
+            : undefined
+        }
       />
       {!clew.progressAtoms && !clew.progressItems ? (
         <p className="mt-1 text-[11px] leading-5 text-muted">
@@ -636,6 +657,9 @@ function ChangesPanel({
  * 口径与 LocalProgressStrip / countPoolMarks / poolGrades 同一——不另写分叉计数；
  * 无池（书架等未定位章）→ 全局已记录条数 + 诚实说明，与 Changes 空池文案同族。
  * 不做成 Due 列表：不显示到期日、不引入 FSRS、不新建 storage。
+ * T36 E：有池分段 N>0 可点进档——mode-swap 自 progress*（props studyHref/reviewHref 即
+ * progress* 优先的回落链，withQsMode 只换 mode 不另解析 scope）；N=0 纯文、无池全局
+ * 计数保持纯文。CTA 与 rememberReturn 不动；文案继续明示非 Due / 非 FSRS。
  */
 function QueuePanel({
   clew,
@@ -675,6 +699,37 @@ function QueuePanel({
   const globalChecked = Object.values(heye).filter((m) => m.s === "checked").length;
   const globalDoubt = Object.values(heye).filter((m) => m.s === "doubt").length;
 
+  /** T36 E 分段：N>0 且有 href → 文字链（同色 + hover 下划线，对齐 Strip/ScopeCounts seg 族）。 */
+  function seg(n: number, label: string, href: string, toneCls: string) {
+    const text = (
+      <>
+        {label} {n}
+      </>
+    );
+    if (n > 0) {
+      return (
+        <Link
+          href={href}
+          className={`${toneCls} no-underline hover:underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-cinnabar`}
+        >
+          {text}
+        </Link>
+      );
+    }
+    return <span className={toneCls}>{text}</span>;
+  }
+  /** 三档深链：progress*（或回落链）mode-swap——范围与计数池同源，不另写解析。 */
+  const studyModes = {
+    all: withQsMode(studyHref, "all"),
+    unknown: withQsMode(studyHref, "unknown"),
+    ungraded: withQsMode(studyHref, "ungraded"),
+  };
+  const heyeModes = {
+    open: withQsMode(reviewHref, "open"),
+    checked: withQsMode(reviewHref, "checked"),
+    doubt: withQsMode(reviewHref, "doubt"),
+  };
+
   return (
     <div className="flex-1 overflow-y-auto px-4 py-4">
       <p className="text-sm leading-7 text-foreground/90">
@@ -682,7 +737,8 @@ function QueuePanel({
         两者都是本机态过滤，不是到期调度——这里不显示 Due / FSRS。
       </p>
 
-      {/* T33 C：当前 progress* 池本机计数（与 Changes 内 compact Strip 同池同口径）；无池 → 全局。 */}
+      {/* T33 C：当前 progress* 池本机计数（与 Changes 内 compact Strip 同池同口径）；无池 → 全局。
+          T36 E：有池分段 N>0 可点进对应档（见 seg/studyModes/heyeModes）；N=0 纯文。 */}
       {!ready ? (
         <p className="mt-3 text-xs leading-6 text-muted">本机进度读取中…</p>
       ) : hasPool ? (
@@ -692,17 +748,21 @@ function QueuePanel({
           ) : null}
           {marks ? (
             <>
-              核 <span>待核 {marks.open}</span>
-              <span className="text-status-ok"> · 已对 {marks.checked}</span>
-              <span className="text-status-warn"> · 存疑 {marks.doubt}</span>
+              核 {seg(marks.open, "待核", heyeModes.open, "")}
+              <span className="text-status-ok"> · </span>
+              {seg(marks.checked, "已对", heyeModes.checked, "text-status-ok")}
+              <span className="text-status-warn"> · </span>
+              {seg(marks.doubt, "存疑", heyeModes.doubt, "text-status-warn")}
             </>
           ) : null}
           {marks && pool ? <span className="mx-2 text-line">|</span> : null}
           {pool ? (
             <>
-              练 <span className="text-status-ok">认识 {pool.known}</span>
-              <span className="text-status-warn"> · 不熟 {pool.unknown}</span>
-              <span> · 未评 {pool.ungraded}</span>
+              练 {seg(pool.known, "认识", studyModes.all, "text-status-ok")}
+              <span className="text-status-warn"> · </span>
+              {seg(pool.unknown, "不熟", studyModes.unknown, "text-status-warn")}
+              <span> · </span>
+              {seg(pool.ungraded, "未评", studyModes.ungraded, "")}
             </>
           ) : null}
           <span className="ml-2">· 仅这个浏览器 · 非 Due</span>
