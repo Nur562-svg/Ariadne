@@ -129,8 +129,13 @@ export default function Library() {
                   卡浏览器 →
                 </Link>
                 {/* T34 C：footer 学习环/核页与「续开 p.N」同一 heal 口径（有合法续开页带
-                    &page= · 练 mode=all · 核 mode=open；无页书级）。 */}
-                <ShelfBookFooterLinks bookId={b.id} validPages={bookValidPages[b.id]} />
+                    &page= · 练 mode=all · 核 mode=open；无页书级）。
+                    T37 E：传 title——点前 return 书级 label 含书名（有页落「书桌 p.N」）。 */}
+                <ShelfBookFooterLinks
+                  bookId={b.id}
+                  validPages={bookValidPages[b.id]}
+                  title={b.title}
+                />
               </p>
             </li>
           );

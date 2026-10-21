@@ -7,6 +7,7 @@ import {
   loadRecentBooks,
   subscribeLastOpened,
 } from "@/lib/last-opened";
+import { saveReturn } from "@/lib/return-stack";
 
 /**
  * 书架每书「续开 p.N」客户岛（T25 D）：
@@ -18,6 +19,8 @@ import {
  * T32 A：消毒升级 heal——有页表且脏时单条写回剥幽灵页（盘内 peel），不再只消毒展示。
  * T34 B：续开旁页级练/核——「练本页 →」/study?book=&page=&mode=all、「核本页 →」
  * /review?book=&page=&mode=open（muted 次级，对齐 LibraryContinuity 顶栏链口径；无页不渲）。
+ * T37 E：页级练/核点前写 return 短链——回该书续开页（书桌 p.N；同 rememberDeskCardReturn
+ * 口径，key 仍 ariadne.desk.return.v1）；「续开 p.N」自身就是书桌链，不写 return。
  */
 
 /**
@@ -54,24 +57,32 @@ export default function ShelfBookContinuity({
   const page = useHealedRecentBookPage(bookId, validPages);
   if (page == null) return null;
 
+  /** T37 E：页级练/核出发写 return——回该书续开页（有阅读页→书桌 p.N）。 */
+  const deskPageHref = `/desk?book=${encodeURIComponent(bookId)}&page=${page}`;
+  const rememberPageReturn = () => {
+    saveReturn({ href: deskPageHref, label: `书桌 p.${page}`, at: Date.now() });
+  };
+
   return (
     <span className="flex flex-wrap items-baseline gap-3">
       <Link
-        href={`/desk?book=${encodeURIComponent(bookId)}&page=${page}`}
+        href={deskPageHref}
         className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
       >
         续开 p.{page} →
       </Link>
       {/* T34 B：页级练/核（muted 次级文字，非第二颗实心；与 LibraryContinuity 顶栏
-          「学习环/核页」带 page= 的 href 同族）。 */}
+          「学习环/核页」带 page= 的 href 同族）。T37 E：点前写 return。 */}
       <Link
         href={`/study?book=${encodeURIComponent(bookId)}&page=${page}&mode=all`}
+        onClick={rememberPageReturn}
         className="text-sm text-muted no-underline hover:text-cinnabar"
       >
         练本页 →
       </Link>
       <Link
         href={`/review?book=${encodeURIComponent(bookId)}&page=${page}&mode=open`}
+        onClick={rememberPageReturn}
         className="text-sm text-muted no-underline hover:text-cinnabar"
       >
         核本页 →
@@ -87,13 +98,19 @@ export default function ShelfBookContinuity({
  * /review?book=。LocalProgressStrip 的「本书」书级 href 不动（全书池诚实）。
  * T36 D：无页书级链也补默认档（&mode=all / &mode=open）——本标签 sticky 停在非默认
  * 空档时，footer 入口与书架 Strip 条末同真，不被档位记忆吞成空队列。
+ * T37 E：点前写 return 短链——回该书书桌（有合法续开页→书桌 p.N，与链接自身页级池同位；
+ * 否则书级 /desk?book=，label 含书名或「书桌」；同 rememberDeskCardReturn 口径，
+ * key 仍 ariadne.desk.return.v1）。
  */
 export function ShelfBookFooterLinks({
   bookId,
   validPages,
+  title,
 }: {
   bookId: string;
   validPages?: number[];
+  /** T37 E：书名（书级 return label 用）；缺省 label 落「书桌」，不编书名。 */
+  title?: string;
 }) {
   const page = useHealedRecentBookPage(bookId, validPages);
   const studyHref = `/study?book=${encodeURIComponent(bookId)}${
@@ -102,12 +119,30 @@ export function ShelfBookFooterLinks({
   const reviewHref = `/review?book=${encodeURIComponent(bookId)}${
     page != null ? `&page=${page}` : ""
   }&mode=open`;
+  function rememberFooterReturn() {
+    saveReturn({
+      href:
+        page != null
+          ? `/desk?book=${encodeURIComponent(bookId)}&page=${page}`
+          : `/desk?book=${encodeURIComponent(bookId)}`,
+      label: page != null ? `书桌 p.${page}` : title ? `书桌《${title}》` : "书桌",
+      at: Date.now(),
+    });
+  }
   return (
     <>
-      <Link href={studyHref} className="text-muted no-underline hover:text-cinnabar">
+      <Link
+        href={studyHref}
+        onClick={rememberFooterReturn}
+        className="text-muted no-underline hover:text-cinnabar"
+      >
         学习环{page != null ? ` p.${page}` : ""} →
       </Link>
-      <Link href={reviewHref} className="text-muted no-underline hover:text-cinnabar">
+      <Link
+        href={reviewHref}
+        onClick={rememberFooterReturn}
+        className="text-muted no-underline hover:text-cinnabar"
+      >
         核页{page != null ? ` p.${page}` : ""} →
       </Link>
     </>

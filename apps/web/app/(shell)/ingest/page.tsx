@@ -128,9 +128,11 @@ export default function IngestPage() {
                               >
                                 打开书桌 →
                               </Link>
-                              {/* 就绪三连（T18）：书桌主 CTA + 学习/核页次级文字链。 */}
+                              {/* 就绪三连（T18）：书桌主 CTA + 学习/核页次级文字链。
+                                  T37 D：学习环补默认档 mode=all（核页 mode=open 已有）——
+                                  书级入口不被本标签 sticky 非默认档吞成空队列。 */}
                               <Link
-                                href={`/study?book=${encodeURIComponent(book.id)}`}
+                                href={`/study?book=${encodeURIComponent(book.id)}&mode=all`}
                                 className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
                               >
                                 学习环 →

@@ -151,19 +151,21 @@ export default function Sidebar({
             </p>
             <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
               {/* T31 D：合法停留页（消毒后）→ 学习/核页次级链带 page，落本页池；
-                  练侧显式 mode=all 防 sticky 档位回补空档（与 Strip 深链同族）；无页保持书级。 */}
+                  练侧显式 mode=all 防 sticky 档位回补空档（与 Strip 深链同族）。
+                  T37 C：恒拼默认档（练 mode=all · 核 mode=open，无页书级也写）——与
+                  T36 书架 Strip/FooterLinks 同口径，消 if 分支漏成裸 ?book= 的空档。 */}
               <Link
                 href={`/study?book=${encodeURIComponent(current.id)}${
-                  currentEntry?.page != null ? `&page=${currentEntry.page}&mode=all` : ""
-                }`}
+                  currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
+                }&mode=all`}
                 className="text-muted no-underline hover:text-cinnabar"
               >
                 学习 →
               </Link>
               <Link
                 href={`/review?book=${encodeURIComponent(current.id)}${
-                  currentEntry?.page != null ? `&page=${currentEntry.page}&mode=open` : ""
-                }`}
+                  currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
+                }&mode=open`}
                 className="text-muted no-underline hover:text-cinnabar"
               >
                 核页 →

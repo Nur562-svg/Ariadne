@@ -553,6 +553,7 @@ export default function DocumentPane({
             setPageNo(firstPageOf(chId));
             setMode("pages");
           }}
+          rememberReturn={rememberDeskCardReturn}
         />
       ) : section === "quiz" ? (
         <QuizPanel
@@ -632,19 +633,29 @@ export default function DocumentPane({
   );
 }
 
-/** 概览面板：书头统计 + 章列表（点击章 → 章页模式）。 */
+/**
+ * 概览面板：书头统计 + 章列表（主按钮点章 → 章页 OCR）。
+ * T37 A/B：每章行补旁路次级「练本章 →」「核本章 →」——/study?book=&chapter=&mode=all ·
+ * /review?book=&chapter=&mode=open（章池 + 默认可见档，不被本标签 sticky 非默认档吞成空队列）；
+ * 点前写 return 短链（rememberReturn = rememberDeskCardReturn 口径：有阅读页→书桌 p.N，
+ * 否则书级；不另开第二套 return key）。0 卡章练/核纯文不可点（不进空池）；
+ * 「N 页 · M 卡」meta 保留；次级 text-xs muted + hover cinnabar，不抢主按钮、不加实心。
+ */
 function OverviewPanel({
   book,
   chapters,
   cards,
   pages,
   onOpenChapter,
+  rememberReturn,
 }: {
   book: BookConfig;
   chapters: ChapterConfig[];
   cards: EntityCard[];
   pages: PageDoc[];
   onOpenChapter: (chId: string) => void;
+  /** T37 A：练本章/核本章点前写 return（DocumentPane 依当前阅读页构造，同 CardCard 口径）。 */
+  rememberReturn?: () => void;
 }) {
   return (
     <section className="mt-8">
@@ -668,17 +679,42 @@ function OverviewPanel({
           const cardCount = cards.filter((k) => k.chapterId === c.id).length;
           return (
             <li key={c.id}>
-              <button
-                onClick={() => onOpenChapter(c.id)}
-                className="flex w-full items-baseline justify-between gap-3 rounded-lg border border-line bg-card px-4 py-3 text-left transition-colors hover:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
-              >
-                <span className="text-sm font-medium text-foreground">
-                  {c.id} · {c.title}
-                </span>
-                <span className="mono shrink-0 text-xs text-muted">
-                  {count > 0 ? `${count} 页` : "无 OCR 页"} · {cardCount} 卡 →
-                </span>
-              </button>
+              {/* 章行卡片容器（对齐 CardCard 容器模式）：主按钮（开章 OCR）占满左区，
+                  练/核为行尾旁路次级链——<a> 不嵌 <button>，键盘/读屏各自可达。 */}
+              <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 rounded-lg border border-line bg-card px-4 py-3 transition-colors hover:border-cinnabar motion-reduce:transition-none">
+                <button
+                  onClick={() => onOpenChapter(c.id)}
+                  className="flex min-w-0 flex-1 items-baseline justify-between gap-3 text-left focus-visible:outline-2 focus-visible:outline-cinnabar"
+                >
+                  <span className="text-sm font-medium text-foreground">
+                    {c.id} · {c.title}
+                  </span>
+                  <span className="mono shrink-0 text-xs text-muted">
+                    {count > 0 ? `${count} 页` : "无 OCR 页"} · {cardCount} 卡 →
+                  </span>
+                </button>
+                {/* T37 B：0 卡章练/核纯文（muted 提示，不点进空池）；有卡两链章池 + 默认档。 */}
+                {cardCount > 0 ? (
+                  <span className="flex shrink-0 items-baseline gap-3 text-xs">
+                    <Link
+                      href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(c.id)}&mode=all`}
+                      onClick={rememberReturn}
+                      className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                    >
+                      练本章 →
+                    </Link>
+                    <Link
+                      href={`/review?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(c.id)}&mode=open`}
+                      onClick={rememberReturn}
+                      className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                    >
+                      核本章 →
+                    </Link>
+                  </span>
+                ) : (
+                  <span className="shrink-0 text-xs text-muted">本章暂无卡</span>
+                )}
+              </div>
             </li>
           );
         })}

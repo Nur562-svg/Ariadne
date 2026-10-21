@@ -9,6 +9,7 @@ import {
   subscribeLastOpened,
   type LastOpened,
 } from "@/lib/last-opened";
+import { saveReturn } from "@/lib/return-stack";
 
 /**
  * 书库「继续上次」客户岛（T21 B）：
@@ -18,7 +19,10 @@ import {
  * 不出现掌握 % / 圆环 / 营销绿条。
  * T31 C/D：读侧消毒——旧栈幽灵页（page=999）经该书 validPages 剥掉（脏时单条 heal，
  * 禁 clearLastOpened 整栈）；消毒后仍有合法停留页 → 学习/核次级链带 &page=（练 mode=all ·
- * 核 mode=open，与 Strip 深链同族），无页保持书级。
+ * 核 mode=open，与 Strip 深链同族）。
+ * T37 C/E：学习环/核页恒拼默认档（无页书级也写 mode=all / mode=open，与 T36 书架
+ * Strip/FooterLinks 同口径）；点前写 return 短链（有合法停留页→书桌 p.N，否则书级
+ * deskHref——rememberDeskCardReturn 同口径，key 仍 ariadne.desk.return.v1）。
  */
 export default function LibraryContinuity({
   books,
@@ -68,6 +72,22 @@ export default function LibraryContinuity({
 
   const href = last.deskHref || `/desk?book=${encodeURIComponent(book.id)}`;
 
+  /**
+   * T37 E：学习环/核页点前写 return——从书库续开出发进练/核，完成态「回到刚才」
+   * 回书桌原位（有合法停留页→书桌 p.N，否则书级；非法 href 由 saveReturn 拒收）。
+   * 箭头 const（guard 后声明）保留 last/book 收窄——hoisted function 声明会丢窄化。
+   */
+  const rememberContinueReturn = () => {
+    saveReturn({
+      href:
+        last.page != null
+          ? `/desk?book=${encodeURIComponent(book.id)}&page=${last.page}`
+          : href,
+      label: last.page != null ? `书桌 p.${last.page}` : `书桌《${book.title}》`,
+      at: Date.now(),
+    });
+  };
+
   return (
     <div className="mt-8 rounded-lg border border-line bg-card px-5 py-4">
       <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
@@ -79,16 +99,18 @@ export default function LibraryContinuity({
         </Link>
         <Link
           href={`/study?book=${encodeURIComponent(book.id)}${
-            last.page != null ? `&page=${last.page}&mode=all` : ""
-          }`}
+            last.page != null ? `&page=${last.page}` : ""
+          }&mode=all`}
+          onClick={rememberContinueReturn}
           className="text-sm text-muted no-underline hover:text-cinnabar"
         >
           学习环 →
         </Link>
         <Link
           href={`/review?book=${encodeURIComponent(book.id)}${
-            last.page != null ? `&page=${last.page}&mode=open` : ""
-          }`}
+            last.page != null ? `&page=${last.page}` : ""
+          }&mode=open`}
+          onClick={rememberContinueReturn}
           className="text-sm text-muted no-underline hover:text-cinnabar"
         >
           核页 →

@@ -12,6 +12,8 @@ import { touchLastOpened } from "@/lib/last-opened";
  * 但不抢「继续上次」主视觉）。冲突/非法 4xx → 琥珀错误，不改 seed。
  * T25 E：成功文案不再说「刷新后即可开书桌」（refresh 已发生）——直接给「打开书桌 →」
  * 深链 /desk?book={bookId}，附学习/核页次级文字链（对齐 ready 就绪三连）。
+ * T37 D：书级学习/核显式默认档（练 mode=all · 核 mode=open）——刚注册的书无停留页，
+ * 书级入口也不被本标签 sticky 非默认档吞成空队列（与 T36 书架 footer 同口径）。
  */
 export default function RegisterMaterialButton({
   materialId,
@@ -78,13 +80,13 @@ export default function RegisterMaterialButton({
             打开书桌 →
           </Link>
           <Link
-            href={`/study?book=${encodeURIComponent(done)}`}
+            href={`/study?book=${encodeURIComponent(done)}&mode=all`}
             className="text-xs text-muted no-underline hover:text-cinnabar"
           >
             学习环 →
           </Link>
           <Link
-            href={`/review?book=${encodeURIComponent(done)}`}
+            href={`/review?book=${encodeURIComponent(done)}&mode=open`}
             className="text-xs text-muted no-underline hover:text-cinnabar"
           >
             核页 →
