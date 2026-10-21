@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Cite } from "@/lib/entities";
 import { CiteChip } from "@/components/CiteChip";
+import { saveReturn } from "@/lib/return-stack";
 
 /** Popover width (w-72 = 18rem). Used for horizontal clamp. */
 const POPOVER_W = 288;
@@ -188,6 +189,23 @@ export default function CitePeek({
     ? `/review?${deskBookId ? `book=${encodeURIComponent(deskBookId)}&` : ""}card=${encodeURIComponent(cardId)}&mode=open`
     : undefined;
 
+  /**
+   * T38 D：练/核深链（核本页 / 练本页 / 核本卡）点前写 return 短链——完成态「回到刚才」
+   * 回书桌：有书有页回本页（书桌 p.N），仅书回书级，皆无不写（key 仍
+   * ariadne.desk.return.v1，覆盖式单条）。只加 onClick：quote 截断 / trap / 定位 /
+   * verified 文案 / 浮层布局一概不动。
+   */
+  function rememberPeekReturn() {
+    // 渲染点必在 !cite 早退之后；函数体自带守卫只为过 TS 收窄（运行时恒真）。
+    if (!deskBookId || !cite) return;
+    const bookQ = `book=${encodeURIComponent(deskBookId)}`;
+    saveReturn({
+      href: cite.page != null ? `/desk?${bookQ}&page=${cite.page}` : `/desk?${bookQ}`,
+      label: cite.page != null ? `书桌 p.${cite.page}` : "书桌",
+      at: Date.now(),
+    });
+  }
+
   return (
     <span ref={rootRef} className="relative inline-flex items-center gap-1">
       <CiteChip cite={cite} q={q} deskBookId={deskBookId} />
@@ -251,6 +269,7 @@ export default function CitePeek({
               {reviewPageHref ? (
                 <Link
                   href={reviewPageHref}
+                  onClick={rememberPeekReturn}
                   className="text-muted no-underline hover:text-cinnabar"
                 >
                   核本页 →
@@ -259,6 +278,7 @@ export default function CitePeek({
               {studyPageHref ? (
                 <Link
                   href={studyPageHref}
+                  onClick={rememberPeekReturn}
                   className="text-muted no-underline hover:text-cinnabar"
                 >
                   练本页 →
@@ -267,6 +287,7 @@ export default function CitePeek({
               {reviewCardHref ? (
                 <Link
                   href={reviewCardHref}
+                  onClick={rememberPeekReturn}
                   className="text-muted no-underline hover:text-cinnabar"
                 >
                   核本卡 →

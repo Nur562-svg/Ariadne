@@ -218,6 +218,10 @@ export default function ClewPane() {
    * 4) 书级 / 全局。
    * 书桌面不再因段首可见卡（DocumentPane 把 card 设成 visibleCards[0]）把空态绑去
    * 卡作用域盖过本页 progress*——同栏不互谎。
+   * T38 C：cardQ 与书级无页两条回落也恒拼默认档（练 &mode=all · 核 &mode=open）——
+   * 消裸 ?card= / ?book= 被 StickyModeGate restore 成空档的撒谎面；progress* 与
+   * pageQ 的优先序、既有 mode 只回归不动。Queue/Changes 的 withQsMode 分段派生自
+   * 同一对 href，mode 参数只被覆盖、不受影响。
    */
   const cardQ =
     clew.surface === "card" && clew.card?.id
@@ -230,20 +234,20 @@ export default function ClewPane() {
   const studyHref =
     clew.progressStudyHref ??
     (cardQ
-      ? `/study?${cardQ}`
+      ? `/study?${cardQ}&mode=all`
       : pageQ
         ? `/study?${pageQ}&mode=all`
         : clew.book
-          ? `/study?book=${encodeURIComponent(clew.book.id)}`
+          ? `/study?book=${encodeURIComponent(clew.book.id)}&mode=all`
           : "/study");
   const reviewHref =
     clew.progressReviewHref ??
     (cardQ
-      ? `/review?${cardQ}`
+      ? `/review?${cardQ}&mode=open`
       : pageQ
         ? `/review?${pageQ}&mode=open`
         : clew.book
-          ? `/review?book=${encodeURIComponent(clew.book.id)}`
+          ? `/review?book=${encodeURIComponent(clew.book.id)}&mode=open`
           : "/review");
   const pageHref =
     clew.book && clew.page != null

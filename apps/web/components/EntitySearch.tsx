@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { EntityCard } from "@/lib/entities";
+import { saveReturn } from "@/lib/return-stack";
 
 /**
  * 实体卡悬浮搜索（Task 01.1）：
@@ -46,6 +47,21 @@ export default function EntitySearch({
     setQ("");
     setOpen(false);
     buttonRef.current?.focus();
+  }
+
+  /**
+   * T38 B：结果卡三条出发链（书桌打开 / 练 / 核）点前写 return 短链——练/核完成态
+   * 「回到刚才」回这份实体列表视图。href 与列表页真实 URL 同口径：有 kind 筛选带
+   * ?kind=（「全部」/缺省不带，同主链与页签逻辑）；key 仍 ariadne.desk.return.v1，
+   * 不另开第二套 return。搜索框收合状态不进 URL，回列表即回完整列表（诚实回落）。
+   */
+  function rememberListReturn() {
+    const kind = activeKind && activeKind !== "全部" ? activeKind : null;
+    saveReturn({
+      href: kind ? `/entities?kind=${encodeURIComponent(kind)}` : "/entities",
+      label: `实体卡${kind ? ` · ${kindLabel[kind] ?? kind}` : ""}`,
+      at: Date.now(),
+    });
   }
 
   return (
@@ -162,11 +178,13 @@ export default function EntitySearch({
               {/* T31 E：已注册章的卡 → 次级文字「书桌打开」进卡枢纽（非第二颗实心主钮）。
                   T34 D：旁边补同口径「练 →」「核 →」（/study?card=&book= · /review?card=&book=，
                   与卡枢纽/卡瓷砖同 href 族；无 deskBookId 不加）。
-                  T35 A/B：显式默认档（练 mode=all · 核 mode=open）——落可见池，不被 sticky 空档撒谎。 */}
+                  T35 A/B：显式默认档（练 mode=all · 核 mode=open）——落可见池，不被 sticky 空档撒谎。
+                  T38 B：三条链点前 saveReturn 回本列表（含 ?kind=，见 rememberListReturn）。 */}
               {deskBookIds?.[c.id] ? (
                 <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs">
                   <Link
                     href={`/desk/card/${encodeURIComponent(c.id)}`}
+                    onClick={rememberListReturn}
                     className="text-muted no-underline hover:text-cinnabar"
                   >
                     书桌打开 →
@@ -175,6 +193,7 @@ export default function EntitySearch({
                     href={`/study?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
                       deskBookIds[c.id],
                     )}&mode=all`}
+                    onClick={rememberListReturn}
                     className="text-muted no-underline hover:text-cinnabar"
                   >
                     练 →
@@ -183,6 +202,7 @@ export default function EntitySearch({
                     href={`/review?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
                       deskBookIds[c.id],
                     )}&mode=open`}
+                    onClick={rememberListReturn}
                     className="text-muted no-underline hover:text-cinnabar"
                   >
                     核 →

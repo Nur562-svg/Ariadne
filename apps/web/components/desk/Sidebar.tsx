@@ -10,6 +10,7 @@ import {
   subscribeLastOpened,
   type LastOpened,
 } from "@/lib/last-opened";
+import { saveReturn } from "@/lib/return-stack";
 
 /** 侧栏「在读书目」摘要（(desk) layout 服务端算好传入多书，客户端据 last-opened 选一本）。 */
 export type SidebarBook = {
@@ -79,6 +80,23 @@ export default function Sidebar({
     sync();
     return subscribeLastOpened(sync);
   }, [books, bookValidPages]);
+
+  /**
+   * T38 A：在读「学习 / 核页」出发进练核前写 return 短链——完成态「回到刚才」回这本书
+   * 的书桌位（有消毒后合法停留页回本页，否则书级）。key 仍 ariadne.desk.return.v1
+   * （与 ChapterPageReader / Clew / Shelf 同一桶，覆盖式单条），不另开第二套 return；
+   * 全局 NAV /study /review 仍不写（那是换面，不是从某出发点进练核）。
+   */
+  function rememberDeskReturn() {
+    if (!current) return;
+    const bookQ = `book=${encodeURIComponent(current.id)}`;
+    saveReturn({
+      href:
+        currentEntry?.page != null ? `/desk?${bookQ}&page=${currentEntry.page}` : `/desk?${bookQ}`,
+      label: currentEntry?.page != null ? `书桌 p.${currentEntry.page}` : `书桌《${current.title}》`,
+      at: Date.now(),
+    });
+  }
 
   return (
     <aside className="flex h-full w-[248px] shrink-0 flex-col border-r border-line bg-card">
@@ -153,11 +171,13 @@ export default function Sidebar({
               {/* T31 D：合法停留页（消毒后）→ 学习/核页次级链带 page，落本页池；
                   练侧显式 mode=all 防 sticky 档位回补空档（与 Strip 深链同族）。
                   T37 C：恒拼默认档（练 mode=all · 核 mode=open，无页书级也写）——与
-                  T36 书架 Strip/FooterLinks 同口径，消 if 分支漏成裸 ?book= 的空档。 */}
+                  T36 书架 Strip/FooterLinks 同口径，消 if 分支漏成裸 ?book= 的空档。
+                  T38 A：两条链点前 saveReturn（见 rememberDeskReturn）——完成态可回这本书。 */}
               <Link
                 href={`/study?book=${encodeURIComponent(current.id)}${
                   currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
                 }&mode=all`}
+                onClick={rememberDeskReturn}
                 className="text-muted no-underline hover:text-cinnabar"
               >
                 学习 →
@@ -166,6 +186,7 @@ export default function Sidebar({
                 href={`/review?book=${encodeURIComponent(current.id)}${
                   currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
                 }&mode=open`}
+                onClick={rememberDeskReturn}
                 className="text-muted no-underline hover:text-cinnabar"
               >
                 核页 →
