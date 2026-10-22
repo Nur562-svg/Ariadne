@@ -103,13 +103,16 @@ export default function Library() {
               <p className="mt-4 text-xs leading-6 text-muted">章 {b.chapterIds.join(" · ")}</p>
               {/* T21 B2：每书本机练/核计数（传该书 atoms/items 池；无掌握% / 圆环 / Due 角标）。
                   T36 D：书级池分段可点——三档从条末书级 href mode-swap（?book=&mode=*）；
-                  N=0 纯文，无池不出现（书架恒传本书池）。 */}
+                  N=0 纯文，无池不出现（书架恒传本书池）。
+                  T39 E：returnTo 回书架（/ · label 书架《书名》）——条末练/核与 N>0 分段
+                  点前写 return，完成态「回到刚才」回到这本书所在的列表。 */}
               <LocalProgressStrip
                 atoms={collectStudyAtoms({ bookId: b.id }).map((a) => ({ cardId: a.cardId, atomId: a.atomId }))}
                 items={collectCiteQueue({ bookId: b.id }).map((it) => ({ key: it.key }))}
                 scopeLabel="本书"
                 studyHref={studyHref}
                 reviewHref={reviewHref}
+                returnTo={{ href: "/", label: `书架《${b.title}》` }}
                 studyModeHrefs={{
                   all: withQsMode(studyHref, "all"),
                   unknown: withQsMode(studyHref, "unknown"),

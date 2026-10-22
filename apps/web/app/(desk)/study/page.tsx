@@ -218,19 +218,25 @@ async function StudyBody({
   /**
    * 单卡 → 核本卡（兼书）；书/全范围 → 核页深链。T26 C 带章；T27 D：有效页带 page
    * （本页练完核本页，不落到丢页的章/全书）；无书有页（手写 URL）→ 仅 ?page=。
+   * T39 C：凡有范围落到 /review?… 的分支恒拼 &mode=open（单卡 / 本页 / 章 / 书 / 仅 page）——
+   * StudySession 空·完成态「核本卡 / 去核页」与空范围「核本卡」共用本构造点，一次覆盖；
+   * 交叉链不再裸范围被核侧 StickyModeGate 回补成 checked/doubt 空档。sticky「去核同范围」
+   * 走 progressReviewHref（自有 mode）只回归。无范围裸 /review 保持。
    */
   const reviewHref = scopedCard
-    ? `/review?card=${encodeURIComponent(scopedCard.id)}${activeBook ? `&book=${encodeURIComponent(activeBook.id)}` : ""}`
+    ? `/review?card=${encodeURIComponent(scopedCard.id)}${
+        activeBook ? `&book=${encodeURIComponent(activeBook.id)}` : ""
+      }&mode=open`
     : pageNum != null
       ? activeBook
         ? `/review?book=${encodeURIComponent(activeBook.id)}${
             activeChapter ? `&chapter=${encodeURIComponent(activeChapter.id)}` : ""
-          }&page=${pageNum}`
-        : `/review?page=${pageNum}`
+          }&page=${pageNum}&mode=open`
+        : `/review?page=${pageNum}&mode=open`
       : activeBook
         ? `/review?book=${encodeURIComponent(activeBook.id)}${
             activeChapter ? `&chapter=${encodeURIComponent(activeChapter.id)}` : ""
-          }`
+          }&mode=open`
         : "/review";
   /** 完成/空态「回本卡」（仅 ?card= 时展示）。 */
   const cardHref = scopedCard ? `/desk/card/${encodeURIComponent(scopedCard.id)}` : undefined;

@@ -16,6 +16,7 @@ import {
 } from "@/lib/heye-store";
 import type { StudyScopeHrefs } from "@/components/StudyScopeCounts";
 import type { HeYeScopeHrefs } from "@/components/HeYeScopeCounts";
+import { saveReturn } from "@/lib/return-stack";
 
 /**
  * 池内练计数（只用 cardId/atomId 键；池原子无需完整 StudyAtom）。
@@ -51,6 +52,10 @@ export function poolGrades(
  * （练：认识→all · 不熟→unknown · 未评→ungraded；核：待核→open · 已对→checked ·
  * 存疑→doubt），视觉对齐 StudyScopeCounts/HeYeScopeCounts 的 seg 族；N=0 / 无 href /
  * 无池（global 已记录计数）→ 纯文，不编全书假档链。条末「练/核此范围」保留不动。
+ * T39 E：可选 returnTo——条末「练/核此范围」与 N>0 可点分段都是**离面进练核**的出发点，
+ * 有 returnTo 时点前 saveReturn（key 仍 ariadne.desk.return.v1，覆盖式单条）；无 returnTo
+ * 行为与前完全同。payload 由宿主按各自口径拼（书桌书头=阅读页/书级、卡详情=本卡、书架=书架），
+ * 本条不解析 scope、不猜出发面。
  * 免责固定：仅这个浏览器 · 非掌握度 · 非 Due · 与 seed verified 无关。
  */
 export default function LocalProgressStrip({
@@ -62,6 +67,7 @@ export default function LocalProgressStrip({
   reviewHref,
   studyModeHrefs,
   heyeModeHrefs,
+  returnTo,
 }: {
   /** 范围池：练的原子（只要 cardId/atomId 做键）。缺省 → 全局已记录计数。 */
   atoms?: { cardId: string; atomId: string }[];
@@ -79,6 +85,8 @@ export default function LocalProgressStrip({
   studyModeHrefs?: StudyScopeHrefs;
   /** T36 A：核池三档深链（open/checked/doubt）——仅池计数消费；global 分段不链。 */
   heyeModeHrefs?: HeYeScopeHrefs;
+  /** T39 E：出发点 return 短链 payload（href 站内相对路径 + label）；有值时条末链与可点分段点前写入。 */
+  returnTo?: { href: string; label: string };
 }) {
   const [grades, setGrades] = useState<GradeMap>({});
   const [heye, setHeYe] = useState<HeYeStore>({});
@@ -117,7 +125,12 @@ export default function LocalProgressStrip({
   /**
    * T36 A 分段：N>0 且有 href → 文字链（同色 + hover 下划线，对齐 ScopeCounts seg 族）；
    * 否则纯文。href 只在有池时采信——global 已记录计数没有对应档池，不编假档链。
+   * T39 E：可点分段与条末链都是进练核的出发点——有 returnTo 时点前写 return（无则不写）。
    */
+  function rememberReturn() {
+    if (returnTo) saveReturn({ ...returnTo, at: Date.now() });
+  }
+
   function seg(n: number, label: string, href: string | undefined, toneCls: string) {
     const text = (
       <>
@@ -128,6 +141,7 @@ export default function LocalProgressStrip({
       return (
         <Link
           href={href}
+          onClick={returnTo ? rememberReturn : undefined}
           className={`${toneCls} no-underline hover:underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-cinnabar`}
         >
           {text}
@@ -178,6 +192,7 @@ export default function LocalProgressStrip({
       {studyHref ? (
         <Link
           href={studyHref}
+          onClick={returnTo ? rememberReturn : undefined}
           className="ml-2 text-cinnabar no-underline hover:underline underline-offset-4"
         >
           练此范围 →
@@ -186,6 +201,7 @@ export default function LocalProgressStrip({
       {reviewHref ? (
         <Link
           href={reviewHref}
+          onClick={returnTo ? rememberReturn : undefined}
           className="ml-1 text-cinnabar no-underline hover:underline underline-offset-4"
         >
           核此范围 →

@@ -132,17 +132,23 @@ async function ReviewBody({
    *  禁止裸 "/study"（换环丢书）。单卡仍 ?card=（兼书）。
    *  T27 D：有效 pageNum 时带 &page=——本页核完去练仍落本页池，不落到丢页的章/全书。
    *  T29 C：孤儿页不带 &page=——不把人送进 page 死环，落 book+chapter 章练；
-   *  本页有 cite（items.length>0）时仍带 &page=（T27/T28 不回退）。 */
+   *  本页有 cite（items.length>0）时仍带 &page=（T27/T28 不回退）。
+   *  T39 C（对称 study）：凡有范围落到 /study?… 的分支恒拼 &mode=all（单卡 / 本页 / 章 / 书）——
+   *  HeYeSession 池空·档空·完成态「去学习环 / 去学习本卡」共用本构造点，一次覆盖；交叉链不再
+   *  裸范围被练侧 StickyModeGate 回补成 unknown/ungraded 空档。孤儿消毒（不带幽灵 page=）只回归；
+   *  单卡时 progressStudyHref 即本 href，sticky「去练同范围」随之同真。无范围裸 /study 保持。 */
   const studyHref = card
-    ? `/study?card=${encodeURIComponent(card.id)}${book ? `&book=${encodeURIComponent(book.id)}` : ""}`
+    ? `/study?card=${encodeURIComponent(card.id)}${
+        book ? `&book=${encodeURIComponent(book.id)}` : ""
+      }&mode=all`
     : pageNum != null && !orphanReview
       ? `/study?${
           book ? `book=${encodeURIComponent(book.id)}&` : ""
-        }${effChapter ? `chapter=${encodeURIComponent(effChapter.id)}&` : ""}page=${pageNum}`
+        }${effChapter ? `chapter=${encodeURIComponent(effChapter.id)}&` : ""}page=${pageNum}&mode=all`
       : book
         ? `/study?book=${encodeURIComponent(book.id)}${
             effChapter ? `&chapter=${encodeURIComponent(effChapter.id)}` : ""
-          }`
+          }&mode=all`
         : "/study";
   /** 回书桌本页（书范围且 page 合法时）：/desk?book=&page= 章页定位。
    *  T29 F 幽灵印刷页卫生：孤儿页不深链 /desk?…&page=999，回落书级 deskHref（文案「回书桌 →」）；

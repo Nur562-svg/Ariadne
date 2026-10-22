@@ -393,16 +393,18 @@ export default function DocumentPane({
    * T34 A：卡瓷砖练/核出发写 return 短链——回当前书桌：章页/分栏有阅读页写「书桌 p.N」，
    * 实体卡模式（readingPage==null）写书级。与 ChapterPageReader.rememberDeskReturn 同口径
    * （key 仍 ariadne.desk.return.v1），练/核完成态「回到刚才」能回书桌原位。
+   * T39 E：payload 抽成单一来源 deskReturnPayload——书头/自测 QuizPanel 内嵌
+   * LocalProgressStrip 的 returnTo 与卡瓷砖/自测 CTA 的写点共用同一份，不出现第二套口径。
    */
+  const deskReturnPayload = {
+    href:
+      readingPage != null
+        ? `/desk?book=${encodeURIComponent(book.id)}&page=${readingPage}`
+        : `/desk?book=${encodeURIComponent(book.id)}`,
+    label: readingPage != null ? `书桌 p.${readingPage}` : `书桌《${book.title}》`,
+  };
   function rememberDeskCardReturn() {
-    saveReturn({
-      href:
-        readingPage != null
-          ? `/desk?book=${encodeURIComponent(book.id)}&page=${readingPage}`
-          : `/desk?book=${encodeURIComponent(book.id)}`,
-      label: readingPage != null ? `书桌 p.${readingPage}` : `书桌《${book.title}》`,
-      at: Date.now(),
-    });
+    saveReturn({ ...deskReturnPayload, at: Date.now() });
   }
 
   return (
@@ -451,13 +453,16 @@ export default function DocumentPane({
         </div>
         {/* 作用域本机进度：练/核各自判本页（T28 B）；可点进同范围练核。
             T36 C：池分段可点——三档 href 从条末 stripStudyHref/stripReviewHref 派生
-            （withQsMode 只换 mode；book/chapter[/page] 范围与条末完全同池同真）。 */}
+            （withQsMode 只换 mode；book/chapter[/page] 范围与条末完全同池同真）。
+            T39 E：returnTo=deskReturnPayload——条末练/核与 N>0 分段点前写 return
+            （有阅读页→书桌 p.N，否则书级），与卡瓷砖/自测 CTA 同一 payload。 */}
         <LocalProgressStrip
           atoms={stripAtoms}
           items={stripItems}
           scopeLabel={stripScopeLabel}
           studyHref={stripStudyHref}
           reviewHref={stripReviewHref}
+          returnTo={deskReturnPayload}
           studyModeHrefs={{
             all: withQsMode(stripStudyHref, "all"),
             unknown: withQsMode(stripStudyHref, "unknown"),
@@ -565,6 +570,7 @@ export default function DocumentPane({
           items={stripItems}
           scopeLabel={stripScopeLabel}
           rememberReturn={rememberDeskCardReturn}
+          returnTo={deskReturnPayload}
         />
       ) : mode === "pages" ? (
         <div className="mt-8">
@@ -740,6 +746,7 @@ function QuizPanel({
   items,
   scopeLabel,
   rememberReturn,
+  returnTo,
 }: {
   bookId: string;
   atomCount: number;
@@ -751,6 +758,8 @@ function QuizPanel({
   scopeLabel: string;
   /** T35 E：练/核点前写 return（DocumentPane 依当前阅读页构造，同 CardCard 口径）。 */
   rememberReturn: () => void;
+  /** T39 E：内嵌 Strip 的 returnTo（= 书头 deskReturnPayload 同一份）——条末/分段点前同写。 */
+  returnTo: { href: string; label: string };
 }) {
   return (
     <section className="mt-8 max-w-xl rounded-lg border border-line bg-card p-6">
@@ -764,13 +773,15 @@ function QuizPanel({
       </p>
       {/* T35 E：当前范围本机进度（练 认识/不熟/未评 · 核 待核/已对/存疑）——与书头 Strip 同池同口径；
           条末弱链即练/核入口的同范围版本，不另加实心。
-          T36 C：分段可点——三档从本面板 studyHref/reviewHref（= strip* 同源）mode-swap 派生。 */}
+          T36 C：分段可点——三档从本面板 studyHref/reviewHref（= strip* 同源）mode-swap 派生。
+          T39 E：returnTo 同书头 deskReturnPayload——条末/分段点前写 return，与本面板主 CTA 同真。 */}
       <LocalProgressStrip
         atoms={atoms}
         items={items}
         scopeLabel={scopeLabel}
         studyHref={studyHref}
         reviewHref={reviewHref}
+        returnTo={returnTo}
         studyModeHrefs={{
           all: withQsMode(studyHref, "all"),
           unknown: withQsMode(studyHref, "unknown"),

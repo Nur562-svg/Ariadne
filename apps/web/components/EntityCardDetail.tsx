@@ -3,6 +3,7 @@ import type { EntityCard } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import CardHubReturnLinks from "@/components/CardHubReturnLinks";
+import CardVsStudyLink from "@/components/CardVsStudyLink";
 import { withQsMode } from "@/lib/qs-mode";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
@@ -184,13 +185,21 @@ export function EntityCardDetail({
 
       {/* 跨面本机进度：本卡原子（练）+ 本卡核池（核）；条末弱链进同范围练/核（不重复动作条主 CTA）。
           T36 C：本卡池分段可点——三档从条末 studyHref/reviewHref（?card=&book=&mode=* 同族）
-          mode-swap 派生，N=0 / 无池分段纯文。 */}
+          mode-swap 派生，N=0 / 无池分段纯文。
+          T39 E：returnTo 回本卡枢纽（有 deskBookId 时 /desk/card/<id> · label 卡《name》，
+          与主条 CardHubReturnLinks / 练易混卡岛同口径）——条末练/核与 N>0 分段点前写 return；
+          shell 无书语境不写，行为与前同。 */}
       <LocalProgressStrip
         atoms={card.atoms.map((a) => ({ cardId: card.id, atomId: a.id }))}
         items={heyePoolKeys}
         scopeLabel="本卡"
         studyHref={studyHref}
         reviewHref={reviewHref}
+        returnTo={
+          deskBookId
+            ? { href: `/desk/card/${encodeURIComponent(card.id)}`, label: `卡《${card.name_zh}》` }
+            : undefined
+        }
         studyModeHrefs={{
           all: withQsMode(studyHref, "all"),
           unknown: withQsMode(studyHref, "unknown"),
@@ -259,14 +268,16 @@ export function EntityCardDetail({
                   {c.tip}
                   {/* T33 E 可选：易混对象已可深链 + 书桌语境 → muted「练易混卡」直跳该卡练面
                       （次级文字，非第二颗实心；与卡枢纽「练这张卡」同目标，免绕卡页一步）。
-                      T35 B：显式 mode=all。 */}
+                      T35 B：显式 mode=all。
+                      T39 D：Server 组件不能挂 onClick——换薄客户端岛 CardVsStudyLink，
+                      点前 saveReturn 回**当前卡**枢纽（/desk/card/<本卡 id>，与主条
+                      CardHubReturnLinks 同口径）；href 由这里拼好原样传入，语义不变。 */}
                   {vsId && deskBookId ? (
-                    <Link
+                    <CardVsStudyLink
                       href={`/study?card=${encodeURIComponent(vsId)}&book=${encodeURIComponent(deskBookId)}&mode=all`}
-                      className="ml-3 whitespace-nowrap text-xs text-muted no-underline hover:text-cinnabar"
-                    >
-                      练易混卡 →
-                    </Link>
+                      fromCardId={card.id}
+                      fromCardName={card.name_zh}
+                    />
                   ) : null}
                 </li>
               );

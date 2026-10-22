@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { touchLastOpened } from "@/lib/last-opened";
+import { saveReturn } from "@/lib/return-stack";
 
 /**
  * 注册进书库 CTA（T22 C，客户端）：extracted 物料上的一颗朱红实心主按钮。
@@ -26,6 +27,15 @@ export default function RegisterMaterialButton({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
+
+  /**
+   * T39 A：注册成功后的三连（打开书桌 / 学习环 / 核页）点前写 return 短链——
+   * 练/核完成态「回到刚才」回上传面。key 仍 ariadne.desk.return.v1（与就绪三连
+   * IngestReadyLinks / Sidebar / Clew 同桶，覆盖式单条），不另开第二套 return。
+   */
+  function rememberUploadReturn() {
+    saveReturn({ href: "/ingest", label: "上传", at: Date.now() });
+  }
 
   async function onRegister() {
     setBusy(true);
@@ -73,20 +83,24 @@ export default function RegisterMaterialButton({
       {done ? (
         <span className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm leading-6 text-status-ok">
           已注册进书库（book {done}）。
+          {/* T39 A：三连点前 rememberUploadReturn——回到刚才回 /ingest 上传面。 */}
           <Link
             href={`/desk?book=${encodeURIComponent(done)}`}
+            onClick={rememberUploadReturn}
             className="text-cinnabar no-underline hover:underline underline-offset-4"
           >
             打开书桌 →
           </Link>
           <Link
             href={`/study?book=${encodeURIComponent(done)}&mode=all`}
+            onClick={rememberUploadReturn}
             className="text-xs text-muted no-underline hover:text-cinnabar"
           >
             学习环 →
           </Link>
           <Link
             href={`/review?book=${encodeURIComponent(done)}&mode=open`}
+            onClick={rememberUploadReturn}
             className="text-xs text-muted no-underline hover:text-cinnabar"
           >
             核页 →

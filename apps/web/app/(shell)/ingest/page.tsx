@@ -9,6 +9,7 @@ import {
 } from "@/lib/entities";
 import IngestUpload from "@/components/IngestUpload";
 import RegisterMaterialButton from "@/components/RegisterMaterialButton";
+import IngestReadyLinks from "@/components/IngestReadyLinks";
 
 export const dynamic = "force-dynamic";
 
@@ -120,30 +121,12 @@ export default function IngestPage() {
                       const book = stage === "ready" ? findDeskBook(m) : undefined;
                       return (
                         <p className="mt-3">
+                          {/* T39 B：就绪三连抽薄客户端岛 IngestReadyLinks——Server 页的 <Link>
+                              不能挂 onClick（RSC 边界函数 props 即 500）；岛内三条链点前
+                              saveReturn → /ingest（label 上传），完成态「回到刚才」回上传面。
+                              书桌仍唯一朱红实心；学习/核次级；练 mode=all · 核 mode=open（T37 D 只回归）。 */}
                           {book ? (
-                            <span className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                              <Link
-                                href={`/desk?book=${encodeURIComponent(book.id)}`}
-                                className="inline-block rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
-                              >
-                                打开书桌 →
-                              </Link>
-                              {/* 就绪三连（T18）：书桌主 CTA + 学习/核页次级文字链。
-                                  T37 D：学习环补默认档 mode=all（核页 mode=open 已有）——
-                                  书级入口不被本标签 sticky 非默认档吞成空队列。 */}
-                              <Link
-                                href={`/study?book=${encodeURIComponent(book.id)}&mode=all`}
-                                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-                              >
-                                学习环 →
-                              </Link>
-                              <Link
-                                href={`/review?book=${encodeURIComponent(book.id)}&mode=open`}
-                                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-                              >
-                                核页 →
-                              </Link>
-                            </span>
+                            <IngestReadyLinks bookId={book.id} />
                           ) : (
                             <RegisterMaterialButton materialId={m.id} title={m.title} />
                           )}
