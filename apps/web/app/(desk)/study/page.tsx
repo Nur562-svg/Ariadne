@@ -12,6 +12,7 @@ import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
 import StickyModeGate from "@/components/desk/StickyModeGate";
 import StickyPageLoopKeys from "@/components/desk/StickyPageLoopKeys";
 import ReturnNav from "@/components/desk/ReturnNav";
+import CrossScopeReturnLink from "@/components/desk/CrossScopeReturnLink";
 import LastOpenedTouch from "@/components/LastOpenedTouch";
 
 export const dynamic = "force-dynamic";
@@ -302,6 +303,14 @@ async function StudyBody({
   progressReviewQs.set("mode", "open");
   const progressReviewHref = `/review?${progressReviewQs.toString()}`;
 
+  /**
+   * T40 A/C：练面回程 payload——页头 Strip（条末「核此范围」+ 核侧 N>0 分段）与 sticky
+   * 「去核同范围」client 岛**共用同一份**（禁第二套口径）：回本学习环范围（progressStudyHref
+   * 与练侧池/标签同源、已含默认 mode=all；孤儿页不带幽灵 page= 沿用 progress* 消毒）。
+   * label 短标「学习环 · scope」（hover 提示用，勿长句）。key 仍 ariadne.desk.return.v1。
+   */
+  const studyReturnTo = { href: progressStudyHref, label: `学习环 · ${stripScopeLabel}` };
+
   return (
     <div className="mx-auto w-full max-w-3xl px-8 py-10">
       {/* 学习面薄桥：Clew 会话条显示学习范围。
@@ -389,12 +398,15 @@ async function StudyBody({
             不传本面 studyHref（「练此范围」自指无意义）；孤儿页不带幽灵 page= 沿用 progress* 口径。
             T36 B：池分段可点——练侧三档与 StudyScopeCounts/sticky 同一 qs({ mode })（保留
             card/book/chapter/page）；核侧三档从 progressReviewHref mode-swap（withQsMode 只换
-            mode，不另写 scope 解析）；N=0 / 无池分段纯文。交叉弱链口径不变。 */}
+            mode，不另写 scope 解析）；N=0 / 无池分段纯文。交叉弱链口径不变。
+            T40 A：returnTo=studyReturnTo——条末「核此范围」与核侧 N>0 分段点前写 return，
+            进核完成态「回到刚才」回本学习环范围。 */}
         <LocalProgressStrip
           atoms={stripAtoms}
           items={stripItemKeys}
           scopeLabel={stripScopeLabel}
           reviewHref={progressReviewHref}
+          returnTo={studyReturnTo}
           studyModeHrefs={{
             all: `/study${qs({ mode: "all" })}`,
             unknown: `/study${qs({ mode: "unknown" })}`,
@@ -500,13 +512,12 @@ async function StudyBody({
               showReturn={false}
             />
             {/* T33 A：交叉弱链的 sticky 延伸——长队列滚离页头后仍能去同范围核；
-                muted 次级文字（非第二颗实心朱红），href 与页头 Strip 同一 progressReviewHref。 */}
-            <Link
-              href={progressReviewHref}
-              className="text-xs text-muted no-underline transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
-            >
+                muted 次级文字（非第二颗实心朱红），href 与页头 Strip 同一 progressReviewHref。
+                T40 C：Server 页不能挂 onClick——换薄客户端岛 CrossScopeReturnLink，
+                点前 saveReturn（payload=studyReturnTo，与页头 Strip 同一来源）。 */}
+            <CrossScopeReturnLink href={progressReviewHref} returnTo={studyReturnTo}>
               去核同范围 →
-            </Link>
+            </CrossScopeReturnLink>
           </div>
 
           {/* T28 F：本页环键说明（与练/核底栏 SessionKeyHint 同族，只列当前实际可用的键）。 */}

@@ -564,7 +564,10 @@ function ChangesPanel({
       {/* T19 Clew compact 章作用域：有池（DocumentPane 随章/页写）按池收窄，数字应明显小于全书；
           无池保持全局计数并给一句诚实说明。scopeLabel/href 与中栏 Strip 同一来源。
           T36 E：有 progress* href 时下传 mode 分段——有池分段 N>0 可点进同范围档；
-          无 progress*（未定位章）不下传，全局计数保持纯文。 */}
+          无 progress*（未定位章）不下传，全局计数保持纯文。
+          T40 D：returnTo=clewReturnPayload——条末练/核与 N>0 分段点前写 return，与空态
+          CTA / stub 气泡链同一 payload（有页→书桌 p.N；卡面→卡枢纽；仅书→书级；
+          书架/无上下文 null 不传不写，行为与前同）。 */}
       <LocalProgressStrip
         compact
         atoms={clew.progressAtoms}
@@ -572,6 +575,7 @@ function ChangesPanel({
         scopeLabel={clew.progressScopeLabel}
         studyHref={clew.progressStudyHref}
         reviewHref={clew.progressReviewHref}
+        returnTo={clewReturnPayload(clew) ?? undefined}
         studyModeHrefs={
           clew.progressStudyHref
             ? {
@@ -703,7 +707,9 @@ function QueuePanel({
   const globalChecked = Object.values(heye).filter((m) => m.s === "checked").length;
   const globalDoubt = Object.values(heye).filter((m) => m.s === "doubt").length;
 
-  /** T36 E 分段：N>0 且有 href → 文字链（同色 + hover 下划线，对齐 Strip/ScopeCounts seg 族）。 */
+  /** T36 E 分段：N>0 且有 href → 文字链（同色 + hover 下划线，对齐 Strip/ScopeCounts seg 族）。
+      T40 E：N>0 可点段是进练/核档的出发点——点前 rememberReturn（与主 CTA 同函数，
+      父级已传入，payload=clewReturnPayload 同一来源）；N=0 纯文、无池全局计数保持纯文。 */
   function seg(n: number, label: string, href: string, toneCls: string) {
     const text = (
       <>
@@ -714,6 +720,7 @@ function QueuePanel({
       return (
         <Link
           href={href}
+          onClick={rememberReturn}
           className={`${toneCls} no-underline hover:underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-cinnabar`}
         >
           {text}
