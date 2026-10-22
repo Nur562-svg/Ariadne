@@ -80,6 +80,19 @@ async function StudyBody({
   const invalidPage = pageParam != null && pageNum == null;
   const mode: StudyMode =
     modeParam === "ungraded" || modeParam === "unknown" ? modeParam : "all";
+  /**
+   * T43 A（对齐 review invalid* + effChapter）：坏 QS 不静默——
+   * - mode 未识别 → 琥珀 + 回落「全部」（StickyModeGate 本就不写非法档，勿改契约）；
+   * - 章 id 未注册 / 章不在 ?book= 内 → 琥珀；章过滤不生效，按书/全部出题；
+   * - effChapter = 单卡（章过滤不生效）且非无效/越界时的有效章——池、qs 继承、芯片当前态、
+   *   Strip/progress* 深链全走 effChapter，坏章不再当有效当前章继续传毒。
+   */
+  const invalidMode =
+    modeParam != null && modeParam !== "all" && mode !== (modeParam as StudyMode);
+  const invalidChapter = chapterId != null && !activeChapter;
+  const chapterOutsideBook =
+    activeChapter != null && activeBook != null && !activeBook.chapterIds.includes(activeChapter.id);
+  const effChapter = !scopedCard && activeChapter && !chapterOutsideBook ? activeChapter : undefined;
 
   /** 章 → 书反查：无 ?book= 时也能让 CiteChip 深链回对应书的书桌章页。 */
   const bookByChapter: Record<string, string> = {};
@@ -98,22 +111,23 @@ async function StudyBody({
   /**
    * 本页池（T27 A/C）：collectStudyAtoms({page}) 口径 = cardsCitingPage 命中卡全部 atoms，
    * 与书桌 Strip / 卡轨「练本页」同池；page+card 不匹配 → 空队列 + 页面琥珀诚实。
+   * T43 A：章过滤走 effChapter——无效/越界章不进池（与 review collectCiteQueue 同口径）。
    */
   const atoms = collectStudyAtoms(
     scopedCard
       ? {
           cardId: scopedCard.id,
           bookId: activeBook?.id,
-          chapterId: activeChapter?.id,
+          chapterId: effChapter?.id,
           page: pageNum ?? undefined,
         }
-      : { bookId: activeBook?.id, chapterId: activeChapter?.id, page: pageNum ?? undefined },
+      : { bookId: activeBook?.id, chapterId: effChapter?.id, page: pageNum ?? undefined },
   );
   /** 本页核池（T29 B 对齐 review/desk 口径）：page 过滤的 collectCiteQueue，章/书回落池见下。 */
   const heyeItems = collectCiteQueue({
     cardId: scopedCard?.id,
     bookId: activeBook?.id,
-    chapterId: activeChapter?.id,
+    chapterId: effChapter?.id,
     page: pageNum ?? undefined,
   });
   /**
@@ -121,11 +135,14 @@ async function StudyBody({
    * Clew page 共用：不把幽灵 page 深链进书桌 / 续开指针 / Clew 会话条。
    */
   const orphanStudy = pageNum != null && !scopedCard && atoms.length === 0;
+  /** T43 B：单卡出界（卡有原子但当前 book/chapter/page 过滤后为空）——页头琥珀与空态正文共用同一判定。 */
+  const cardOutOfRange = scopedCard != null && atoms.length === 0 && scopedCard.atoms.length > 0;
 
   /** T20 续位 / sticky 作用域：cursor 含 mode（与 StudySession remount key 对齐），sticky 不含 mode；
-   *  T27 C：两键都纳入 page——本页队列的续位/档位记忆不与章/书队列互串。 */
-  const studyScopeKey = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}:${pageNum ?? "all"}:${mode}`;
-  const studyStickyScope = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${activeChapter?.id ?? "all"}:${pageNum ?? "all"}`;
+   *  T27 C：两键都纳入 page——本页队列的续位/档位记忆不与章/书队列互串。
+   *  T43 A：章段走 effChapter——坏章不构成独立作用域，与书级记忆同键。 */
+  const studyScopeKey = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${effChapter?.id ?? "all"}:${pageNum ?? "all"}:${mode}`;
+  const studyStickyScope = `${scopedCard?.id ?? "all"}:${activeBook?.id ?? "all"}:${effChapter?.id ?? "all"}:${pageNum ?? "all"}`;
 
   /**
    * 精确回书桌页优先级（T27 C）：?page= 本页 > 单卡首个有页 cite（cites → fields → atoms）；
@@ -151,6 +168,7 @@ async function StudyBody({
    * qs helper（T27 C）：默认保留 card/book/chapter/mode/page；
    * - 切章（含「全部章节」清章）即离页——不把旧章印刷页残留在新作用域 URL；
    * - clearPage 只清 page（清本页，留书/章/档）。
+   * T43 A：章继承走 effChapter（对齐 review qs）——无效/越界章不随档位/清页链继续传毒。
    */
   const qs = (opts?: {
     chapter?: string | null;
@@ -165,7 +183,7 @@ async function StudyBody({
       ? undefined
       : switchingChapter
         ? (opts.chapter ?? undefined)
-        : activeChapter?.id;
+        : effChapter?.id;
     if (ch) p.set("chapter", ch);
     if (!switchingChapter && !opts?.clearPage && pageNum != null) {
       p.set("page", String(pageNum));
@@ -184,7 +202,7 @@ async function StudyBody({
     pageNum != null ? `/study${qs({ clearPage: true, mode: "all" })}` : undefined;
 
   /** T28 F：⇧[ / ⇧] 切章目标（章芯片顺序；「全部章节」时下一章 = 第一章，首/末边界 undefined → no-op）。 */
-  const chipIndex = chipChapters.findIndex((c) => c.id === activeChapter?.id);
+  const chipIndex = chipChapters.findIndex((c) => c.id === effChapter?.id);
   const prevChapterHref =
     chipIndex > 0 ? `/study${qs({ chapter: chipChapters[chipIndex - 1].id })}` : undefined;
   const nextChapterHref =
@@ -200,12 +218,13 @@ async function StudyBody({
     ...(!scopedCard && chipChapters.length > 0 ? ([["⇧[ ⇧]", "切章"]] as [string, string][]) : []),
   ];
 
-  /** 范围文案（T27 C）：有效页优先标「本页 p.N」（Strip/会话条同此口径）；单卡仍卡名。 */
+  /** 范围文案（T27 C）：有效页优先标「本页 p.N」（Strip/会话条同此口径）；单卡仍卡名。
+   *  T43 A：章段走 effChapter——坏章不冒充当前范围（池本就按书/全部算）。 */
   const scopeLabel = scopedCard
     ? `卡《${scopedCard.name_zh}》${scopeBook ? ` · 《${scopeBook.title}》` : ""}`
     : pageNum != null
       ? `本页 p.${pageNum}`
-      : (activeChapter?.title ?? activeBook?.title ?? "全部已注册书目");
+      : (effChapter?.title ?? activeBook?.title ?? "全部已注册书目");
   const deskHref = scopeBook
     ? `/desk?book=${encodeURIComponent(scopeBook.id)}${
         deskPageHint != null ? `&page=${deskPageHint}` : ""
@@ -226,12 +245,12 @@ async function StudyBody({
     : pageNum != null
       ? activeBook
         ? `/review?book=${encodeURIComponent(activeBook.id)}${
-            activeChapter ? `&chapter=${encodeURIComponent(activeChapter.id)}` : ""
+            effChapter ? `&chapter=${encodeURIComponent(effChapter.id)}` : ""
           }&page=${pageNum}&mode=open`
         : `/review?page=${pageNum}&mode=open`
       : activeBook
         ? `/review?book=${encodeURIComponent(activeBook.id)}${
-            activeChapter ? `&chapter=${encodeURIComponent(activeChapter.id)}` : ""
+            effChapter ? `&chapter=${encodeURIComponent(effChapter.id)}` : ""
           }&mode=open`
         : "/review";
   /** 完成/空态「回本卡」（仅 ?card= 时展示）。 */
@@ -247,16 +266,16 @@ async function StudyBody({
    */
   const scopeStudyAtoms =
     pageNum != null && !scopedCard
-      ? collectStudyAtoms({ bookId: activeBook?.id, chapterId: activeChapter?.id })
+      ? collectStudyAtoms({ bookId: activeBook?.id, chapterId: effChapter?.id })
       : atoms;
   const scopeHeYeItems =
     pageNum != null && !scopedCard
-      ? collectCiteQueue({ bookId: activeBook?.id, chapterId: activeChapter?.id })
+      ? collectCiteQueue({ bookId: activeBook?.id, chapterId: effChapter?.id })
       : heyeItems;
   const stripStudyPageScope = pageNum != null && !scopedCard && atoms.length > 0;
   const stripHeYePageScope = pageNum != null && !scopedCard && heyeItems.length > 0;
-  const sideScopeLabel = activeChapter
-    ? `本章 ${activeChapter.id}`
+  const sideScopeLabel = effChapter
+    ? `本章 ${effChapter.id}`
     : activeBook
       ? "本书"
       : "全部";
@@ -284,7 +303,7 @@ async function StudyBody({
   const progressStudyQs = new URLSearchParams();
   if (scopedCard) progressStudyQs.set("card", scopedCard.id);
   if (activeBook) progressStudyQs.set("book", activeBook.id);
-  if (activeChapter && !scopedCard) progressStudyQs.set("chapter", activeChapter.id);
+  if (effChapter && !scopedCard) progressStudyQs.set("chapter", effChapter.id);
   if (pageNum != null && (scopedCard ? atoms.length > 0 : stripStudyPageScope))
     progressStudyQs.set("page", String(pageNum));
   progressStudyQs.set("mode", "all");
@@ -292,7 +311,7 @@ async function StudyBody({
   const progressReviewQs = new URLSearchParams();
   if (scopedCard) progressReviewQs.set("card", scopedCard.id);
   if (activeBook) progressReviewQs.set("book", activeBook.id);
-  if (activeChapter && !scopedCard) progressReviewQs.set("chapter", activeChapter.id);
+  if (effChapter && !scopedCard) progressReviewQs.set("chapter", effChapter.id);
   if (pageNum != null && (scopedCard ? heyeItems.length > 0 : stripHeYePageScope))
     progressReviewQs.set("page", String(pageNum));
   progressReviewQs.set("mode", "open");
@@ -316,7 +335,7 @@ async function StudyBody({
         data={{
           surface: "study",
           book: scopeBook ? { id: scopeBook.id, title: scopeBook.title } : undefined,
-          chapter: activeChapter ? { id: activeChapter.id, title: activeChapter.title } : undefined,
+          chapter: effChapter ? { id: effChapter.id, title: effChapter.title } : undefined,
           card: scopedCard ? { id: scopedCard.id, name_zh: scopedCard.name_zh } : undefined,
           page: orphanStudy ? null : (pageNum ?? undefined),
           citePages: [],
@@ -358,21 +377,37 @@ async function StudyBody({
         {invalidPage ? (
           <p className="mt-2 text-sm text-status-warn">
             page 参数「{pageParam}」需为正整数——页过滤未生效，已按
-            {activeChapter ? activeChapter.title : (activeBook?.title ?? "全部已注册书目")}出题。
+            {effChapter ? effChapter.title : (activeBook?.title ?? "全部已注册书目")}出题。
           </p>
         ) : null}
         {/* T28 E：合法孤儿页（零知识原子）琥珀点名本页 + 放宽（下方空态主 CTA「换到本章全部」即放宽链），
-            与 review 同族，不静默落到通用「这个范围还没有」空态。 */}
+            与 review 同族，不静默落到通用「这个范围还没有」空态。T43 A：放宽范围说 effChapter 实口径。 */}
         {orphanStudy ? (
           <p className="mt-2 text-sm text-status-warn">
             本页 p.{pageNum} 暂无可练知识原子——这一印刷页没有卡引用它；可清本页放宽到
-            {activeChapter ? activeChapter.title : (activeBook?.title ?? "全部书目")}。
+            {effChapter ? effChapter.title : (activeBook?.title ?? "全部书目")}。
           </p>
         ) : null}
-        {scopedCard && atoms.length === 0 && scopedCard.atoms.length > 0 ? (
+        {cardOutOfRange ? (
           <p className="mt-2 text-sm text-status-warn">
-            卡「{scopedCard.name_zh}」不在当前 book / chapter
+            卡「{scopedCard?.name_zh}」不在当前 book / chapter
             {pageNum != null ? " / page" : ""} 范围内——按空队列处理。
+          </p>
+        ) : null}
+        {/* T43 A：坏章/坏档不静默（对齐 review invalid* 句式）——回落口径与上方池实算一致。 */}
+        {invalidChapter ? (
+          <p className="mt-2 text-sm text-status-warn">
+            没有章 id「{chapterId}」——章过滤未生效，已按{scopeLabel}出题。
+          </p>
+        ) : null}
+        {!invalidChapter && chapterOutsideBook ? (
+          <p className="mt-2 text-sm text-status-warn">
+            章「{activeChapter?.id}」不在《{activeBook?.title}》范围内——已按全书出题。
+          </p>
+        ) : null}
+        {invalidMode ? (
+          <p className="mt-2 text-sm text-status-warn">
+            mode 参数「{modeParam}」未识别——已回落「全部」档。
           </p>
         ) : null}
         {/* T35 C：页头范围计数可点——与 sticky 三档 tablist / StudySession allHref·unknownHref·
@@ -446,13 +481,14 @@ async function StudyBody({
               </Link>
             </span>
           ) : null}
-          {/* 章过滤（config 派生；有书时以上下文书为准；保留当前队列档；切章即离页）。单卡范围固定，隐藏章芯片。 */}
+          {/* 章过滤（config 派生；有书时以上下文书为准；保留当前队列档；切章即离页）。单卡范围固定，隐藏章芯片。
+              T43 A：当前态走 effChapter——无效/越界章不高亮任何芯片（与池同口径，不装有效章）。 */}
           {!scopedCard && chipChapters.length > 0 ? (
             <div className="flex flex-wrap items-center gap-2">
               <Link
                 href={`/study${qs({ chapter: null })}`}
                 className={`rounded-full border px-3 py-1 text-sm no-underline ${
-                  !activeChapter
+                  !effChapter
                     ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
                     : "border-line text-muted hover:text-foreground"
                 }`}
@@ -464,7 +500,7 @@ async function StudyBody({
                   key={c.id}
                   href={`/study${qs({ chapter: c.id })}`}
                   className={`rounded-full border px-3 py-1 text-sm no-underline ${
-                    activeChapter?.id === c.id
+                    effChapter?.id === c.id
                       ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
                       : "border-line text-muted hover:text-foreground"
                   }`}
@@ -517,13 +553,29 @@ async function StudyBody({
 
       {atoms.length === 0 ? (
         <div className="mt-8">
-          <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
-            这个范围还没有知识原子。先到{" "}
-            <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
-              /ingest
-            </Link>{" "}
-            上传并解析教材，或换一个更宽的范围。
-          </p>
+          {/* T43 B 空态正文分型：孤儿页/卡出界不把 /ingest 写成主因——各自点名真实原因与放宽，
+              真无原子（非孤儿、非出界）才保留 /ingest 说明。 */}
+          {orphanStudy ? (
+            <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
+              本页 p.{pageNum} 暂无可练知识原子——不是教材没导入，是这一印刷页没有卡引用它。
+              清本页放宽到{effChapter ? effChapter.title : (activeBook?.title ?? "全部书目")}
+              再练；同范围的核侧计数在上方进度条。
+            </p>
+          ) : cardOutOfRange ? (
+            <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
+              卡《{scopedCard?.name_zh}》不在当前 book / chapter
+              {pageNum != null ? " / page" : ""} 范围内——这里练不出它的原子。
+              回本卡直接练{pageNum != null ? "，或清本页放宽" : "，或换更宽的范围"}。
+            </p>
+          ) : (
+            <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
+              这个范围还没有知识原子。先到{" "}
+              <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
+                /ingest
+              </Link>{" "}
+              上传并解析教材，或换一个更宽的范围。
+            </p>
+          )}
           <div className="mt-6 flex flex-wrap items-center gap-5">
             {cardHref ? (
               <>
@@ -546,16 +598,16 @@ async function StudyBody({
               </>
             ) : null}
             {/* T27 C：本页空 → 主 CTA 优先放宽（清 page 留 chapter/book，一颗实心）；
-                非本页范围才走 T20 章程恢复主 CTA。 */}
+                非本页范围才走 T20 章程恢复主 CTA。T43 A：放宽目标按 effChapter 实口径说。 */}
             {pageNum != null ? (
               <Link
                 href={`/study${qs({ clearPage: true })}`}
                 className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
               >
-                {activeChapter ? "换到本章全部 →" : activeBook ? "换到本书全部 →" : "换到全部书目 →"}
+                {effChapter ? "换到本章全部 →" : activeBook ? "换到本书全部 →" : "换到全部书目 →"}
               </Link>
-            ) : !scopedCard && (activeChapter || activeBook) ? (
-              activeChapter ? (
+            ) : !scopedCard && (effChapter || activeBook) ? (
+              effChapter ? (
                 <Link
                   href={`/study${qs({ chapter: null })}`}
                   className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"

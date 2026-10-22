@@ -294,8 +294,8 @@ export default function ChapterPageReader({
                 inputMode="numeric"
                 placeholder="页号"
                 aria-label="印刷页号（回车跳页）"
-                aria-keyshortcuts="g"
-                className="w-14 rounded-lg border border-line bg-background px-2 py-1 text-sm text-foreground outline-none focus:border-cinnabar"
+                aria-keyshortcuts="g /"
+                className="w-14 rounded-lg border border-line bg-background px-2 py-1 text-sm text-foreground outline-none focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
               />
               <button
                 type="submit"
@@ -345,7 +345,7 @@ export default function ChapterPageReader({
             <nav
               className="flex items-baseline gap-3 text-sm"
               aria-label="翻页"
-              title="键盘：←/→ 翻页（章界自动跨章）· [ ] 切章 · g 跳页"
+              title="键盘：←/→ 翻页（章界自动跨章）· [ ] 切章 · g / 跳页"
             >
               {prev ? (
                 <button
@@ -389,14 +389,15 @@ export default function ChapterPageReader({
             </nav>
           </div>
         ) : null}
-        {/* T26 B：纸面键说明（与练/核 SessionKeyHint 同族：muted 小字 + mono 键帽）。 */}
+        {/* T26 B：纸面键说明（与练/核 SessionKeyHint 同族：muted 小字 + mono 键帽）。
+            T43 C：跳页键帽与 onKey 同真——环认 g 与 / 两键都列出，不只写 g。 */}
         {pg ? (
           <SessionKeyHint
             className="mt-2"
             keys={[
               ["←→", "翻页"],
               ["[ ]", "切章"],
-              ["g", "跳页"],
+              ["g /", "跳页"],
             ]}
           />
         ) : null}

@@ -482,6 +482,8 @@ function ChangesPanel({
   const [, setTick] = useState(0);
   const [grades, setGrades] = useState<GradeMap>({});
   const [heye, setHeYe] = useState<HeYeStore>({});
+  /** T43 D：本地面 kind 筛选（全部｜练｜核）——只影响展示，不改本机记录、不新建 storage。 */
+  const [kindFilter, setKindFilter] = useState<"all" | "study" | "heye">("all");
 
   useEffect(() => {
     setGrades(loadGrades());
@@ -529,7 +531,15 @@ function ChangesPanel({
     });
   }
   acts.sort((a, b) => b.t - a.t);
-  const shown = acts.slice(0, 20);
+  /**
+   * T43 D：筛选先于截断——按 kind 过滤后再 slice(0, 20)；筛后超过 20 条如实报「还有 N 条」
+   * （本机标记，非 Due）。练/核分计数随 acts 全量算，筛前就能看出核是不是 0。
+   */
+  const studyCount = acts.filter((a) => a.kind === "study").length;
+  const heyeCount = acts.length - studyCount;
+  const filtered = kindFilter === "all" ? acts : acts.filter((a) => a.kind === kindFilter);
+  const shown = filtered.slice(0, 20);
+  const hiddenCount = filtered.length - shown.length;
 
   /**
    * T33 B：条目深链（fail-closed）：解析不出 cardId → 空数组（纯文行，不编造）。
@@ -611,7 +621,41 @@ function ChangesPanel({
         </p>
       ) : null}
 
-      {shown.length === 0 ? (
+      {/* T43 D：本地面 kind 筛选芯片（全部｜练｜核）——当前档朱红 soft（对齐 ModeChips/章芯片
+          气质，勿第二品牌色）；只筛展示不改记录，右侧如实给本轮练/核分计数。 */}
+      {acts.length > 0 ? (
+        <div
+          className="mt-3 flex flex-wrap items-center gap-1.5"
+          role="group"
+          aria-label="按练/核筛选本轮标记"
+        >
+          {(
+            [
+              ["all", "全部"],
+              ["study", "练"],
+              ["heye", "核"],
+            ] as ["all" | "study" | "heye", string][]
+          ).map(([k, label]) => (
+            <button
+              key={k}
+              onClick={() => setKindFilter(k)}
+              aria-pressed={kindFilter === k}
+              className={`rounded-full border px-2.5 py-0.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
+                kindFilter === k
+                  ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
+                  : "border-line text-muted hover:border-cinnabar hover:text-cinnabar"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+          <span className="ml-1 text-[11px] leading-5 text-muted">
+            本轮 练 {studyCount} · 核 {heyeCount}
+          </span>
+        </div>
+      ) : null}
+
+      {acts.length === 0 ? (
         <div className="mt-6 border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
           本轮还没有本机标记——去学习环自评或核页对页后回到这里。
           <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
@@ -631,40 +675,76 @@ function ChangesPanel({
             </Link>
           </p>
         </div>
-      ) : (
-        <ul className="mt-4 space-y-2">
-          {shown.map((a, i) => (
-            <li
-              key={i}
-              className="flex flex-wrap items-baseline gap-x-2 gap-y-1 rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6"
-            >
-              <span
-                className={`mono shrink-0 text-[10px] ${a.kind === "study" ? "text-cinnabar" : "text-status-warn"}`}
+      ) : shown.length === 0 ? (
+        /* T43 D 筛空诚实句：本轮只有另一侧写入了本机标记，不假装空无一物；
+           CTA 随筛给对应侧（return 接线沿用 rememberReturn，不拆 T40/T41）。 */
+        <div className="mt-6 border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
+          本轮暂无「{kindFilter === "study" ? "练" : "核"}」标记——
+          {kindFilter === "study"
+            ? `只有核页标记（${heyeCount} 条）写入了本机记录。`
+            : `只有学习环自评（${studyCount} 条）写入了本机记录。`}
+          <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+            {kindFilter === "study" ? (
+              <Link
+                href={studyHref}
+                onClick={rememberReturn}
+                className="text-cinnabar no-underline hover:underline underline-offset-4"
               >
-                {a.kind === "study" ? "练" : "核"}
-              </span>
-              {/* T33 B densify：mono 短 id 替代「自评「生 cardId」」整串引号文案；无卡表不编中文名。 */}
-              {a.cardId ? (
-                <span className="mono shrink-0 text-[11px] text-muted">{a.cardId}</span>
-              ) : null}
-              <span className="min-w-0 flex-1 text-foreground/90">{a.text}</span>
-              {/* T33 B：可点回——开卡（次级 muted）；练/核链点前 rememberReturn（与空态 CTA 同）。 */}
-              {actLinks(a).map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={l.remember ? rememberReturn : undefined}
-                  className="shrink-0 text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                去学习环自评 →
+              </Link>
+            ) : (
+              <Link
+                href={reviewHref}
+                onClick={rememberReturn}
+                className="text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                去核页对页 →
+              </Link>
+            )}
+          </p>
+        </div>
+      ) : (
+        <>
+          <ul className="mt-4 space-y-2">
+            {shown.map((a, i) => (
+              <li
+                key={i}
+                className="flex flex-wrap items-baseline gap-x-2 gap-y-1 rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6"
+              >
+                <span
+                  className={`mono shrink-0 text-[10px] ${a.kind === "study" ? "text-cinnabar" : "text-status-warn"}`}
                 >
-                  {l.label}
-                </Link>
-              ))}
-              <span className="mono shrink-0 text-[10px] text-muted">
-                {new Date(a.t).toLocaleTimeString("zh-CN", { hour12: false })}
-              </span>
-            </li>
-          ))}
-        </ul>
+                  {a.kind === "study" ? "练" : "核"}
+                </span>
+                {/* T33 B densify：mono 短 id 替代「自评「生 cardId」」整串引号文案；无卡表不编中文名。 */}
+                {a.cardId ? (
+                  <span className="mono shrink-0 text-[11px] text-muted">{a.cardId}</span>
+                ) : null}
+                <span className="min-w-0 flex-1 text-foreground/90">{a.text}</span>
+                {/* T33 B：可点回——开卡（次级 muted）；练/核链点前 rememberReturn（与空态 CTA 同）。 */}
+                {actLinks(a).map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    onClick={l.remember ? rememberReturn : undefined}
+                    className="shrink-0 text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+                <span className="mono shrink-0 text-[10px] text-muted">
+                  {new Date(a.t).toLocaleTimeString("zh-CN", { hour12: false })}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {/* T43 D 截断诚实：筛选后超过 20 条——只列前 20，余下如实报数（本机标记，非 Due）。 */}
+          {hiddenCount > 0 ? (
+            <p className="mt-2 text-[11px] leading-5 text-muted">
+              还有 {hiddenCount} 条本轮未列——只读本机标记，非 Due。
+            </p>
+          ) : null}
+        </>
       )}
     </div>
   );
@@ -763,31 +843,40 @@ function QueuePanel({
       {!ready ? (
         <p className="mt-3 text-xs leading-6 text-muted">本机进度读取中…</p>
       ) : hasPool ? (
-        <p className="mt-3 text-xs leading-6 text-muted" aria-label="当前范围本机标记计数">
-          {clew.progressScopeLabel ? (
-            <span className="mr-2 text-foreground/80">{clew.progressScopeLabel}</span>
+        <>
+          <p className="mt-3 text-xs leading-6 text-muted" aria-label="当前范围本机标记计数">
+            {clew.progressScopeLabel ? (
+              <span className="mr-2 text-foreground/80">{clew.progressScopeLabel}</span>
+            ) : null}
+            {marks ? (
+              <>
+                核 {seg(marks.open, "待核", heyeModes.open, "")}
+                <span className="text-status-ok"> · </span>
+                {seg(marks.checked, "已对", heyeModes.checked, "text-status-ok")}
+                <span className="text-status-warn"> · </span>
+                {seg(marks.doubt, "存疑", heyeModes.doubt, "text-status-warn")}
+              </>
+            ) : null}
+            {marks && pool ? <span className="mx-2 text-line">|</span> : null}
+            {pool ? (
+              <>
+                练 {seg(pool.known, "认识", studyModes.all, "text-status-ok")}
+                <span className="text-status-warn"> · </span>
+                {seg(pool.unknown, "不熟", studyModes.unknown, "text-status-warn")}
+                <span> · </span>
+                {seg(pool.ungraded, "未评", studyModes.ungraded, "")}
+              </>
+            ) : null}
+            <span className="ml-2">· 仅这个浏览器 · 非 Due</span>
+          </p>
+          {/* T43 E 有池清完分写：待核与未评都为 0 才说「已清」——与下方「未定位章」分支两句不互拷；
+              明示本机记录、非 Due / 非 FSRS，不做掌握%绿条。 */}
+          {marks && pool && marks.open === 0 && pool.ungraded === 0 ? (
+            <p className="mt-1 text-xs leading-6 text-muted">
+              本范围待核与未评已清——可到「已对 · 存疑」或「认识 · 不熟」档复查改动；仅本机记录，非 Due、非 FSRS。
+            </p>
           ) : null}
-          {marks ? (
-            <>
-              核 {seg(marks.open, "待核", heyeModes.open, "")}
-              <span className="text-status-ok"> · </span>
-              {seg(marks.checked, "已对", heyeModes.checked, "text-status-ok")}
-              <span className="text-status-warn"> · </span>
-              {seg(marks.doubt, "存疑", heyeModes.doubt, "text-status-warn")}
-            </>
-          ) : null}
-          {marks && pool ? <span className="mx-2 text-line">|</span> : null}
-          {pool ? (
-            <>
-              练 {seg(pool.known, "认识", studyModes.all, "text-status-ok")}
-              <span className="text-status-warn"> · </span>
-              {seg(pool.unknown, "不熟", studyModes.unknown, "text-status-warn")}
-              <span> · </span>
-              {seg(pool.ungraded, "未评", studyModes.ungraded, "")}
-            </>
-          ) : null}
-          <span className="ml-2">· 仅这个浏览器 · 非 Due</span>
-        </p>
+        </>
       ) : (
         <p className="mt-3 text-xs leading-6 text-muted">
           未定位章 · 全书本机记录：练 认识 {globalKnown} · 不熟 {globalUnknown}；
