@@ -20,15 +20,10 @@ import StickyModeGate from "@/components/desk/StickyModeGate";
 import StickyPageLoopKeys from "@/components/desk/StickyPageLoopKeys";
 import ReturnNav from "@/components/desk/ReturnNav";
 import CrossScopeReturnLink from "@/components/desk/CrossScopeReturnLink";
+import StickyHeYeModeTabs from "@/components/desk/StickyHeYeModeTabs";
 import LastOpenedTouch from "@/components/LastOpenedTouch";
 
 export const dynamic = "force-dynamic";
-
-const MODES: [HeYeMode, string][] = [
-  ["open", "待核"],
-  ["checked", "已对"],
-  ["doubt", "存疑"],
-];
 
 /**
  * /review 核页 · 本机对页（desk-heye-01）。
@@ -519,26 +514,19 @@ async function ReviewBody({
             </div>
           ) : null}
 
-          {/* 本机三档：待核 | 已对 | 存疑（本机态过滤，非 FSRS；对齐 study 呼吸感）。 */}
-          <div
-            role="tablist"
-            aria-label="核页队列档位"
-            className="inline-flex items-center gap-2 rounded-lg border border-line bg-card p-1.5"
-          >
-            {MODES.map(([m, label]) => (
-              <Link
-                key={m}
-                role="tab"
-                aria-selected={mode === m}
-                href={`/review${qs({ mode: m })}`}
-                className={`rounded-md px-5 py-1.5 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
-                  mode === m ? "bg-cinnabar text-white" : "text-muted hover:text-foreground"
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
+          {/* 本机三档：待核 | 已对 | 存疑（本机态过滤，非 FSRS；对齐 study 呼吸感）。
+              T41 B：抽薄客户端岛 StickyHeYeModeTabs（对称 study）——N=0 且非当前档纯文
+              不可点（与 HeYeModeChips/HeYeScopeCounts 同池同口径；当前档恒指示），
+              tab chrome 不变。 */}
+          <StickyHeYeModeTabs
+            mode={mode}
+            items={items}
+            hrefs={{
+              open: `/review${qs({ mode: "open" })}`,
+              checked: `/review${qs({ mode: "checked" })}`,
+              doubt: `/review${qs({ mode: "doubt" })}`,
+            }}
+          />
 
           {/* T23 D + T32 D：sticky 工具带回程（对称 study）改用 ReturnNav——回本卡 / 回书桌
               本页（pageHint 仅 deskPageHref 可解析时给，孤儿不给页 hint）/ lastOpened 回落页

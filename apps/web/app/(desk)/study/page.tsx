@@ -13,17 +13,12 @@ import StickyModeGate from "@/components/desk/StickyModeGate";
 import StickyPageLoopKeys from "@/components/desk/StickyPageLoopKeys";
 import ReturnNav from "@/components/desk/ReturnNav";
 import CrossScopeReturnLink from "@/components/desk/CrossScopeReturnLink";
+import StickyStudyModeTabs from "@/components/desk/StickyStudyModeTabs";
 import LastOpenedTouch from "@/components/LastOpenedTouch";
 
 export const dynamic = "force-dynamic";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
-
-const MODES: [StudyMode, string][] = [
-  ["all", "全部"],
-  ["ungraded", "未评"],
-  ["unknown", "不熟再练"],
-];
 
 /**
  * /study 学习 · 本机自评（desk-study-01，DeskShell 内）。
@@ -480,26 +475,19 @@ async function StudyBody({
             </div>
           ) : null}
 
-          {/* 队列三档：全部 | 未评 | 不熟再练（本机态过滤，非 FSRS）。 */}
-          <div
-            role="tablist"
-            aria-label="练习队列"
-            className="inline-flex items-center gap-2 rounded-lg border border-line bg-card p-1.5"
-          >
-            {MODES.map(([m, label]) => (
-              <Link
-                key={m}
-                role="tab"
-                aria-selected={mode === m}
-                href={`/study${qs({ mode: m })}`}
-                className={`rounded-md px-5 py-1.5 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
-                  mode === m ? "bg-cinnabar text-white" : "text-muted hover:text-foreground"
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
+          {/* 队列三档：全部 | 未评 | 不熟再练（本机态过滤，非 FSRS）。
+              T41 A：抽薄客户端岛 StickyStudyModeTabs——本机 N=0 且非当前档纯文不可点
+              （与页头 StudyScopeCounts 同源池/同计数；当前档恒指示），tab chrome 不变；
+              Server 页原裸 MODES.map Link 恒可点进空池的谎言面消除。 */}
+          <StickyStudyModeTabs
+            mode={mode}
+            atoms={atoms}
+            hrefs={{
+              all: `/study${qs({ mode: "all" })}`,
+              unknown: `/study${qs({ mode: "unknown" })}`,
+              ungraded: `/study${qs({ mode: "ungraded" })}`,
+            }}
+          />
 
           {/* T23 D：sticky 工具带回程薄链（次级文字，非第三颗大红）：?card= 回本卡；可解析本页回书桌本页。*/}
           <div className="flex items-center gap-3">

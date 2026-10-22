@@ -72,6 +72,8 @@ export default async function DeskCardPage({
           progressReviewHref: progressReviewHref,
         }}
       />
+      {/* T41 D：desk 卡页「在书桌打开本卡/本页」点前 return 回本卡枢纽（与枢纽动作条
+          默认 returnTo 口径一致）；returnTo 不传——CardHub 默认本卡，只回归。 */}
       <EntityCardDetail
         card={card}
         backHref={backHref}
@@ -80,6 +82,10 @@ export default async function DeskCardPage({
         pendingCiteCount={pendingCiteCount}
         confusionLinks={confusionLinks}
         heyePoolKeys={heyePoolKeys}
+        openDeskReturnTo={{
+          href: `/desk/card/${encodeURIComponent(card.id)}`,
+          label: `卡《${card.name_zh}》`,
+        }}
       />
     </div>
   );

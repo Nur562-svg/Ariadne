@@ -528,6 +528,8 @@ function ChangesPanel({
    * - study：主链开卡 /desk/card/<id>；有当前书 → 次级 /study?card=&book=&mode=all（点前 rememberReturn）。
    * - heye：核链 /review?card=&page=&book=&mode=按标记档（checked/doubt，无标记态回落 open）；
    *   无书时省 book=（review 面按 card+page 交集过滤）；开卡互补始终给。
+   * T41 C：「开卡 →」同样 remember: true——与「练该卡 →」「核该* →」同真回程（渲染侧
+   * onClick={l.remember ? rememberReturn : undefined} 已就绪，只改数据）。
    * 客户端无卡表：只展示 mono cardId，不编造中文卡名；card 与当前书不匹配时 review 面自己诚实警告。
    */
   function actLinks(a: Act): { label: string; href: string; remember?: boolean }[] {
@@ -536,7 +538,7 @@ function ChangesPanel({
     const bookQ = clew.book ? `&book=${encodeURIComponent(clew.book.id)}` : "";
     if (a.kind === "study") {
       const links: { label: string; href: string; remember?: boolean }[] = [
-        { label: "开卡 →", href: `/desk/card/${encodeURIComponent(a.cardId)}` },
+        { label: "开卡 →", href: `/desk/card/${encodeURIComponent(a.cardId)}`, remember: true },
       ];
       if (clew.book) {
         links.push({ label: "练该卡 →", href: `/study?${cardQ}${bookQ}&mode=all`, remember: true });
@@ -550,7 +552,7 @@ function ChangesPanel({
         href: `/review?${cardQ}${a.page != null ? `&page=${a.page}` : ""}${bookQ}&mode=${mode}`,
         remember: true,
       },
-      { label: "开卡 →", href: `/desk/card/${encodeURIComponent(a.cardId)}` },
+      { label: "开卡 →", href: `/desk/card/${encodeURIComponent(a.cardId)}`, remember: true },
     ];
   }
 

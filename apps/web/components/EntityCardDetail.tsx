@@ -4,6 +4,7 @@ import CitePeek from "@/components/CitePeek";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import CardHubReturnLinks from "@/components/CardHubReturnLinks";
 import CardVsStudyLink from "@/components/CardVsStudyLink";
+import DeskOpenReturnLink from "@/components/DeskOpenReturnLink";
 import { withQsMode } from "@/lib/qs-mode";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
@@ -61,6 +62,8 @@ export function EntityCardDetail({
   pendingCiteCount,
   confusionLinks,
   heyePoolKeys,
+  openDeskReturnTo,
+  returnTo,
 }: {
   card: EntityCard;
   backHref: string;
@@ -77,6 +80,16 @@ export function EntityCardDetail({
   confusionLinks?: Record<string, string>;
   /** 本卡核池键（服务端 collectCiteQueue({cardId}) 的 {key}）：LocalProgressStrip 按池计数。 */
   heyePoolKeys?: { key: string }[];
+  /**
+   * T41 D：「在书桌打开本卡 / 本页」点前 saveReturn 的回程 payload（desk 卡页=本卡枢纽；
+   * shell 详情=实体列表）。Server 组件不能挂 onClick——两链换 DeskOpenReturnLink 岛消费。
+   */
+  openDeskReturnTo?: { href: string; label: string };
+  /**
+   * T41 E：透传给 CardHubReturnLinks 的可选 returnTo（shell 详情=实体列表；desk 卡页
+   * 不传 → 默认本卡枢纽，既有口径不回退）。
+   */
+  returnTo?: { href: string; label: string };
 }) {
   const stats = citeStats(card);
   /**
@@ -125,22 +138,20 @@ export function EntityCardDetail({
           atomCount={card.atoms.length}
           pendingCiteCount={pendingCiteCount}
           deskBookId={deskBookId}
+          returnTo={returnTo}
         />
+        {/* T41 D：Server 组件不能挂 onClick——「在书桌打开本卡/本页」换 DeskOpenReturnLink
+            岛，点前 saveReturn（openDeskReturnTo 父传：desk 卡页=本卡 · shell=实体列表；
+            缺省不写，行为与前同）。 */}
         {deskCardHref ? (
-          <Link
-            href={deskCardHref}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
-          >
+          <DeskOpenReturnLink href={deskCardHref} returnTo={openDeskReturnTo}>
             在书桌打开本卡 →
-          </Link>
+          </DeskOpenReturnLink>
         ) : null}
         {deskPageHref ? (
-          <Link
-            href={deskPageHref}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
-          >
+          <DeskOpenReturnLink href={deskPageHref} returnTo={openDeskReturnTo}>
             在书桌打开本页 →
-          </Link>
+          </DeskOpenReturnLink>
         ) : null}
         <p className="w-full text-xs leading-6 text-muted">
           练：本卡 {card.atoms.length} 个原子逐个自评；核：把引用对着该页 OCR 原文核对。

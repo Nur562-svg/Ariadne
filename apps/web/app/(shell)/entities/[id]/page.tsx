@@ -76,6 +76,16 @@ async function EntityDetail({
   }
   const queue = collectCiteQueue({ cardId: card.id });
 
+  /**
+   * T41 D/E：shell 详情出发回程——回实体列表视图（与 backHref 同源，含 ?kind=）。
+   * label 精简自 backLabel（去「← 」前缀）；同时喂 CardHubReturnLinks（returnTo）与
+   * 「在书桌打开本卡/本页」（openDeskReturnTo）——两路同源，不出现第二套口径。
+   */
+  const listReturnTo = {
+    href: backHref,
+    label: kind && kind !== "全部" ? `${KIND_ZH[kind] ?? kind}实体卡` : "全部实体卡",
+  };
+
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 flex-1">
       <EntityCardDetail
@@ -87,6 +97,8 @@ async function EntityDetail({
         pendingCiteCount={queue.length}
         confusionLinks={confusionLinks}
         heyePoolKeys={queue.map((it) => ({ key: it.key }))}
+        returnTo={listReturnTo}
+        openDeskReturnTo={listReturnTo}
       />
     </main>
   );
