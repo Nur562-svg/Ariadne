@@ -142,8 +142,14 @@ export default function EntitySearch({
         </button>
       )}
 
-      {/* 结果列表：kind（服务端）已筛 → 这里叠加 search */}
-      {needle && hits.length === 0 ? (
+      {/* 结果列表：kind（服务端）已筛 → 这里叠加 search。
+          T47 D：筛前已空（cards.length===0 且无搜索针）→ 诚实空态句，禁止只渲空 <ul>；
+          有针 0 命中保持既有「没有匹配…」句。 */}
+      {cards.length === 0 && !needle ? (
+        <p className="mt-8 text-sm leading-7 text-muted">
+          当前筛选暂无实体卡——这一 kind / 章 / 书范围还没有抽取出的卡；可换「全部」或更宽的范围。
+        </p>
+      ) : needle && hits.length === 0 ? (
         <p className="mt-8 text-sm text-muted">没有匹配「{q.trim()}」的实体卡</p>
       ) : (
         <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

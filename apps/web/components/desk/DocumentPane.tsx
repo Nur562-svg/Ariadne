@@ -337,6 +337,18 @@ export default function DocumentPane({
   const reviewPageScope = readingPage != null && pageHeYe.length > 0;
   const stripAtoms = studyPageScope ? pageAtoms : chapterAtoms;
   const stripItems = reviewPageScope ? pageHeYe : chapterHeYe;
+  /**
+   * T47 B：六段 TOC 过滤计数——map/process/confusions/case 用既有 filterCards(section, cards)
+   * （与 SectionCards 同池）；quiz = stripAtoms.length（与 T45 QuizPanel atomCount 同池同真）；
+   * overview 不传（恒可点，不因 0 卡禁用）。
+   */
+  const sectionCounts: Partial<Record<SectionId, number>> = {
+    map: filterCards("map", cards).length,
+    process: filterCards("process", cards).length,
+    confusions: filterCards("confusions", cards).length,
+    case: filterCards("case", cards).length,
+    quiz: stripAtoms.length,
+  };
   const chapterSideLabel = activeChapter ? `本章 ${activeChapter.id}` : "本书";
   const stripScopeLabel =
     studyPageScope && reviewPageScope
@@ -563,9 +575,13 @@ export default function DocumentPane({
       <SectionToc
         active={section}
         onSelect={(s) => {
+          /* T47 B：空过滤段/零原子自测 no-op——不进空面板装作有内容（SectionToc 侧已 disabled +
+             title，这里双保险程序调用路径）；overview 恒可切。 */
+          if (s !== "overview" && sectionCounts[s] === 0) return;
           setSection(s);
           if (s === "overview" || s === "quiz") setMode("cards");
         }}
+        counts={sectionCounts}
       />
 
       {/* 内容区：TOC 段 + 模式组合驱动 */}

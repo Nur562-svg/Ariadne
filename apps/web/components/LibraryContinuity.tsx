@@ -71,6 +71,9 @@ export default function LibraryContinuity({
   if (!last || !book) return null;
 
   const href = last.deskHref || `/desk?book=${encodeURIComponent(book.id)}`;
+  /** T47 E：续开与书架 CTA 同真 OCR——该书 0 已解析印刷页 → 续开主链降级点名「尚无 OCR」+ 次级 /ingest；
+      仍可进桌看概览/卡（href 不变）；>0 保持朱红。 */
+  const ocrPages = bookValidPages?.[book.id]?.length ?? 0;
 
   /**
    * T37 E：学习环/核页点前写 return——从书库续开出发进练/核，完成态「回到刚才」
@@ -91,12 +94,30 @@ export default function LibraryContinuity({
   return (
     <div className="mt-8 rounded-lg border border-line bg-card px-5 py-4">
       <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
-        <Link
-          href={href}
-          className="text-sm font-medium text-cinnabar no-underline hover:underline underline-offset-4"
-        >
-          继续上次：《{book.title}》 →
-        </Link>
+        {ocrPages > 0 ? (
+          <Link
+            href={href}
+            className="text-sm font-medium text-cinnabar no-underline hover:underline underline-offset-4"
+          >
+            继续上次：《{book.title}》 →
+          </Link>
+        ) : (
+          <>
+            <Link
+              href={href}
+              title="尚无 OCR 印刷页——章页/分栏暂读不了；可进桌看概览与实体卡"
+              className="text-sm font-medium text-muted no-underline hover:text-cinnabar"
+            >
+              继续上次：《{book.title}》（尚无 OCR）→
+            </Link>
+            <Link
+              href="/ingest"
+              className="text-sm text-muted no-underline hover:text-cinnabar"
+            >
+              去解析 →
+            </Link>
+          </>
+        )}
         <Link
           href={`/study?book=${encodeURIComponent(book.id)}${
             last.page != null ? `&page=${last.page}` : ""

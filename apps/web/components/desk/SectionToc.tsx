@@ -21,9 +21,16 @@ export const SECTIONS: { id: SectionId; label: string }[] = [
 export default function SectionToc({
   active,
   onSelect,
+  counts,
 }: {
   active: SectionId;
   onSelect: (s: SectionId) => void;
+  /**
+   * T47 A：各段过滤计数——map/process/confusions/case = filterCards 口径卡数，quiz = 可练原子数
+   * （stripAtoms.length，与 QuizPanel atomCount 同池）。overview 恒可点（不计数不降级）；
+   * 某段 counts 缺省（undefined）不显示数字也不判空（缺省≠0，不造假正数/假空）。
+   */
+  counts?: Partial<Record<SectionId, number>>;
 }) {
   return (
     <nav aria-label="六段讲义目录" className="mt-6 rounded-xl border border-line bg-card p-4">
@@ -34,18 +41,39 @@ export default function SectionToc({
       <ol className="mt-3 flex flex-wrap gap-2">
         {SECTIONS.map((s, i) => {
           const isActive = s.id === active;
+          const count = counts?.[s.id];
+          /* T47 A：空过滤段 / 零原子自测诚实降级——与 T46 模式 tab 同族同真（disabled +
+             aria-disabled + title 说明，不另起文案体系）；已在该段保留 aria-current 指示，
+             但不装作有内容可刷。overview 恒可点（对齐 T46「实体卡」恒可点）。 */
+          const isEmpty = s.id !== "overview" && count === 0;
           return (
             <li key={s.id}>
               <button
                 onClick={() => onSelect(s.id)}
                 aria-current={isActive ? "step" : undefined}
+                aria-disabled={isEmpty || undefined}
+                disabled={isEmpty}
+                title={
+                  isEmpty
+                    ? s.id === "quiz"
+                      ? "本范围暂无可练知识原子"
+                      : "本段暂无匹配实体卡"
+                    : undefined
+                }
                 className={`rounded-full border px-3 py-1 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
+                  isEmpty ? "cursor-not-allowed opacity-50 " : ""
+                }${
                   isActive
                     ? "border-cinnabar bg-cinnabar-soft font-medium text-cinnabar"
                     : "border-line text-muted hover:text-foreground"
                 }`}
               >
                 {i + 1} {s.label}
+                {count != null ? (
+                  <span className="mono ml-1.5 text-[11px] font-normal">
+                    {count} {s.id === "quiz" ? "原子" : "卡"}
+                  </span>
+                ) : null}
               </button>
             </li>
           );

@@ -225,8 +225,14 @@ export function EntityCardDetail({
 
       <section className="mt-8">
         <h2 className="text-sm font-semibold text-muted">字段</h2>
-        <dl className="mt-3 space-y-3">
-          {card.fields.map((f, i) => (
+        {/* T47 F：0 字段诚实句——抽取未产出字段级信息，不渲空 dl 空壳。 */}
+        {card.fields.length === 0 ? (
+          <p className="mt-3 text-sm leading-7 text-muted">
+            本卡暂无字段——抽取未产出字段级信息，不伪造空表。
+          </p>
+        ) : (
+          <dl className="mt-3 space-y-3">
+            {card.fields.map((f, i) => (
             <div key={i} className="rounded-lg border border-line bg-card p-4">
               <div className="flex items-baseline justify-between gap-3">
                 <dt className="font-semibold">{f.label}</dt>
@@ -247,7 +253,8 @@ export function EntityCardDetail({
               <dd className="mt-1.5 text-sm leading-7 text-foreground/90">{f.value}</dd>
             </div>
           ))}
-        </dl>
+          </dl>
+        )}
       </section>
 
       {card.confusions?.length ? (
@@ -299,8 +306,14 @@ export function EntityCardDetail({
 
       <section className="mt-10">
         <h2 className="text-sm font-semibold text-muted">知识原子（{card.atoms.length}）</h2>
-        <ol className="mt-3 space-y-3">
-          {card.atoms.map((a) => (
+        {/* T47 F：零原子诚实句——对齐卡枢纽/瓷砖「暂无原子」语义（练不进空池），不渲空 ol 空壳。 */}
+        {card.atoms.length === 0 ? (
+          <p className="mt-3 text-sm leading-7 text-muted">
+            本卡暂无知识原子——学习环不会为它出题（卡枢纽/瓷砖的「练」同为「暂无原子」不可点）。
+          </p>
+        ) : (
+          <ol className="mt-3 space-y-3">
+            {card.atoms.map((a) => (
             <li key={a.id} className="rounded-lg border border-line p-4">
               <div className="flex items-start justify-between gap-3">
                 <p className="min-w-0 font-medium leading-7">
@@ -336,7 +349,8 @@ export function EntityCardDetail({
               ) : null}
             </li>
           ))}
-        </ol>
+          </ol>
+        )}
       </section>
 
       <footer className="mt-10 border-t border-line pt-4 text-sm text-muted">

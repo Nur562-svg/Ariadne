@@ -57,6 +57,13 @@ async function EntityList({
 
   const all = loadCards({ bookId: activeBook?.id, chapterId: activeChapter?.id });
   const cards = !kind || kind === "全部" ? all : all.filter((c) => c.kind === kind);
+  /**
+   * T47 C：kind 芯片张数——对筛前 all 按 kind 计数（「全部」= all.length）；
+   * 0-kind 芯片 muted 降级但仍可点进筛空（与 EntitySearch 空态同真，避免死胡同），
+   * 当前选中的 0-kind 仍朱红 soft 指示。
+   */
+  const kindCounts: Record<string, number> = {};
+  for (const c of all) kindCounts[c.kind] = (kindCounts[c.kind] ?? 0) + 1;
 
   /**
    * T31 E：列表卡 → 书桌反查（chapterId ∈ book.chapterIds，与 T30 B / desk 卡页同口径）——
@@ -126,19 +133,26 @@ async function EntityList({
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <span className="text-sm text-muted">{cards.length} 张</span>
-        {KINDS.map((k) => (
-          <Link
-            key={k}
-            href={`/entities${qs(k === "全部" ? undefined : { kind: k })}`}
-            className={`rounded-full border px-3 py-1 text-sm no-underline ${
-              (k === "全部" && !kind) || k === kind
-                ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
-                : "border-line text-muted hover:text-foreground"
-            }`}
-          >
-            {k === "全部" ? "全部" : `${KIND_ZH[k] ?? k} ${k}`}
-          </Link>
-        ))}
+        {KINDS.map((k) => {
+          const cnt = k === "全部" ? all.length : (kindCounts[k] ?? 0);
+          const isActive = (k === "全部" && !kind) || k === kind;
+          const zeroKind = k !== "全部" && cnt === 0;
+          return (
+            <Link
+              key={k}
+              href={`/entities${qs(k === "全部" ? undefined : { kind: k })}`}
+              className={`rounded-full border px-3 py-1 text-sm no-underline ${
+                isActive
+                  ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
+                  : zeroKind
+                    ? "border-line text-muted opacity-60 hover:text-foreground"
+                    : "border-line text-muted hover:text-foreground"
+              }`}
+            >
+              {k === "全部" ? `全部 ${all.length}` : `${KIND_ZH[k] ?? k} ${cnt}`}
+            </Link>
+          );
+        })}
       </div>
 
       <EntitySearch cards={cards} kindLabel={KIND_ZH} activeKind={kind} deskBookIds={deskBookIds} />
