@@ -66,9 +66,10 @@ function buildSuggestions(clew: ClewContextData): string[] {
 }
 
 /**
- * stub 回复规则：有页码上下文 → 提示对页；无 → 建议先开章页/卡。绝不宣称已核/verified。
+ * stub 回复规则：有页码上下文 → 提示对页；无 → 按表面说真话。绝不宣称已核/verified。
  * T29 D：对照去处按当前表面说真话——核页有本页 OCR 原文，学习环有题目 CiteChip，
  * 书桌才是「中栏章页」；不再对 study/review 说「到中栏章页看」。
+ * T44 D：无页分支同样按表面（及有无书）分写——study/review/library 不再统一说「中栏章页」。
  */
 function stubReply(clew: ClewContextData): string {
   const pages = [
@@ -86,7 +87,16 @@ function stubReply(clew: ClewContextData): string {
       "、p.",
     )}；本面板不生成已核对结论，回答以教材印刷页为准。`;
   }
-  return `（stub · 未接模型）本地占位回复。先把中栏切到「章页」或打开一张实体卡再问，便于对照印刷页核对；本面板不生成已核对结论。`;
+  const noPageHint = !clew.book
+    ? "书库还没有已注册书目——先到 /ingest 导入并注册教材，再从书架打开一本书后回来问"
+    : clew.surface === "study"
+      ? "学习环先练到带 CiteChip 的题目，对着题目引用来问，便于对照印刷页"
+      : clew.surface === "review"
+        ? "核页还没定位到印刷页——可按章/页收窄队列，或回书桌打开章页对照本页 OCR 原文"
+        : clew.surface === "library"
+          ? "先从书架打开一本书，带着章/页上下文再问，便于对照印刷页"
+          : "先把中栏切到「章页」或打开一张实体卡再问，便于对照印刷页核对";
+  return `（stub · 未接模型）本地占位回复。${noPageHint}；本面板不生成已核对结论。`;
 }
 
 /**
@@ -338,26 +348,73 @@ export default function ClewPane() {
           <div ref={threadRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {messages.length === 0 ? (
               <div>
-                <p className="text-xs leading-6 text-muted">
-                  还没接模型（stub）。请带着页码对照的问题发问；先按这条路径走通：
-                </p>
-                <p className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted">
-                  <Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">导入教材</Link>
-                  <span>→</span>
-                  <Link href="/" className="text-cinnabar no-underline hover:underline underline-offset-4">书架打开</Link>
-                  <span>→</span>
-                  <Link href={bookHref} className="text-cinnabar no-underline hover:underline underline-offset-4">书桌读实体卡/章页</Link>
-                  <span>→</span>
-                  {/* T42 E：stub 空态路径的「学习环自测」点前 rememberClewReturn——与空态 CTA /
-                      stub 气泡链同一函数，离面即记回程（回当前 Clew 上下文）。 */}
-                  <Link
-                    href={studyHref}
-                    onClick={rememberClewReturn}
-                    className="text-cinnabar no-underline hover:underline underline-offset-4"
-                  >
-                    学习环自测
-                  </Link>
-                </p>
+                {clew.book ? (
+                  /* T44 C：有书空态不主推「导入教材」——点名当前书的日用链（桌/练/核）；
+                     自测/核页点前 rememberClewReturn（T42/T31 接线不拆）；「另导入」只作次级 muted。 */
+                  <>
+                    <p className="text-xs leading-6 text-muted">
+                      还没接模型（stub）。当前书《{clew.book.title}
+                    》——日用路径：
+                    </p>
+                    <p className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted">
+                      <Link
+                        href={pageHref}
+                        className="text-cinnabar no-underline hover:underline underline-offset-4"
+                      >
+                        回书桌{clew.page != null ? `本页` : "读实体卡/章页"}
+                      </Link>
+                      <span>→</span>
+                      {/* T42 E：stub 空态路径的「学习环自测」点前 rememberClewReturn——与空态 CTA /
+                          stub 气泡链同一函数，离面即记回程（回当前 Clew 上下文）。 */}
+                      <Link
+                        href={studyHref}
+                        onClick={rememberClewReturn}
+                        className="text-cinnabar no-underline hover:underline underline-offset-4"
+                      >
+                        学习环自测
+                      </Link>
+                      <span>→</span>
+                      <Link
+                        href={reviewHref}
+                        onClick={rememberClewReturn}
+                        className="text-cinnabar no-underline hover:underline underline-offset-4"
+                      >
+                        核页对页
+                      </Link>
+                    </p>
+                    <p className="mt-1 text-[11px] leading-5 text-muted">
+                      另导入其他教材：
+                      <Link
+                        href="/ingest"
+                        className="ml-1 text-muted no-underline hover:text-cinnabar hover:underline underline-offset-4"
+                      >
+                        /ingest →
+                      </Link>
+                    </p>
+                  </>
+                ) : (
+                  /* T44 C：无书才走 ingest 冷启动首环（与 buildSuggestions 无书句同真）。 */
+                  <>
+                    <p className="text-xs leading-6 text-muted">
+                      还没接模型（stub）。书库为空——请带着页码对照的问题发问；先按这条路径走通：
+                    </p>
+                    <p className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted">
+                      <Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">导入教材</Link>
+                      <span>→</span>
+                      <Link href="/" className="text-cinnabar no-underline hover:underline underline-offset-4">书架打开</Link>
+                      <span>→</span>
+                      <Link href={bookHref} className="text-cinnabar no-underline hover:underline underline-offset-4">书桌读实体卡/章页</Link>
+                      <span>→</span>
+                      <Link
+                        href={studyHref}
+                        onClick={rememberClewReturn}
+                        className="text-cinnabar no-underline hover:underline underline-offset-4"
+                      >
+                        学习环自测
+                      </Link>
+                    </p>
+                  </>
+                )}
                 <ul className="mt-4 space-y-2">
                   {suggestions.map((s) => (
                     <li key={s}>
@@ -425,9 +482,9 @@ export default function ClewPane() {
                   }
                 }}
                 rows={2}
-                placeholder="问点什么…（Enter 发送）"
+                placeholder="问点什么…（Enter 发送 · Shift+Enter 换行）"
                 aria-label="Clew 输入"
-                className="min-h-[2.75rem] w-full resize-y rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6 outline-none transition-colors placeholder:text-muted focus:border-cinnabar motion-reduce:transition-none"
+                className="min-h-[2.75rem] w-full resize-y rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6 outline-none transition-colors placeholder:text-muted focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
               />
               <button
                 onClick={() => send(draft)}

@@ -87,7 +87,7 @@ export default function IngestUpload() {
   }
 
   const inputCls =
-    "h-9 w-full rounded-md border border-line bg-background px-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted/70 focus:border-cinnabar motion-reduce:transition-none";
+    "h-9 w-full rounded-md border border-line bg-background px-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted/70 focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none";
 
   return (
     <form ref={formRef} onSubmit={onSubmit} className="mt-3 space-y-5">

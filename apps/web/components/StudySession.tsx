@@ -611,18 +611,20 @@ export default function StudySession({
       <p className="mt-4 text-xs text-muted">
         范围：{scopeLabel} · 评分只记本机浏览器（非 FSRS 调度）；citation 徽章语义不变（未验证仍为琥珀）。
       </p>
-      {/* T25 B：键说明一族风格（muted 小字 + mono 键帽），含 ←→ 回看与 u 撤销。
+      {/* T25 B：键说明一族风格（muted 小字 + mono 键帽）。
           T28 F→T29 E：本页环键（g 清本页 / ⇧[] 切章）由父页按当前真可用性传入 loopKeys
           （与 sticky 键岛同源）——无本页过滤不列 g，无章芯片不列 ⇧[]；
-          题内裸 [ / ] 仍是回看/前进，不受影响。 */}
+          题内裸 [ / ] 仍是回看/前进，不受影响。
+          T44 A：键帽与 onKey 同真——回看/前进拆两行列出 [ 与 ]，撤销列 u/z（不再漏键）。 */}
       <SessionKeyHint
         className="mt-1"
         keys={[
           ["空格", "显示答案"],
           ["1/j", "认识"],
           ["2/k", "不熟"],
-          ["←/→", "回看/前进"],
-          ["u", "撤销本轮最后一评"],
+          ["←/[", "回看"],
+          ["→/]", "前进"],
+          ["u/z", "撤销本轮最后一评"],
           ...(loopKeys ?? []),
         ]}
       />

@@ -94,7 +94,7 @@ export default function EntitySearch({
               }}
               placeholder="按名称 / 别名 / id"
               aria-label="搜索实体卡"
-              className="h-10 w-full rounded-lg border border-line bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted focus:border-cinnabar motion-reduce:transition-none"
+              className="h-10 w-full rounded-lg border border-line bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
             />
             <button
               onClick={collapse}

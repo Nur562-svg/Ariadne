@@ -575,13 +575,15 @@ export default function HeYeSession({
       </div>
       {/* T25 B：键说明与 study 对齐一族风格（muted 小字 + mono 键帽）；b 仅待核档。
           T28 F→T29 E：本页环键（g 清本页 / ⇧[] 切章）由父页按当前真可用性传入 loopKeys
-          （与 sticky 键岛同源）——无本页过滤不列 g，无章芯片不列 ⇧[]，题内键恒保留。 */}
+          （与 sticky 键岛同源）——无本页过滤不列 g，无章芯片不列 ⇧[]，题内键恒保留。
+          T44 B：键帽与 onKey 同真——上下条拆两行列出 j 与 k（核侧导航，非练侧 j/k 评分）。 */}
       <SessionKeyHint
         className="mt-1"
         keys={[
           ["1", "已对"],
           ["2", "存疑"],
-          ["←/→", "上下条"],
+          ["←/j", "上条"],
+          ["→/k", "下条"],
           ...(mode === "open" && samePageOpen.length >= 1
             ? ([["b", "同页批量"]] as [string, string][])
             : []),
