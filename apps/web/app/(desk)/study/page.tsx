@@ -533,12 +533,16 @@ async function StudyBody({
                 >
                   回本卡 →
                 </Link>
-                <Link
+                {/* T42 B：Server 页不能挂 onClick——「核本卡」换 CrossScopeReturnLink 岛，
+                    点前 saveReturn（returnTo=studyReturnTo，与页头 Strip/sticky 交叉同一份）；
+                    className 对齐相邻「回本卡」次级 text-sm 链。 */}
+                <CrossScopeReturnLink
                   href={reviewHref}
+                  returnTo={studyReturnTo}
                   className="text-sm text-muted no-underline hover:text-cinnabar"
                 >
                   核本卡 →
-                </Link>
+                </CrossScopeReturnLink>
               </>
             ) : null}
             {/* T27 C：本页空 → 主 CTA 优先放宽（清 page 留 chapter/book，一颗实心）；
@@ -598,6 +602,7 @@ async function StudyBody({
           deskBookId={scopeBook?.id}
           loopKeys={stickyKeys}
           validPages={scopeBookValidPages}
+          leaveReturnTo={studyReturnTo}
         />
       )}
     </div>

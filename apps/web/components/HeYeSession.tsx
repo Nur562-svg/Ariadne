@@ -16,7 +16,7 @@ import {
   type HeYeStore,
 } from "@/lib/heye-store";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
-import { loadReturn, type ReturnEntry } from "@/lib/return-stack";
+import { loadReturn, saveReturn, type ReturnEntry } from "@/lib/return-stack";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
 
@@ -100,6 +100,7 @@ export default function HeYeSession({
   orphanPage,
   loopKeys,
   scopeKey,
+  leaveReturnTo,
 }: {
   /** 全池待核队列（服务端 collectCiteQueue，已按页码排序；本机态过滤在客户端）。 */
   items: HeYeItem[];
@@ -141,6 +142,13 @@ export default function HeYeSession({
   loopKeys?: [string, string][];
   /** 续位作用域（与父级 remount key 一致）：`${book|all}:${card|all}:${page|all}:${chapter|all}:${mode}`。 */
   scopeKey: string;
+  /**
+   * T42 C/D：离面进练链（去学习环 / 去学习本卡 + 核中卡名开卡 / 在书桌打开 p.N）点前的
+   * return payload——父传 reviewReturnTo（与页头 Strip / sticky CrossScope 同一份，禁第二套）；
+   * 缺省不写。回本卡 / 回书桌本页 / 回书桌**不写**（那是回程不是进环，避免互谎）。
+   * key 仍 ariadne.desk.return.v1。
+   */
+  leaveReturnTo?: { href: string; label: string };
 }) {
   const [store, setStore] = useState<HeYeStore>({});
   const [index, setIndex] = useState(0);
@@ -276,6 +284,11 @@ export default function HeYeSession({
     setResumed(false);
   }
 
+  /** T42 C/D：离面进练/开卡/开书桌前写 leaveReturnTo（父传 reviewReturnTo，与 Strip/CrossScope 同源）；缺省 no-op。 */
+  function rememberLeave() {
+    if (leaveReturnTo) saveReturn({ ...leaveReturnTo, at: Date.now() });
+  }
+
   // ---- 空态分支 ----
 
   /** 服务端池空：本范围没有「有页码但未抽查」的引用。一颗主 CTA + 次级文字链 + 档位芯片。 */
@@ -309,6 +322,7 @@ export default function HeYeSession({
           ) : deskPageHref ? (
             <Link
               href={studyHref ?? "/study"}
+              onClick={leaveReturnTo ? rememberLeave : undefined}
               className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
             >
               去学习环 →
@@ -325,6 +339,7 @@ export default function HeYeSession({
             <>
               <Link
                 href={studyHref ?? "/study"}
+                onClick={leaveReturnTo ? rememberLeave : undefined}
                 className="text-sm text-muted no-underline hover:text-cinnabar"
               >
                 去学习本卡 →
@@ -341,6 +356,7 @@ export default function HeYeSession({
           ) : orphanPage ? (
             <Link
               href={studyHref ?? "/study"}
+              onClick={leaveReturnTo ? rememberLeave : undefined}
               className="text-sm text-muted no-underline hover:text-cinnabar"
             >
               去学习环 →
@@ -355,6 +371,7 @@ export default function HeYeSession({
           ) : (
             <Link
               href={studyHref ?? "/study"}
+              onClick={leaveReturnTo ? rememberLeave : undefined}
               className="text-sm text-muted no-underline hover:text-cinnabar"
             >
               去学习环 /study →
@@ -429,6 +446,7 @@ export default function HeYeSession({
           ) : (
             <Link
               href={studyHref ?? "/study"}
+              onClick={leaveReturnTo ? rememberLeave : undefined}
               className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
             >
               去学习环 →
@@ -437,6 +455,7 @@ export default function HeYeSession({
           {backToOpen ? (
             <Link
               href={studyHref ?? "/study"}
+              onClick={leaveReturnTo ? rememberLeave : undefined}
               className="text-sm text-muted no-underline hover:text-cinnabar"
             >
               {cardHref ? "去学习本卡 →" : "去学习环 →"}
@@ -603,8 +622,10 @@ export default function HeYeSession({
           </div>
 
           <p className="mt-3 text-sm">
+            {/* T42 D：核中开卡旁路点前写 leaveReturnTo——回当前核页（与进练链同一 payload）。 */}
             <Link
               href={`/desk/card/${encodeURIComponent(cur.cardId)}`}
+              onClick={leaveReturnTo ? rememberLeave : undefined}
               className="font-semibold text-cinnabar no-underline hover:underline underline-offset-4"
             >
               {cur.cardName}
@@ -711,8 +732,10 @@ export default function HeYeSession({
             它不等于教材侧「抽查 verified」，也不会改写 seed 数据。
           </p>
           <p className="mt-2 text-xs">
+            {/* T42 D：核中「在书桌打开 p.N」离面点前写 leaveReturnTo——回到刚才回当前核页。 */}
             <Link
               href={deskHref}
+              onClick={leaveReturnTo ? rememberLeave : undefined}
               className="text-cinnabar no-underline hover:underline underline-offset-4"
             >
               在书桌打开 p.{cur.page} →

@@ -498,8 +498,11 @@ export default function ChapterPageReader({
                     className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 border-t border-line pt-2 first:border-t-0 first:pt-0"
                   >
                     <div className="min-w-0">
+                      {/* T42 A：轨行卡名开卡点前 rememberDeskReturn——与同轨「练」「核」/
+                          RailMarks 同函数（有阅读页→书桌 p.N），开卡旁路不再单向。 */}
                       <Link
                         href={`/desk/card/${encodeURIComponent(c.cardId)}`}
+                        onClick={rememberDeskReturn}
                         className="text-sm font-medium text-foreground no-underline hover:text-cinnabar"
                       >
                         {c.nameZh}

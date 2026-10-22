@@ -348,7 +348,15 @@ export default function ClewPane() {
                   <span>→</span>
                   <Link href={bookHref} className="text-cinnabar no-underline hover:underline underline-offset-4">书桌读实体卡/章页</Link>
                   <span>→</span>
-                  <Link href={studyHref} className="text-cinnabar no-underline hover:underline underline-offset-4">学习环自测</Link>
+                  {/* T42 E：stub 空态路径的「学习环自测」点前 rememberClewReturn——与空态 CTA /
+                      stub 气泡链同一函数，离面即记回程（回当前 Clew 上下文）。 */}
+                  <Link
+                    href={studyHref}
+                    onClick={rememberClewReturn}
+                    className="text-cinnabar no-underline hover:underline underline-offset-4"
+                  >
+                    学习环自测
+                  </Link>
                 </p>
                 <ul className="mt-4 space-y-2">
                   {suggestions.map((s) => (

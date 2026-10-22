@@ -433,10 +433,13 @@ export default function DocumentPane({
           {/* T27 B + T28 B：书头学习链至少带章（不裸 /study?book= 丢章）；仅 studyPageScope
               （本页有可练原子）才并列「练本页」深链——heye-only 页练走本章，不出这条链。
               T35 B：「学习环 · 自评」显式 mode=all（对齐同页 stripStudyHref）——本标签 sticky
-              停在 unknown/ungraded 空档时点书头入口仍落可见全部池。 */}
+              停在 unknown/ungraded 空档时点书头入口仍落可见全部池。
+              T42 A：两链点前 rememberDeskCardReturn——与旁边 Strip returnTo={deskReturnPayload}
+              同一函数/payload（有阅读页→书桌 p.N，否则书级），书头入口与 Strip 条末同真回程。 */}
           <span className="flex flex-wrap items-baseline gap-4">
             <Link
               href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=all`}
+              onClick={rememberDeskCardReturn}
               className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
             >
               学习环 · 自评 →
@@ -444,6 +447,7 @@ export default function DocumentPane({
             {studyPageScope ? (
               <Link
                 href={stripStudyHref}
+                onClick={rememberDeskCardReturn}
                 className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
               >
                 练本页 p.{readingPage} →

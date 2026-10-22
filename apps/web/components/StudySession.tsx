@@ -17,7 +17,7 @@ import {
 } from "@/lib/study";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadLastOpened } from "@/lib/last-opened";
-import { loadReturn, type ReturnEntry } from "@/lib/return-stack";
+import { loadReturn, saveReturn, type ReturnEntry } from "@/lib/return-stack";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
 
@@ -103,6 +103,7 @@ export default function StudySession({
   loopKeys,
   scopeKey,
   validPages,
+  leaveReturnTo,
 }: {
   /** 当前范围全池（未按档位过滤；档位在客户端按本机评分过滤）。 */
   atoms: StudyAtom[];
@@ -146,6 +147,13 @@ export default function StudySession({
    * 不盲信 localStorage）。页源优先级不变：lastAtomPage ?? deskPageHint ?? lastOpenedPage。
    */
   validPages?: number[];
+  /**
+   * T42 B/D：离面链（去核页/核本卡交叉 + 题头卡名开卡）点前的 return payload——
+   * 父传 studyReturnTo（与页头 Strip / sticky CrossScope 同一份，禁第二套）；缺省不写，
+   * 行为与前同。回书桌/回本卡链**不写**（那是回程不是进环，避免互谎）。
+   * key 仍 ariadne.desk.return.v1。
+   */
+  leaveReturnTo?: { href: string; label: string };
 }) {
   const [grades, setGrades] = useState<GradeMap>({});
   const [order, setOrder] = useState<StudyAtom[]>([]);
@@ -282,6 +290,11 @@ export default function StudySession({
       : deskHref;
   const deskBackLabel = deskBackPage != null && deskBackBookId ? "回书桌本页 →" : "回书桌 →";
 
+  /** T42 B/D：离面前写 leaveReturnTo（父传 studyReturnTo，与页头 Strip/CrossScope 同源）；缺省 no-op。 */
+  function rememberLeave() {
+    if (leaveReturnTo) saveReturn({ ...leaveReturnTo, at: Date.now() });
+  }
+
   if (atoms.length === 0) return null;
 
   /** 本机评分读取中：服务端/首帧一致占位，读完再出题。 */
@@ -334,8 +347,10 @@ export default function StudySession({
               >
                 回本卡 →
               </Link>
+              {/* T42 B：交叉进核点前写 leaveReturnTo（回本学习环），与 sticky CrossScope 同真。 */}
               <Link
                 href={reviewHref}
+                onClick={leaveReturnTo ? rememberLeave : undefined}
                 className="text-sm text-muted no-underline hover:text-cinnabar"
               >
                 核本卡 →
@@ -344,6 +359,7 @@ export default function StudySession({
           ) : (
             <Link
               href={reviewHref}
+              onClick={leaveReturnTo ? rememberLeave : undefined}
               className="text-sm text-muted no-underline hover:text-cinnabar"
             >
               去核页 →
@@ -459,8 +475,10 @@ export default function StudySession({
               >
                 回本卡 →
               </Link>
+              {/* T42 B：交叉进核点前写 leaveReturnTo（回本学习环），与 sticky CrossScope 同真。 */}
               <Link
                 href={reviewHref}
+                onClick={leaveReturnTo ? rememberLeave : undefined}
                 className="text-sm text-muted no-underline hover:text-cinnabar"
               >
                 核本卡 →
@@ -469,6 +487,7 @@ export default function StudySession({
           ) : (
             <Link
               href={reviewHref}
+              onClick={leaveReturnTo ? rememberLeave : undefined}
               className="text-sm text-muted no-underline hover:text-cinnabar"
             >
               去核页 →
@@ -527,8 +546,10 @@ export default function StudySession({
         className="mt-6 rounded-lg border border-line bg-card p-6 outline-none focus-visible:ring-2 focus-visible:ring-cinnabar/40"
       >
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+          {/* T42 D：练中开卡旁路点前写 leaveReturnTo——回当前学习环（与交叉链同一 payload）。 */}
           <Link
             href={`/desk/card/${encodeURIComponent(cur.cardId)}`}
+            onClick={leaveReturnTo ? rememberLeave : undefined}
             className="font-medium text-cinnabar no-underline hover:underline underline-offset-4"
           >
             {cur.cardName}

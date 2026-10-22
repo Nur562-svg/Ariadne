@@ -261,6 +261,7 @@ export default function CitePeek({
               {deskPageHref ? (
                 <Link
                   href={deskPageHref}
+                  onClick={rememberPeekReturn}
                   className="text-cinnabar no-underline hover:underline underline-offset-4"
                 >
                   在书桌打开 →

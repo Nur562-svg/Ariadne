@@ -17,19 +17,25 @@ import { saveReturn } from "@/lib/return-stack";
 export default function CrossScopeReturnLink({
   href,
   returnTo,
+  className,
   children,
 }: {
   /** 交叉目标（宿页 progressReviewHref / progressStudyHref，原样传入）。 */
   href: string;
   /** 出发面回程 payload（与同页 Strip returnTo 同一来源）。 */
   returnTo: { href: string; label: string };
+  /** 可选样式覆盖（T42 B：study 空原子分支复用本岛时对齐相邻 text-sm 次级链）；缺省 sticky muted 样式。 */
+  className?: string;
   children: ReactNode;
 }) {
   return (
     <Link
       href={href}
       onClick={() => saveReturn({ ...returnTo, at: Date.now() })}
-      className="text-xs text-muted no-underline transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+      className={
+        className ??
+        "text-xs text-muted no-underline transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+      }
     >
       {children}
     </Link>
