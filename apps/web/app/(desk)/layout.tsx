@@ -11,18 +11,18 @@ export const dynamic = "force-dynamic";
 export default function DeskLayout({ children }: { children: React.ReactNode }) {
   const books = loadBooks();
   const book = books[0];
-  /** 多书摘要（id/title/章数/卡数）：Sidebar 客户端据此与 last-opened 对齐选「在读」，失效回落首本/空库。 */
+  /**
+   * 多书摘要（id/title/章数/卡数/OCR 页数）：Sidebar 客户端据此与 last-opened 对齐选「在读」，
+   * 失效回落首本/空库。T46 C：pages = bookValidPages[b.id]?.length ?? 0（与书架/Overview 同口径）。
+   */
+  const bookValidPages = loadBookValidPages();
   const sidebarBooks = books.map((b) => ({
     id: b.id,
     title: b.title,
     chapters: b.chapterIds.length,
     cards: loadCards({ bookId: b.id }).length,
+    pages: bookValidPages[b.id]?.length ?? 0,
   }));
-  /**
-   * T31 C：各书已解析印刷页集合（服务端一次装配）——Sidebar 在读/换书读侧
-   * 消毒旧栈幽灵页（page=999 不再播）；客户端不读 fs，不造全量校验库。
-   */
-  const bookValidPages = loadBookValidPages();
 
   const clewInitial = book
     ? { book: { id: book.id, title: book.title }, citePages: [] }

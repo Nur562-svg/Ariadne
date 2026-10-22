@@ -520,7 +520,10 @@ export default function DocumentPane({
       </header>
 
       {/* 模式切换：实体卡 | 章页 | 分栏（朱砂只标当前模式）。
-          分段控件留呼吸感：段间 gap + 段内横向 padding，inactive 不贴 active 朱红 pill。 */}
+          分段控件留呼吸感：段间 gap + 段内横向 padding，inactive 不贴 active 朱红 pill。
+          T46 E：本书无 OCR 印刷页时「章页」「分栏」诚实降级——disabled + aria-disabled +
+          title 说明（与 T26 稀疏琥珀条同真，不另起文案体系）；「实体卡」恒可点；
+          深链已落在 pages/split 时保留 aria-selected 指示，但不假装有可读正文。 */}
       <div
         role="tablist"
         aria-label="中栏模式"
@@ -532,21 +535,29 @@ export default function DocumentPane({
             ["pages", "章页"],
             ["split", "分栏"],
           ] as [Mode, string][]
-        ).map(([m, label]) => (
-          <button
-            key={m}
-            role="tab"
-            aria-selected={mode === m}
-            onClick={() => setMode(m)}
-            className={`rounded-md px-5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
-              mode === m
-                ? "bg-cinnabar text-white"
-                : "text-muted hover:text-foreground"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
+        ).map(([m, label]) => {
+          const unusable = pages.length === 0 && (m === "pages" || m === "split");
+          return (
+            <button
+              key={m}
+              role="tab"
+              aria-selected={mode === m}
+              aria-disabled={unusable || undefined}
+              disabled={unusable}
+              onClick={() => setMode(m)}
+              title={unusable ? "本书尚无 OCR 印刷页——章页/分栏暂读不了；可看概览与实体卡" : undefined}
+              className={`rounded-md px-5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
+                unusable ? "cursor-not-allowed opacity-50 " : ""
+              }${
+                mode === m
+                  ? "bg-cinnabar text-white"
+                  : "text-muted hover:text-foreground"
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
 
       <SectionToc
@@ -708,19 +719,35 @@ function OverviewPanel({
           return (
             <li key={c.id}>
               {/* 章行卡片容器（对齐 CardCard 容器模式）：主按钮（开章 OCR）占满左区，
-                  练/核为行尾旁路次级链——<a> 不嵌 <button>，键盘/读屏各自可达。 */}
+                  练/核为行尾旁路次级链——<a> 不嵌 <button>，键盘/读屏各自可达。
+                  T46 E：无 OCR 章（count===0）开章降级为纯文（「无 OCR 页」如实展示，
+                  不可 onOpenChapter）；有页保持既有开章与 T37 练/核章行。 */}
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 rounded-lg border border-line bg-card px-4 py-3 transition-colors hover:border-cinnabar motion-reduce:transition-none">
-                <button
-                  onClick={() => onOpenChapter(c.id)}
-                  className="flex min-w-0 flex-1 items-baseline justify-between gap-3 text-left focus-visible:outline-2 focus-visible:outline-cinnabar"
-                >
-                  <span className="text-sm font-medium text-foreground">
-                    {c.id} · {c.title}
+                {count > 0 ? (
+                  <button
+                    onClick={() => onOpenChapter(c.id)}
+                    className="flex min-w-0 flex-1 items-baseline justify-between gap-3 text-left focus-visible:outline-2 focus-visible:outline-cinnabar"
+                  >
+                    <span className="text-sm font-medium text-foreground">
+                      {c.id} · {c.title}
+                    </span>
+                    <span className="mono shrink-0 text-xs text-muted">
+                      {count} 页 · {cardCount} 卡 →
+                    </span>
+                  </button>
+                ) : (
+                  <span
+                    className="flex min-w-0 flex-1 items-baseline justify-between gap-3 text-left"
+                    title="本章尚无 OCR 印刷页——暂不能开章页"
+                  >
+                    <span className="text-sm font-medium text-foreground">
+                      {c.id} · {c.title}
+                    </span>
+                    <span className="mono shrink-0 text-xs text-muted">
+                      无 OCR 页 · {cardCount} 卡
+                    </span>
                   </span>
-                  <span className="mono shrink-0 text-xs text-muted">
-                    {count > 0 ? `${count} 页` : "无 OCR 页"} · {cardCount} 卡 →
-                  </span>
-                </button>
+                )}
                 {/* T37 B：0 卡章练/核纯文（muted 提示，不点进空池）；有卡两链章池 + 默认档。 */}
                 {cardCount > 0 ? (
                   <span className="flex shrink-0 items-baseline gap-3 text-xs">

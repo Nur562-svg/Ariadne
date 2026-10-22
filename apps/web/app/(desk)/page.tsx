@@ -60,6 +60,8 @@ export default function Library() {
         {books.map((b) => {
           const cards = loadCards({ bookId: b.id });
           const atoms = cards.reduce((n, c) => n + c.atoms.length, 0);
+          /** T46 A：OCR 就绪口径 = bookValidPages（与 T45 Overview / 章行同一事实源）。 */
+          const ocrPages = bookValidPages[b.id]?.length ?? 0;
           const deskHref = `/desk?book=${encodeURIComponent(b.id)}`;
           /* T36 D：书级练/核显式默认档（练 mode=all · 核 mode=open）——本标签 sticky 停在
              unknown/ungraded/doubt 空档时，从书架条末进练/核仍落可见池；条末仍书级（不伪装本页，
@@ -77,26 +79,56 @@ export default function Library() {
                     {b.title}
                   </Link>
                 </h2>
-                {/* T25 D：主 CTA「打开书桌」旁的次级续开链（该书记录带停留页时才出现，勿第二颗大红）。 */}
+                {/* T25 D：主 CTA「打开书桌」旁的次级续开链（该书记录带停留页时才出现，勿第二颗大红）。
+                    T46 B：0 OCR 书主 CTA 降级 outline/muted + 点名尚无 OCR（章页/分栏暂读不了）——
+                    仍可进桌看概览/实体卡，旁补次级 /ingest；>0 保持朱红。 */}
                 <span className="flex flex-wrap items-center gap-4">
-                  <Link
-                    href={deskHref}
-                    className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
-                  >
-                    打开书桌 →
-                  </Link>
+                  {ocrPages > 0 ? (
+                    <Link
+                      href={deskHref}
+                      className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
+                    >
+                      打开书桌 →
+                    </Link>
+                  ) : (
+                    <>
+                      <Link
+                        href={deskHref}
+                        title="尚无 OCR 印刷页——章页/分栏暂读不了；可进桌看概览与实体卡"
+                        className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:border-cinnabar hover:text-cinnabar"
+                      >
+                        打开书桌（尚无 OCR）→
+                      </Link>
+                      <Link
+                        href="/ingest"
+                        className="text-sm text-muted no-underline hover:text-cinnabar"
+                      >
+                        去解析 →
+                      </Link>
+                    </>
+                  )}
                   <ShelfBookContinuity bookId={b.id} validPages={bookValidPages[b.id]} />
                 </span>
               </div>
-              <dl className="mt-4 grid grid-cols-3 gap-4 text-center sm:max-w-md">
-                {[
-                  ["章节", b.chapterIds.length],
-                  ["实体卡", cards.length],
-                  ["知识原子", atoms],
-                ].map(([k, v]) => (
+              {/* T46 A：书卡四格补「OCR 印刷页」——与 T45 Overview 四格同款（0 写「无 OCR 页」）。 */}
+              <dl className="mt-4 grid grid-cols-2 gap-4 text-center sm:max-w-lg sm:grid-cols-4">
+                {(
+                  [
+                    ["章节", b.chapterIds.length],
+                    ["实体卡", cards.length],
+                    ["知识原子", atoms],
+                    ["OCR 印刷页", ocrPages > 0 ? ocrPages : "无 OCR 页"],
+                  ] as [string, string | number][]
+                ).map(([k, v]) => (
                   <div key={String(k)}>
                     <dt className="text-xs text-muted">{k}</dt>
-                    <dd className="mt-0.5 text-lg font-semibold">{v}</dd>
+                    <dd
+                      className={`mt-0.5 font-semibold ${
+                        typeof v === "number" ? "text-lg" : "text-base leading-7"
+                      }`}
+                    >
+                      {v}
+                    </dd>
                   </div>
                 ))}
               </dl>

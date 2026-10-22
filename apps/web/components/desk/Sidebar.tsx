@@ -18,6 +18,8 @@ export type SidebarBook = {
   title: string;
   chapters: number;
   cards: number;
+  /** T46 C：OCR 印刷页数（loadBookValidPages 同口径；0 = 无 OCR 页）。 */
+  pages?: number;
 };
 
 const PRIMARY = [
@@ -165,7 +167,11 @@ export default function Sidebar({
               {current.title}
             </Link>
             <p className="mt-0.5 text-xs text-muted">
-              {current.chapters} 章 · {current.cards} 张实体卡
+              {/* T46 C：在读摘要补 OCR 就绪（与书架书卡/Overview 同口径；0 写「无 OCR 页」）。 */}
+              {current.chapters} 章 · {current.cards} 张实体卡 ·{" "}
+              {current.pages != null && current.pages > 0
+                ? `${current.pages} OCR 页`
+                : "无 OCR 页"}
             </p>
             <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
               {/* T31 D：合法停留页（消毒后）→ 学习/核页次级链带 page，落本页池；
@@ -214,7 +220,14 @@ export default function Sidebar({
                             title={b.title}
                             className="block truncate text-xs text-muted no-underline hover:text-cinnabar"
                           >
+                            {/* T46 D：换书条目标停留页 p.N + 0 OCR 提示（与 BookSwitcher 同口径）。 */}
                             {b.title}
+                            {entry?.page != null ? (
+                              <span className="mono ml-1.5 text-[10px] text-muted">p.{entry.page}</span>
+                            ) : null}
+                            {(b.pages ?? 0) === 0 ? (
+                              <span className="ml-1.5 text-[10px] text-muted">无 OCR</span>
+                            ) : null}
                           </Link>
                         </li>
                       );

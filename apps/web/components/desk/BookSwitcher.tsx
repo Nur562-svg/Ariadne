@@ -53,6 +53,7 @@ export default function BookSwitcher({
       <ul className="mt-1 space-y-0.5 border-l-2 border-line pl-3">
         {others.map((b) => {
           const entry = recent.find((e) => e.bookId === b.id);
+          const ocrPages = bookValidPages?.[b.id]?.length ?? 0;
           const href =
             entry?.page != null
               ? `/desk?book=${encodeURIComponent(b.id)}&page=${entry.page}`
@@ -64,7 +65,14 @@ export default function BookSwitcher({
                 title={b.title}
                 className="block max-w-[16rem] truncate text-xs text-muted no-underline hover:text-cinnabar"
               >
+                {/* T46 D：换书条目标停留页 p.N + 0 OCR 提示（与 Sidebar 换书同口径；href 不变）。 */}
                 {b.title}
+                {entry?.page != null ? (
+                  <span className="mono ml-1.5 text-[10px] text-muted">p.{entry.page}</span>
+                ) : null}
+                {ocrPages === 0 ? (
+                  <span className="ml-1.5 text-[10px] text-muted">无 OCR</span>
+                ) : null}
               </Link>
             </li>
           );
