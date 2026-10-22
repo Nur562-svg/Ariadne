@@ -65,9 +65,12 @@ async function EntityDetail({
   const book = chapterId
     ? loadBooks().find((b) => b.chapterIds.includes(chapterId))
     : undefined;
-  /** 易混对象名（归一化）→ 卡 id：与 desk card 页同一构建，vs 命中链 /desk/card/。 */
+  /** 易混对象名（归一化）→ 卡 id：与 desk card 页同一构建，vs 命中链 /desk/card/。
+   * T48 D：同遍历顺带记 confusionAtomCounts[c.id]=atoms.length——「练易混卡」对 vs 0 原子门禁。 */
   const confusionLinks: Record<string, string> = {};
+  const confusionAtomCounts: Record<string, number> = {};
   for (const c of loadCards()) {
+    confusionAtomCounts[c.id] = c.atoms.length;
     const names = [c.name_zh, ...(c.aliases ?? [])];
     for (const n of names) {
       const key = n.trim().toLowerCase();
@@ -96,6 +99,7 @@ async function EntityDetail({
         deskCardHref={book ? `/desk/card/${encodeURIComponent(card.id)}` : undefined}
         pendingCiteCount={queue.length}
         confusionLinks={confusionLinks}
+        confusionAtomCounts={confusionAtomCounts}
         heyePoolKeys={queue.map((it) => ({ key: it.key }))}
         returnTo={listReturnTo}
         openDeskReturnTo={listReturnTo}

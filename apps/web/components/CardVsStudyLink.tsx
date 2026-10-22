@@ -17,6 +17,7 @@ export default function CardVsStudyLink({
   href,
   fromCardId,
   fromCardName,
+  atomCount,
 }: {
   /** 易混卡练面深链（父组件拼好：/study?card=<vsId>&book=<deskBookId>&mode=all）。 */
   href: string;
@@ -24,6 +25,12 @@ export default function CardVsStudyLink({
   fromCardId: string;
   /** 出发卡中文名——return label「卡《name》」。 */
   fromCardName: string;
+  /**
+   * T48 D：易混卡（vs）原子数（EntityCardDetail 由 confusionAtomCounts 查表传入）——
+   * 0 降 muted 纯文「易混卡暂无原子」不可点 /study?card=vs，不进空练池（与 T45 本卡/
+   * 瓷砖练门禁同族）；缺省当 0（fail-closed）。>0 保持链 + rememberFromCardReturn。
+   */
+  atomCount?: number;
 }) {
   function rememberFromCardReturn() {
     saveReturn({
@@ -31,6 +38,16 @@ export default function CardVsStudyLink({
       label: `卡《${fromCardName}》`,
       at: Date.now(),
     });
+  }
+  if ((atomCount ?? 0) === 0) {
+    return (
+      <span
+        className="ml-3 whitespace-nowrap text-xs text-muted"
+        title="这张易混卡还没有萃取出的知识原子"
+      >
+        易混卡暂无原子
+      </span>
+    );
   }
   return (
     <Link

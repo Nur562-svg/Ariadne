@@ -70,6 +70,7 @@ function CardCard({
   card,
   bookId,
   rememberReturn,
+  pendingCiteCount,
 }: {
   card: EntityCard;
   bookId?: string;
@@ -78,6 +79,12 @@ function CardCard({
    * 实体卡模式写书级；对齐 ChapterPageReader.rememberDeskReturn 口径）。
    */
   rememberReturn?: () => void;
+  /**
+   * T48 A：本卡待核 cite 数——父从书级 heyePool（collectCiteQueue({bookId}) 轻量项）按 card.id
+   * 计数下传，与 CardHubReturnLinks pendingCiteCount / collectCiteQueue({cardId}) 同池族。
+   * 缺省当 0（fail-closed）：0 →「核」降 muted 纯文「暂无待核」，不进空 open 池。
+   */
+  pendingCiteCount?: number;
 }) {
   /** 主 cite（卡级第一条有页引用）；无页则没有可 Peek 的定位，不渲染。 */
   const primaryCite = card.cites.find((x) => x.page != null);
@@ -127,15 +134,24 @@ function CardCard({
             )
           ) : null}
           {/* T34 A：练核对称——「核」次级 muted（与本页卡轨轨卡「核」同族，非第二颗实心朱红）；
-              与「练」同点前写 return。T35 A：显式 mode=open。 */}
+              与「练」同点前写 return。T35 A：显式 mode=open。
+              T48 A：pending 空池门禁（对齐 CardHubReturnLinks「本卡暂无待核 cite」）——
+              pendingCiteCount===0 降 muted 纯文「暂无待核」，不可点 /review?card=&mode=open；
+              >0 保持链 + rememberReturn。缺省当 0，不假装有待核。 */}
           {bookId ? (
-            <Link
-              href={`/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}&mode=open`}
-              onClick={rememberReturn}
-              className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
-            >
-              核 →
-            </Link>
+            (pendingCiteCount ?? 0) > 0 ? (
+              <Link
+                href={`/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}&mode=open`}
+                onClick={rememberReturn}
+                className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+              >
+                核 →
+              </Link>
+            ) : (
+              <span className="text-xs text-muted" title="本卡暂无待核 cite">
+                暂无待核
+              </span>
+            )
           ) : null}
         </span>
       </div>
@@ -311,6 +327,19 @@ export default function DocumentPane({
     const ids = new Set(chapterCards.map((c) => c.id));
     return (heyePool ?? []).filter((it) => ids.has(it.cardId));
   }, [heyePool, chapterCards]);
+
+  /**
+   * T48 A/C/F：cardId → 本书待核 cite 数（heyePool 按 cardId 累加；与
+   * CardHubReturnLinks pendingCiteCount / collectCiteQueue({cardId}) 同池族）——
+   * 卡瓷砖「核」/ 章页轨卡级「核」/ Overview 章行「核本章」三处共用同一张表，
+   * 不出现第二套「待核」定义（非 Due、非本机核页标记）。heyePool 缺省 → 空表全 0
+   * （fail-closed，不假装有待核）。
+   */
+  const pendingByCard = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const it of heyePool ?? []) m[it.cardId] = (m[it.cardId] ?? 0) + 1;
+    return m;
+  }, [heyePool]);
 
   const pageCitingIds = useMemo(
     () => new Set(pageCitingCards.map((c) => c.cardId)),
@@ -591,6 +620,7 @@ export default function DocumentPane({
           chapters={chapters}
           cards={cards}
           pages={pages}
+          pendingByCard={pendingByCard}
           onOpenChapter={(chId) => {
             setChapterId(chId);
             setPageNo(firstPageOf(chId));
@@ -625,6 +655,7 @@ export default function DocumentPane({
             bookId={book.id}
             citingCards={pageCitingCards}
             pendingPageCount={pagePendingCount}
+            pendingByCard={pendingByCard}
             onOpenOverview={() => setSection("overview")}
             variant="full"
           />
@@ -644,6 +675,7 @@ export default function DocumentPane({
               compact
               bookId={book.id}
               rememberReturn={rememberDeskCardReturn}
+              pendingByCard={pendingByCard}
             />
           </div>
           <div className="min-w-0 border-l border-line pl-6 max-xl:border-l-0 max-xl:pl-0">
@@ -660,6 +692,7 @@ export default function DocumentPane({
               bookId={book.id}
               citingCards={pageCitingCards}
               pendingPageCount={pagePendingCount}
+              pendingByCard={pendingByCard}
               onOpenOverview={() => setSection("overview")}
               variant="column"
             />
@@ -671,6 +704,7 @@ export default function DocumentPane({
           cards={visibleCards}
           bookId={book.id}
           rememberReturn={rememberDeskCardReturn}
+          pendingByCard={pendingByCard}
         />
       )}
     </div>
@@ -684,12 +718,16 @@ export default function DocumentPane({
  * 点前写 return 短链（rememberReturn = rememberDeskCardReturn 口径：有阅读页→书桌 p.N，
  * 否则书级；不另开第二套 return key）。0 卡章练/核纯文不可点（不进空池）；
  * 「N 页 · M 卡」meta 保留；次级 text-xs muted + hover cinnabar，不抢主按钮、不加实心。
+ * T48 F：章行练/核不再只看 cardCount——有卡章再按章内原子总数（cards.reduce atoms）与
+ * 章内 pending（pendingByCard 对该章卡 id 集合求和，与卡瓷砖/轨同一张表）各自门禁：
+ * 原子===0 →「本章暂无原子」纯文；pending===0 →「本章暂无待核」纯文；二者 >0 保持链。
  */
 function OverviewPanel({
   book,
   chapters,
   cards,
   pages,
+  pendingByCard,
   onOpenChapter,
   rememberReturn,
 }: {
@@ -697,6 +735,8 @@ function OverviewPanel({
   chapters: ChapterConfig[];
   cards: EntityCard[];
   pages: PageDoc[];
+  /** T48 F：cardId → 本书待核 cite 数（DocumentPane heyePool 派生）——章行「核本章」空池门禁。 */
+  pendingByCard?: Record<string, number>;
   onOpenChapter: (chId: string) => void;
   /** T37 A：练本章/核本章点前写 return（DocumentPane 依当前阅读页构造，同 CardCard 口径）。 */
   rememberReturn?: () => void;
@@ -731,7 +771,12 @@ function OverviewPanel({
         {chapters.map((c) => {
           const count = pages.filter((p) => p.chapterId === c.id).length;
           /* T26 D：章行如实报「页 + 卡」；0 页章写「无 OCR 页」，不造「0 页」假计数感。 */
-          const cardCount = cards.filter((k) => k.chapterId === c.id).length;
+          const chCards = cards.filter((k) => k.chapterId === c.id);
+          const cardCount = chCards.length;
+          /* T48 F：章内原子总数 / 章内待核数（pendingByCard 对该章卡求和，与瓷砖/轨同表）——
+             练/核章行各自按真池门禁，不再凭 cardCount>0 就装两条都能进。 */
+          const chAtoms = chCards.reduce((n, k) => n + k.atoms.length, 0);
+          const chPending = chCards.reduce((n, k) => n + (pendingByCard?.[k.id] ?? 0), 0);
           return (
             <li key={c.id}>
               {/* 章行卡片容器（对齐 CardCard 容器模式）：主按钮（开章 OCR）占满左区，
@@ -764,23 +809,37 @@ function OverviewPanel({
                     </span>
                   </span>
                 )}
-                {/* T37 B：0 卡章练/核纯文（muted 提示，不点进空池）；有卡两链章池 + 默认档。 */}
+                {/* T37 B：0 卡章练/核纯文（muted 提示，不点进空池）；有卡两链章池 + 默认档。
+                    T48 F：有卡章再按章内原子/待核各自门禁——0 原子「本章暂无原子」、0 待核
+                    「本章暂无待核」纯文；>0 保持链 + rememberReturn。 */}
                 {cardCount > 0 ? (
                   <span className="flex shrink-0 items-baseline gap-3 text-xs">
-                    <Link
-                      href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(c.id)}&mode=all`}
-                      onClick={rememberReturn}
-                      className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
-                    >
-                      练本章 →
-                    </Link>
-                    <Link
-                      href={`/review?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(c.id)}&mode=open`}
-                      onClick={rememberReturn}
-                      className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
-                    >
-                      核本章 →
-                    </Link>
+                    {chAtoms > 0 ? (
+                      <Link
+                        href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(c.id)}&mode=all`}
+                        onClick={rememberReturn}
+                        className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                      >
+                        练本章 →
+                      </Link>
+                    ) : (
+                      <span className="text-muted" title="本章实体卡均未萃取出知识原子">
+                        本章暂无原子
+                      </span>
+                    )}
+                    {chPending > 0 ? (
+                      <Link
+                        href={`/review?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(c.id)}&mode=open`}
+                        onClick={rememberReturn}
+                        className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                      >
+                        核本章 →
+                      </Link>
+                    ) : (
+                      <span className="text-muted" title="本章暂无待核 cite">
+                        本章暂无待核
+                      </span>
+                    )}
                   </span>
                 ) : (
                   <span className="shrink-0 text-xs text-muted">本章暂无卡</span>
@@ -906,6 +965,7 @@ function SectionCards({
   compact,
   bookId,
   rememberReturn,
+  pendingByCard,
 }: {
   section: SectionId;
   cards: EntityCard[];
@@ -913,6 +973,8 @@ function SectionCards({
   bookId?: string;
   /** T34 A：卡瓷砖练/核点前写 return（DocumentPane 依当前阅读页构造）。 */
   rememberReturn?: () => void;
+  /** T48 A：cardId → 本书待核 cite 数（DocumentPane heyePool 派生）——瓷砖「核」空池门禁。 */
+  pendingByCard?: Record<string, number>;
 }) {
   if (cards.length === 0) {
     return (
@@ -932,7 +994,12 @@ function SectionCards({
             <ul className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
               {items.map((c) => (
                 <li key={c.id}>
-                  <CardCard card={c} bookId={bookId} rememberReturn={rememberReturn} />
+                  <CardCard
+                    card={c}
+                    bookId={bookId}
+                    rememberReturn={rememberReturn}
+                    pendingCiteCount={pendingByCard?.[c.id] ?? 0}
+                  />
                 </li>
               ))}
             </ul>
@@ -949,7 +1016,12 @@ function SectionCards({
       <ul className={`mt-3 grid grid-cols-1 gap-4 ${compact ? "" : "md:grid-cols-2"}`}>
         {cards.map((c) => (
           <li key={c.id}>
-            <CardCard card={c} bookId={bookId} rememberReturn={rememberReturn} />
+            <CardCard
+              card={c}
+              bookId={bookId}
+              rememberReturn={rememberReturn}
+              pendingCiteCount={pendingByCard?.[c.id] ?? 0}
+            />
           </li>
         ))}
       </ul>

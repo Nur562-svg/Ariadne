@@ -61,6 +61,7 @@ export function EntityCardDetail({
   deskCardHref,
   pendingCiteCount,
   confusionLinks,
+  confusionAtomCounts,
   heyePoolKeys,
   openDeskReturnTo,
   returnTo,
@@ -78,6 +79,11 @@ export function EntityCardDetail({
   pendingCiteCount?: number;
   /** 易混对象名（归一化）→ 卡 id：有 deskBookId 时 vs 命中则链 /desk/card/[id]，否则纯文。 */
   confusionLinks?: Record<string, string>;
+  /**
+   * T48 D：卡 id → 原子数（装配侧与 confusionLinks 同一 loadCards 遍历）——「练易混卡」对
+   * vs 卡 0 原子门禁：纯文「易混卡暂无原子」不进空练池；缺省当 0（fail-closed）。
+   */
+  confusionAtomCounts?: Record<string, number>;
   /** 本卡核池键（服务端 collectCiteQueue({cardId}) 的 {key}）：LocalProgressStrip 按池计数。 */
   heyePoolKeys?: { key: string }[];
   /**
@@ -289,12 +295,14 @@ export function EntityCardDetail({
                       T35 B：显式 mode=all。
                       T39 D：Server 组件不能挂 onClick——换薄客户端岛 CardVsStudyLink，
                       点前 saveReturn 回**当前卡**枢纽（/desk/card/<本卡 id>，与主条
-                      CardHubReturnLinks 同口径）；href 由这里拼好原样传入，语义不变。 */}
+                      CardHubReturnLinks 同口径）；href 由这里拼好原样传入，语义不变。
+                      T48 D：atomCount 由 confusionAtomCounts 查表（vs 卡 id）——0 原子岛内降纯文。 */}
                   {vsId && deskBookId ? (
                     <CardVsStudyLink
                       href={`/study?card=${encodeURIComponent(vsId)}&book=${encodeURIComponent(deskBookId)}&mode=all`}
                       fromCardId={card.id}
                       fromCardName={card.name_zh}
+                      atomCount={confusionAtomCounts?.[vsId] ?? 0}
                     />
                   ) : null}
                 </li>

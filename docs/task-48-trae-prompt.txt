@@ -1,0 +1,95 @@
+按 docs/task-48-desk-review-gate-rail-sticky.md 实现 Task 48 desk-review-gate-rail-sticky-01。用 **zcode · GLM5.3 max thinking**（本 prompt 格式与历史 Trae brief 相同，请完整做完）。
+
+════════════════════════════════════
+体量要求（硬 · 读完再动手）
+════════════════════════════════════
+这不是「给 CardCard 加一句暂无待核」或「给 sticky 加一个数字」的小刀，也不是又一轮 saveReturn/remember*，也不是重做 T43、T44、T45、T46 或 T47。用户反馈刀子必须更大；GLM 5.3 能扛 3–4 组相关 utility。T35–T42 已把 return/mode densify 做厚；T43 已闭 study QS/空原子/纸面 Hint/Changes/Queue；T44 已闭练/核键帽 + Clew 空态分型 + 输入 focus-visible；T45 已闭 QuizPanel strip 作用域 + Overview 书级 OCR + CardCard/EntitySearch **练** 0 原子门禁 + KINDS pathogen + ingest N/M+CopyCommand；T46 已闭书架 OCR 四格 + 0-OCR 打开书桌 + Sidebar OCR + 换书 p.N + 模式 tab/Overview 开章门禁；T47 已闭 SectionToc counts+0 demote、KINDS 张数、EntitySearch 筛空、LibraryContinuity 0-OCR、EntityCardDetail 空字段/原子——**本刀主题是卡面/搜索/轨「核」空池门禁对齐枢纽、易混零原子练门禁、sticky 档位计数同真、Overview 章行练/核按章内原子与 pending 诚实，不是 return，不是 T43–T47 重做**。
+
+本刀捆成 **A–F**：① CardCard「核 →」吃 pendingCiteCount（父用 heyePool 按卡计数，与 CardHub/collectCiteQueue 同池族）；===0 → muted 纯文不可点；>0 保持链+rememberReturn；T45 练门禁只回归 ② entities page 装配 pendingByCard；EntitySearch 有 deskBookId 且 pending===0 →「核」纯文；练门禁/筛空只回归 ③ 章页轨卡级「核」吃每卡 pending（扩 PageCitingCard.pendingCiteCount 或 DocumentPane pendingByCard 旁路，须与 A/B 同源）；pending===0 降级；页顶核本页与轨练只回归 ④ CardVsStudyLink 吃 vs atomCount（confusionAtomCounts 与 confusionLinks 同遍历装配）；===0 纯文「易混卡暂无原子」；>0 保持链+return ⑤ StickyStudyModeTabs / StickyHeYeModeTabs 标签标门控 N（与现 countOf 同源；未 ready 勿造假正数）；N=0 非当前档保持 T41 纯文降级契约；禁止 ModeChips 会话插队 ⑥ Overview 章行：章内原子===0 → 练本章纯文；章内 pending===0 → 核本章纯文；cardCount===0 / T46 0-OCR 开章只回归 + build + heye-only DEFER + 回归。目标约 90–150 分钟真实编码。若 15–30 分钟就收工，说明漏做了切片——必须做完 brief 里 IN 的 **A+B+C+D+E+F** 全部。若做成以 saveReturn/remember* 为主或重做 T43–T47——主题偏了，拒收。
+
+前置：先 git log -1 --oneline 确认 tip 为 **3bd3401**（或其后仍含 T47）：feat(desk) Task 47 desk-toc-kind-empty-gate-01——含 SectionToc counts+0 demote、DocumentPane stripAtoms quiz count、entities KINDS 张数、EntitySearch 筛空句、LibraryContinuity 0-OCR 继续上次、EntityCardDetail 空字段/零原子；且其下仍含 T46 书架 OCR 四格/0-OCR CTA/Sidebar OCR/换书 p.N/模式 tab/Overview 开章、T45 QuizPanel atomCount=stripAtoms+CardCard/EntitySearch「暂无原子」+ingest N/M+CopyCommand、T44 Study/HeYe SessionKeyHint+Clew 空态+stub 无页+三处 focus-visible、T43 study invalid*/effChapter/空原子分型/纸面 g /+Changes 筛+Queue 清完、T42 leaveReturnTo/书头/轨开卡/CitePeek 开书桌/Clew stub 自测、T41 sticky N=0 门禁/开卡/DeskOpen/CardHub returnTo、T40 Strip returnTo/CrossScope/Clew Strip·Queue return、T39 Register/ingest return、T38–T28 既有。若仍停在 ec0aed5（仅 T46）或更早，停下来对齐，不要开工。不要 push。先读 docs/frontend-aesthetics.md（若在树内）。对照已有：T45/CardHub 已修**练**与枢纽**核**门禁，但 **CardCard/EntitySearch/轨「核」仍恒可点进空 open 池**；CardVs 易混旁路**不看 vs 原子**；Sticky T41 有 N=0 降级但**标签无数字**（ModeChips/ScopeCounts/T47 TOC 均有 N）；Overview 章行练/核**只看 cardCount**——这些是本刀主题。T47 TOC/KINDS/Continuity/CardDetail、T46 书架/换书/模式、T45 quiz 面板内/练门禁/ingest、T44 键帽/Clew、T43 QS/Changes——已闭，勿毁、勿再当主题。
+
+产品身份：顾客自带材料 → 可考原子 / 待核 cite → 扫视瓷砖·搜索·轨·章行 CTA。日用路径是「核 / 练」不装能进空池；练中 sticky 档位看得见 N。免疫学 seed 是验收语料（immunology-3rd）。禁止 invent heye-only seed 页。禁止重做 CitePeek **正文**/trap；禁止 OCR canvas；禁止 ⌘K；禁止 FSRS；禁止 DeskShell 重写；禁止 QueuePanel 改成 Due；禁止整段 port ariadnemini版 verify/clew-API；禁止 ModeChips 会话中插队；禁止以 return 漏网为主题；禁止重做 T28–T47 已交切片（含 T47 全 TOC/kind/Continuity/CardDetail；T46 全书架/换书/模式；T45 全 quiz-scope/练门禁/ingest；T44 全键帽/空态/focus；T43 全诚实切片；T41 sticky **门禁契约**——本刀只加计数展示，不改 N=0→纯文规则；T26 稀疏条）。IngestReady/Register 0-OCR 打开书桌、CitePeek 浮层 CTA 空池——**本刀 DEFER**，勿顺手扩 scope。
+
+════════════════════════════════════
+做（按顺序 · 多步交付 · A–F 全交）
+════════════════════════════════════
+
+【步骤 1 · A CardCard「核 →」pending 空池门禁】
+1) apps/web/components/desk/DocumentPane.tsx CardCard：props 增加 pendingCiteCount?: number。
+2) 父组件用既有 heyePool（desk/page 已传 collectCiteQueue 书级 open 池）按 card.id 计数后下传——与 CardHubReturnLinks 的 pendingCiteCount / collectCiteQueue({cardId}) **同池族**；缺省/未装配时当作 0（fail-closed，禁止假装有待核）。
+3) pendingCiteCount===0 → 「核 →」改为 muted 纯文（例「暂无待核」），不可点 /review?card=&book=&mode=open；>0 保持既有 Link + rememberReturn（T34/T35 口径只回归）。
+4) T45 练门禁（atoms.length===0 →「暂无原子」）只回归，勿改语义、勿拆。
+5) 不要 Due / 掌握% / 重做瓷砖大视觉 / 重做 CitePeek 正文。
+
+【步骤 2 · B EntitySearch「核 →」+ entities pendingByCard】
+1) apps/web/app/(shell)/entities/page.tsx：装配 pendingByCard: Record<string, number>——推荐一次 collectCiteQueue()（无参或按合理书集合收窄）按 it.cardId 累加；传入 <EntitySearch … pendingByCard={…} />。
+2) apps/web/components/EntitySearch.tsx：当 deskBookIds[c.id] 存在且 (pendingByCard?.[c.id] ?? 0)===0 →「核 →」muted 纯文不可点；>0 保持既有 /review?card=&book=&mode=open + rememberListReturn。
+3) 无 deskBookId 的卡本无核链——只回归。T45 练门禁、T47 筛空诚实句只回归。
+4) 不要重做搜索过滤；不要拆 deskBookIds / return。
+
+【步骤 3 · C 章页轨卡级「核」pending 门禁】
+1) 为轨提供每卡 pending，与 A/B **同事实源族**：
+   - 方案甲：扩 apps/web/lib/entities.ts PageCitingCard 可选 pendingCiteCount；desk/page 在 cardsCitingPage 之后用 bookQueue/heyePool 填入；或
+   - 方案乙：DocumentPane 由 heyePool 推 pendingByCard 传 ChapterPageReader。
+   二选一即可，禁止第二套「待核」定义（非 Due、非 verified seed）。
+2) apps/web/components/desk/ChapterPageReader.tsx：轨行「核」仅当 pendingCiteCount>0 && bookId 渲可点 Link（mode=open + rememberDeskReturn）；===0 → muted「暂无待核」或等价诚实纯文（勿装有待核可点）。
+3) 页顶「核本页」（pendingPageCount）与轨「练」（atomCount>0）门禁只回归；PageCardRailMarks 分段算法只回归。
+4) 不要重做 CitePeek 正文/trap/定位；不要 Due 角标；不要假「本页已全核」绿条。
+
+【步骤 4 · D 易混 CardVsStudyLink 零原子门禁】
+1) desk/card/[id]/page.tsx 与 shell entities/[id]/page.tsx：在建 confusionLinks 的同一 loadCards 遍历中写 confusionAtomCounts[cardId]=atoms.length（或等价），经 EntityCardDetail 下传。
+2) EntityCardDetail：渲 CardVsStudyLink 时传入 atomCount={confusionAtomCounts?.[vsId] ?? 0}（或查表）。
+3) apps/web/components/CardVsStudyLink.tsx：atomCount===0 → muted 纯文「易混卡暂无原子」（不可点 /study?card=vs）；>0 保持既有链 + rememberFromCardReturn。
+4) 不要 invent vs 卡/seed；不要重做 CardHub 本卡练门禁；不要给「对页」加 return（soft OUT）。
+
+【步骤 5 · E Sticky 练/核档位标 N】
+1) apps/web/components/desk/StickyStudyModeTabs.tsx：档位标签旁/后缀标 countOf(m) 的 N（all=atoms.length；unknown/ungraded=pool；与现门控同源）。未 ready（pool null）时非当前档保持纯文，数字可省略或「…」——**禁止**造假正数让空档看起来有货。
+2) StickyHeYeModeTabs.tsx：对称标 open/checked/doubt 的 N。
+3) N=0 且非当前：保持 T41 aria-disabled 纯文契约（本刀只加展示，不改门禁）。当前档无论 N 保持指示可点。
+4) 视觉仍 sticky rounded-md tab chrome——**不要**改成 ModeChips 圆 pill，**不要**把 ModeChips 插进练中/核中会话（OUT forever）。
+5) 不要改 StickyModeGate；不要 ScopeCounts 加 return；不要重做 SessionKeyHint→ShortcutSheet。
+
+【步骤 6 · F Overview 章行练/核空池 + build / heye-only DEFER / 回归】
+1) DocumentPane Overview 章行：在 cardCount>0 分支内算章内原子总数（该章 cards.reduce atoms）与章内 pending（heyePool 滤该章 cardId 集合）。原子===0 →「练本章」纯文「本章暂无原子」；pending===0 →「核本章」纯文「本章暂无待核」；二者 >0 保持既有链+rememberReturn。
+2) cardCount===0「本章暂无卡」、T46 count===0 开章门禁、T26 稀疏条只回归。
+3) heye-only 活页 DEFER：禁止 invent seed；回复写明 deferred。
+4) pnpm --filter web build PASS；不要 push。
+5) 回归：T47 TOC counts/0 段、KINDS 张数、EntitySearch 筛空、Continuity 0-OCR、CardDetail 空壳；T46 书架 OCR/换书/模式 tab/Overview 开章；T45 QuizPanel strip、CardCard/EntitySearch **练**门禁、ingest N/M+CopyCommand；T44 Study/HeYe Hint、Clew 空态、stub 无页、三处 focus-visible；T43 study invalid*/effChapter/空原子分型/纸面 g /+Changes+Queue；T42 leaveReturnTo/书头/轨/CitePeek 开书桌/Clew stub 自测；T41 sticky **N=0 门禁**未毁（本刀只加 N）；T40–T28；ModeChips 未插进练中；CitePeek **正文未毁**；Shelf/Sidebar/LibraryContinuity/Changes/Queue/ingest/CardHub **return 接线未拆**。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–47 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC（含 T47 counts）、Clew stub 三 tab、卡页 CitePeek **正文与 trap**、/review·/study 诚实切片、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、healOpenedIfDirty、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CardHubReturnLinks、IngestReadyLinks、CopyCommand、LibraryContinuity/ShelfBookContinuity return、T34–T47 已交 return/mode/诚实/键帽/quiz-scope/ingest/书架 OCR/TOC-kind 切片、T26 稀疏琥珀、T41 sticky N=0 门禁。勿 verified:true 过关。**A+B+C+D+E+F 范围保持完整；主题是核/练空池门禁 + sticky 计数 + Overview 章行，不是 return，不是 T43–T47 重做。**
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / 重做 T43 QS·空原子·Changes·Queue / 重做 T44 键帽·Clew·focus / 重做 T45 QuizPanel 正文·CardCard/EntitySearch **练**门禁·ingest N/M / 重做 T46 书架 OCR·换书·模式 tab / 重做 T47 TOC·KINDS·Continuity·CardDetail / 只改一处「暂无待核」或只给 sticky 加 N 就收工
+- IngestReady/Register 0-OCR 打开书桌 densify（DEFER→下刀）
+- CitePeek 浮层「核本页/练本页/核本卡」CTA 空池门禁（soft DEFER；禁碰正文）
+- 假云端 OCR / 假进度条动画 / 改 stage 机
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T47 已交切片（列于上）
+- 整段 port ariadnemini版 verify/clew-API
+- push
+
+════════════════════════════════════
+自测（回复须勾）
+════════════════════════════════════
+1) /desk?book=immunology-3rd · 实体卡 · pending=0 卡（或验收夹具）→ CardCard「核」纯文；练门禁未毁；T47 TOC/模式未毁
+2) /entities 搜索命中 pending=0 卡 →「核」纯文；练门禁与筛空句未毁
+3) 章页轨 pending=0 卡 → 轨「核」降级；页顶核本页与轨练门禁未毁；RailMarks 未毁
+4) 卡详情易混 vs 0 原子 →「练易混卡」纯文；>0 仍可点+return
+5) /study 与 /review sticky → 档位可见 N；N=0 非当前仍不可点；ModeChips 未插进会话中
+6) Overview 章 · 0 原子或 0 pending → 练/核章行对应降级；0-OCR 开章与 cardCount===0 未毁
+7) pnpm --filter web build PASS；未 push；T47–T28 回归项未毁；heye-only DEFER 已声明
+
+做完叫验收。A–F 全交才过。

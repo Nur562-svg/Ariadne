@@ -17,6 +17,7 @@ export default function EntitySearch({
   kindLabel,
   activeKind,
   deskBookIds,
+  pendingByCard,
 }: {
   cards: EntityCard[];
   kindLabel: Record<string, string>;
@@ -24,6 +25,12 @@ export default function EntitySearch({
   activeKind?: string;
   /** T31 E：cardId → 已注册书 id（服务端反查）——有值的卡给次级「书桌打开 →」卡枢纽链。 */
   deskBookIds?: Record<string, string>;
+  /**
+   * T48 B：cardId → 待核 cite 数（entities page 一次 collectCiteQueue() 累加；与
+   * CardHub / 卡瓷砖 heyePool 同池族）——有 deskBookId 且 pending===0 →「核」降 muted
+   * 纯文「暂无待核」，不进空 open 池；缺省当 0（fail-closed）。
+   */
+  pendingByCard?: Record<string, number>;
 }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
@@ -186,7 +193,8 @@ export default function EntitySearch({
                   与卡枢纽/卡瓷砖同 href 族；无 deskBookId 不加）。
                   T35 A/B：显式默认档（练 mode=all · 核 mode=open）——落可见池，不被 sticky 空档撒谎。
                   T38 B：三条链点前 saveReturn 回本列表（含 ?kind=，见 rememberListReturn）。
-                  T45 D：零原子卡同族门禁（对齐卡瓷砖）——「练」降 muted 纯文，不进空练池。 */}
+                  T45 D：零原子卡同族门禁（对齐卡瓷砖）——「练」降 muted 纯文，不进空练池。
+                  T48 B：核侧同族门禁（对齐卡瓷砖/卡枢纽）——pending===0「核」降 muted 纯文。 */}
               {deskBookIds?.[c.id] ? (
                 <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs">
                   <Link
@@ -209,15 +217,21 @@ export default function EntitySearch({
                   ) : (
                     <span className="text-muted">暂无原子</span>
                   )}
-                  <Link
-                    href={`/review?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
-                      deskBookIds[c.id],
-                    )}&mode=open`}
-                    onClick={rememberListReturn}
-                    className="text-muted no-underline hover:text-cinnabar"
-                  >
-                    核 →
-                  </Link>
+                  {(pendingByCard?.[c.id] ?? 0) > 0 ? (
+                    <Link
+                      href={`/review?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
+                        deskBookIds[c.id],
+                      )}&mode=open`}
+                      onClick={rememberListReturn}
+                      className="text-muted no-underline hover:text-cinnabar"
+                    >
+                      核 →
+                    </Link>
+                  ) : (
+                    <span className="text-muted" title="本卡暂无待核 cite">
+                      暂无待核
+                    </span>
+                  )}
                 </p>
               ) : null}
             </li>

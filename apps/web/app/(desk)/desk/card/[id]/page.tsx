@@ -21,12 +21,16 @@ export default async function DeskCardPage({
     : undefined;
   const backHref = book ? `/desk?book=${encodeURIComponent(book.id)}` : "/desk";
 
-  /** 枢纽 props：本卡待核 cite 数（动作条诚实文案）+ 易混对象名 → 卡 id（vs 深链）。 */
+  /** 枢纽 props：本卡待核 cite 数（动作条诚实文案）+ 易混对象名 → 卡 id（vs 深链）。
+   * T48 D：同遍历顺带记 confusionAtomCounts[c.id]=atoms.length——「练易混卡」对 vs 0 原子
+   * 门禁（与 T45 本卡练门禁同族：不进空练池）。 */
   const queue = collectCiteQueue({ cardId: card.id });
   const pendingCiteCount = queue.length;
   const heyePoolKeys = queue.map((it) => ({ key: it.key }));
   const confusionLinks: Record<string, string> = {};
+  const confusionAtomCounts: Record<string, number> = {};
   for (const c of loadCards()) {
+    confusionAtomCounts[c.id] = c.atoms.length;
     const names = [c.name_zh, ...(c.aliases ?? [])];
     for (const n of names) {
       const key = n.trim().toLowerCase();
@@ -81,6 +85,7 @@ export default async function DeskCardPage({
         deskBookId={book?.id}
         pendingCiteCount={pendingCiteCount}
         confusionLinks={confusionLinks}
+        confusionAtomCounts={confusionAtomCounts}
         heyePoolKeys={heyePoolKeys}
         openDeskReturnTo={{
           href: `/desk/card/${encodeURIComponent(card.id)}`,

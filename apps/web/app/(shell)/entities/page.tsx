@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { loadCards, loadChapters, loadBooks } from "@/lib/entities";
+import { collectCiteQueue } from "@/lib/heye";
 import EntitySearch from "@/components/EntitySearch";
 
 /** T45 D：KINDS 补 pathogen——KIND_ZH 既有「病原」，kind 芯片不再漏这一档（免疫学 seed 有病原卡）。 */
@@ -75,6 +76,16 @@ async function EntityList({
   for (const c of cards) {
     const bid = c.chapterId ? bookByChapter[c.chapterId] : undefined;
     if (bid) deskBookIds[c.id] = bid;
+  }
+
+  /**
+   * T48 B：cardId → 待核 cite 数（一次 collectCiteQueue() 按 it.cardId 累加；无参=全部已
+   * 解析卡，宁宽勿窄，与 /desk 书级 heyePool / CardHub collectCiteQueue({cardId}) 同池族）
+   * ——搜索卡「核 →」空池门禁：pending===0 降 muted 纯文，不进空 open 池。
+   */
+  const pendingByCard: Record<string, number> = {};
+  for (const it of collectCiteQueue()) {
+    pendingByCard[it.cardId] = (pendingByCard[it.cardId] ?? 0) + 1;
   }
 
   /** 保留当前 book/chapter 过滤：book 恒保留；chapter 用 null 显式清除，默认继承当前。 */
@@ -155,7 +166,13 @@ async function EntityList({
         })}
       </div>
 
-      <EntitySearch cards={cards} kindLabel={KIND_ZH} activeKind={kind} deskBookIds={deskBookIds} />
+      <EntitySearch
+        cards={cards}
+        kindLabel={KIND_ZH}
+        activeKind={kind}
+        deskBookIds={deskBookIds}
+        pendingByCard={pendingByCard}
+      />
     </>
   );
 }

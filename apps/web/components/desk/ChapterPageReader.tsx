@@ -57,6 +57,7 @@ export default function ChapterPageReader({
   bookId,
   citingCards,
   pendingPageCount,
+  pendingByCard,
   onOpenOverview,
   variant = "full",
 }: {
@@ -74,6 +75,12 @@ export default function ChapterPageReader({
   citingCards?: PageCitingCard[];
   /** 当前印刷页的待核 cite 数（0 → 「核本页」诚实禁用）。 */
   pendingPageCount?: number;
+  /**
+   * T48 C：cardId → 本书待核 cite 数（DocumentPane 由书级 heyePool 派生，与卡瓷砖「核」/
+   * 卡枢纽 collectCiteQueue({cardId}) 同池族）——轨卡级「核」空池门禁：0 → muted 纯文，
+   * 不进空 open 池；缺省当 0（fail-closed）。非第二套「待核」定义（非 Due、非本机核页标记）。
+   */
+  pendingByCard?: Record<string, number>;
   /** 无页章次级「回概览」：DocumentPane 切回概览段（可选，避免组件耦合段状态）。 */
   onOpenOverview?: () => void;
   /** sticky 工具带贴合方式：full = 章页整宽模式（吃掉中栏 px-8）；column = 分栏右列（吃掉 pl-6）。 */
@@ -509,7 +516,10 @@ export default function ChapterPageReader({
                         {c.nameZh}
                       </Link>
                       {/* T35 A/B：轨行「练」「核」写出默认档（练 mode=all · 核 mode=open）——
-                          从轨进卡范围落可见池，不被 sticky 非默认空档撒谎。 */}
+                          从轨进卡范围落可见池，不被 sticky 非默认空档撒谎。
+                          T48 C：核侧空池门禁（与卡瓷砖/卡枢纽同池同真）——本卡 pending
+                          （pendingByCard 由 DocumentPane heyePool 派生）===0 降 muted 纯文
+                          「暂无待核」，不装有待核可点进 /review?card=&mode=open 空池。 */}
                       {c.atomCount > 0 && bookId ? (
                         <Link
                           href={`/study?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}&mode=all`}
@@ -520,14 +530,23 @@ export default function ChapterPageReader({
                         </Link>
                       ) : null}
                       {bookId ? (
-                        <Link
-                          href={`/review?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}&mode=open`}
-                          onClick={rememberDeskReturn}
-                          className="ml-2 text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
-                          title={`核《${c.nameZh}》的 cite`}
-                        >
-                          核
-                        </Link>
+                        (pendingByCard?.[c.cardId] ?? 0) > 0 ? (
+                          <Link
+                            href={`/review?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}&mode=open`}
+                            onClick={rememberDeskReturn}
+                            className="ml-2 text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                            title={`核《${c.nameZh}》的 cite`}
+                          >
+                            核
+                          </Link>
+                        ) : (
+                          <span
+                            className="ml-2 text-xs text-muted"
+                            title={`《${c.nameZh}》暂无待核 cite`}
+                          >
+                            暂无待核
+                          </span>
+                        )
                       ) : null}
                       {/* T24 B：本机练/核薄计数（只读 study/heye 桶；无掌握% / 色环 / Due）。
                           T34 E：分段计数可点进该卡对应档（bookId + 点前写 return，同轨「练/核」口径）。 */}

@@ -19,6 +19,9 @@ import {
  * 保持指示（aria-selected + bg-cinnabar text-white）。未 ready 首帧非当前档一律纯文，
  * 不渲染可点谎言。非 Due / 非 FSRS 文案语义不变；HeYeScopeCounts / orphan 主 CTA /
  * CrossScopeReturnLink 不在本岛职责内。
+ * T48 E：档位标签后缀标 N（与门控 countOf 同源，视觉对齐 T47 SectionToc 计数 mono 后缀）——
+ * 核中看得见各档存量；未 ready（store null）不显数字（省略，禁止造假正数）；
+ * N=0 非当前档纯文降级契约不变（本刀只加展示，不改 T41 门禁）。
  */
 const TABS: [HeYeMode, string][] = [
   ["open", "待核"],
@@ -60,6 +63,10 @@ export default function StickyHeYeModeTabs({
       {TABS.map(([m, label]) => {
         const n = countOf(m);
         const current = mode === m;
+        // T48 E：就绪档（n 非 null）后缀真 N（含 0——空档如实标 0，不造假正数）；未 ready 只显 label。
+        const countTag = n != null ? (
+          <span className="mono ml-1.5 text-[11px] font-normal">{n}</span>
+        ) : null;
         // 当前档恒保持指示；非当前且 N=0（含未 ready）→ 纯文，不进空池。
         if (!current && (n === 0 || n == null)) {
           return (
@@ -72,6 +79,7 @@ export default function StickyHeYeModeTabs({
               className="cursor-default rounded-md px-5 py-1.5 text-sm text-muted"
             >
               {label}
+              {countTag}
             </span>
           );
         }
@@ -88,6 +96,7 @@ export default function StickyHeYeModeTabs({
             }`}
           >
             {label}
+            {countTag}
           </Link>
         );
       })}
