@@ -3,7 +3,8 @@ import { Suspense } from "react";
 import { loadCards, loadChapters, loadBooks } from "@/lib/entities";
 import EntitySearch from "@/components/EntitySearch";
 
-const KINDS = ["全部", "concept", "structure", "process", "molecule", "cell", "disease"] as const;
+/** T45 D：KINDS 补 pathogen——KIND_ZH 既有「病原」，kind 芯片不再漏这一档（免疫学 seed 有病原卡）。 */
+const KINDS = ["全部", "concept", "structure", "process", "molecule", "pathogen", "cell", "disease"] as const;
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",

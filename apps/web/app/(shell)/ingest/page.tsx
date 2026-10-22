@@ -10,6 +10,7 @@ import {
 import IngestUpload from "@/components/IngestUpload";
 import RegisterMaterialButton from "@/components/RegisterMaterialButton";
 import IngestReadyLinks from "@/components/IngestReadyLinks";
+import CopyCommand from "@/components/CopyCommand";
 
 export const dynamic = "force-dynamic";
 
@@ -18,34 +19,59 @@ function findDeskBook(m: Material) {
   return loadBooks().find((b) => m.chapters.every((c) => b.chapterIds.includes(c.id)));
 }
 
-const STAGE_UI: Record<MaterialStage, { label: string; badge: string; hint: (m: Material) => string }> = {
+/**
+ * T45 E：hint 拆 { text, command }——命令进可复制 mono 块（CopyCommand 岛）；
+ * uploaded/parsed 只列**仍缺**的章 id（缺 blocks → parse 子集；全 blocks 缺 cards → extract
+ * 子集；全缺时即全部），不再恒铺全章。不假进度条、不改 deriveMaterialStage。
+ */
+function missingChapterIds(m: Material, kind: "blocks" | "cards"): string[] {
+  const has = kind === "blocks" ? materialChapterHasBlocks : materialChapterHasCards;
+  const missing = m.chapters.filter((c) => !has(m, c.id)).map((c) => c.id);
+  return missing.length > 0 ? missing : m.chapters.map((c) => c.id);
+}
+
+const STAGE_UI: Record<
+  MaterialStage,
+  { label: string; badge: string; hint: (m: Material) => { text: string; command?: string } }
+> = {
   uploaded: {
     label: "已上传 · 待本机 OCR",
     badge: "border-amber-300 bg-status-warn-bg text-status-warn",
-    hint: (m) =>
-      `下一步：在本机（macOS）运行 \`pnpm parse ${m.chapters.map((c) => c.id).join(" ")}\`（Apple Vision OCR）。没有云端 OCR；未跑解析不会标记 parsed。`,
+    hint: (m) => {
+      const ids = missingChapterIds(m, "blocks");
+      return {
+        text: `下一步：在本机（macOS）对仍缺 blocks 的 ${ids.length} 章跑 Apple Vision OCR（命令可复制）。没有云端 OCR；未跑解析不会标记 parsed。`,
+        command: `pnpm parse ${ids.join(" ")}`,
+      };
+    },
   },
   parsed: {
     label: "已解析 · 待 LLM 抽取",
     badge: "border-line bg-card text-foreground",
-    hint: (m) =>
-      `blocks 就绪。下一步：\`DEEPSEEK_API_KEY=… pnpm extract -- ${m.chapters.map((c) => c.id).join(" ")}\`（LLM 直连，产出 data/cards/<ch>.entities.json）。`,
+    hint: (m) => {
+      const ids = missingChapterIds(m, "cards");
+      return {
+        text: `blocks 就绪。下一步：对仍缺 cards 的 ${ids.length} 章跑 LLM 直连抽取，产出 data/cards/<ch>.entities.json（命令可复制）。`,
+        command: `DEEPSEEK_API_KEY=… pnpm extract -- ${ids.join(" ")}`,
+      };
+    },
   },
   extracted: {
     label: "已抽取 · 未注册书库",
     badge: "border-line bg-card text-foreground",
-    hint: () =>
-      "实体卡已生成。点下方「注册进书库 →」一键把章写入 config/chapter.json + config/books.json（本机落盘）；注册成功后这里直接给出「打开书桌 →」，即可开章页读页、练卡、核 cite——无需刷新等待。",
+    hint: () => ({
+      text: "实体卡已生成。点下方「注册进书库 →」一键把章写入 config/chapter.json + config/books.json（本机落盘）；注册成功后这里直接给出「打开书桌 →」，即可开章页读页、练卡、核 cite——无需刷新等待。",
+    }),
   },
   ready: {
     label: "就绪 · 已在书库",
     badge: "border-status-ok/40 bg-status-ok-bg text-status-ok",
-    hint: () => "就绪。可在书桌（三栏学习面）打开阅读，或进入卡浏览器与学习环。",
+    hint: () => ({ text: "就绪。可在书桌（三栏学习面）打开阅读，或进入卡浏览器与学习环。" }),
   },
   failed: {
     label: "失败",
     badge: "border-status-error/40 bg-status-error-bg text-status-error",
-    hint: (m) => m.failure ?? "见 material 记录 failure 字段。",
+    hint: (m) => ({ text: m.failure ?? "见 material 记录 failure 字段。" }),
   },
 };
 
@@ -80,6 +106,10 @@ export default function IngestPage() {
             {materials.map((m) => {
               const stage = deriveMaterialStage(m);
               const ui = STAGE_UI[stage];
+              const hint = ui.hint(m);
+              /** T45 E：分章就绪 N/M（磁盘事实推导；纯文本计数，不做假进度条）。 */
+              const blocksN = m.chapters.filter((c) => materialChapterHasBlocks(m, c.id)).length;
+              const cardsN = m.chapters.filter((c) => materialChapterHasCards(m, c.id)).length;
               return (
                 <li key={m.id} className="rounded-lg border border-line bg-card p-5">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -90,6 +120,12 @@ export default function IngestPage() {
                   </div>
                   <p className="mono mt-1 text-xs text-muted">
                     {m.id} · pageOffset {m.pageOffset} · {m.chapters.map((c) => c.id).join(", ")}
+                  </p>
+                  <p className="mt-1 text-xs text-muted">
+                    blocks {blocksN}/{m.chapters.length} · cards {cardsN}/{m.chapters.length}
+                    {blocksN < m.chapters.length || cardsN < m.chapters.length
+                      ? "——未全就绪，见下方仍缺章命令"
+                      : ""}
                   </p>
                   <p className="mt-2 text-xs text-muted">
                     章范围：{m.chapters.map((c) => `${c.id} 物理页 ${c.physicalStart}–${c.physicalEnd}`).join(" · ")}
@@ -114,7 +150,9 @@ export default function IngestPage() {
                       );
                     })}
                   </ul>
-                  <p className="mt-3 text-sm leading-7 text-foreground/90">{ui.hint(m)}</p>
+                  <p className="mt-3 text-sm leading-7 text-foreground/90">{hint.text}</p>
+                  {/* T45 E：下一步命令进可复制 mono 块（CopyCommand 客户端岛，朱红只强调复制动作）。 */}
+                  {hint.command ? <CopyCommand command={hint.command} /> : null}
                   {stage === "ready" || stage === "extracted" ? (
                     (() => {
                       // ready → 显示就绪三连（反查该书）；extracted → 一键注册进书库（T22 C）。

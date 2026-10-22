@@ -110,15 +110,21 @@ function CardCard({
               对页 →
             </Link>
           ) : null}
-          {/* T35 B：瓷砖「练」显式 mode=all——打开可见池入口写出默认档，挡住 sticky 非默认空档。 */}
+          {/* T35 B：瓷砖「练」显式 mode=all——打开可见池入口写出默认档，挡住 sticky 非默认空档。
+              T45 C：零原子卡同族门禁（对齐 CardHubReturnLinks / 章页轨）——「练」降 muted 纯文
+              「暂无原子」，不可点 /study?card=；>0 保持练链 + rememberReturn。 */}
           {bookId ? (
-            <Link
-              href={`/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}&mode=all`}
-              onClick={rememberReturn}
-              className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
-            >
-              练 →
-            </Link>
+            card.atoms.length > 0 ? (
+              <Link
+                href={`/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}&mode=all`}
+                onClick={rememberReturn}
+                className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                练 →
+              </Link>
+            ) : (
+              <span className="text-xs text-muted">暂无原子</span>
+            )
           ) : null}
           {/* T34 A：练核对称——「核」次级 muted（与本页卡轨轨卡「核」同族，非第二颗实心朱红）；
               与「练」同点前写 return。T35 A：显式 mode=open。 */}
@@ -428,7 +434,8 @@ export default function DocumentPane({
         <div className="mt-2 flex flex-wrap items-baseline justify-between gap-3">
           <p className="text-sm text-muted">
             {book.chapterIds.length} 章 · {cards.length} 张实体卡 ·{" "}
-            {cards.reduce((n, c) => n + c.atoms.length, 0)} 个知识原子
+            {cards.reduce((n, c) => n + c.atoms.length, 0)} 个知识原子 ·{" "}
+            {pages.length > 0 ? `${pages.length} OCR 印刷页` : "无 OCR 印刷页"}
           </p>
           {/* T27 B + T28 B：书头学习链至少带章（不裸 /study?book= 丢章）；仅 studyPageScope
               （本页有可练原子）才并列「练本页」深链——heye-only 页练走本章，不出这条链。
@@ -567,7 +574,7 @@ export default function DocumentPane({
       ) : section === "quiz" ? (
         <QuizPanel
           bookId={book.id}
-          atomCount={cards.reduce((n, c) => n + c.atoms.length, 0)}
+          atomCount={stripAtoms.length}
           studyHref={stripStudyHref}
           reviewHref={stripReviewHref}
           atoms={stripAtoms}
@@ -669,15 +676,26 @@ function OverviewPanel({
 }) {
   return (
     <section className="mt-8">
-      <dl className="grid grid-cols-3 gap-4 sm:max-w-md">
-        {[
-          ["章节", book.chapterIds.length],
-          ["实体卡", cards.length],
-          ["知识原子", cards.reduce((n, c) => n + c.atoms.length, 0)],
-        ].map(([k, v]) => (
+      {/* T45 B：书级四格补「OCR 印刷页」= pages.length——与章行「N 页 / 无 OCR 页」同一事实源；
+          0 页写「无 OCR 页」，不造「0 页」假计数感。 */}
+      <dl className="grid grid-cols-2 gap-4 sm:max-w-lg sm:grid-cols-4">
+        {(
+          [
+            ["章节", book.chapterIds.length],
+            ["实体卡", cards.length],
+            ["知识原子", cards.reduce((n, c) => n + c.atoms.length, 0)],
+            ["OCR 印刷页", pages.length > 0 ? pages.length : "无 OCR 页"],
+          ] as [string, string | number][]
+        ).map(([k, v]) => (
           <div key={String(k)} className="rounded-lg border border-line bg-card p-4 text-center">
             <dt className="text-xs text-muted">{k}</dt>
-            <dd className="mt-0.5 text-lg font-semibold">{v}</dd>
+            <dd
+              className={`mt-0.5 font-semibold ${
+                typeof v === "number" ? "text-lg" : "text-base leading-7"
+              }`}
+            >
+              {v}
+            </dd>
           </div>
         ))}
       </dl>
@@ -769,8 +787,17 @@ function QuizPanel({
     <section className="mt-8 max-w-xl rounded-lg border border-line bg-card p-6">
       <h2 className="text-sm font-semibold">自测与核对</h2>
       <p className="mt-2 text-sm leading-7 text-foreground/90">
-        学习环已有 {atomCount} 个知识原子：看问题 → 回想 → 自评「认识 / 不熟」（进度保存在本浏览器，
-        非到期调度）。
+        {atomCount > 0 ? (
+          <>
+            当前范围（{scopeLabel}）可练 {atomCount} 个知识原子：看问题 → 回想 → 自评「认识 /
+            不熟」（进度保存在本浏览器，非到期调度）。
+          </>
+        ) : (
+          <>
+            当前范围（{scopeLabel}）暂无可练知识原子——这一范围还没有萃取原子的卡，
+            自评入口不装作能进空池。
+          </>
+        )}
       </p>
       <p className="mt-1 text-sm leading-7 text-muted">
         核页已可用：把卡片引用逐条对着该页 OCR 原文核对，标「本机已对 / 存疑」——只记本机，不回写教材数据。
@@ -798,13 +825,25 @@ function QuizPanel({
         }}
       />
       <div className="mt-5 flex flex-wrap items-center gap-4">
-        <Link
-          href={studyHref}
-          onClick={rememberReturn}
-          className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-        >
-          去学习环自评 →
-        </Link>
+        {/* T45 A：atomCount 与内嵌 Strip 同池（stripAtoms.length）——0 原子时主 CTA 降级为
+            诚实放宽链（book 级 /study，同一 qs 语义），不装作进空练池；>0 保持章/页范围主 CTA。 */}
+        {atomCount > 0 ? (
+          <Link
+            href={studyHref}
+            onClick={rememberReturn}
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+          >
+            去学习环自评 →
+          </Link>
+        ) : (
+          <Link
+            href={`/study?book=${encodeURIComponent(bookId)}&mode=all`}
+            onClick={rememberReturn}
+            className="text-sm text-muted no-underline hover:text-cinnabar"
+          >
+            本章暂无原子 · 去学习环放宽到本书 →
+          </Link>
+        )}
         <Link
           href={reviewHref}
           onClick={rememberReturn}

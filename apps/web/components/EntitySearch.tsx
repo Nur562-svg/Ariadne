@@ -179,7 +179,8 @@ export default function EntitySearch({
                   T34 D：旁边补同口径「练 →」「核 →」（/study?card=&book= · /review?card=&book=，
                   与卡枢纽/卡瓷砖同 href 族；无 deskBookId 不加）。
                   T35 A/B：显式默认档（练 mode=all · 核 mode=open）——落可见池，不被 sticky 空档撒谎。
-                  T38 B：三条链点前 saveReturn 回本列表（含 ?kind=，见 rememberListReturn）。 */}
+                  T38 B：三条链点前 saveReturn 回本列表（含 ?kind=，见 rememberListReturn）。
+                  T45 D：零原子卡同族门禁（对齐卡瓷砖）——「练」降 muted 纯文，不进空练池。 */}
               {deskBookIds?.[c.id] ? (
                 <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs">
                   <Link
@@ -189,15 +190,19 @@ export default function EntitySearch({
                   >
                     书桌打开 →
                   </Link>
-                  <Link
-                    href={`/study?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
-                      deskBookIds[c.id],
-                    )}&mode=all`}
-                    onClick={rememberListReturn}
-                    className="text-muted no-underline hover:text-cinnabar"
-                  >
-                    练 →
-                  </Link>
+                  {c.atoms.length > 0 ? (
+                    <Link
+                      href={`/study?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
+                        deskBookIds[c.id],
+                      )}&mode=all`}
+                      onClick={rememberListReturn}
+                      className="text-muted no-underline hover:text-cinnabar"
+                    >
+                      练 →
+                    </Link>
+                  ) : (
+                    <span className="text-muted">暂无原子</span>
+                  )}
                   <Link
                     href={`/review?card=${encodeURIComponent(c.id)}&book=${encodeURIComponent(
                       deskBookIds[c.id],

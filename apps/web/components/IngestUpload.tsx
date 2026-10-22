@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import CopyCommand from "@/components/CopyCommand";
 
 type ChapterRow = { id: string; title: string; physicalStart: string; physicalEnd: string };
 
@@ -204,9 +205,14 @@ export default function IngestUpload() {
           </p>
         ) : null}
         {done ? (
-          <p className="text-sm text-status-ok">
-            已建档 <span className="mono">{done.id}</span>（状态 uploaded）。{done.next}
-          </p>
+          <div className="w-full">
+            <p className="text-sm text-status-ok">
+              已建档 <span className="mono">{done.id}</span>（状态 uploaded）。
+            </p>
+            {/* T45 E：API 的 next 不再 inline 长句——整句进可复制 mono 块（与 API next 同真，
+                不客户端改写命令）。 */}
+            {done.next ? <CopyCommand command={done.next} /> : null}
+          </div>
         ) : null}
       </div>
     </form>
