@@ -1,0 +1,141 @@
+════════════════════════════════════
+Task 52 · desk-empty-complete-widen-viewer-01 · MEGA · zcode GLM5.3 max thinking
+════════════════════════════════════
+仓库：/Users/nukeab/projects/Ariadne
+Tip 前置（硬）：2e30178（docs T51） atop 6744e4b（feat T51） atop c99d7ec（T50）。
+git log -1 --oneline 须含 2e30178。若停在 6744e4b 或更早 → 停，对齐后再开工。
+先读 docs/frontend-aesthetics.md。对照 SCOPE：docs/task-52-SCOPE.md 或 /workspace/reports/ariadne-task-52/SCOPE.md。
+体量：约 185–300+ 分钟真实编码。A–J 全部交。只做 Quiz 或只做 Viewer = 拒收。15–30/90 分钟假装收工 = 漏做。又一轮 empty-CTA densify / return densify / 重做 T46–T51 = 主题偏了，拒收。
+不 push。验收 PASS 后站规 auto-push（勿问「推」）。
+
+────────────────────────────────────
+空池 CTA 井（硬声明 · 写进回复）
+────────────────────────────────────
+T43–T51 已近饱和 empty-pool CTA densify（Clew/Strip/书头/Quiz核/交叉/书架/ingest/CitePeek浮层/轨/Overview）。
+本刀不是再扩 empty-CTA。主题 = 空·完成态文案对称 + Quiz「放宽到本书」书空诚实 + Viewer/对页 OCR 页定位 + 孤儿/无书同真。
+
+────────────────────────────────────
+三子主题
+────────────────────────────────────
+1) 练核空·完成态文案对称 — B C D E F
+2) Quiz 放宽书空诚实 — A（I 装配）
+3) Viewer / 对页 / 开本页 OCR 页定位 — G H I
+J = build + heye-only DEFER + 回归
+
+────────────────────────────────────
+A · QuizPanel 放宽到本书 · 书空诚实
+────────────────────────────────────
+1) QuizPanel 新增 prop bookAtomCount: number。
+2) atomCount===0 && bookAtomCount===0 → 纯文「本书暂无原子」（无 Link）。
+3) atomCount===0 && bookAtomCount>0 → 保持「本章暂无原子 · 去学习环放宽到本书」→ /study?book=&mode=all。
+4) 勿重做 T51「去核页」门禁；勿改 T45 练侧契约。
+
+────────────────────────────────────
+B · StudySession 空 / 完成 chrome
+────────────────────────────────────
+1) mode 过滤空（ungraded/unknown）与「本轮完成」标题+次级 CTA 用词与 HeYe 对称。
+2) mode=all 防御空态不说假「有货」。
+3) 勿拆 T51 CrossScope / leaveReturn；勿 ModeChips 插队。
+
+────────────────────────────────────
+C · HeYeSession 池空 chrome 对齐 Study
+────────────────────────────────────
+1) 加 h2「这个范围是空的」（或等价），对齐 Study「这个队列是空的」。
+2) 新 prop emptyKind?: 'orphan' | 'card-out' | 'true-empty' | null：
+   - orphan → body 点明页不在 OCR / 无 cite
+   - card-out → 卡页越界
+   - true-empty → 引导 ingest/书架，不装假池
+3) CTA「去学习环 /study →」→「去学习环 →」（href 不变）。
+4) T51 对侧 atoms=0 纯文门禁保持。
+
+────────────────────────────────────
+D · HeYeSession mode 空 / 对完态
+────────────────────────────────────
+1) open 且因全部 marked 而空 → h2 对齐「本轮完成」族（如「本机已全部对过」）。
+2) checked / doubt 空 → 独立短标题，勿与池真空同一句。
+3) CTA 行与 Study 完成态同族。
+
+────────────────────────────────────
+E · review/page emptyKind 装配
+────────────────────────────────────
+1) 推导 orphan / cardOutOfRange / true-empty（对齐 study 逻辑）。
+2) 传入 HeYeSession；页顶琥珀可留，body 分型以 HeYe 为准。
+3) 勿重做 T48 sticky N / T51 CrossScope。
+
+────────────────────────────────────
+F · study/page 无书 · orphan 残余
+────────────────────────────────────
+1) 无书全局空态：不装裸假书链。
+2) orphan/cardOut 回书桌 href 诚实（有 book 带 book；已知页可带 page）。
+3) 勿重做 T51 页级 empty-CTA densify。
+
+────────────────────────────────────
+G · Viewer ←书桌带页
+────────────────────────────────────
+1) 已知 page → deskHref=/desk?book=…&page=…。
+2) 缺页/无效页：琥珀保留；回书桌可仅 book。
+3) 可选次级「练本页」「核本页」：页级 atoms/pending=0→纯文；>0→链。不是 CitePeek 正文/trap redo。
+4) 勿 OCR canvas。
+
+────────────────────────────────────
+H · EntityCardDetail 对页 / 开本页 OCR 门禁
+────────────────────────────────────
+1) Prop bookValidPages?: number[]（缺省=不门禁）。
+2) 三处「对页」：page 有值且 validPages 已提供且不含该页 → 纯文「本页无 OCR」；含则保持链。
+3) 「在书桌打开本页」同门禁。
+4) 勿给「对页」加 return（soft OUT）；只做 OCR 有效性。
+
+────────────────────────────────────
+I · 装配线
+────────────────────────────────────
+1) DocumentPane → QuizPanel bookAtomCount（collectStudyAtoms({bookId}).length 或 book-pools 等价）。
+2) desk/card/page.tsx + entities/[id]/page.tsx → EntityCardDetail bookValidPages={loadBookValidPages(...)}。
+3) 可选 helper pageInOcr(validPages, page)。
+4) 勿毁 book-pools.ts T50；勿改 storage keys。
+
+────────────────────────────────────
+J · build · DEFER · 回归
+────────────────────────────────────
+1) pnpm --filter web build PASS。
+2) 不要 push。
+3) heye-only invent DEFER：禁止 seed；回复写明 deferred。
+4) 回归：T51 Clew/Strip/书头/Quiz核/交叉离面空池；T50 Shelf/Footer/LibraryContinuity/Sidebar/book-pools；T49 IngestReady/Register/CitePeek 浮层CTA+正文/trap 未毁；T48 CardCard/EntitySearch/轨核/CardVs/Sticky标N/Overview章行；T47 TOC/KINDS/Continuity 0-OCR壳/CardDetail；T46 书架OCR/换书/模式；T45 Quiz练侧/ingest N/M；T44 Clew空态分型骨架；T43 Changes筛选/截断；T42–T28 leaveReturn/书头return/CrossScope return 接线未拆；ModeChips 未插进练中；Queue 未改 Due；LocalProgressStrip 视觉未毁。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–51 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC（含 T47 counts）、Clew stub 三 tab、卡页 CitePeek 正文与 trap、/review·/study 诚实切片、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、healOpenedIfDirty、book-pools.ts（T50）、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CardHubReturnLinks、IngestReadyLinks、CopyCommand、LibraryContinuity/ShelfBookContinuity、T34–T51 已交切片、T26 稀疏琥珀、T41 sticky N=0 门禁、T48 sticky 标 N、T51 Clew/Strip/交叉空池。勿 verified:true 过关。A–J 范围保持完整；主题是空·完成对称 + 放宽书空 + 页定位诚实，不是 return，不是 T46–T51 重做。
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return（OCR 门禁可以）
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / 重做 T46–T51 已交 / 只改 Quiz 一处或只做 A–D 就收工 / 只改 Viewer 一处就收工
+- Next.js security upgrade 当本刀主题（ops note only）
+- 假云端 OCR / 假进度条动画 / 假正数池
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T51 已交切片
+- 整段 port ariadnemini版 verify/clew-API
+- push（写手禁；验收 PASS 后站规 auto-push，勿问「推」）
+
+════════════════════════════════════
+自测（回复须勾）
+════════════════════════════════════
+1) Quiz · 本章0且本书0 →「本书暂无原子」纯文；本书>0 →「放宽到本书」可点
+2) StudySession mode空/完成 → 标题+CTA对称；T51交叉空池未毁
+3) HeYe池空·orphan → body分型；h2在；「去学习环 →」无裸路径字
+4) HeYe open已对完 / checked / doubt空 → 标题族对齐完成感
+5) review孤儿/越界/真空 → emptyKind生效；study无书/orphan残余同真
+6) Viewer有页 → ←书桌带 &page=；缺页琥珀未毁
+7) 卡详对页/开本页 · 页∉OCR → 纯文；页∈OCR → 链在
+8) DocumentPane bookAtomCount / card+entity validPages 装配正确
+9) pnpm --filter web build PASS；未 push；heye-only DEFER 已声明
+10) 回归 T51–T28；ModeChips未插队；Queue非Due；CitePeek正文/trap未毁
+
+做完叫验收。A–J 全交才过。
