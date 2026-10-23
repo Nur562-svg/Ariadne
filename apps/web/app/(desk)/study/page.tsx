@@ -573,6 +573,17 @@ async function StudyBody({
               {pageNum != null ? " / page" : ""} 范围内——这里练不出它的原子。
               回本卡直接练{pageNum != null ? "，或清本页放宽" : "，或换更宽的范围"}。
             </p>
+          ) : !scopeBook && !effChapter ? (
+            /* T52 F：无书全局空态（/study 裸访问，无 card/book/chapter）——不装「换更宽范围」
+               假话（范围已是全部），也不出裸假书链；引导与 Clew 无书冷启动句同真：
+               导入 → 书架 → 打开一本书。回程只有下方 ReturnNav 的真实 /desk。 */
+            <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
+              书库还没有可练的知识原子——先到{" "}
+              <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
+                /ingest
+              </Link>{" "}
+              导入并注册教材，再从书架打开一本书。
+            </p>
           ) : (
             <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
               这个范围还没有知识原子。先到{" "}

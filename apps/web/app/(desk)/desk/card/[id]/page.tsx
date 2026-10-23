@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { loadBooks, loadCard, loadCards, loadChapters } from "@/lib/entities";
+import { loadBookValidPages, loadBooks, loadCard, loadCards, loadChapters } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import { EntityCardDetail } from "@/components/EntityCardDetail";
 import DeskSurfaceBridge from "@/components/desk/DeskSurfaceBridge";
@@ -87,6 +87,9 @@ export default async function DeskCardPage({
         confusionLinks={confusionLinks}
         confusionAtomCounts={confusionAtomCounts}
         heyePoolKeys={heyePoolKeys}
+        /* T52 H/I：该书已解析印刷页表——三处「对页」+「在书桌打开本页」OCR 有效性门禁；
+           无书语境不传（缺省不门禁，保持链）。 */
+        bookValidPages={book ? loadBookValidPages()[book.id] : undefined}
         openDeskReturnTo={{
           href: `/desk/card/${encodeURIComponent(card.id)}`,
           label: `卡《${card.name_zh}》`,

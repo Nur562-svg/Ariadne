@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { loadAllChapterPages, loadBooks } from "@/lib/entities";
+import { collectStudyAtoms, loadAllChapterPages, loadBooks } from "@/lib/entities";
+import { collectCiteQueue } from "@/lib/heye";
 
 /**
  * citation 跳页的落点：展示该印刷页的 OCR 原文（main 栏阅读序），
@@ -42,7 +43,24 @@ async function ViewerBody({
   const deskBook = pg?.chapterId
     ? loadBooks().find((b) => b.chapterIds.includes(pg.chapterId as string))
     : undefined;
-  const deskHref = deskBook ? `/desk?book=${encodeURIComponent(deskBook.id)}` : "/desk";
+  /**
+   * T52 G：已解析到真页（pg 存在 = 该页在 OCR 内）→「← 书桌」带 &page= 精确定位章页；
+   * 推不出书或未解析页回落书级 / 书架（缺页琥珀分支不受影响，不假编页）。
+   */
+  const deskHref = deskBook
+    ? pg
+      ? `/desk?book=${encodeURIComponent(deskBook.id)}&page=${pageNo}`
+      : `/desk?book=${encodeURIComponent(deskBook.id)}`
+    : "/desk";
+  /**
+   * T52 G：次级「练本页 / 核本页」——页级真池（collectStudyAtoms / collectCiteQueue 带
+   * book+page，与书桌本页 Strip 同池）；N=0 纯文不进空环，>0 muted 链 + 默认档
+   * （&mode=all / &mode=open）。只加两条页级链，不动 CitePeek 正文 / trap。
+   */
+  const pageAtomCount =
+    deskBook && pg ? collectStudyAtoms({ bookId: deskBook.id, page: pageNo }).length : 0;
+  const pagePendingCount =
+    deskBook && pg ? collectCiteQueue({ bookId: deskBook.id, page: pageNo }).length : 0;
 
   const backLinks = (
     <nav className="flex items-baseline gap-5 text-sm" aria-label="返回">
@@ -98,6 +116,31 @@ async function ViewerBody({
           ) : null}
         </nav>
       </header>
+
+      {deskBook && pg ? (
+        <p className="mt-3 flex flex-wrap items-baseline gap-4 text-sm text-muted">
+          {pageAtomCount > 0 ? (
+            <Link
+              href={`/study?book=${encodeURIComponent(deskBook.id)}&page=${pageNo}&mode=all`}
+              className="text-cinnabar no-underline hover:underline underline-offset-4"
+            >
+              练本页 →
+            </Link>
+          ) : (
+            <span title="这一印刷页没有卡引用它，无可练原子">本页暂无原子</span>
+          )}
+          {pagePendingCount > 0 ? (
+            <Link
+              href={`/review?book=${encodeURIComponent(deskBook.id)}&page=${pageNo}&mode=open`}
+              className="text-cinnabar no-underline hover:underline underline-offset-4"
+            >
+              核本页 →
+            </Link>
+          ) : (
+            <span title="这一印刷页没有「有页码但未抽查」的引用">本页暂无待核</span>
+          )}
+        </p>
+      ) : null}
 
       {q ? (
         <p className="mt-4 rounded border border-amber-300 bg-status-warn-bg p-3 text-sm text-status-warn">

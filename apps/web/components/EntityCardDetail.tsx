@@ -63,6 +63,7 @@ export function EntityCardDetail({
   confusionLinks,
   confusionAtomCounts,
   heyePoolKeys,
+  bookValidPages,
   openDeskReturnTo,
   returnTo,
 }: {
@@ -86,6 +87,13 @@ export function EntityCardDetail({
   confusionAtomCounts?: Record<string, number>;
   /** 本卡核池键（服务端 collectCiteQueue({cardId}) 的 {key}）：LocalProgressStrip 按池计数。 */
   heyePoolKeys?: { key: string }[];
+  /**
+   * T52 H/I：该书已解析印刷页[]（服务端 loadBookValidPages()[bookId] 装配）——
+   * 三处「对页」与「在书桌打开本页」的 OCR 有效性门禁：已提供且不含该页 → 纯文
+   * 「本页无 OCR」（书桌章页定位不了，不装链）；含该页或缺省（未装配）→ 保持链。
+   * 只做有效性，不给「对页」加 return（soft OUT）。
+   */
+  bookValidPages?: number[];
   /**
    * T41 D：「在书桌打开本卡 / 本页」点前 saveReturn 的回程 payload（desk 卡页=本卡枢纽；
    * shell 详情=实体列表）。Server 组件不能挂 onClick——两链换 DeskOpenReturnLink 岛消费。
@@ -111,8 +119,14 @@ export function EntityCardDetail({
   const normName = (s: string) => s.trim().toLowerCase();
   /** 「在书桌打开本页」（仅书桌语境 + 首个有页 cite）：/desk?book=&page= 章页定位。 */
   const firstPage = firstPagedCitePage(card);
+  /**
+   * T52 H：OCR 有效性薄判定（pageInOcr 等价）——bookValidPages 未装配（缺省）不门禁
+   * （保持链，与 T49 D 契约同思路）；已装配且不含该页 → 该页定位不了，纯文不装链。
+   */
+  const ocrHas = (p: number) => bookValidPages == null || bookValidPages.includes(p);
+  const deskPageKnown = firstPage != null && ocrHas(firstPage);
   const deskPageHref =
-    deskBookId && firstPage != null
+    deskBookId && firstPage != null && deskPageKnown
       ? `/desk?book=${encodeURIComponent(deskBookId)}&page=${firstPage}`
       : undefined;
 
@@ -158,6 +172,13 @@ export function EntityCardDetail({
           <DeskOpenReturnLink href={deskPageHref} returnTo={openDeskReturnTo}>
             在书桌打开本页 →
           </DeskOpenReturnLink>
+        ) : null}
+        {/* T52 H：首个有页 cite 落在未解析 OCR 页（bookValidPages 已装配且不含）→
+            「在书桌打开本页」降纯文「本页无 OCR」，不链进定位不了的章页。 */}
+        {deskBookId && firstPage != null && !deskPageKnown ? (
+          <span className="text-xs text-muted" title="该印刷页尚未解析 OCR——书桌章页定位不了">
+            本页无 OCR
+          </span>
         ) : null}
         <p className="w-full text-xs leading-6 text-muted">
           练：本卡 {card.atoms.length} 个原子逐个自评；核：把引用对着该页 OCR 原文核对。
@@ -255,14 +276,21 @@ export function EntityCardDetail({
                     pendingCiteCount={pendingCiteCount}
                   />
                   {/* T33 E：字段 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（与原子 T30 C 同族
-                      muted 文字链，非实心；与 CitePeek 浮层内「在书桌打开」同目标，免开浮层一步）。 */}
+                      muted 文字链，非实心；与 CitePeek 浮层内「在书桌打开」同目标，免开浮层一步）。
+                      T52 H：页落在未解析 OCR（bookValidPages 已装配且不含）→ 纯文「本页无 OCR」。 */}
                   {f.cite?.page != null && deskBookId ? (
-                    <Link
-                      href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${f.cite.page}`}
-                      className="text-xs text-muted no-underline hover:text-cinnabar"
-                    >
-                      对页 →
-                    </Link>
+                    ocrHas(f.cite.page) ? (
+                      <Link
+                        href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${f.cite.page}`}
+                        className="text-xs text-muted no-underline hover:text-cinnabar"
+                      >
+                        对页 →
+                      </Link>
+                    ) : (
+                      <span className="text-xs text-muted" title="该印刷页尚未解析 OCR——书桌章页定位不了">
+                        本页无 OCR
+                      </span>
+                    )
                   ) : null}
                 </span>
               </div>
@@ -360,14 +388,21 @@ export function EntityCardDetail({
                     pendingCiteCount={pendingCiteCount}
                   />
                   {/* T30 C：原子 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（muted 文字链，
-                      非实心；与 CitePeek 浮层内「在书桌打开」同目标，这里免开浮层一步）。 */}
+                      非实心；与 CitePeek 浮层内「在书桌打开」同目标，这里免开浮层一步）。
+                      T52 H：页落在未解析 OCR → 纯文「本页无 OCR」（同字段/页脚三处同真）。 */}
                   {a.cite.page != null && deskBookId ? (
-                    <Link
-                      href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${a.cite.page}`}
-                      className="text-xs text-muted no-underline hover:text-cinnabar"
-                    >
-                      对页 →
-                    </Link>
+                    ocrHas(a.cite.page) ? (
+                      <Link
+                        href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${a.cite.page}`}
+                        className="text-xs text-muted no-underline hover:text-cinnabar"
+                      >
+                        对页 →
+                      </Link>
+                    ) : (
+                      <span className="text-xs text-muted" title="该印刷页尚未解析 OCR——书桌章页定位不了">
+                        本页无 OCR
+                      </span>
+                    )
                   ) : null}
                 </div>
               ) : null}
@@ -387,14 +422,21 @@ export function EntityCardDetail({
               cardId={card.id}
               pendingCiteCount={pendingCiteCount}
             />
-            {/* T33 E：页脚 cite 有页 + 书桌语境 → 次级「对页」（字段/原子同真，同卡不互谎）。 */}
+            {/* T33 E：页脚 cite 有页 + 书桌语境 → 次级「对页」（字段/原子同真，同卡不互谎）。
+                T52 H：页落在未解析 OCR → 纯文「本页无 OCR」（三处对页同一判定）。 */}
             {c.page != null && deskBookId ? (
-              <Link
-                href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${c.page}`}
-                className="text-xs text-muted no-underline hover:text-cinnabar"
-              >
-                对页 →
-              </Link>
+              ocrHas(c.page) ? (
+                <Link
+                  href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${c.page}`}
+                  className="text-xs text-muted no-underline hover:text-cinnabar"
+                >
+                  对页 →
+                </Link>
+              ) : (
+                <span className="text-xs text-muted" title="该印刷页尚未解析 OCR——书桌章页定位不了">
+                  本页无 OCR
+                </span>
+              )
             ) : null}
             {c.quote ? <span className="text-xs">“{c.quote}”</span> : null}
           </span>

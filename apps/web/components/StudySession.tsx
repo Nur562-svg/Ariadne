@@ -311,11 +311,15 @@ export default function StudySession({
   }
 
   /** 队列空（档位过滤后无原子）：诚实说明 + 一颗主 CTA + 次级文字链 + 档位芯片（本机计数可切档）。
-   *  T28 C：文案必须报池大小与本档计数——池里有原子但本档为 0 时，禁止说成「这个范围没有原子」。 */
+   *  T28 C：文案必须报池大小与本档计数——池里有原子但本档为 0 时，禁止说成「这个范围没有原子」。
+   *  T52 B：标题与 HeYe 空态分型对称——ungraded 且未评归 0 是「评完」不是「没货」，升完成族
+   *  标题「本机已全部评过」（对齐 HeYe「本机已全部对过」/本组件「本轮完成」同族）；unknown 空
+   *  与 mode=all 防御空（atoms>0 却滤空，理论不可达）保持「这个队列是空的」，只报事实不装「有货」。 */
   if (order.length === 0) {
+    const ungradedDone = mode === "ungraded" && pool.ungraded === 0;
     return (
       <section className="mt-10 rounded-lg border border-line bg-card p-6">
-        <h2 className="text-xl font-semibold">这个队列是空的</h2>
+        <h2 className="text-xl font-semibold">{ungradedDone ? "本机已全部评过" : "这个队列是空的"}</h2>
         <p className="mt-3 text-sm leading-7 text-foreground/90">
           {mode === "ungraded"
             ? `本范围有 ${atoms.length} 个原子，未评的是 ${pool.ungraded}——都评过了，没有未评的原子可练。`

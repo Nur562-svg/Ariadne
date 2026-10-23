@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { loadBooks, loadCard, loadCards } from "@/lib/entities";
+import { loadBookValidPages, loadBooks, loadCard, loadCards } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import { EntityCardDetail } from "@/components/EntityCardDetail";
 
@@ -101,6 +101,9 @@ async function EntityDetail({
         confusionLinks={confusionLinks}
         confusionAtomCounts={confusionAtomCounts}
         heyePoolKeys={queue.map((it) => ({ key: it.key }))}
+        /* T52 H/I：该书已解析印刷页表——三处「对页」+「在书桌打开本页」OCR 有效性门禁；
+           未注册章的卡保持无书语境不传（缺省不门禁，保持链）。 */
+        bookValidPages={book ? loadBookValidPages()[book.id] : undefined}
         returnTo={listReturnTo}
         openDeskReturnTo={listReturnTo}
       />

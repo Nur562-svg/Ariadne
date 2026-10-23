@@ -398,6 +398,12 @@ export default function DocumentPane({
     case: filterCards("case", cards).length,
     quiz: stripAtoms.length,
   };
+  /**
+   * T52 A/I：本书可练原子数——与书头「N 个知识原子」同一 reduce（cards 即本书卡
+   * loadCards({bookId})，等于 collectStudyAtoms({bookId}).length 同池）；下传 QuizPanel
+   * 做「放宽到本书」书空门禁：本章 0 且本书 0 → 纯文「本书暂无原子」，不再链放宽。
+   */
+  const bookAtomCount = cards.reduce((n, c) => n + c.atoms.length, 0);
   const chapterSideLabel = activeChapter ? `本章 ${activeChapter.id}` : "本书";
   const stripScopeLabel =
     studyPageScope && reviewPageScope
@@ -663,6 +669,7 @@ export default function DocumentPane({
         <QuizPanel
           bookId={book.id}
           atomCount={stripAtoms.length}
+          bookAtomCount={bookAtomCount}
           studyHref={stripStudyHref}
           reviewHref={stripReviewHref}
           atoms={stripAtoms}
@@ -897,6 +904,7 @@ function OverviewPanel({
 function QuizPanel({
   bookId,
   atomCount,
+  bookAtomCount,
   studyHref,
   reviewHref,
   atoms,
@@ -907,6 +915,12 @@ function QuizPanel({
 }: {
   bookId: string;
   atomCount: number;
+  /**
+   * T52 A：本书可练原子数（DocumentPane 与书头统计同一 reduce / collectStudyAtoms({bookId})
+   * 同池）——本章 0 且本书 0 时「放宽到本书」降纯文「本书暂无原子」，不链进全书空练池；
+   * 本书 >0 保持 T45 A 放宽链语义不动。
+   */
+  bookAtomCount: number;
   studyHref: string;
   reviewHref: string;
   /** T35 E：当前 strip 池（与书头 Strip / Clew progress* 同源）。 */
@@ -961,7 +975,9 @@ function QuizPanel({
       />
       <div className="mt-5 flex flex-wrap items-center gap-4">
         {/* T45 A：atomCount 与内嵌 Strip 同池（stripAtoms.length）——0 原子时主 CTA 降级为
-            诚实放宽链（book 级 /study，同一 qs 语义），不装作进空练池；>0 保持章/页范围主 CTA。 */}
+            诚实放宽链（book 级 /study，同一 qs 语义），不装作进空练池；>0 保持章/页范围主 CTA。
+            T52 A：放宽链先看本书池——本章 0 且本书 0（整本书都没萃出原子）→ 纯文
+            「本书暂无原子」，不可点也不引导「放宽」；本书 >0 才给「放宽到本书」链。 */}
         {atomCount > 0 ? (
           <Link
             href={studyHref}
@@ -970,7 +986,7 @@ function QuizPanel({
           >
             去学习环自评 →
           </Link>
-        ) : (
+        ) : bookAtomCount > 0 ? (
           <Link
             href={`/study?book=${encodeURIComponent(bookId)}&mode=all`}
             onClick={rememberReturn}
@@ -978,6 +994,10 @@ function QuizPanel({
           >
             本章暂无原子 · 去学习环放宽到本书 →
           </Link>
+        ) : (
+          <span className="text-sm text-muted" title="本书实体卡均未萃取出知识原子">
+            本书暂无原子
+          </span>
         )}
         {/* T51 G：「去核页」空池门禁——items（= stripItems，与 reviewHref 同章/页池）===0 降
             muted 纯文「暂无待核」不可点；>0 保持链 + rememberReturn。练侧 atomCount===0 放宽链

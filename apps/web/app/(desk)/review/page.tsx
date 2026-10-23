@@ -285,6 +285,23 @@ async function ReviewBody({
       ? pageStudyAtoms.length
       : stripAtoms.length;
 
+  /**
+   * T52 E：核池空分型（对齐 study 的 orphan / cardOutOfRange / 真空三型）——
+   * orphan = 合法 pageNum · 非单卡 · 池空（沿用 orphanReview）；card-out = 单卡在宽范围
+   * （collectCiteQueue({cardId}) 无过滤）有待核、当前 book/chapter/page 交集滤空（越界）；
+   * true-empty = 其余（真无待核数据）。页顶琥珀保留点名，HeYeSession body 分型以此为准。
+   */
+  const cardWidePending =
+    card && items.length === 0 ? collectCiteQueue({ cardId: card.id }).length : 0;
+  const emptyKind =
+    items.length === 0
+      ? orphanReview
+        ? "orphan"
+        : card && cardWidePending > 0
+          ? "card-out"
+          : "true-empty"
+      : null;
+
   /** T28 F：sticky 键说明——只列当前实际可用的本页环键（无页不给 g，单卡不给切章）。 */
   const stickyKeys: [string, string][] = [
     ...(pageNum != null && !card ? ([["g", "清本页"]] as [string, string][]) : []),
@@ -582,6 +599,8 @@ async function ReviewBody({
         mode={mode}
         cardHref={cardHref}
         studyHref={studyHref}
+        /* T52 E：池空分型（见 emptyKind 构造点）；池非空时 null 走会话主流程。 */
+        emptyKind={emptyKind}
         /* T51 J：交叉练链对侧真池（见 crossStudyAtomCount 构造点），fail-closed。 */
         atomCount={crossStudyAtomCount}
         deskPageHref={deskPageHref}

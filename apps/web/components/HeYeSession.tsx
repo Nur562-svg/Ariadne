@@ -91,6 +91,7 @@ export default function HeYeSession({
   mode,
   cardHref,
   studyHref,
+  emptyKind = null,
   atomCount = 0,
   deskPageHref,
   openHref,
@@ -115,6 +116,13 @@ export default function HeYeSession({
   cardHref?: string;
   /** 跨环学习链（有卡带 ?card=，否则 /study）。 */
   studyHref?: string;
+  /**
+   * T52 C/E：服务端池空分型（review 页推导，对齐 study 的 orphan / cardOutOfRange / 真空
+   * 三型）——'orphan'=合法 pageNum · 非单卡 · 池空（页无 cite 或未解析 OCR）；
+   * 'card-out'=单卡在宽范围有待核、当前 book/chapter/page 过滤交集为空（越界）；
+   * 'true-empty'=真无待核数据（引导 /ingest · 书架，不装假池）。缺省 null → 通用句。
+   */
+  emptyKind?: "orphan" | "card-out" | "true-empty" | null;
   /**
    * T51 J：交叉练链（去学习环 / 去学习本卡）的对侧真池——父页按 studyHref 同范围
    * collectStudyAtoms 装配（review 页：单卡=卡池、有效页非孤儿=页池、无页=章/书池）；
@@ -299,13 +307,37 @@ export default function HeYeSession({
 
   // ---- 空态分支 ----
 
-  /** 服务端池空：本范围没有「有页码但未抽查」的引用。一颗主 CTA + 次级文字链 + 档位芯片。 */
+  /**
+   * 服务端池空：本范围没有「有页码但未抽查」的引用。一颗主 CTA + 次级文字链 + 档位芯片。
+   * T52 C：chrome 对齐 Study 空态（卡片 section + h2「这个范围是空的」）——body 按
+   * emptyKind 分型说真话（orphan=页无 cite / 未解析 OCR · card-out=单卡被 book/chapter/page
+   * 滤空越界 · true-empty=真无数据引导 /ingest，不装假池）；CTA 行（含 T51 atomCount
+   * 门禁）与档位芯片原样，「去学习环 /study →」丑标签修正为「去学习环 →」（href 不变）。
+   */
   if (items.length === 0) {
     return (
-      <div className="mt-8">
-        <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
-          这个范围（{scopeLabel}）没有待核 cite——没有「有页码但未抽查」的引用，
-          或数据尚未解析出来。
+      <section className="mt-10 rounded-lg border border-line bg-card p-6">
+        <h2 className="text-xl font-semibold">这个范围是空的</h2>
+        <p className="mt-3 text-sm leading-7 text-foreground/90">
+          {emptyKind === "orphan" ? (
+            <>
+              本页没有待核 cite——没有「有页码但未抽查」的引用落在这一印刷页，或该页尚未解析
+              OCR；清本页可放宽到本章 / 本书。
+            </>
+          ) : emptyKind === "card-out" ? (
+            <>
+              本卡在更宽范围还有待核 cite，但当前 book / chapter / page 过滤把交集滤空了（越界）——
+              这里核不出它的引用；回本卡直接核，或清本页 / 换更宽范围。
+            </>
+          ) : (
+            <>
+              这个范围（{scopeLabel}）还没有待核 cite。先到{" "}
+              <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
+                /ingest
+              </Link>{" "}
+              上传并解析教材，或换一个更宽的范围。
+            </>
+          )}
         </p>
         <HeYeModeChips counts={counts} mode={mode} hrefs={modeChipHrefs} />
         {/* T25 A densify：每分支只留一颗朱红主 CTA，其余次级文字链。
@@ -403,7 +435,7 @@ export default function HeYeSession({
               onClick={leaveReturnTo ? rememberLeave : undefined}
               className="text-sm text-muted no-underline hover:text-cinnabar"
             >
-              去学习环 /study →
+              去学习环 →
             </Link>
           ) : (
             <span className="text-sm text-muted" title="同范围暂无可练原子">
@@ -438,19 +470,24 @@ export default function HeYeSession({
             </Link>
           ) : null}
         </div>
-      </div>
+      </section>
     );
   }
 
-  /** 档内空：open 空 = 本范围全标完（诚实绿条保留）；checked/doubt 空 = 还没有对应记录。 */
+  /**
+   * 档内空：open 空 = 本范围全标完（完成族标题 + 诚实绿条保留）；checked/doubt 空 =
+   * 独立短标题「这个档还没有本机记录」（T52 D：与池真空「这个范围是空的」不同句）。
+   * chrome 对齐 Study 空/完成卡片（section + h2）；CTA 行（含 T51 atomCount 门禁）原样。
+   */
   if (visible.length === 0) {
     const backToOpen = mode !== "open" && openHref;
     return (
-      <div className="mt-8">
+      <section className="mt-10 rounded-lg border border-line bg-card p-6">
         {mode === "open" ? (
           <>
-            <p className="rounded-lg border border-line bg-status-ok-bg px-4 py-3 text-sm leading-7 text-status-ok">
-              本机已全部对过（已对 {counts.checked} · 存疑 {counts.doubt}）。这只影响本浏览器记录，
+            <h2 className="text-xl font-semibold">本机已全部对过</h2>
+            <p className="mt-3 rounded-lg border border-line bg-status-ok-bg px-4 py-3 text-sm leading-7 text-status-ok">
+              已对 {counts.checked} · 存疑 {counts.doubt}。这只影响本浏览器记录，
               seed 的「抽查 verified」状态没有变。{" "}
               <button onClick={resetStore} className="underline underline-offset-4 hover:text-foreground">
                 清除本机核页记录
@@ -461,10 +498,13 @@ export default function HeYeSession({
             </p>
           </>
         ) : (
-          <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
-            这个范围还没有本机「{mode === "checked" ? "已对" : "存疑"}」记录。
-            先在「待核」档里逐条核对，标过的项会出现在这里。
-          </p>
+          <>
+            <h2 className="text-xl font-semibold">这个档还没有本机记录</h2>
+            <p className="mt-3 border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
+              这个范围还没有本机「{mode === "checked" ? "已对" : "存疑"}」记录。
+              先在「待核」档里逐条核对，标过的项会出现在这里。
+            </p>
+          </>
         )}
         <HeYeModeChips counts={counts} mode={mode} hrefs={modeChipHrefs} />
         {/* T25 A densify：一颗主 CTA（回待核档 / 去学习环），其余次级文字链。
@@ -564,7 +604,7 @@ export default function HeYeSession({
             </Link>
           ) : null}
         </div>
-      </div>
+      </section>
     );
   }
 
