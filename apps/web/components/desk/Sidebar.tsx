@@ -20,6 +20,14 @@ export type SidebarBook = {
   cards: number;
   /** T46 C：OCR 印刷页数（loadBookValidPages 同口径；0 = 无 OCR 页）。 */
   pages?: number;
+  /** T50 D：书级可练原子数（collectStudyAtoms({bookId}).length 同池族；缺省当 0 · fail-closed）。 */
+  atomCount?: number;
+  /** T50 D：书级待核 cite 数（collectCiteQueue({bookId}).length 同池族；缺省当 0）。 */
+  pendingCount?: number;
+  /** T50 D：页 → 该页可练原子数（collectBookPools 同族 map）；按消毒后 currentEntry.page 查。 */
+  pageAtomByPage?: Record<number, number>;
+  /** T50 D：页 → 该页待核 cite 数（同上）。 */
+  pagePendingByPage?: Record<number, number>;
 };
 
 const PRIMARY = [
@@ -100,6 +108,22 @@ export default function Sidebar({
     });
   }
 
+  /**
+   * T50 D：在读学习/核页空池门禁（与书架续开 / footer / 继续上次同族）——有消毒后
+   * 合法停留页用该书页级池（pageAtomByPage/pagePendingByPage 按页查），否则书级
+   * atomCount/pendingCount；缺省/缺 key 当 0（fail-closed）。===0 → muted 纯文
+   * （页级「本页暂无原子/待核」· 书级「暂无原子/待核」）不可点；>0 保持链 + return。
+   * 只门禁这两条练核入口——主导航 / 换书 / OCR 摘要不动。
+   */
+  const studyPool =
+    currentEntry?.page != null
+      ? (current?.pageAtomByPage?.[currentEntry.page] ?? 0)
+      : (current?.atomCount ?? 0);
+  const reviewPool =
+    currentEntry?.page != null
+      ? (current?.pagePendingByPage?.[currentEntry.page] ?? 0)
+      : (current?.pendingCount ?? 0);
+
   return (
     <aside className="flex h-full w-[248px] shrink-0 flex-col border-r border-line bg-card">
       <div className="px-5 pb-4 pt-5">
@@ -178,25 +202,53 @@ export default function Sidebar({
                   练侧显式 mode=all 防 sticky 档位回补空档（与 Strip 深链同族）。
                   T37 C：恒拼默认档（练 mode=all · 核 mode=open，无页书级也写）——与
                   T36 书架 Strip/FooterLinks 同口径，消 if 分支漏成裸 ?book= 的空档。
-                  T38 A：两条链点前 saveReturn（见 rememberDeskReturn）——完成态可回这本书。 */}
-              <Link
-                href={`/study?book=${encodeURIComponent(current.id)}${
-                  currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
-                }&mode=all`}
-                onClick={rememberDeskReturn}
-                className="text-muted no-underline hover:text-cinnabar"
-              >
-                学习 →
-              </Link>
-              <Link
-                href={`/review?book=${encodeURIComponent(current.id)}${
-                  currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
-                }&mode=open`}
-                onClick={rememberDeskReturn}
-                className="text-muted no-underline hover:text-cinnabar"
-              >
-                核页 →
-              </Link>
+                  T38 A：两条链点前 saveReturn（见 rememberDeskReturn）——完成态可回这本书。
+                  T50 D：空池门禁（fail-closed，同书架续开/footer/继续上次族）——
+                  0 原子/0 待核降 muted 纯文（页级点名本页），不可点。 */}
+              {studyPool > 0 ? (
+                <Link
+                  href={`/study?book=${encodeURIComponent(current.id)}${
+                    currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
+                  }&mode=all`}
+                  onClick={rememberDeskReturn}
+                  className="text-muted no-underline hover:text-cinnabar"
+                >
+                  学习 →
+                </Link>
+              ) : (
+                <span
+                  className="text-muted"
+                  title={
+                    currentEntry?.page != null
+                      ? "本印刷页暂无可练原子"
+                      : "这本书还没有萃取出的知识原子"
+                  }
+                >
+                  {currentEntry?.page != null ? "本页暂无原子" : "暂无原子"}
+                </span>
+              )}
+              {reviewPool > 0 ? (
+                <Link
+                  href={`/review?book=${encodeURIComponent(current.id)}${
+                    currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
+                  }&mode=open`}
+                  onClick={rememberDeskReturn}
+                  className="text-muted no-underline hover:text-cinnabar"
+                >
+                  核页 →
+                </Link>
+              ) : (
+                <span
+                  className="text-muted"
+                  title={
+                    currentEntry?.page != null
+                      ? "本印刷页暂无待核 cite"
+                      : "这本书还没有待核 cite"
+                  }
+                >
+                  {currentEntry?.page != null ? "本页暂无待核" : "暂无待核"}
+                </span>
+              )}
             </p>
             {/* T22 D：多书换书入口（薄 disclosure，非书单墙）；换书保留被换下书的停留页（读最近栈 deskHref/page）。 */}
             {books && books.length >= 2 ? (

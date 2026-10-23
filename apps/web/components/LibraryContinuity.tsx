@@ -10,6 +10,7 @@ import {
   type LastOpened,
 } from "@/lib/last-opened";
 import { saveReturn } from "@/lib/return-stack";
+import type { BookPools } from "@/lib/book-pools";
 
 /**
  * 书库「继续上次」客户岛（T21 B）：
@@ -23,14 +24,23 @@ import { saveReturn } from "@/lib/return-stack";
  * T37 C/E：学习环/核页恒拼默认档（无页书级也写 mode=all / mode=open，与 T36 书架
  * Strip/FooterLinks 同口径）；点前写 return 短链（有合法停留页→书桌 p.N，否则书级
  * deskHref——rememberDeskCardReturn 同口径，key 仍 ariadne.desk.return.v1）。
+ * T50 C：学习环/核页空池门禁（与 ingest 三连 / 书架 footer 同真，soft leftover 收口）——
+ * 有 last.page 用该书页级池（pageAtomByPage/pagePendingByPage 按页查），否则书级
+ * atomCount/pendingCount；缺省/缺 key 当 0（fail-closed）。===0 → muted 纯文（页级
+ * 「本页暂无原子/待核」· 书级「暂无原子/待核」）不可点；>0 保持链 + return。
+ * 硬不动 T47 E「继续上次（尚无 OCR）」0-OCR 壳 / 去解析 / ocrPages 判断 / 失效琥珀。
  */
 export default function LibraryContinuity({
   books,
   bookValidPages,
+  poolsByBook,
 }: {
   books: { id: string; title: string }[];
   /** T31 C：bookId → 已解析印刷页[]（服务端装配）——读侧幽灵页消毒。 */
   bookValidPages?: Record<string, number[]>;
+  /** T50 C：bookId → 书级练核池 ± 页级 map（服务端 collectBookPools 装配，与书架续开/
+      footer 同族单一口径）；按 last.page 选页级否则书级，缺省/缺 key 当 0 · fail-closed。 */
+  poolsByBook?: Record<string, BookPools>;
 }) {
   const [last, setLast] = useState<LastOpened | null>(null);
   const [invalid, setInvalid] = useState(false);
@@ -91,6 +101,13 @@ export default function LibraryContinuity({
     });
   };
 
+  /** T50 C：池选择与书架 footer 同族——有消毒后合法停留页用页级池，否则书级；缺 key 当 0。 */
+  const pools = poolsByBook?.[book.id];
+  const atomPool =
+    last.page != null ? (pools?.pageAtomByPage?.[last.page] ?? 0) : (pools?.atomCount ?? 0);
+  const pendingPool =
+    last.page != null ? (pools?.pagePendingByPage?.[last.page] ?? 0) : (pools?.pendingCount ?? 0);
+
   return (
     <div className="mt-8 rounded-lg border border-line bg-card px-5 py-4">
       <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
@@ -118,24 +135,47 @@ export default function LibraryContinuity({
             </Link>
           </>
         )}
-        <Link
-          href={`/study?book=${encodeURIComponent(book.id)}${
-            last.page != null ? `&page=${last.page}` : ""
-          }&mode=all`}
-          onClick={rememberContinueReturn}
-          className="text-sm text-muted no-underline hover:text-cinnabar"
-        >
-          学习环 →
-        </Link>
-        <Link
-          href={`/review?book=${encodeURIComponent(book.id)}${
-            last.page != null ? `&page=${last.page}` : ""
-          }&mode=open`}
-          onClick={rememberContinueReturn}
-          className="text-sm text-muted no-underline hover:text-cinnabar"
-        >
-          核页 →
-        </Link>
+        {/* T50 C：空池门禁（fail-closed）——0 原子/0 待核降 muted 纯文（页级点名本页、
+            书级泛指），不可点 /study|/review；>0 保持链 + rememberContinueReturn。
+            文案与书架 footer / ingest 三连 / CitePeek 同族。 */}
+        {atomPool > 0 ? (
+          <Link
+            href={`/study?book=${encodeURIComponent(book.id)}${
+              last.page != null ? `&page=${last.page}` : ""
+            }&mode=all`}
+            onClick={rememberContinueReturn}
+            className="text-sm text-muted no-underline hover:text-cinnabar"
+          >
+            学习环 →
+          </Link>
+        ) : (
+          <span
+            className="text-sm text-muted"
+            title={
+              last.page != null ? "本印刷页暂无可练原子" : "这本书还没有萃取出的知识原子"
+            }
+          >
+            {last.page != null ? "本页暂无原子" : "暂无原子"}
+          </span>
+        )}
+        {pendingPool > 0 ? (
+          <Link
+            href={`/review?book=${encodeURIComponent(book.id)}${
+              last.page != null ? `&page=${last.page}` : ""
+            }&mode=open`}
+            onClick={rememberContinueReturn}
+            className="text-sm text-muted no-underline hover:text-cinnabar"
+          >
+            核页 →
+          </Link>
+        ) : (
+          <span
+            className="text-sm text-muted"
+            title={last.page != null ? "本印刷页暂无待核 cite" : "这本书还没有待核 cite"}
+          >
+            {last.page != null ? "本页暂无待核" : "暂无待核"}
+          </span>
+        )}
       </div>
       <p className="mt-1.5 text-xs text-muted">
         上次打开

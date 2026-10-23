@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { collectStudyAtoms, loadBooks, loadBookValidPages, loadCards } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
+import { collectBookPools, type BookPools } from "@/lib/book-pools";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
@@ -17,6 +18,14 @@ export default function Library() {
   const books = loadBooks();
   /** T31 C：各书已解析印刷页集合——继续上次 / 每书「续开 p.N」读侧幽灵页消毒。 */
   const bookValidPages = loadBookValidPages();
+  /**
+   * T50 E：各书练/核池（书级长度 + 页→原子/待核 map）——collectBookPools 单一装配口径
+   * （collectStudyAtoms / collectCiteQueue / cardsCitingPage 卡级命中同池族，禁第二套池、
+   * 禁造假正数）：书架续开「练本页/核本页」、footer「学习环/核页」、「继续上次」学习环/核页
+   * 空池门禁共用；客户端按 healed/last.page 查页级 map，缺 key 当 0（fail-closed）。
+   */
+  const poolsByBook: Record<string, BookPools> = {};
+  for (const b of books) poolsByBook[b.id] = collectBookPools(b.id);
 
   if (books.length === 0) {
     return (
@@ -50,10 +59,12 @@ export default function Library() {
       </p>
 
       {/* T21 B1：合法 last-opened → 顶栏「继续上次」进书桌（次级学习/核）；失效 → clear + 琥珀提示。
-          T31 C：传 validPages——旧栈幽灵页读侧消毒（脏时单条 heal）。 */}
+          T31 C：传 validPages——旧栈幽灵页读侧消毒（脏时单条 heal）。
+          T50 E：传 poolsByBook——学习环/核页空池门禁（有 last.page 用页级否则书级；fail-closed）。 */}
       <LibraryContinuity
         books={books.map((b) => ({ id: b.id, title: b.title }))}
         bookValidPages={bookValidPages}
+        poolsByBook={poolsByBook}
       />
 
       <ul className="mt-6 space-y-4">
@@ -107,7 +118,12 @@ export default function Library() {
                       </Link>
                     </>
                   )}
-                  <ShelfBookContinuity bookId={b.id} validPages={bookValidPages[b.id]} />
+                  <ShelfBookContinuity
+                    bookId={b.id}
+                    validPages={bookValidPages[b.id]}
+                    pageAtomByPage={poolsByBook[b.id].pageAtomByPage}
+                    pagePendingByPage={poolsByBook[b.id].pagePendingByPage}
+                  />
                 </span>
               </div>
               {/* T46 A：书卡四格补「OCR 印刷页」——与 T45 Overview 四格同款（0 写「无 OCR 页」）。 */}
@@ -165,11 +181,16 @@ export default function Library() {
                 </Link>
                 {/* T34 C：footer 学习环/核页与「续开 p.N」同一 heal 口径（有合法续开页带
                     &page= · 练 mode=all · 核 mode=open；无页书级）。
-                    T37 E：传 title——点前 return 书级 label 含书名（有页落「书桌 p.N」）。 */}
+                    T37 E：传 title——点前 return 书级 label 含书名（有页落「书桌 p.N」）。
+                    T50 E：传书级 counts ± 页级 map——空池门禁（有页用页级否则书级）。 */}
                 <ShelfBookFooterLinks
                   bookId={b.id}
                   validPages={bookValidPages[b.id]}
                   title={b.title}
+                  atomCount={poolsByBook[b.id].atomCount}
+                  pendingCount={poolsByBook[b.id].pendingCount}
+                  pageAtomByPage={poolsByBook[b.id].pageAtomByPage}
+                  pagePendingByPage={poolsByBook[b.id].pagePendingByPage}
                 />
               </p>
             </li>

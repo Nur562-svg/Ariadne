@@ -1,0 +1,86 @@
+按 docs/task-50-desk-shelf-continuity-empty.md 实现 Task 50 desk-shelf-continuity-empty-01。用 **zcode · GLM5.3 max thinking**（本 prompt 格式与历史 Trae brief 相同，请完整做完）。
+
+════════════════════════════════════
+体量要求（硬 · 读完再动手）
+════════════════════════════════════
+这不是「给 ShelfBookContinuity 一处降级」的小刀，也不是又一轮 saveReturn/remember*，也不是重做 T46、T47 Continuity 壳、T48 或 T49。用户反馈刀子必须更大；GLM 5.3 能扛 3–4 组相关 utility。T35–T42 已把 return/mode densify 做厚；T43–T49 已闭 QS/键帽/Clew/quiz-scope/ingest N/M/书架 OCR/TOC·kind·Continuity 0-OCR/核空池门禁·sticky N/ingest 开书桌·CitePeek 浮层 CTA——**本刀主题是书架续开页级练/核空池诚实、Footer 学习环/核页空池、LibraryContinuity 学习环/核页空池门禁（只动 CTA，不重做 0-OCR 续开壳）、侧栏在读学习/核页空池，并由书架页+desk layout 装配书级/页级 counts 下传；不是 return，不是 T46–T49 重做**。
+
+本刀捆成 **A–F**：① ShelfBookContinuity「练本页/核本页」吃页级 atom/pending（直接 count 或 map 按 healed page 查；缺省/缺 key→0 fail-closed）；===0 → muted 纯文「本页暂无原子」/「本页暂无待核」不可点；>0 保持 Link + rememberPageReturn；「续开 p.N」保持 ② ShelfBookFooterLinks：有 page 用页级、无 page 用书级 atomCount/pendingCount；===0 → 纯文；>0 保持 + rememberFooterReturn；Strip 只回归 ③ LibraryContinuity「学习环/核页」同族空池门禁（有 last.page 用页级否则书级）；**硬禁**改 T47 E「继续上次（尚无 OCR）」/去解析/壳 ④ Sidebar 在读「学习/核页」同真空池（SidebarBook 或并行 props 带 counts±页表；按 currentEntry?.page 选池）；主导航/换书只回归 ⑤ apps/web/app/(desk)/page.tsx + layout.tsx（± DeskShellClient）装配书级长度 + validPages 页→原子/待核 map（collectStudyAtoms/collectCiteQueue 同池族，禁造假正数）下传 Continuity/Footer/LibraryContinuity/Sidebar ⑥ build + heye-only DEFER + 回归。目标约 90–150 分钟真实编码。若 15–30 分钟就收工，说明漏做了切片——必须做完 brief 里 IN 的 **A+B+C+D+E+F** 全部。若做成以 saveReturn/remember* 为主或重做 T46–T49——主题偏了，拒收。
+
+前置：先 git log -1 --oneline 确认 tip 为 **691915a**（或其后仍含 T49）：feat(desk) Task 49 desk-ingest-opendesk-citepeek-empty-01——含 IngestReady/Register 0-OCR 开书桌、ingest 三连学习环/核页书级空池、CitePeek 浮层 CTA 空池+宿主接线；且其下仍含 T48 desk-review-gate-rail-sticky、T47 TOC/KINDS/Continuity 0-OCR/CardDetail、T46 书架 OCR/0-OCR CTA/换书 p.N/模式 tab、T45–T28 既有。若仍停在 741102b（仅 T48）或更早，停下来对齐，不要开工。不要 push。先读 docs/frontend-aesthetics.md（若在树内）。对照已有：章页轨顶/CitePeek/Overview 章行已对页级·章级空池门禁，但 **ShelfBookContinuity「练本页/核本页」、ShelfBookFooterLinks「学习环/核页」、LibraryContinuity「学习环/核页」、Sidebar 在读「学习/核页」仍恒可点**——这些是本刀主题。T49 ingest/CitePeek、T48 核门禁/sticky、T47 Continuity **0-OCR 壳**、T46 书架/换书/模式——已闭，勿毁、勿再当主题。
+
+产品身份：顾客自带材料 → 可考原子 / 待核 cite → 书架续开 / footer / 书库继续上次 / 侧栏在读进练核。日用路径是「练本页 / 核本页 / 学习环 / 核页」不装能进空池。免疫学 seed 是验收语料（immunology-3rd）。禁止 invent heye-only seed 页。禁止重做 CitePeek **正文**/trap；禁止 OCR canvas；禁止 ⌘K；禁止 FSRS；禁止 DeskShell 重写；禁止 QueuePanel 改成 Due；禁止整段 port ariadnemini版 verify/clew-API；禁止 ModeChips 会话中插队；禁止以 return 漏网为主题；禁止重做 T28–T49 已交切片（含 T49 全 ingest/CitePeek；T48 全核门禁/sticky/CardVs/Overview 章行；T47 全 TOC/kind/**Continuity 0-OCR 壳**/CardDetail——本刀只给 Continuity 学习环/核页加空池门禁；T46 全书架/换书/模式）。Clew stub「去学习环/去核页」再 densify——本刀不扩。
+
+════════════════════════════════════
+做（按顺序 · 多步交付 · A–F 全交）
+════════════════════════════════════
+
+【步骤 1 · A ShelfBookContinuity「练本页 / 核本页」页级空池】
+1) apps/web/components/ShelfBookContinuity.tsx：props 增加页级原子/待核——推荐 `pageAtomByPage?: Record<number, number>` + `pagePendingByPage?: Record<number, number>`（按 healed page 查；缺 key→0），或父已算好的 `pageAtomCount?: number` + `pendingPageCount?: number`（与 E 接线一致即可）。缺省 fail-closed 当 0。
+2) healed page 存在时：原子===0 →「练本页」降 muted 纯文「本页暂无原子」不可点；pending===0 →「核本页」纯文「本页暂无待核」；>0 保持既有 `/study?book=&page=&mode=all` · `/review?book=&page=&mode=open` + rememberPageReturn（T37 E）。
+3) 「续开 p.N →」有页即保持朱红文字链（非空池主题）。
+4) 不要重做 healOpenedIfDirty / validPages；不要假池；不要拆 return。
+
+【步骤 2 · B ShelfBookFooterLinks 页级/书级空池】
+1) 同文件 ShelfBookFooterLinks：props 增书级 `atomCount?: number` · `pendingCount?: number`，以及与 A 同族页级 count/map。
+2) 有 healed page → 用页级池决定「学习环 p.N / 核页 p.N」；无 page → 用书级。===0 → muted 纯文（页级点名本页暂无…；书级「暂无原子」/「暂无待核」），不可点；>0 保持链 + rememberFooterReturn。
+3) LocalProgressStrip 条末书级练/核只回归（Strip 已有 N=0 纯文，勿重做）。
+4) 不要第二套 heal 解析。
+
+【步骤 3 · C LibraryContinuity 学习环/核页空池门禁】
+1) apps/web/components/LibraryContinuity.tsx：props 增与 B 同族书级 counts ± 页级 map（按 last.page 查）。
+2) 学习环/核页：===0 → 纯文不可点；>0 保持 `/study?book=[&page=]&mode=all` · `/review?book=[&page=]&mode=open` + rememberContinueReturn。
+3) **硬禁**：改动 T47 E「继续上次：《…》（尚无 OCR）」降级、title、去解析 → /ingest、ocrPages 判断、失效 clearLastOpened 琥珀、卡片壳布局。
+4) 不要假 OCR；不要重做 Continuity 整壳 densify。
+
+【步骤 4 · D Sidebar 在读「学习 / 核页」空池】
+1) apps/web/components/desk/Sidebar.tsx：SidebarBook 增 `atomCount?: number` · `pendingCount?: number`，可选 `pageAtomByPage` / `pagePendingByPage`（或 layout 并行 props 下传同结构）。客户端按 currentEntry?.page 选页级或书级。
+2) ===0 →「学习」「核页」muted 纯文；>0 保持链 + rememberDeskReturn（T38 A）。
+3) PRIMARY/SECONDARY 导航、换书 disclosure、OCR「无 OCR 页」摘要（T46 C）只回归。
+4) 不要 DeskShell 重写；不要 FSRS Due 角标；不要改 NAV 写 return。
+
+【步骤 5 · E 书架页 + desk layout 装配下传】
+1) apps/web/app/(desk)/page.tsx：每书 `atomCount = collectStudyAtoms({bookId}).length`、`pendingCount = collectCiteQueue({bookId}).length`（Strip 已用同池，可复用）；为 `bookValidPages[b.id] ?? []` 建页→原子数、页→待核数（每页 `collectStudyAtoms({bookId,page}).length` / `collectCiteQueue({bookId,page}).length`，或一书宽收集再按 page 分组——**必须与轨顶 cardsCitingPage / collectCiteQueue(?page=) 同池族**；禁止造假正数）。下传 <ShelfBookContinuity>、<ShelfBookFooterLinks>；<LibraryContinuity> 传各书汇总或 maps。
+2) apps/web/app/(desk)/layout.tsx：SidebarBook 装配同族 atomCount/pendingCount ± 页表（需 import collectStudyAtoms/collectCiteQueue）；若 DeskShellClient 只透传 props，同步加类型。
+3) 书架四格 OCR（T46 A）、打开书桌 0-OCR（T46 B）、Strip returnTo（T39 E）只回归。
+4) 不要发明第二套「待核」定义（非 Due、非本机核页标记当教材 verified）。
+
+【步骤 6 · F build / heye-only DEFER / 回归】
+1) pnpm --filter web build PASS；不要 push。
+2) heye-only 活页 DEFER：禁止 invent seed；回复写明 deferred。
+3) 回归：T49 IngestReady/Register 0-OCR、ingest 三连空池、CitePeek 浮层 CTA+正文/trap 未毁；T48 CardCard/EntitySearch/轨核门禁、CardVs、Sticky 标 N、Overview 章行；T47 TOC counts、KINDS、EntitySearch 筛空、**Continuity 0-OCR 续开壳**、CardDetail 空壳；T46 书架 OCR/换书/模式 tab/Overview 开章；T45 QuizPanel strip、练门禁、ingest N/M+CopyCommand；T44–T28；ModeChips 未插进练中；Shelf/Footer/LibraryContinuity/Sidebar **return 接线未拆**；LocalProgressStrip 未毁。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–49 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC（含 T47 counts）、Clew stub 三 tab、卡页 CitePeek **正文与 trap**、/review·/study 诚实切片、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、healOpenedIfDirty、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CardHubReturnLinks、IngestReadyLinks、CopyCommand、LibraryContinuity/ShelfBookContinuity return、T34–T49 已交 return/mode/诚实/键帽/quiz-scope/ingest/书架 OCR/TOC-kind/核门禁/sticky N/ingest 开书桌/CitePeek CTA 切片、T26 稀疏琥珀、T41 sticky N=0 门禁。勿 verified:true 过关。**A+B+C+D+E+F 范围保持完整；主题是书架续开/footer/Continuity/侧栏空池诚实，不是 return，不是 T46–T49 重做。**
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / 重做 T46 书架 OCR·换书·模式 tab / 重做 T47 TOC·KINDS·**Continuity 0-OCR 整壳**·CardDetail / 重做 T48 核门禁·sticky N·CardVs·Overview 章行 / 重做 T49 IngestReady·Register·CitePeek / 只改 ShelfBookContinuity 一处就收工
+- Clew stub「去学习环/去核页」再 densify（本刀不扩）
+- 假云端 OCR / 假进度条动画 / 假正数池
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T49 已交切片（列于上）
+- 整段 port ariadnemini版 verify/clew-API
+- push
+
+════════════════════════════════════
+自测（回复须勾）
+════════════════════════════════════
+1) / 书架 · 有续开页 · 该页 0 原子或 0 pending（或验收夹具）→「本页暂无原子」/「本页暂无待核」纯文；续开 p.N 仍可点；>0 保持链
+2) 同书 footer · 页级或书级空池 → 学习环/核页对应纯文；Strip 未毁
+3) LibraryContinuity · 空池 → 学习环/核页纯文；继续上次（尚无 OCR）壳未毁
+4) 侧栏在读 · 空池 → 学习/核页纯文；换书/主导航未毁
+5) 有池书/页 → 链保持 + return 未拆
+6) pnpm --filter web build PASS；未 push；T49–T28 回归项未毁；heye-only DEFER 已声明
+
+做完叫验收。A–F 全交才过。
