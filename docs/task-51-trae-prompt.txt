@@ -1,0 +1,122 @@
+按 docs/task-51-desk-clew-strip-cross-empty.md 实现 Task 51 desk-clew-strip-cross-empty-01。用 **zcode · GLM5.3 max thinking**（本 prompt 格式与历史 Trae brief 相同，请完整做完）。
+
+════════════════════════════════════
+体量要求（硬 · MEGA · 读完再动手）
+════════════════════════════════════
+这不是「给 Clew stub 一处降级」的小刀，也不是 90–150 分钟的普通 XL，也不是又一轮 saveReturn/remember*，也不是重做 T46–T50。用户 2026-10-24 明确：「试着把一刀砍的更大，很大很大」；zcode 配额充足。T35–T42 已把 return/mode densify 做厚；T43–T50 已闭 QS/键帽/Clew 列表文案/quiz-scope/书架 OCR/TOC·kind·Continuity/核空池·sticky/ingest·CitePeek/书架续开·footer·侧栏——**本刀主题是 Clew 右栏练核 CTA 空池（stub+chat空态+Changes+Queue）+ 书桌 Strip 条末/书头学习环/Quiz 去核页空池 + 练核交叉离面（sticky CrossScope + Study/HeYe 空·完成态）对侧空池；共享 progressAtoms/progressItems / strip* / collectStudyAtoms/collectCiteQueue 同族口径；不是 return，不是 T46–T50 重做**。
+
+本刀捆成 **A–J（10 切片 · 3 子主题）**：
+① Clew stub 气泡「去学习环/去核页」吃 progressAtoms/progressItems（缺省 0 fail-closed）；===0 → muted 纯文；>0 保持 ActionLink + returnTo 快照
+② Clew chat 空态「学习环自测/核页对页」同真空池；无书路径不装能进裸 /study
+③ Clew Changes 空态/筛空 CTA 同真空池（不重做 T43 筛选/截断）
+④ Clew Queue 主 CTA「打开核页工作台/去学习环」同真空池（分段 N 只回归；禁 Due）
+⑤ LocalProgressStrip：atoms.length===0 / items.length===0 → 条末「练/核此范围」纯文
+⑥ DocumentPane 书头「学习环 · 自评」：chapterAtoms.length===0 → 纯文（对齐 Overview chAtoms）；练本页只回归
+⑦ QuizPanel「去核页」：items.length===0 → 纯文；练侧 T45 只回归
+⑧ sticky CrossScope：对侧池 0 →「同范围暂无待核/暂无原子」；>0 保持 + returnTo
+⑨ StudySession 空/完成态「核本卡/去核页」+ study 空态「核本卡」：pendingCount===0 → 纯文；leaveReturn 不拆
+⑩ HeYeSession「去学习环/去学习本卡」atomCount===0 → 纯文 + build + heye-only DEFER + 回归
+
+目标约 **180–300+ 分钟**真实编码。若只做 A–D（Clew 一包）就收工——**拒收**。若 15–30 或 ~90 分钟假装收工——**漏做切片**。若做成以 saveReturn 为主或重做 T46–T50——主题偏了，拒收。
+
+前置：先 git log -1 --oneline 确认 tip 为 **c99d7ec**（或其后仍含 T50）：feat(desk) Task 50 desk-shelf-continuity-empty-01——含 ShelfBookContinuity 页级练/核空池、Footer/LibraryContinuity/Sidebar 空池、book-pools.ts + page/layout 装配；且其下仍含 T49 ingest/CitePeek、T48 核门禁/sticky N/Overview 章行、T47 Continuity 0-OCR 壳、T46 书架 OCR/换书/模式、T45–T28 既有。若仍停在 691915a（仅 T49）或更早，停下来对齐，不要开工。不要 push。先读 docs/frontend-aesthetics.md（若在树内）。对照已有：轨顶/Overview/书架/ingest/CitePeek CTA 已空池门禁，但 **Clew 四处练核 CTA、Strip 条末、书头学习环、Quiz 去核页、CrossScope、Study/HeYe 交叉链仍恒可点进空池**——这些是本刀主题。T50–T46 已闭面勿毁、勿再当主题。
+
+产品身份：顾客自带材料 → 可考原子 / 待核 cite → Clew / 书桌中栏 / 练核交叉。日用路径是「去学习环 / 去核页 / 练此范围 / 核此范围 / 学习环·自评 / 去核同范围 / 去练同范围」不装能进空池。免疫学 seed 是验收语料（immunology-3rd）。禁止 invent heye-only seed 页。禁止重做 CitePeek **正文**/trap；禁止 OCR canvas；禁止 ⌘K；禁止 FSRS；禁止 DeskShell 重写；禁止 QueuePanel 改成 Due；禁止整段 port ariadnemini版 verify/clew-API；禁止 ModeChips 会话中插队；禁止以 return 漏网为主题；禁止重做 T28–T50 已交切片。Next.js security upgrade = ops note，非本刀。
+
+════════════════════════════════════
+做（按顺序 · 多步交付 · A–J 全交）
+════════════════════════════════════
+
+【步骤 1 · A Clew stub 气泡「去学习环 / 去核页」空池】
+1) apps/web/components/desk/ClewPane.tsx：在 send() 组装 links 时取 atomN = clew.progressAtoms?.length ?? 0、pendingN = clew.progressItems?.length ?? 0（fail-closed）。
+2) atomN===0：不 push 可点 { label: "去学习环 →", … }；若 UI 需要占位，用纯文渲染路径（assistant.links 可扩 optional disabled/plain，或发送后渲染层对空池 label 降级——选一种，须用户可见「暂无原子」类纯文，不可点）。pendingN===0 →「去核页 →」同理「暂无待核」。
+3) >0 保持既有 ActionLink + returnTo 快照（T33 D）；「对页 p.N」有页保持。
+4) 不要 Clew LLM；不要拆 return 快照；不要改 stubReply 长文为大改（用词极小对齐可以）。
+
+【步骤 2 · B Clew chat 空态「学习环自测 / 核页对页」空池】
+1) 有书空态（T44 C）：两链同 A 的 atomN/pendingN 门禁；===0 → <span className="text-muted">暂无原子/暂无待核</span>；>0 保持 Link + rememberClewReturn。
+2) 无书冷启动：不要朱红「学习环自测」进裸 /study 装能练——保留「导入→书架→书桌」；自测链改为纯文说明或省略（与 buildSuggestions 无书句同真）。
+3) 不要重做有书/无书分型骨架；不要拆 return。
+
+【步骤 3 · C Clew Changes 空态 / 筛空 CTA 空池】
+1) ChangesPanel 空态双链 + 筛空单侧 CTA：同 A 池门禁。
+2) ===0 纯文；>0 保持 + rememberReturn。
+3) 不要重做 T43 D 筛选芯片 /「还有 N」截断 / 本轮标记模型。
+
+【步骤 4 · D Clew QueuePanel 主 CTA 空池】
+1) 「打开核页工作台 →」：pendingN===0 或 !hasPool → muted 纯文（无池可用「未定位章 · 暂无范围池」/有池 0「暂无待核」——与上方文案同族）；>0 保持朱红主钮 + rememberReturn。
+2) 「去学习环 →」：atomN===0 同理纯文「暂无原子」。
+3) 分段 seg N>0/N=0（T36/T40）只回归。
+4) 硬禁 Queue→Due / FSRS / 掌握% 绿条。
+
+【步骤 5 · E LocalProgressStrip「练此范围 / 核此范围」空池】
+1) apps/web/components/LocalProgressStrip.tsx：若 studyHref 且 atoms.length===0 → 不渲可点「练此范围 →」，改 muted「暂无原子」（或完全省略条末练链）；items.length===0 同理「核此范围 →」/「暂无待核」。
+2) 长度 >0 保持链 + 既有 returnTo onClick。
+3) 分段 seg 只回归；不要重做 Strip 视觉铬件；不要第二套计数。
+
+【步骤 6 · F DocumentPane 书头「学习环 · 自评」章空池】
+1) apps/web/components/desk/DocumentPane.tsx 书头：chapterAtoms.length===0 →「学习环 · 自评 →」降 muted 纯文「本章暂无原子」（对齐 Overview 章行 chAtoms / T48 F）；>0 保持 Link + rememberDeskCardReturn。
+2) 「练本页 p.N」（studyPageScope）只回归。
+3) 不要重做 Overview 章行；不要重做 Continuity 壳；不要假原子。
+
+【步骤 7 · G QuizPanel「去核页」空池】
+1) 同文件 QuizPanel：items.length===0 →「去核页 →」纯文「暂无待核」；>0 保持 + rememberReturn。
+2) 练侧 atomCount===0 放宽链（T45 A）只回归——勿改语义。
+3) 内嵌 Strip 受益于 E——接线只回归。
+
+【步骤 8 · H sticky CrossScope 对侧空池】
+1) apps/web/app/(desk)/study/page.tsx：stripItemKeys.length===0（或同页 heye 池长度）→ sticky「去核同范围 →」改纯文「同范围暂无待核」；>0 保持 CrossScopeReturnLink + studyReturnTo。
+2) review/page.tsx：stripAtoms.length===0 →「去练同范围 →」纯文「同范围暂无原子」。
+3) 可选：扩展 CrossScopeReturnLink 支持 empty/emptyLabel，或宿主三元——须 fail-closed。
+4) 不要 DeskShell 重写；不要大改 sticky 布局；不要拆 returnTo。
+
+【步骤 9 · I StudySession + study 空态交叉核空池】
+1) StudySession.tsx：props 增 pendingCount?: number（缺省 0）。空队列与完成态「核本卡 →」「去核页 →」：pendingCount===0 → 纯文「本卡暂无待核」/「暂无待核」；>0 保持 + leaveReturnTo。
+2) study/page.tsx：装配 pendingCount = 当前对侧池长度（scopedCard ? collectCiteQueue({cardId}) 或 heyeItems.length : stripItemKeys.length / heyeItems 同族——与 progressReview 同范围）；空原子分支「核本卡」CrossScope 同门禁。
+3) 禁止造假正数；不要重做 ModeChips；不要拆 leaveReturnTo；不要重做 T43 orphan 文案骨架。
+
+【步骤 10 · J HeYeSession 交叉练空池 + build / heye-only DEFER / 回归】
+1) HeYeSession.tsx：props 增 atomCount?: number（缺省 0）。空/完成态「去学习环 →」「去学习本卡 →」：atomCount===0 → 纯文；>0 保持 + leaveReturnTo。
+2) review/page.tsx：装配 atomCount = stripAtoms.length 或 collectStudyAtoms 同范围长度。
+3) pnpm --filter web build PASS；不要 push。
+4) heye-only 活页 DEFER：禁止 invent seed；回复写明 deferred。
+5) 回归：T50 Shelf/Footer/LibraryContinuity/Sidebar/book-pools；T49 IngestReady/Register/CitePeek 浮层 CTA+正文/trap 未毁；T48 CardCard/EntitySearch/轨核/CardVs/Sticky 标 N/Overview 章行；T47 TOC/KINDS/**Continuity 0-OCR 壳**/CardDetail；T46 书架 OCR/换书/模式；T45 Quiz 练侧/ingest N/M；T44 Clew 空态分型骨架；T43 Changes 筛选/截断；T42–T28 leaveReturn/书头 return/CrossScope return **接线未拆**；ModeChips 未插进练中；Queue **未改 Due**；LocalProgressStrip 视觉未毁。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–50 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC（含 T47 counts）、Clew stub 三 tab（本刀只门禁 CTA，不改 tab 信息架构）、卡页 CitePeek **正文与 trap**、/review·/study 诚实切片、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、healOpenedIfDirty、book-pools.ts（T50）、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CardHubReturnLinks、IngestReadyLinks、CopyCommand、LibraryContinuity/ShelfBookContinuity、T34–T50 已交切片、T26 稀疏琥珀、T41 sticky N=0 门禁、T48 sticky 标 N。勿 verified:true 过关。**A–J 范围保持完整；主题是 Clew/Strip/书头/Quiz/交叉离面空池诚实，不是 return，不是 T46–T50 重做。**
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / 重做 T46–T50 已交 / 只改 Clew stub 一处或只做 A–D 就收工 / 只改 Strip 一处就收工
+- Next.js security upgrade 当本刀主题（ops note only）
+- 假云端 OCR / 假进度条动画 / 假正数池
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T50 已交切片（列于上）
+- 整段 port ariadnemini版 verify/clew-API
+- push（写手禁；验收 PASS 后站规 auto-push，勿问「推」）
+
+════════════════════════════════════
+自测（回复须勾）
+════════════════════════════════════
+1) Clew 对话发问 · progress* 空 → stub 气泡「暂无原子/待核」纯文；有池保持链+return 快照
+2) Clew chat 空态 · 有书 · 空池 → 自测/核页纯文；分型骨架未毁；无书不装裸 /study
+3) Clew Changes 空/筛空 → CTA 纯文；筛选/截断未毁
+4) Clew Queue · 无池或 0 → 主 CTA 纯文；分段未毁；非 Due
+5) 书桌 Strip · atoms 或 items=0 → 条末练/核纯文；分段未毁
+6) 书头 · chapterAtoms=0 →「学习环 · 自评」纯文；练本页/Overview 未毁
+7) Quiz · items=0 →「去核页」纯文；练侧 T45 未毁
+8) /study|/review sticky · 对侧 0 → CrossScope 纯文；return 未拆
+9) StudySession 空/完成 · pending=0；study 空态核本卡 → 纯文；leaveReturn 未拆
+10) HeYeSession · atoms=0 → 纯文；pnpm --filter web build PASS；未 push；T50–T28 回归；heye-only DEFER 已声明
+
+做完叫验收。A–J 全交才过。
