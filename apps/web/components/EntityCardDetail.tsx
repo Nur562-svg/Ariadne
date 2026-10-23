@@ -243,7 +243,17 @@ export function EntityCardDetail({
               <div className="flex items-baseline justify-between gap-3">
                 <dt className="font-semibold">{f.label}</dt>
                 <span className="flex shrink-0 items-baseline gap-3">
-                  <CitePeek cite={f.cite} q={f.value.slice(0, 24)} deskBookId={deskBookId} cardId={card.id} />
+                  {/* T49 E：三处 CitePeek（字段/原子/页脚）下传本卡 pendingCiteCount（服务端
+                      collectCiteQueue({cardId}) 同数）——浮层「核本卡」与主条 CardHubReturnLinks
+                      同真：0 待核纯文不进空池；未装配（undefined）保持链。卡原子数无对应
+                      浮层 CTA，不传假数。 */}
+                  <CitePeek
+                    cite={f.cite}
+                    q={f.value.slice(0, 24)}
+                    deskBookId={deskBookId}
+                    cardId={card.id}
+                    pendingCiteCount={pendingCiteCount}
+                  />
                   {/* T33 E：字段 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（与原子 T30 C 同族
                       muted 文字链，非实心；与 CitePeek 浮层内「在书桌打开」同目标，免开浮层一步）。 */}
                   {f.cite?.page != null && deskBookId ? (
@@ -342,7 +352,13 @@ export function EntityCardDetail({
               </details>
               {a.cite ? (
                 <div className="mt-2 flex flex-wrap items-center gap-3">
-                  <CitePeek cite={a.cite} q={a.answer.slice(0, 24)} deskBookId={deskBookId} cardId={card.id} />
+                  <CitePeek
+                    cite={a.cite}
+                    q={a.answer.slice(0, 24)}
+                    deskBookId={deskBookId}
+                    cardId={card.id}
+                    pendingCiteCount={pendingCiteCount}
+                  />
                   {/* T30 C：原子 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（muted 文字链，
                       非实心；与 CitePeek 浮层内「在书桌打开」同目标，这里免开浮层一步）。 */}
                   {a.cite.page != null && deskBookId ? (
@@ -365,7 +381,12 @@ export function EntityCardDetail({
         引用：{" "}
         {card.cites.map((c, i) => (
           <span key={i} className="mr-2 inline-flex items-center gap-1">
-            <CitePeek cite={c} deskBookId={deskBookId} cardId={card.id} />
+            <CitePeek
+              cite={c}
+              deskBookId={deskBookId}
+              cardId={card.id}
+              pendingCiteCount={pendingCiteCount}
+            />
             {/* T33 E：页脚 cite 有页 + 书桌语境 → 次级「对页」（字段/原子同真，同卡不互谎）。 */}
             {c.page != null && deskBookId ? (
               <Link

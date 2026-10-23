@@ -15,13 +15,24 @@ import { saveReturn } from "@/lib/return-stack";
  * 深链 /desk?book={bookId}，附学习/核页次级文字链（对齐 ready 就绪三连）。
  * T37 D：书级学习/核显式默认档（练 mode=all · 核 mode=open）——刚注册的书无停留页，
  * 书级入口也不被本标签 sticky 非默认档吞成空队列（与 T36 书架 footer 同口径）。
+ * T49 B/C：成功三连与就绪三连同真空池（fail-closed，缺省当 0）——0-OCR「打开书桌（尚无 OCR）」
+ * 点名降级（对齐 A/T46 书架文案族）；0 原子/0 待核学习环·核页纯文（对齐 T48 门禁族）。
  */
 export default function RegisterMaterialButton({
   materialId,
   title,
+  ocrPageCount,
+  atomCount,
+  pendingCount,
 }: {
   materialId: string;
   title: string;
+  /** T49 B：该物料章 ∩ 已解析印刷页数（页面装配；缺省当 0 · fail-closed）。 */
+  ocrPageCount?: number;
+  /** T49 C：该书/物料章级可练原子数（collectStudyAtoms 同池族；缺省当 0）。 */
+  atomCount?: number;
+  /** T49 C：该书/物料章级待核 cite 数（collectCiteQueue 同池族；缺省当 0）。 */
+  pendingCount?: number;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -83,28 +94,52 @@ export default function RegisterMaterialButton({
       {done ? (
         <span className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm leading-6 text-status-ok">
           已注册进书库（book {done}）。
-          {/* T39 A：三连点前 rememberUploadReturn——回到刚才回 /ingest 上传面。 */}
-          <Link
-            href={`/desk?book=${encodeURIComponent(done)}`}
-            onClick={rememberUploadReturn}
-            className="text-cinnabar no-underline hover:underline underline-offset-4"
-          >
-            打开书桌 →
-          </Link>
-          <Link
-            href={`/study?book=${encodeURIComponent(done)}&mode=all`}
-            onClick={rememberUploadReturn}
-            className="text-xs text-muted no-underline hover:text-cinnabar"
-          >
-            学习环 →
-          </Link>
-          <Link
-            href={`/review?book=${encodeURIComponent(done)}&mode=open`}
-            onClick={rememberUploadReturn}
-            className="text-xs text-muted no-underline hover:text-cinnabar"
-          >
-            核页 →
-          </Link>
+          {/* T39 A：三连点前 rememberUploadReturn——回到刚才回 /ingest 上传面。
+              T49 B：0-OCR / 0 原子 / 0 待核与就绪三连（A）同真降级，注册前后不互谎。 */}
+          {(ocrPageCount ?? 0) > 0 ? (
+            <Link
+              href={`/desk?book=${encodeURIComponent(done)}`}
+              onClick={rememberUploadReturn}
+              className="text-cinnabar no-underline hover:underline underline-offset-4"
+            >
+              打开书桌 →
+            </Link>
+          ) : (
+            <Link
+              href={`/desk?book=${encodeURIComponent(done)}`}
+              onClick={rememberUploadReturn}
+              title="尚无 OCR 印刷页——章页/分栏暂读不了；可进桌看概览与实体卡"
+              className="text-muted no-underline hover:text-cinnabar"
+            >
+              打开书桌（尚无 OCR）→
+            </Link>
+          )}
+          {(atomCount ?? 0) > 0 ? (
+            <Link
+              href={`/study?book=${encodeURIComponent(done)}&mode=all`}
+              onClick={rememberUploadReturn}
+              className="text-xs text-muted no-underline hover:text-cinnabar"
+            >
+              学习环 →
+            </Link>
+          ) : (
+            <span className="text-xs text-muted" title="这本书还没有萃取出的知识原子">
+              暂无原子
+            </span>
+          )}
+          {(pendingCount ?? 0) > 0 ? (
+            <Link
+              href={`/review?book=${encodeURIComponent(done)}&mode=open`}
+              onClick={rememberUploadReturn}
+              className="text-xs text-muted no-underline hover:text-cinnabar"
+            >
+              核页 →
+            </Link>
+          ) : (
+            <span className="text-xs text-muted" title="这本书还没有待核 cite">
+              暂无待核
+            </span>
+          )}
         </span>
       ) : null}
     </p>

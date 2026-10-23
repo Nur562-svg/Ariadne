@@ -561,7 +561,10 @@ export default function ChapterPageReader({
                           <span className="min-w-0 truncate text-xs text-muted">
                             {hitSummary(h)}
                           </span>
-                          {/* T19：轨上 Peek——cite 由 hit 原样字段构造（page/verified 不编造）。 */}
+                          {/* T19：轨上 Peek——cite 由 hit 原样字段构造（page/verified 不编造）。
+                              T49 E：下传 T48 同源三数——本页原子（pageAtomCount，轨顶「练本页」同 reduce）·
+                              本页待核（pendingPageCount，页顶「核本页」同表）· 本卡待核
+                              （pendingByCard，轨「核」门禁同表）——浮层 CTA 与轨顶/枢纽同真不进空池。 */}
                           <CitePeek
                             cite={{
                               page: h.page,
@@ -570,6 +573,9 @@ export default function ChapterPageReader({
                             }}
                             deskBookId={bookId}
                             cardId={c.cardId}
+                            pageAtomCount={pageAtomCount}
+                            pendingPageCount={pendingPageCount}
+                            pendingCiteCount={pendingByCard?.[c.cardId] ?? 0}
                           />
                         </div>
                       ))}

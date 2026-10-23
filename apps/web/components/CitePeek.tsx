@@ -25,6 +25,9 @@ export default function CitePeek({
   q,
   deskBookId,
   cardId,
+  pageAtomCount,
+  pendingPageCount,
+  pendingCiteCount,
 }: {
   cite?: Cite;
   q?: string;
@@ -32,6 +35,17 @@ export default function CitePeek({
   deskBookId?: string;
   /** 卡上下文：「核本卡」链 /review?card=。 */
   cardId?: string;
+  /**
+   * T49 D：浮层 nav CTA 空池门禁（只动 nav，quote/trap/定位/verified 文案/布局一概不动）——
+   * 父传入且对应 ===0 → 该 CTA 降 muted 纯文不可点；未传入 → 保持既有 Link（宿主能取到
+   * 才传，E/F 接线；禁造假正数）。计数与轨顶/CardHub/T48 pendingByCard 同池族。
+   */
+  /** 「练本页」页池原子数（cardsCitingPage 口径）：传入且 0 → 纯文「本页暂无原子」。 */
+  pageAtomCount?: number;
+  /** 「核本页」页池待核数（pendingByPage 同族）：传入且 0 → 纯文「本页暂无待核」。 */
+  pendingPageCount?: number;
+  /** 「核本卡」本卡待核数（collectCiteQueue({cardId}) 同族）：传入且 0 → 纯文「本卡暂无待核」。 */
+  pendingCiteCount?: number;
 }) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -268,31 +282,49 @@ export default function CitePeek({
                 </Link>
               ) : null}
               {reviewPageHref ? (
-                <Link
-                  href={reviewPageHref}
-                  onClick={rememberPeekReturn}
-                  className="text-muted no-underline hover:text-cinnabar"
-                >
-                  核本页 →
-                </Link>
+                pendingPageCount != null && pendingPageCount === 0 ? (
+                  <span className="text-muted" title="本印刷页暂无待核 cite">
+                    本页暂无待核
+                  </span>
+                ) : (
+                  <Link
+                    href={reviewPageHref}
+                    onClick={rememberPeekReturn}
+                    className="text-muted no-underline hover:text-cinnabar"
+                  >
+                    核本页 →
+                  </Link>
+                )
               ) : null}
               {studyPageHref ? (
-                <Link
-                  href={studyPageHref}
-                  onClick={rememberPeekReturn}
-                  className="text-muted no-underline hover:text-cinnabar"
-                >
-                  练本页 →
-                </Link>
+                pageAtomCount != null && pageAtomCount === 0 ? (
+                  <span className="text-muted" title="本印刷页暂无可练原子">
+                    本页暂无原子
+                  </span>
+                ) : (
+                  <Link
+                    href={studyPageHref}
+                    onClick={rememberPeekReturn}
+                    className="text-muted no-underline hover:text-cinnabar"
+                  >
+                    练本页 →
+                  </Link>
+                )
               ) : null}
               {reviewCardHref ? (
-                <Link
-                  href={reviewCardHref}
-                  onClick={rememberPeekReturn}
-                  className="text-muted no-underline hover:text-cinnabar"
-                >
-                  核本卡 →
-                </Link>
+                pendingCiteCount != null && pendingCiteCount === 0 ? (
+                  <span className="text-muted" title="本卡暂无待核 cite">
+                    本卡暂无待核
+                  </span>
+                ) : (
+                  <Link
+                    href={reviewCardHref}
+                    onClick={rememberPeekReturn}
+                    className="text-muted no-underline hover:text-cinnabar"
+                  >
+                    核本卡 →
+                  </Link>
+                )
               ) : null}
               {!known ? (
                 <span className="text-status-warn">未找到确切页码，禁止伪造定位。</span>

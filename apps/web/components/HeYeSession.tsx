@@ -636,9 +636,19 @@ export default function HeYeSession({
               {cur.sourceLabel}
               {cur.chapterId ? ` · ${cur.chapterId}` : ""} · 引
             </span>
-            {/* Peek 为旁路深链：quote 正文仍在下方 blockquote；verified 恒 false（见 curCite 注释）。 */}
+            {/* Peek 为旁路深链：quote 正文仍在下方 blockquote；verified 恒 false（见 curCite 注释）。
+                T49 F：从全池 items（collectCiteQueue 同源，非档位过滤）下传真计数——本卡待核
+                （cardId 计数，与卡枢纽 collectCiteQueue({cardId}) 同族）· 本页待核（page 计数，
+                与书桌 pendingByPage 同族）。会话内 cur 自身即队列项，两数恒 ≥1（真数非造假），
+                「核本卡/核本页」浮层 CTA 与枢纽/轨顶同真不进空池。 */}
             <span className="ml-1">
-              <CitePeek cite={curCite} deskBookId={cur.bookId} cardId={cur.cardId} />
+              <CitePeek
+                cite={curCite}
+                deskBookId={cur.bookId}
+                cardId={cur.cardId}
+                pendingCiteCount={items.filter((it) => it.cardId === cur.cardId).length}
+                pendingPageCount={items.filter((it) => it.page === cur.page).length}
+              />
             </span>
           </p>
 

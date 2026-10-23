@@ -71,6 +71,7 @@ function CardCard({
   bookId,
   rememberReturn,
   pendingCiteCount,
+  pendingByPage,
 }: {
   card: EntityCard;
   bookId?: string;
@@ -85,6 +86,11 @@ function CardCard({
    * 缺省当 0（fail-closed）：0 →「核」降 muted 纯文「暂无待核」，不进空 open 池。
    */
   pendingCiteCount?: number;
+  /**
+   * T49 E：页 → 待核数（服务端 pendingByPage 同表）——瓷砖「摘」浮层「核本页」空池门禁；
+   * 缺省（未装配）不传给 CitePeek（D 契约：未传入保持链）。
+   */
+  pendingByPage?: Record<number, number>;
 }) {
   /** 主 cite（卡级第一条有页引用）；无页则没有可 Peek 的定位，不渲染。 */
   const primaryCite = card.cites.find((x) => x.page != null);
@@ -106,8 +112,22 @@ function CardCard({
           {card.cites.some((x) => x.page == null) ? " · 部分未验证 p.?" : ""}
         </p>
         <span className="flex shrink-0 items-center gap-2">
-          {/* 主 cite 旁轻量 Peek（T19 鼓励项）：不新增颜色，不抢「练」主链；无页则不渲染。 */}
-          {primaryCite ? <CitePeek cite={primaryCite} deskBookId={bookId} cardId={card.id} /> : null}
+          {/* 主 cite 旁轻量 Peek（T19 鼓励项）：不新增颜色，不抢「练」主链；无页则不渲染。
+              T49 E：下传 T48 同源卡级 pending（「核本卡」门禁）+ 页级 pending
+              （primaryCite.page 查 pendingByPage，「核本页」门禁；表未装配不传保持链）。 */}
+          {primaryCite ? (
+            <CitePeek
+              cite={primaryCite}
+              deskBookId={bookId}
+              cardId={card.id}
+              pendingCiteCount={pendingCiteCount}
+              pendingPageCount={
+                pendingByPage != null && primaryCite.page != null
+                  ? (pendingByPage[primaryCite.page] ?? 0)
+                  : undefined
+              }
+            />
+          ) : null}
           {/* T34 A：主 cite 有页 + 书桌语境 → 次级「对页」直跳（与 EntityCardDetail T33 字段/页脚同族）。 */}
           {primaryCite?.page != null && bookId ? (
             <Link
@@ -676,6 +696,7 @@ export default function DocumentPane({
               bookId={book.id}
               rememberReturn={rememberDeskCardReturn}
               pendingByCard={pendingByCard}
+              pendingByPage={pendingByPage}
             />
           </div>
           <div className="min-w-0 border-l border-line pl-6 max-xl:border-l-0 max-xl:pl-0">
@@ -705,6 +726,7 @@ export default function DocumentPane({
           bookId={book.id}
           rememberReturn={rememberDeskCardReturn}
           pendingByCard={pendingByCard}
+          pendingByPage={pendingByPage}
         />
       )}
     </div>
@@ -966,6 +988,7 @@ function SectionCards({
   bookId,
   rememberReturn,
   pendingByCard,
+  pendingByPage,
 }: {
   section: SectionId;
   cards: EntityCard[];
@@ -975,6 +998,8 @@ function SectionCards({
   rememberReturn?: () => void;
   /** T48 A：cardId → 本书待核 cite 数（DocumentPane heyePool 派生）——瓷砖「核」空池门禁。 */
   pendingByCard?: Record<string, number>;
+  /** T49 E：页 → 待核数（服务端 pendingByPage）——瓷砖「摘」浮层「核本页」门禁。 */
+  pendingByPage?: Record<number, number>;
 }) {
   if (cards.length === 0) {
     return (
@@ -999,6 +1024,7 @@ function SectionCards({
                     bookId={bookId}
                     rememberReturn={rememberReturn}
                     pendingCiteCount={pendingByCard?.[c.id] ?? 0}
+                    pendingByPage={pendingByPage}
                   />
                 </li>
               ))}
@@ -1021,6 +1047,7 @@ function SectionCards({
               bookId={bookId}
               rememberReturn={rememberReturn}
               pendingCiteCount={pendingByCard?.[c.id] ?? 0}
+              pendingByPage={pendingByPage}
             />
           </li>
         ))}

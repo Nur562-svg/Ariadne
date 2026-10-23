@@ -569,7 +569,10 @@ export default function StudySession({
             <p className="text-sm leading-7 text-foreground/90">{cur.answer}</p>
             {cur.cite ? (
               <div className="mt-2">
-                {/* T19：裸 CiteChip → CitePeek（旁路「摘」浮层 + 深链）；无 cite 不渲染。 */}
+                {/* T19：裸 CiteChip → CitePeek（旁路「摘」浮层 + 深链）；无 cite 不渲染。
+                    T49 F：atoms 池只有本原子自身 cite，无卡级引用全集/待核队列——
+                    pageAtomCount（cardsCitingPage 口径）/pendingPageCount/pendingCiteCount
+                    三数都取不出真值，按 D 契约省略不传（浮层保持既有链，不造假正数）。 */}
                 <CitePeek
                   cite={cur.cite}
                   q={cur.answer.slice(0, 24)}

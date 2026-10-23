@@ -1,0 +1,89 @@
+按 docs/task-49-desk-ingest-opendesk-citepeek-empty.md 实现 Task 49 desk-ingest-opendesk-citepeek-empty-01。用 **zcode · GLM5.3 max thinking**（本 prompt 格式与历史 Trae brief 相同，请完整做完）。
+
+════════════════════════════════════
+体量要求（硬 · 读完再动手）
+════════════════════════════════════
+这不是「给 IngestReady 加一句尚无 OCR」或「给 CitePeek 一处降级」的小刀，也不是又一轮 saveReturn/remember*，也不是重做 T46、T47 或 T48。用户反馈刀子必须更大；GLM 5.3 能扛 3–4 组相关 utility。T35–T42 已把 return/mode densify 做厚；T43–T48 已闭 QS/键帽/Clew/quiz-scope/ingest N/M/书架 OCR/TOC·kind·Continuity·核空池门禁·sticky N——**本刀主题是 ingest 就绪/注册「打开书桌」0-OCR 诚实对齐书架、就绪三连学习环/核页书级空池、CitePeek 浮层练/核 CTA 空池门禁（只动 nav，不动正文），不是 return，不是 T46–T48 重做**。
+
+本刀捆成 **A–F**：① IngestReadyLinks「打开书桌」吃 ocrPageCount；===0 → outline/muted「打开书桌（尚无 OCR）→」+ title 点名章页/分栏暂读不了（可进桌看概览/卡）；>0 保持朱红；T39 return 只回归 ② RegisterMaterialButton 成功三连「打开书桌」同真 ocrPageCount；注册按钮/API 只回归 ③ ingest/page 装配 loadBookValidPages + 书级 atomCount/pendingCount（collectStudyAtoms/collectCiteQueue 同池族）下传；学习环 atom===0 → 纯文「暂无原子」；核页 pending===0 → 纯文「暂无待核」；T45 N/M+CopyCommand 只回归 ④ CitePeek 可选 pageAtomCount/pendingPageCount/pendingCiteCount；父传入且 ===0 → 浮层对应 CTA muted 纯文；未传入保持链；「在书桌打开」有页保持；**禁碰 quote/trap/定位/verified 文案/布局** ⑤ ChapterPageReader / DocumentPane CardCard / EntityCardDetail 把已有计数下传 CitePeek ⑥ StudySession/HeYeSession 能取则下传（禁造假正数）+ build + heye-only DEFER + 回归。目标约 90–150 分钟真实编码。若 15–30 分钟就收工，说明漏做了切片——必须做完 brief 里 IN 的 **A+B+C+D+E+F** 全部。若做成以 saveReturn/remember* 为主或重做 T46–T48——主题偏了，拒收。
+
+前置：先 git log -1 --oneline 确认 tip 为 **741102b**（或其后仍含 T48）：feat(desk) Task 48 desk-review-gate-rail-sticky-01——含 CardCard/EntitySearch/轨「核」pending 门禁、CardVs 易混零原子、Sticky 练/核档位标 N、Overview 章行练/核空池；且其下仍含 T47 TOC/KINDS/Continuity 0-OCR/CardDetail、T46 书架 OCR/0-OCR CTA/换书 p.N/模式 tab/Overview 开章、T45 QuizPanel strip+练门禁+ingest N/M+CopyCommand、T44–T28 既有。若仍停在 3bd3401（仅 T47）或更早，停下来对齐，不要开工。不要 push。先读 docs/frontend-aesthetics.md（若在树内）。对照已有：书架 T46 B / Continuity T47 E 已对 0-OCR「打开书桌/继续上次」降级，但 **IngestReadyLinks / Register 成功三连仍恒朱红/恒可点**；ingest 页不装 validPages/书级原子·pending；**CitePeek 浮层核本页/练本页/核本卡恒可点**（轨顶/CardHub 已门禁同池）——这些是本刀主题。T48 核门禁/sticky/CardVs、T47 TOC/KINDS/Continuity/CardDetail、T46 书架/换书/模式——已闭，勿毁、勿再当主题。
+
+产品身份：顾客自带材料 → 可考原子 / 待核 cite → 上传收口开书桌 · 摘浮层深链。日用路径是「打开书桌 / 学习环 / 核页 / 摘→练核」不装能进空池或假装有 OCR。免疫学 seed 是验收语料（immunology-3rd）。禁止 invent heye-only seed 页。禁止重做 CitePeek **正文**/trap；禁止 OCR canvas；禁止 ⌘K；禁止 FSRS；禁止 DeskShell 重写；禁止 QueuePanel 改成 Due；禁止整段 port ariadnemini版 verify/clew-API；禁止 ModeChips 会话中插队；禁止以 return 漏网为主题；禁止重做 T28–T48 已交切片（含 T48 全核门禁/sticky/CardVs/Overview 章行；T47 全 TOC/kind/Continuity/CardDetail；T46 全书架/换书/模式；T45 全 quiz/练门禁/ingest N/M——本刀只动就绪三连 CTA 诚实）。ShelfBookContinuity 页级练/核空池——**本刀 DEFER→T50**，勿顺手扩 scope。LibraryContinuity 学习环/核页再 densify——勿重做 Continuity 壳。
+
+════════════════════════════════════
+做（按顺序 · 多步交付 · A–F 全交）
+════════════════════════════════════
+
+【步骤 1 · A IngestReadyLinks「打开书桌」0-OCR】
+1) apps/web/components/IngestReadyLinks.tsx：props 增加 ocrPageCount?: number（缺省当 0 · fail-closed）。
+2) ocrPageCount===0 → 主 CTA 降 outline/muted「打开书桌（尚无 OCR）→」，title 点名「尚无 OCR 印刷页——章页/分栏暂读不了；可进桌看概览与实体卡」——对齐书架 T46 B 文案族；可旁补次级文字链「去解析 →」→ /ingest（勿第二颗大红）；>0 保持既有朱红「打开书桌 →」。
+3) T39 rememberUploadReturn 只回归；href 仍 /desk?book=。
+4) 不要阻断进桌；不要假 OCR；不要重做书架书卡。
+
+【步骤 2 · B RegisterMaterialButton 成功开书桌 0-OCR】
+1) apps/web/components/RegisterMaterialButton.tsx：props 增加 ocrPageCount?: number。
+2) 成功三连「打开书桌」：===0 → 点名「尚无 OCR」降级（与 A 同文案族）；>0 保持既有 cinnabar 文字链。
+3) 「注册进书库」按钮 / POST /api/ingest/register / router.refresh / touchLastOpened 只回归。
+4) 不要改 register-book 纯函数；不要假进度条。
+
+【步骤 3 · C ingest 装配 + 三连学习环/核页书级空池】
+1) apps/web/app/(shell)/ingest/page.tsx：loadBookValidPages()；ready 书传 ocrPageCount=bookValidPages[book.id]?.length ?? 0；extracted 注册钮传物料章 ∩ 已解析印刷页数（loadAllChapterPages 或等价滤 material.chapters ids；无 = 0）。
+2) 书级 atomCount / pendingCount：collectStudyAtoms({ bookId }) 长度与 collectCiteQueue({ bookId })（或书级 open 池）同池族——传入 <IngestReadyLinks … />（Register 成功态若仍渲学习环/核页亦同）。
+3) IngestReadyLinks：atomCount===0 →「学习环」muted 纯文「暂无原子」不可点；pendingCount===0 →「核页」纯文「暂无待核」；>0 保持 /study?book=&mode=all · /review?book=&mode=open + rememberUploadReturn。
+4) T45 N/M+CopyCommand、deriveMaterialStage、章清单 blocks/cards 只回归。不要 LibraryContinuity。
+
+【步骤 4 · D CitePeek 浮层 CTA 空池门禁】
+1) apps/web/components/CitePeek.tsx：可选 pageAtomCount?: number · pendingPageCount?: number · pendingCiteCount?: number。
+2) 浮层 nav：父传入且对应 ===0 → 该链降 muted 纯文（例「本页暂无原子」/「本页暂无待核」/「本卡暂无待核」），不可点；未传入 → 保持既有 Link（E/F 须把能取到的面接上）。
+3) 「在书桌打开 →」有 deskPageHref 保持；rememberPeekReturn 只回归。
+4) **硬禁**：改 quote 截断 / trap / 定位 / verified 文案 / 浮层布局 / Esc·点外·focus 归还；禁止 OCR canvas。
+
+【步骤 5 · E 宿主接线 · 轨 / 瓷砖 / 卡详情】
+1) apps/web/components/desk/ChapterPageReader.tsx：轨上 <CitePeek> 下传 pageAtomCount（已有 reduce）· pendingPageCount · 每卡 pendingCiteCount（T48 已有则复用）。
+2) DocumentPane CardCard：CitePeek 下传 pendingCiteCount（± card.atoms.length 作卡级提示；页级有则传）。
+3) EntityCardDetail 三处 CitePeek：下传 pendingCiteCount + 卡原子相关计数。
+4) 不要重做 T48 轨/瓷砖「核」门禁语义；不要重做 CardHubReturnLinks。
+
+【步骤 6 · F Study/HeYe 接线 + build / heye-only DEFER / 回归】
+1) StudySession.tsx / HeYeSession.tsx：能从当前 scope/池取到本页原子或本卡 pending 则下传 CitePeek；不能则省略对应 prop——**禁止**造假正数。
+2) heye-only 活页 DEFER：禁止 invent seed；回复写明 deferred。
+3) pnpm --filter web build PASS；不要 push。
+4) 回归：T48 CardCard/EntitySearch/轨核门禁、CardVs、Sticky 标 N、Overview 章行；T47 TOC counts/0 段、KINDS 张数、EntitySearch 筛空、Continuity 0-OCR、CardDetail 空壳；T46 书架 OCR/换书/模式 tab/Overview 开章；T45 QuizPanel strip、练门禁、ingest N/M+CopyCommand；T44 Study/HeYe Hint、Clew 空态、focus-visible；T43–T28；ModeChips 未插进练中；CitePeek **正文/trap 未毁**；IngestReady/Register **return 接线未拆**；Shelf/Sidebar/LibraryContinuity/Changes/Queue **未毁**。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–48 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC（含 T47 counts）、Clew stub 三 tab、卡页 CitePeek **正文与 trap**、/review·/study 诚实切片、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、healOpenedIfDirty、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CardHubReturnLinks、IngestReadyLinks return、CopyCommand、LibraryContinuity/ShelfBookContinuity return、T34–T48 已交 return/mode/诚实/键帽/quiz-scope/ingest/书架 OCR/TOC-kind/核门禁/sticky N 切片、T26 稀疏琥珀、T41 sticky N=0 门禁。勿 verified:true 过关。**A+B+C+D+E+F 范围保持完整；主题是 ingest 开书桌 OCR 诚实 + 三连空池 + CitePeek 浮层 CTA，不是 return，不是 T46–T48 重做。**
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / 重做 T46 书架 OCR·换书·模式 tab / 重做 T47 TOC·KINDS·Continuity·CardDetail / 重做 T48 核门禁·sticky N·CardVs·Overview 章行 / 重做 T45 QuizPanel·练门禁·ingest N/M 文案 / 只改一处「尚无 OCR」或只门禁 CitePeek 一链就收工
+- ShelfBookContinuity 页级练/核空池 densify（DEFER→T50）
+- LibraryContinuity 学习环/核页再 densify（T47 续开 OCR 已闭；勿重做 Continuity 壳）
+- 假云端 OCR / 假进度条动画 / 改 stage 机
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T48 已交切片（列于上）
+- 整段 port ariadnemini版 verify/clew-API
+- push
+
+════════════════════════════════════
+自测（回复须勾）
+════════════════════════════════════
+1) /ingest · ready · 0-OCR 书（或验收夹具）→「打开书桌（尚无 OCR）」；>0 朱红；T46 书架未毁
+2) extracted → 注册成功 · 0-OCR → 成功「打开书桌」点名尚无 OCR；注册 API 未毁
+3) ready · 0 原子或 0 pending → 学习环/核页对应纯文；T45 N/M+CopyCommand 未毁
+4) 章页轨「摘」· 本页 0 原子/0 pending 或卡 0 pending → 浮层对应 CTA 纯文；quote/trap 未毁；轨顶门禁未毁
+5) 卡详情/瓷砖「摘」· 卡 0 pending →「核本卡」纯文；CardHub 未毁
+6) study/review 内「摘」（有 counts 时）→ 空池 CTA 降级或未传保持链；正文未毁
+7) pnpm --filter web build PASS；未 push；T48–T28 回归项未毁；heye-only DEFER 已声明
+
+做完叫验收。A–F 全交才过。

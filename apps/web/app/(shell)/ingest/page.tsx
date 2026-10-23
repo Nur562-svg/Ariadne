@@ -1,12 +1,16 @@
 import Link from "next/link";
 import type { Material, MaterialStage } from "@/lib/entities";
 import {
+  collectStudyAtoms,
   deriveMaterialStage,
+  loadAllChapterPages,
   loadBooks,
+  loadBookValidPages,
   loadMaterials,
   materialChapterHasBlocks,
   materialChapterHasCards,
 } from "@/lib/entities";
+import { collectCiteQueue } from "@/lib/heye";
 import IngestUpload from "@/components/IngestUpload";
 import RegisterMaterialButton from "@/components/RegisterMaterialButton";
 import IngestReadyLinks from "@/components/IngestReadyLinks";
@@ -77,6 +81,17 @@ const STAGE_UI: Record<
 
 export default function IngestPage() {
   const materials = loadMaterials();
+  /**
+   * T49 C：就绪/注册三连空池计数装配（只在有物料时读，空页不扫盘）——
+   * - bookValidPages：ready 书「打开书桌」0-OCR 门禁（与 T46 书架四格/CTA 同表）；
+   * - allOcrPages/allAtoms/allQueue：全库一次读出，按书或物料章集合过滤——与
+   *   collectStudyAtoms({bookId}) / collectCiteQueue({bookId}) 同池族（loadCards 按
+   *   chapterIds 文件归属，章间无重复卡，过滤结果与 scoped 调用等值，不造第二套定义）。
+   */
+  const bookValidPages = materials.length > 0 ? loadBookValidPages() : {};
+  const allOcrPages = materials.length > 0 ? loadAllChapterPages() : [];
+  const allAtoms = materials.length > 0 ? collectStudyAtoms() : [];
+  const allQueue = materials.length > 0 ? collectCiteQueue() : [];
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
       <h1 className="brand-rule pb-2 text-3xl font-bold">导入教材</h1>
@@ -157,16 +172,44 @@ export default function IngestPage() {
                     (() => {
                       // ready → 显示就绪三连（反查该书）；extracted → 一键注册进书库（T22 C）。
                       const book = stage === "ready" ? findDeskBook(m) : undefined;
+                      /** T49 C：书（ready）或物料章（extracted）集合——OCR/原子/待核三数同集合过滤。 */
+                      const chIds = new Set(
+                        (book ?? { chapterIds: m.chapters.map((c) => c.id) }).chapterIds,
+                      );
+                      const ocrPageCount =
+                        stage === "ready" && book
+                          ? (bookValidPages[book.id]?.length ?? 0)
+                          : allOcrPages.filter((p) => p.chapterId != null && chIds.has(p.chapterId))
+                              .length;
+                      const atomCount = allAtoms.filter(
+                        (a) => a.chapterId != null && chIds.has(a.chapterId),
+                      ).length;
+                      const pendingCount = allQueue.filter(
+                        (it) => it.chapterId != null && chIds.has(it.chapterId),
+                      ).length;
                       return (
                         <p className="mt-3">
                           {/* T39 B：就绪三连抽薄客户端岛 IngestReadyLinks——Server 页的 <Link>
                               不能挂 onClick（RSC 边界函数 props 即 500）；岛内三条链点前
                               saveReturn → /ingest（label 上传），完成态「回到刚才」回上传面。
-                              书桌仍唯一朱红实心；学习/核次级；练 mode=all · 核 mode=open（T37 D 只回归）。 */}
+                              书桌仍唯一朱红实心；学习/核次级；练 mode=all · 核 mode=open（T37 D 只回归）。
+                              T49 A/C：ocr/atom/pending 三数下传——0-OCR 开书桌降级点名、
+                              0 原子/0 待核学习环·核页纯文（与书架/T48 门禁同真，注册前后不互谎）。 */}
                           {book ? (
-                            <IngestReadyLinks bookId={book.id} />
+                            <IngestReadyLinks
+                              bookId={book.id}
+                              ocrPageCount={ocrPageCount}
+                              atomCount={atomCount}
+                              pendingCount={pendingCount}
+                            />
                           ) : (
-                            <RegisterMaterialButton materialId={m.id} title={m.title} />
+                            <RegisterMaterialButton
+                              materialId={m.id}
+                              title={m.title}
+                              ocrPageCount={ocrPageCount}
+                              atomCount={atomCount}
+                              pendingCount={pendingCount}
+                            />
                           )}
                         </p>
                       );
