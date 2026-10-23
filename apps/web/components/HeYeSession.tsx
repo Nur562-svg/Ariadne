@@ -12,6 +12,7 @@ import {
   loadHeYeStore,
   setHeYeMark,
   setHeYeMarks,
+  type HeYeMark,
   type HeYeMode,
   type HeYeStore,
 } from "@/lib/heye-store";
@@ -170,6 +171,15 @@ export default function HeYeSession({
   const [index, setIndex] = useState(0);
   /** 本标签续位标记（恢复游标时置位），用于诚实续练文案。 */
   const [resumed, setResumed] = useState(false);
+  /**
+   * 本轮撤销栈（T53 G，对齐 StudySession T25 B；薄组件态不持久化，refresh / 换范围重挂载即清）：
+   * 每次标记压一条 { keys, prevMarks, idx }——单标 keys=1；同页批量 b 的全部 keys 进**同一条**
+   * entry（整批一次可回滚）；prevMarks=写标前盘面各 key 旧档（undefined=原未标）。
+   * u/z 弹栈按 prev 写回或删 key、游标回 idx；无栈 no-op。
+   */
+  const [undoStack, setUndoStack] = useState<
+    { keys: string[]; prevMarks: (HeYeMark | undefined)[]; idx: number }[]
+  >([]);
   /** 「回到刚才」return 短链（出发写于书桌章页 / 卡枢纽）。 */
   const [ret, setRet] = useState<ReturnEntry | null>(null);
   const citeRef = useRef<HTMLElement | null>(null);
@@ -229,13 +239,20 @@ export default function HeYeSession({
 
   /**
    * 键盘环（T18）：1 本机已对 · 2 存疑 · ←/j 上一条 · →/k 下一条 · b 同页批量（仅待核档）。
-   * 挂在 window；可编辑目标静默；空档直接忽略。markOne/go/markSamePage 声明在后（函数声明提升）。
+   * T53 H：u/z 撤销本轮最后一标（对齐 Study；放在 visible 空档守卫**之前**——标完最后一条
+   * 跳「全部对过」完成态后仍可 u/z 回退误标，Study 完成态因队列守卫不可退是既有差异，不回改）。
+   * 挂在 window；可编辑目标 / 「摘」浮层静默；undo 声明在后（函数声明提升）。
    */
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (silentKeyTarget(e.target)) return;
       // 「摘」浮层开着：让路（不打标、不切条）——关掉浮层即恢复（review-fix-integrity E）。
       if (isPeekOpen()) return;
+      if (e.key === "u" || e.key === "z") {
+        e.preventDefault();
+        undo();
+        return;
+      }
       if (visible.length === 0) return;
       if (e.key === "1") {
         e.preventDefault();
@@ -259,7 +276,7 @@ export default function HeYeSession({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible.length, index, mode, store]);
+  }, [visible.length, index, mode, store, undoStack]);
 
   /** 焦点跟当前条：续位后 / 每次 jump，焦点落到左「待核引用」容器（tabIndex=-1）。 */
   useEffect(() => {
@@ -298,6 +315,8 @@ export default function HeYeSession({
     clearCursor("heye", scopeKey);
     setIndex(0);
     setResumed(false);
+    // T53 G：整范围清空是显式确认过的重置——撤销栈随之清空（prev 已不可信，不装可回滚）。
+    setUndoStack([]);
   }
 
   /** T42 C/D：离面进练/开卡/开书桌前写 leaveReturnTo（父传 reviewReturnTo，与 Strip/CrossScope 同源）；缺省 no-op。 */
@@ -631,6 +650,9 @@ export default function HeYeSession({
   }
 
   function markOne(s: "checked" | "doubt") {
+    // T53 G：写标前压撤销栈（读盘面最新值当 prev，避免闭包陈旧；idx 记写标时游标）。
+    const prev = loadHeYeStore();
+    setUndoStack((st) => [...st, { keys: [cur.key], prevMarks: [prev[cur.key]], idx: i }]);
     const next = setHeYeMark(cur.key, s);
     setStore(next);
     advance(next, cur.key);
@@ -638,9 +660,34 @@ export default function HeYeSession({
 
   function markSamePage() {
     const keys = samePageOpen.map((it) => it.key);
+    // T53 G：同页批量 = 单条栈 entry（整批一次 u/z 回滚；prevMarks 逐 key 记写标前旧档）。
+    const prev = loadHeYeStore();
+    setUndoStack((st) => [...st, { keys, prevMarks: keys.map((k) => prev[k]), idx: i }]);
     const next = setHeYeMarks(keys, "checked");
     setStore(next);
     advance(next, cur.key);
+  }
+
+  /**
+   * 撤销本轮最后一标（T53 G，u/z）：按 prevMarks 写回旧档（undefined = 原未标 → 删 key）、
+   * 游标回到写标时位置；无栈 no-op。栈是组件态不持久化（refresh / 换范围重挂载即清）；
+   * 只回退本浏览器 localStorage 的本轮标记，不动 seed / verified。
+   */
+  function undo() {
+    const last = undoStack[undoStack.length - 1];
+    if (!last) return;
+    let next = loadHeYeStore();
+    const toClear: string[] = [];
+    for (let j = 0; j < last.keys.length; j++) {
+      const k = last.keys[j];
+      const prev = last.prevMarks[j];
+      if (prev) next = setHeYeMark(k, prev.s);
+      else toClear.push(k);
+    }
+    if (toClear.length > 0) next = clearHeYeMarks(toClear);
+    setStore(next);
+    setUndoStack((st) => st.slice(0, -1));
+    setIndex(last.idx);
   }
 
   return (
@@ -675,7 +722,8 @@ export default function HeYeSession({
       {/* T25 B：键说明与 study 对齐一族风格（muted 小字 + mono 键帽）；b 仅待核档。
           T28 F→T29 E：本页环键（g 清本页 / ⇧[] 切章）由父页按当前真可用性传入 loopKeys
           （与 sticky 键岛同源）——无本页过滤不列 g，无章芯片不列 ⇧[]，题内键恒保留。
-          T44 B：键帽与 onKey 同真——上下条拆两行列出 j 与 k（核侧导航，非练侧 j/k 评分）。 */}
+          T44 B：键帽与 onKey 同真——上下条拆两行列出 j 与 k（核侧导航，非练侧 j/k 评分）。
+          T53 H：u/z 撤销本轮最后一标（onKey 同真；b 批量整条回滚）。 */}
       <SessionKeyHint
         className="mt-1"
         keys={[
@@ -683,6 +731,7 @@ export default function HeYeSession({
           ["2", "存疑"],
           ["←/j", "上条"],
           ["→/k", "下条"],
+          ["u/z", "撤销本轮最后一标"],
           ...(mode === "open" && samePageOpen.length >= 1
             ? ([["b", "同页批量"]] as [string, string][])
             : []),
@@ -843,14 +892,22 @@ export default function HeYeSession({
             它不等于教材侧「抽查 verified」，也不会改写 seed 数据。
           </p>
           <p className="mt-2 text-xs">
-            {/* T42 D：核中「在书桌打开 p.N」离面点前写 leaveReturnTo——回到刚才回当前核页。 */}
-            <Link
-              href={deskHref}
-              onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="text-cinnabar no-underline hover:underline underline-offset-4"
-            >
-              在书桌打开 p.{cur.page} →
-            </Link>
+            {/* T42 D：核中「在书桌打开 p.N」离面点前写 leaveReturnTo——回到刚才回当前核页。
+                T53 E：右栏 OCR 映射无此页（!pg）→ 左侧不再装能定位——降纯文「本页无 OCR」
+                不 Link 不写 return；有 pg 保持链 + leaveReturnTo。右栏琥珀警告保留。 */}
+            {pg ? (
+              <Link
+                href={deskHref}
+                onClick={leaveReturnTo ? rememberLeave : undefined}
+                className="text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                在书桌打开 p.{cur.page} →
+              </Link>
+            ) : (
+              <span className="text-muted" title="该印刷页尚未解析 OCR——书桌章页定位不了">
+                p.{cur.page} · 本页无 OCR
+              </span>
+            )}
           </p>
         </section>
 

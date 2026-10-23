@@ -5,6 +5,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Cite } from "@/lib/entities";
 import { CiteChip } from "@/components/CiteChip";
 import { saveReturn } from "@/lib/return-stack";
+import { deskPageHref as buildDeskPageHref } from "@/lib/ocr-page";
 
 /** Popover width (w-72 = 18rem). Used for horizontal clamp. */
 const POPOVER_W = 288;
@@ -25,6 +26,7 @@ export default function CitePeek({
   q,
   deskBookId,
   cardId,
+  bookValidPages,
   pageAtomCount,
   pendingPageCount,
   pendingCiteCount,
@@ -35,6 +37,12 @@ export default function CitePeek({
   deskBookId?: string;
   /** 卡上下文：「核本卡」链 /review?card=。 */
   cardId?: string;
+  /**
+   * T53 C/I：该书已解析印刷页[]（宿主装配，缺省不门禁）——只用于 nav：内部 CiteChip
+   * 书桌深链与浮层「在书桌打开」的鬼页降纯文；quote / trap / 定位 / verified 文案 /
+   * 浮层布局一概不动（正文/trap forever OUT）。
+   */
+  bookValidPages?: number[];
   /**
    * T49 D：浮层 nav CTA 空池门禁（只动 nav，quote/trap/定位/verified 文案/布局一概不动）——
    * 父传入且对应 ===0 → 该 CTA 降 muted 纯文不可点；未传入 → 保持既有 Link（宿主能取到
@@ -183,10 +191,15 @@ export default function CitePeek({
 
   if (!cite) return null;
   const known = cite.page != null;
-  const deskPageHref =
+  /**
+   * T53 C：书桌章页深链改走共享 helper（lib/ocr-page）——鬼页（bookValidPages 已装配
+   * 且不含）→ null，nav 降纯文「本页无 OCR」；未装配 / 页∈OCR 行为与前同。
+   * 核本页 / 练本页 / 核本卡 href 与 T49 空池门禁一概不动。
+   */
+  const deskPageLink =
     known && deskBookId
-      ? `/desk?book=${encodeURIComponent(deskBookId)}&page=${cite.page}`
-      : undefined;
+      ? buildDeskPageHref(deskBookId, cite.page as number, bookValidPages)
+      : null;
   /** T35 A：核本页显式 mode=open（只改导航 href；quote/trap/定位不动）——落可见待核池，不被 sticky 空档回补。 */
   const reviewPageHref = known
     ? `/review?${deskBookId ? `book=${encodeURIComponent(deskBookId)}&` : ""}page=${cite.page}&mode=open`
@@ -222,7 +235,7 @@ export default function CitePeek({
 
   return (
     <span ref={rootRef} className="relative inline-flex items-center gap-1">
-      <CiteChip cite={cite} q={q} deskBookId={deskBookId} />
+      <CiteChip cite={cite} q={q} deskBookId={deskBookId} bookValidPages={bookValidPages} />
       <button
         ref={toggleRef}
         onClick={() => (open ? close() : setOpen(true))}
@@ -272,14 +285,20 @@ export default function CitePeek({
               )}
             </p>
             <nav className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-line pt-2 text-xs">
-              {deskPageHref ? (
+              {/* T53 C：只动本 nav 行——「在书桌打开」鬼页（已知页但 deskPageLink 为 null）
+                  降 muted 纯文「本页无 OCR」，不写 return 不装链；有 OCR 保持 Link + 记回程。 */}
+              {deskPageLink ? (
                 <Link
-                  href={deskPageHref}
+                  href={deskPageLink}
                   onClick={rememberPeekReturn}
                   className="text-cinnabar no-underline hover:underline underline-offset-4"
                 >
                   在书桌打开 →
                 </Link>
+              ) : known && deskBookId ? (
+                <span className="text-muted" title="该印刷页尚未解析 OCR——书桌章页定位不了">
+                  本页无 OCR
+                </span>
               ) : null}
               {reviewPageHref ? (
                 pendingPageCount != null && pendingPageCount === 0 ? (

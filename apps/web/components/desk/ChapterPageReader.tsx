@@ -129,6 +129,14 @@ export default function ChapterPageReader({
     bookId && curPage != null
       ? `/study?book=${encodeURIComponent(bookId)}&chapter=${encodeURIComponent(chapterId)}&page=${curPage}&mode=all`
       : undefined;
+  /**
+   * T53 I：本书已解析印刷页表（props pages 即该书真印刷页全集）——轨上 CitePeek /
+   * 内部 CiteChip「在书桌打开」的鬼页门禁（共享 helper；宿主能取到才传，缺省不门禁）。
+   */
+  const readerValidPages = useMemo(
+    () => pages.flatMap((p) => (p.page != null ? [p.page as number] : [])),
+    [pages],
+  );
 
   /** 薄跳页（T26 A）：输入印刷页号；未命中琥珀提示，不改当前页。 */
   const [jumpDraft, setJumpDraft] = useState("");
@@ -564,7 +572,8 @@ export default function ChapterPageReader({
                           {/* T19：轨上 Peek——cite 由 hit 原样字段构造（page/verified 不编造）。
                               T49 E：下传 T48 同源三数——本页原子（pageAtomCount，轨顶「练本页」同 reduce）·
                               本页待核（pendingPageCount，页顶「核本页」同表）· 本卡待核
-                              （pendingByCard，轨「核」门禁同表）——浮层 CTA 与轨顶/枢纽同真不进空池。 */}
+                              （pendingByCard，轨「核」门禁同表）——浮层 CTA 与轨顶/枢纽同真不进空池。
+                              T53 I：再传该书 validPages——CiteChip/「在书桌打开」鬼页门禁同真。 */}
                           <CitePeek
                             cite={{
                               page: h.page,
@@ -573,6 +582,7 @@ export default function ChapterPageReader({
                             }}
                             deskBookId={bookId}
                             cardId={c.cardId}
+                            bookValidPages={readerValidPages}
                             pageAtomCount={pageAtomCount}
                             pendingPageCount={pendingPageCount}
                             pendingCiteCount={pendingByCard?.[c.cardId] ?? 0}

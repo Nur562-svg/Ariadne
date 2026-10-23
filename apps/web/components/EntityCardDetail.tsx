@@ -6,6 +6,7 @@ import CardHubReturnLinks from "@/components/CardHubReturnLinks";
 import CardVsStudyLink from "@/components/CardVsStudyLink";
 import DeskOpenReturnLink from "@/components/DeskOpenReturnLink";
 import { withQsMode } from "@/lib/qs-mode";
+import { deskPageHref as buildDeskPageHref, pageInOcr } from "@/lib/ocr-page";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
 
@@ -120,15 +121,13 @@ export function EntityCardDetail({
   /** 「在书桌打开本页」（仅书桌语境 + 首个有页 cite）：/desk?book=&page= 章页定位。 */
   const firstPage = firstPagedCitePage(card);
   /**
-   * T52 H：OCR 有效性薄判定（pageInOcr 等价）——bookValidPages 未装配（缺省）不门禁
-   * （保持链，与 T49 D 契约同思路）；已装配且不含该页 → 该页定位不了，纯文不装链。
+   * T52 H → T53 I：迁移共享 helper（lib/ocr-page 的 pageInOcr / deskPageHref）——契约不变：
+   * bookValidPages 未装配（缺省）不门禁（保持链）；已装配且不含该页 → 该页定位不了，
+   * 纯文不装链。三处「对页」继续经 ocrHas（= pageInOcr 薄别名），不出现第二套判定。
    */
-  const ocrHas = (p: number) => bookValidPages == null || bookValidPages.includes(p);
+  const ocrHas = (p: number) => pageInOcr(bookValidPages, p);
   const deskPageKnown = firstPage != null && ocrHas(firstPage);
-  const deskPageHref =
-    deskBookId && firstPage != null && deskPageKnown
-      ? `/desk?book=${encodeURIComponent(deskBookId)}&page=${firstPage}`
-      : undefined;
+  const deskPageHref = buildDeskPageHref(deskBookId, firstPage, bookValidPages);
 
   return (
     <>

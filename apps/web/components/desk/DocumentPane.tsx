@@ -19,6 +19,7 @@ import {
 } from "@/lib/last-opened";
 import { loadViewMode, saveViewMode } from "@/lib/view-continuity";
 import { saveReturn } from "@/lib/return-stack";
+import { deskPageHref } from "@/lib/ocr-page";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -72,6 +73,7 @@ function CardCard({
   rememberReturn,
   pendingCiteCount,
   pendingByPage,
+  bookValidPages,
 }: {
   card: EntityCard;
   bookId?: string;
@@ -91,6 +93,11 @@ function CardCard({
    * 缺省（未装配）不传给 CitePeek（D 契约：未传入保持链）。
    */
   pendingByPage?: Record<number, number>;
+  /**
+   * T53 D/I：该书已解析印刷页[]（DocumentPane bookValidPages[bookId]）——主 cite「对页」
+   * 与「摘」浮层 CiteChip/「在书桌打开」的鬼页门禁（共享 helper）；练/核空池门禁不动。
+   */
+  bookValidPages?: number[];
 }) {
   /** 主 cite（卡级第一条有页引用）；无页则没有可 Peek 的定位，不渲染。 */
   const primaryCite = card.cites.find((x) => x.page != null);
@@ -114,12 +121,14 @@ function CardCard({
         <span className="flex shrink-0 items-center gap-2">
           {/* 主 cite 旁轻量 Peek（T19 鼓励项）：不新增颜色，不抢「练」主链；无页则不渲染。
               T49 E：下传 T48 同源卡级 pending（「核本卡」门禁）+ 页级 pending
-              （primaryCite.page 查 pendingByPage，「核本页」门禁；表未装配不传保持链）。 */}
+              （primaryCite.page 查 pendingByPage，「核本页」门禁；表未装配不传保持链）。
+              T53 D/I：下传该书 validPages——CiteChip 书桌深链 / 浮层「在书桌打开」鬼页门禁。 */}
           {primaryCite ? (
             <CitePeek
               cite={primaryCite}
               deskBookId={bookId}
               cardId={card.id}
+              bookValidPages={bookValidPages}
               pendingCiteCount={pendingCiteCount}
               pendingPageCount={
                 pendingByPage != null && primaryCite.page != null
@@ -128,14 +137,25 @@ function CardCard({
               }
             />
           ) : null}
-          {/* T34 A：主 cite 有页 + 书桌语境 → 次级「对页」直跳（与 EntityCardDetail T33 字段/页脚同族）。 */}
+          {/* T34 A：主 cite 有页 + 书桌语境 → 次级「对页」直跳（与 EntityCardDetail T33 字段/页脚同族）。
+              T53 D：改走共享 deskPageHref——鬼页（该书 OCR 表已装配且不含）降纯文「本页无 OCR」，
+              与 EntityCardDetail 对页（T52）同真；有 OCR / 未装配保持链。 */}
           {primaryCite?.page != null && bookId ? (
-            <Link
-              href={`/desk?book=${encodeURIComponent(bookId)}&page=${primaryCite.page}`}
-              className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
-            >
-              对页 →
-            </Link>
+            deskPageHref(bookId, primaryCite.page, bookValidPages) ? (
+              <Link
+                href={`/desk?book=${encodeURIComponent(bookId)}&page=${primaryCite.page}`}
+                className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+              >
+                对页 →
+              </Link>
+            ) : (
+              <span
+                className="text-xs text-muted"
+                title="该印刷页尚未解析 OCR——书桌章页定位不了"
+              >
+                本页无 OCR
+              </span>
+            )
           ) : null}
           {/* T35 B：瓷砖「练」显式 mode=all——打开可见池入口写出默认档，挡住 sticky 非默认空档。
               T45 C：零原子卡同族门禁（对齐 CardHubReturnLinks / 章页轨）——「练」降 muted 纯文
@@ -715,6 +735,7 @@ export default function DocumentPane({
               rememberReturn={rememberDeskCardReturn}
               pendingByCard={pendingByCard}
               pendingByPage={pendingByPage}
+              bookValidPages={bookValidPages?.[book.id]}
             />
           </div>
           <div className="min-w-0 border-l border-line pl-6 max-xl:border-l-0 max-xl:pl-0">
@@ -745,6 +766,7 @@ export default function DocumentPane({
           rememberReturn={rememberDeskCardReturn}
           pendingByCard={pendingByCard}
           pendingByPage={pendingByPage}
+          bookValidPages={bookValidPages?.[book.id]}
         />
       )}
     </div>
@@ -1029,6 +1051,7 @@ function SectionCards({
   rememberReturn,
   pendingByCard,
   pendingByPage,
+  bookValidPages,
 }: {
   section: SectionId;
   cards: EntityCard[];
@@ -1040,6 +1063,8 @@ function SectionCards({
   pendingByCard?: Record<string, number>;
   /** T49 E：页 → 待核数（服务端 pendingByPage）——瓷砖「摘」浮层「核本页」门禁。 */
   pendingByPage?: Record<number, number>;
+  /** T53 D/I：该书已解析印刷页[]——瓷砖「对页」/摘浮层鬼页门禁（共享 helper）。 */
+  bookValidPages?: number[];
 }) {
   if (cards.length === 0) {
     return (
@@ -1065,6 +1090,7 @@ function SectionCards({
                     rememberReturn={rememberReturn}
                     pendingCiteCount={pendingByCard?.[c.id] ?? 0}
                     pendingByPage={pendingByPage}
+                    bookValidPages={bookValidPages}
                   />
                 </li>
               ))}
@@ -1088,6 +1114,7 @@ function SectionCards({
               rememberReturn={rememberReturn}
               pendingCiteCount={pendingByCard?.[c.id] ?? 0}
               pendingByPage={pendingByPage}
+              bookValidPages={bookValidPages}
             />
           </li>
         ))}

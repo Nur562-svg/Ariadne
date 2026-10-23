@@ -18,6 +18,7 @@ import {
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadLastOpened } from "@/lib/last-opened";
 import { loadReturn, saveReturn, type ReturnEntry } from "@/lib/return-stack";
+import { pageInOcr } from "@/lib/ocr-page";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
 
@@ -289,9 +290,16 @@ export default function StudySession({
 
   const pool = useMemo(() => countPoolGrades(atoms, grades), [atoms, grades]);
 
-  /** 回书桌本页 / 回书桌：页来源优先级 = 当前原子 cite.page → 单卡首个有页 cite(pageHint) → last-opened 同书 page。 */
+  /**
+   * 回书桌本页 / 回书桌：页来源优先级 = 当前原子 cite.page → 单卡首个有页 cite(pageHint) → last-opened 同书 page。
+   * T53 F：deskBackPage 过 pageInOcr(validPages)——原子 cite / pageHint 可指向该书未解析的
+   * 鬼页（last-opened 侧 T32 E 已消毒，atom 侧此前未跟）；∉ 表回落书级 deskHref /
+   * 「回书桌 →」，不拼鬼 &page=。validPages 未装配 → 不门禁（与 T32 E 同契约）。
+   */
   const deskBackBookId = deskBookId ?? activeBookId;
-  const deskBackPage = lastAtomPage ?? deskPageHint ?? lastOpenedPage;
+  const rawDeskBackPage = lastAtomPage ?? deskPageHint ?? lastOpenedPage;
+  const deskBackPage =
+    rawDeskBackPage != null && pageInOcr(validPages, rawDeskBackPage) ? rawDeskBackPage : null;
   const deskBackHref =
     deskBackPage != null && deskBackBookId
       ? `/desk?book=${encodeURIComponent(deskBackBookId)}&page=${deskBackPage}`
