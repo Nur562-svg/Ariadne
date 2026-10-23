@@ -93,6 +93,7 @@ export default function StudySession({
   bookByChapter,
   deskHref,
   reviewHref,
+  pendingCount = 0,
   cardHref,
   allHref,
   unknownHref,
@@ -118,6 +119,13 @@ export default function StudySession({
   /** 完成态 / 空队列回链：书桌与核页（有书带 book 参数）。 */
   deskHref: string;
   reviewHref: string;
+  /**
+   * T51 I：交叉核链（核本卡 / 去核页）的对侧真池——父页按 reviewHref 同族
+   * collectCiteQueue 装配（study 页 = heyeItems.length，与 progressReview 同范围）；
+   * 缺省 0（fail-closed）。===0 时空/完成态核链降 muted 纯文不可点、不写
+   * leaveReturnTo；>0 保持链 + leaveReturnTo（T42 接线不拆）。
+   */
+  pendingCount?: number;
   /** 单卡范围（/study?card=）：完成/空态改为「回本卡」「核本卡」，回书桌让位为次要链。 */
   cardHref?: string;
   /** 「只练不熟」与空队列回链：同范围切档 URL。 */
@@ -347,16 +355,24 @@ export default function StudySession({
               >
                 回本卡 →
               </Link>
-              {/* T42 B：交叉进核点前写 leaveReturnTo（回本学习环），与 sticky CrossScope 同真。 */}
-              <Link
-                href={reviewHref}
-                onClick={leaveReturnTo ? rememberLeave : undefined}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
-              >
-                核本卡 →
-              </Link>
+              {/* T42 B：交叉进核点前写 leaveReturnTo（回本学习环），与 sticky CrossScope 同真。
+                  T51 I：pendingCount（父传对侧真池，缺省 0）===0 降纯文「本卡暂无待核」；
+                  >0 保持链 + leaveReturnTo。 */}
+              {pendingCount > 0 ? (
+                <Link
+                  href={reviewHref}
+                  onClick={leaveReturnTo ? rememberLeave : undefined}
+                  className="text-sm text-muted no-underline hover:text-cinnabar"
+                >
+                  核本卡 →
+                </Link>
+              ) : (
+                <span className="text-sm text-muted" title="本卡暂无待核 cite">
+                  本卡暂无待核
+                </span>
+              )}
             </>
-          ) : (
+          ) : pendingCount > 0 ? (
             <Link
               href={reviewHref}
               onClick={leaveReturnTo ? rememberLeave : undefined}
@@ -364,6 +380,10 @@ export default function StudySession({
             >
               去核页 →
             </Link>
+          ) : (
+            <span className="text-sm text-muted" title="当前范围没有待核 cite">
+              暂无待核
+            </span>
           )}
           <Link href={deskBackHref} className="text-sm text-muted no-underline hover:text-cinnabar">
             {deskBackLabel}
@@ -475,16 +495,23 @@ export default function StudySession({
               >
                 回本卡 →
               </Link>
-              {/* T42 B：交叉进核点前写 leaveReturnTo（回本学习环），与 sticky CrossScope 同真。 */}
-              <Link
-                href={reviewHref}
-                onClick={leaveReturnTo ? rememberLeave : undefined}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
-              >
-                核本卡 →
-              </Link>
+              {/* T42 B：交叉进核点前写 leaveReturnTo（回本学习环），与 sticky CrossScope 同真。
+                  T51 I：完成态同门禁——pendingCount===0 纯文「本卡暂无待核」；>0 保持链。 */}
+              {pendingCount > 0 ? (
+                <Link
+                  href={reviewHref}
+                  onClick={leaveReturnTo ? rememberLeave : undefined}
+                  className="text-sm text-muted no-underline hover:text-cinnabar"
+                >
+                  核本卡 →
+                </Link>
+              ) : (
+                <span className="text-sm text-muted" title="本卡暂无待核 cite">
+                  本卡暂无待核
+                </span>
+              )}
             </>
-          ) : (
+          ) : pendingCount > 0 ? (
             <Link
               href={reviewHref}
               onClick={leaveReturnTo ? rememberLeave : undefined}
@@ -492,6 +519,10 @@ export default function StudySession({
             >
               去核页 →
             </Link>
+          ) : (
+            <span className="text-sm text-muted" title="当前范围没有待核 cite">
+              暂无待核
+            </span>
           )}
           <Link href={deskBackHref} className="text-sm text-muted no-underline hover:text-cinnabar">
             {deskBackLabel}

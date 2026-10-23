@@ -273,6 +273,18 @@ async function ReviewBody({
    */
   const reviewReturnTo = { href: progressReviewHref, label: `核页 · ${stripScopeLabel}` };
 
+  /**
+   * T51 J：HeYeSession 交叉练链（studyHref）的对侧真池——按 studyHref 同范围计数：
+   * 单卡 = 卡池（studyHref 不带 page，与 href 同口）；有效页非孤儿 = 页池 pageStudyAtoms
+   * （studyHref 带 &page=，heye-only 页如实归 0——不拿章池数字谎报页练链）；无页/孤儿 =
+   * 章/书池（stripAtoms / progressStudyHref 同源）。缺省/解析不出当 0（fail-closed）。
+   */
+  const crossStudyAtomCount = card
+    ? collectStudyAtoms({ cardId: card.id }).length
+    : pageNum != null && !orphanReview
+      ? pageStudyAtoms.length
+      : stripAtoms.length;
+
   /** T28 F：sticky 键说明——只列当前实际可用的本页环键（无页不给 g，单卡不给切章）。 */
   const stickyKeys: [string, string][] = [
     ...(pageNum != null && !card ? ([["g", "清本页"]] as [string, string][]) : []),
@@ -544,8 +556,14 @@ async function ReviewBody({
             {/* T33 A：交叉弱链的 sticky 延伸（对称 study）——长队列滚离页头后仍能去同范围练；
                 muted 次级文字（非第二颗实心朱红），href 与页头 Strip 同一 progressStudyHref。
                 T40 C：Server 页不能挂 onClick——换薄客户端岛 CrossScopeReturnLink，
-                点前 saveReturn（payload=reviewReturnTo，与页头 Strip 同一来源）。 */}
-            <CrossScopeReturnLink href={progressStudyHref} returnTo={reviewReturnTo}>
+                点前 saveReturn（payload=reviewReturnTo，与页头 Strip 同一来源）。
+                T51 H：对侧（练）池 0 → 纯文「同范围暂无原子」（stripAtoms 与页头 Strip /
+                Bridge progress* 同源，fail-closed）；>0 保持链 + return。 */}
+            <CrossScopeReturnLink
+              href={progressStudyHref}
+              returnTo={reviewReturnTo}
+              emptyLabel={stripAtoms.length === 0 ? "同范围暂无原子" : undefined}
+            >
               去练同范围 →
             </CrossScopeReturnLink>
           </div>
@@ -564,6 +582,8 @@ async function ReviewBody({
         mode={mode}
         cardHref={cardHref}
         studyHref={studyHref}
+        /* T51 J：交叉练链对侧真池（见 crossStudyAtomCount 构造点），fail-closed。 */
+        atomCount={crossStudyAtomCount}
         deskPageHref={deskPageHref}
         openHref={`/review${qs({ mode: "open" })}`}
         checkedHref={`/review${qs({ mode: "checked" })}`}

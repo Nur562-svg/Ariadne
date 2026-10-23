@@ -19,6 +19,7 @@ export default function CrossScopeReturnLink({
   returnTo,
   className,
   children,
+  emptyLabel,
 }: {
   /** 交叉目标（宿页 progressReviewHref / progressStudyHref，原样传入）。 */
   href: string;
@@ -27,7 +28,16 @@ export default function CrossScopeReturnLink({
   /** 可选样式覆盖（T42 B：study 空原子分支复用本岛时对齐相邻 text-sm 次级链）；缺省 sticky muted 样式。 */
   className?: string;
   children: ReactNode;
+  /**
+   * T51 H：对侧池 0 的 fail-closed 降级文案——有值时渲染 muted 纯文占位（不可点、不写
+   * return、不挂 onClick），宿主按同页 Strip 池（stripItemKeys/stripAtoms）判定传入；
+   * 缺省（未传）保持既有 Link，行为与前完全同。sticky 布局不动。
+   */
+  emptyLabel?: string;
 }) {
+  if (emptyLabel != null) {
+    return <span className={className ?? "text-xs text-muted"}>{emptyLabel}</span>;
+  }
   return (
     <Link
       href={href}

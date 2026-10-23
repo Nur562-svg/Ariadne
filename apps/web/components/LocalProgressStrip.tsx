@@ -151,6 +151,15 @@ export default function LocalProgressStrip({
     return <span className={toneCls}>{text}</span>;
   }
 
+  /**
+   * T51 E：条末「练/核此范围」池门禁（fail-closed）——有 href 且对应池存在但 ===0 时，
+   * 该侧降 muted 纯文「暂无原子/暂无待核」（占位不可点、不写 return）；池 >0 或
+   * 无池（atoms/items 缺省 = global 已记录计数口径）保持既有链/不渲染行为不变。
+   * 视觉铬件、分段 seg、第二套计数一概不加。
+   */
+  const studyPoolEmpty = atoms != null && atoms.length === 0;
+  const reviewPoolEmpty = items != null && items.length === 0;
+
   const studyPart = (
     <>
       练{" "}
@@ -190,22 +199,34 @@ export default function LocalProgressStrip({
       <span className={compact ? "mx-2 text-line" : "mx-3 text-line"}>|</span>
       {heyePart}
       {studyHref ? (
-        <Link
-          href={studyHref}
-          onClick={returnTo ? rememberReturn : undefined}
-          className="ml-2 text-cinnabar no-underline hover:underline underline-offset-4"
-        >
-          练此范围 →
-        </Link>
+        studyPoolEmpty ? (
+          <span className="ml-2" title="当前范围没有可练原子">
+            暂无原子
+          </span>
+        ) : (
+          <Link
+            href={studyHref}
+            onClick={returnTo ? rememberReturn : undefined}
+            className="ml-2 text-cinnabar no-underline hover:underline underline-offset-4"
+          >
+            练此范围 →
+          </Link>
+        )
       ) : null}
       {reviewHref ? (
-        <Link
-          href={reviewHref}
-          onClick={returnTo ? rememberReturn : undefined}
-          className="ml-1 text-cinnabar no-underline hover:underline underline-offset-4"
-        >
-          核此范围 →
-        </Link>
+        reviewPoolEmpty ? (
+          <span className="ml-1" title="当前范围没有待核 cite">
+            暂无待核
+          </span>
+        ) : (
+          <Link
+            href={reviewHref}
+            onClick={returnTo ? rememberReturn : undefined}
+            className="ml-1 text-cinnabar no-underline hover:underline underline-offset-4"
+          >
+            核此范围 →
+          </Link>
+        )
       ) : null}
       <span className="ml-2">
         · 仅这个浏览器 · 非掌握度 · 非 Due · 与 seed verified 无关

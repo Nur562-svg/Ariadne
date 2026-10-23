@@ -91,6 +91,7 @@ export default function HeYeSession({
   mode,
   cardHref,
   studyHref,
+  atomCount = 0,
   deskPageHref,
   openHref,
   checkedHref,
@@ -114,6 +115,13 @@ export default function HeYeSession({
   cardHref?: string;
   /** 跨环学习链（有卡带 ?card=，否则 /study）。 */
   studyHref?: string;
+  /**
+   * T51 J：交叉练链（去学习环 / 去学习本卡）的对侧真池——父页按 studyHref 同范围
+   * collectStudyAtoms 装配（review 页：单卡=卡池、有效页非孤儿=页池、无页=章/书池）；
+   * 缺省 0（fail-closed）。===0 时空/完成态练链降 muted 纯文不可点、不写
+   * leaveReturnTo；>0 保持链 + leaveReturnTo（T42 接线不拆）。
+   */
+  atomCount?: number;
   /** 单页范围（/review?page=）：空队列/全部对过时优先链回书桌本页（/desk?book=&page=）。 */
   deskPageHref?: string;
   /** 空档「回待核」链（同范围 ?mode=open）。 */
@@ -303,7 +311,10 @@ export default function HeYeSession({
         {/* T25 A densify：每分支只留一颗朱红主 CTA，其余次级文字链。
             T29 C：孤儿核（合法 page · 非单卡 · 池空）且有清本页链 → 主 CTA = 清本页
             （放宽到本章核，只删 page 留书/章/档）；「去学习环」降次级，用父页消毒过的
-            studyHref（无 page，不送回孤儿 URL）。非孤儿保持既有优先级。 */}
+            studyHref（无 page，不送回孤儿 URL）。非孤儿保持既有优先级。
+            T51 J：主/次「去学习环」「去学习本卡」吃 atomCount（父传 studyHref 同范围真池，
+            缺省 0）——===0 降 muted 纯文（同范围/本卡暂无原子）不可点、不写 leaveReturnTo；
+            回本卡 / 清本页 / 回书桌是回程或放宽链，不受池门禁。 */}
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           {cardHref ? (
             <Link
@@ -320,13 +331,19 @@ export default function HeYeSession({
               清本页，换到本章核 →
             </Link>
           ) : deskPageHref ? (
-            <Link
-              href={studyHref ?? "/study"}
-              onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-            >
-              去学习环 →
-            </Link>
+            atomCount > 0 ? (
+              <Link
+                href={studyHref ?? "/study"}
+                onClick={leaveReturnTo ? rememberLeave : undefined}
+                className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+              >
+                去学习环 →
+              </Link>
+            ) : (
+              <span className="text-sm text-muted" title="同范围暂无可练原子">
+                同范围暂无原子
+              </span>
+            )
           ) : (
             <Link
               href="/desk"
@@ -337,13 +354,19 @@ export default function HeYeSession({
           )}
           {cardHref ? (
             <>
-              <Link
-                href={studyHref ?? "/study"}
-                onClick={leaveReturnTo ? rememberLeave : undefined}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
-              >
-                去学习本卡 →
-              </Link>
+              {atomCount > 0 ? (
+                <Link
+                  href={studyHref ?? "/study"}
+                  onClick={leaveReturnTo ? rememberLeave : undefined}
+                  className="text-sm text-muted no-underline hover:text-cinnabar"
+                >
+                  去学习本卡 →
+                </Link>
+              ) : (
+                <span className="text-sm text-muted" title="本卡暂无可练原子">
+                  本卡暂无原子
+                </span>
+              )}
               {deskPageHref ? (
                 <Link
                   href={deskPageHref}
@@ -354,13 +377,19 @@ export default function HeYeSession({
               ) : null}
             </>
           ) : orphanPage ? (
-            <Link
-              href={studyHref ?? "/study"}
-              onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              去学习环 →
-            </Link>
+            atomCount > 0 ? (
+              <Link
+                href={studyHref ?? "/study"}
+                onClick={leaveReturnTo ? rememberLeave : undefined}
+                className="text-sm text-muted no-underline hover:text-cinnabar"
+              >
+                去学习环 →
+              </Link>
+            ) : (
+              <span className="text-sm text-muted" title="同范围暂无可练原子">
+                同范围暂无原子
+              </span>
+            )
           ) : deskPageHref ? (
             <Link
               href={deskPageHref}
@@ -368,7 +397,7 @@ export default function HeYeSession({
             >
               回书桌本页 →
             </Link>
-          ) : (
+          ) : atomCount > 0 ? (
             <Link
               href={studyHref ?? "/study"}
               onClick={leaveReturnTo ? rememberLeave : undefined}
@@ -376,6 +405,10 @@ export default function HeYeSession({
             >
               去学习环 /study →
             </Link>
+          ) : (
+            <span className="text-sm text-muted" title="同范围暂无可练原子">
+              同范围暂无原子
+            </span>
           )}
           {clearChapterHref ? (
             <Link
@@ -434,7 +467,9 @@ export default function HeYeSession({
           </p>
         )}
         <HeYeModeChips counts={counts} mode={mode} hrefs={modeChipHrefs} />
-        {/* T25 A densify：一颗主 CTA（回待核档 / 去学习环），其余次级文字链。 */}
+        {/* T25 A densify：一颗主 CTA（回待核档 / 去学习环），其余次级文字链。
+            T51 J：档空/完成态练链同门禁——atomCount===0 主·次练链均降纯文
+            （本卡/同范围暂无原子），>0 保持 + leaveReturnTo；回程链不受池门禁。 */}
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           {backToOpen ? (
             <Link
@@ -443,7 +478,7 @@ export default function HeYeSession({
             >
               回待核档 →
             </Link>
-          ) : (
+          ) : atomCount > 0 ? (
             <Link
               href={studyHref ?? "/study"}
               onClick={leaveReturnTo ? rememberLeave : undefined}
@@ -451,15 +486,39 @@ export default function HeYeSession({
             >
               去学习环 →
             </Link>
+          ) : (
+            <span className="text-sm text-muted" title="同范围暂无可练原子">
+              同范围暂无原子
+            </span>
           )}
           {backToOpen ? (
-            <Link
-              href={studyHref ?? "/study"}
-              onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              {cardHref ? "去学习本卡 →" : "去学习环 →"}
-            </Link>
+            cardHref ? (
+              atomCount > 0 ? (
+                <Link
+                  href={studyHref ?? "/study"}
+                  onClick={leaveReturnTo ? rememberLeave : undefined}
+                  className="text-sm text-muted no-underline hover:text-cinnabar"
+                >
+                  去学习本卡 →
+                </Link>
+              ) : (
+                <span className="text-sm text-muted" title="本卡暂无可练原子">
+                  本卡暂无原子
+                </span>
+              )
+            ) : atomCount > 0 ? (
+              <Link
+                href={studyHref ?? "/study"}
+                onClick={leaveReturnTo ? rememberLeave : undefined}
+                className="text-sm text-muted no-underline hover:text-cinnabar"
+              >
+                去学习环 →
+              </Link>
+            ) : (
+              <span className="text-sm text-muted" title="同范围暂无可练原子">
+                同范围暂无原子
+              </span>
+            )
           ) : null}
           {cardHref ? (
             <Link href={cardHref} className="text-sm text-muted no-underline hover:text-cinnabar">

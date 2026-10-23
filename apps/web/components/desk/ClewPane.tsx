@@ -17,8 +17,13 @@ import { withQsMode } from "@/lib/qs-mode";
 
 /** T33 D：stub 气泡内的 muted 行动链（对页/练/核）。returnTo 有值时点前写 return 短链。 */
 type ActionLink = { label: string; href: string; returnTo?: { href: string; label: string } };
+/**
+ * T51 A：空池占位行——发送时对侧池 ===0 的 muted 纯文（无 href 不可点、不写 return），
+ * 与可点链同位渲染占住「去学习环/去核页」的位置，不装能进空环。
+ */
+type PlainLink = { label: string; plain: true };
 type Msg =
-  | { role: "user" | "assistant"; text: string; links?: ActionLink[] }
+  | { role: "user" | "assistant"; text: string; links?: (ActionLink | PlainLink)[] }
   | { role: "note"; text: string };
 type Tab = "chat" | "changes" | "queue";
 
@@ -165,6 +170,13 @@ export default function ClewPane() {
   const suggestions = buildSuggestions(clew);
 
   /**
+   * T51：Clew 右栏四处练核 CTA（stub 气泡 / chat 空态 / Changes / Queue）共用同一池口径——
+   * progress* 缺 key / 缺省当 0（fail-closed），===0 不装能进空环；不造假正数。
+   */
+  const atomN = clew.progressAtoms?.length ?? 0;
+  const pendingN = clew.progressItems?.length ?? 0;
+
+  /**
    * T29 D：上下文键（书/章/页）变了且线程非空 → 追加一条 muted「上下文已换到 …」
    * （新气泡，不改写历史气泡）；首次挂载不记。progress* 池变化不改键，不触发。
    */
@@ -198,15 +210,21 @@ export default function ClewPane() {
      * T33 D：stub 气泡附 muted 行动链——对页（有书+页）/ 去学习环 / 去核页（T31 回落链）。
      * 练/核链的 return payload 在发送时快照：气泡是历史，点旧气泡回「当时问的」上下文，
      * 不随后续上下文切换漂移；无页/无书时 stubReply 文案仍走「先开章页/卡」，不伪造行动。
+     * T51 A：练/核链吃发送时 progress* 池（fail-closed 缺省 0）——池===0 该侧降 PlainLink
+     * 纯文「暂无原子/暂无待核」（不可点、不写 return）；>0 保持 ActionLink + return 快照。
      */
     const returnTo = clewReturnPayload(clew) ?? undefined;
-    const links: ActionLink[] = [];
+    const links: (ActionLink | PlainLink)[] = [];
     if (clew.book && clew.page != null) {
       links.push({ label: `对页 p.${clew.page} →`, href: pageHref });
     }
     links.push(
-      { label: "去学习环 →", href: studyHref, returnTo },
-      { label: "去核页 →", href: reviewHref, returnTo },
+      (clew.progressAtoms?.length ?? 0) > 0
+        ? { label: "去学习环 →", href: studyHref, returnTo }
+        : { label: "暂无原子", plain: true },
+      (clew.progressItems?.length ?? 0) > 0
+        ? { label: "去核页 →", href: reviewHref, returnTo }
+        : { label: "暂无待核", plain: true },
     );
     setMessages((prev) => [
       ...prev,
@@ -365,22 +383,32 @@ export default function ClewPane() {
                       </Link>
                       <span>→</span>
                       {/* T42 E：stub 空态路径的「学习环自测」点前 rememberClewReturn——与空态 CTA /
-                          stub 气泡链同一函数，离面即记回程（回当前 Clew 上下文）。 */}
-                      <Link
-                        href={studyHref}
-                        onClick={rememberClewReturn}
-                        className="text-cinnabar no-underline hover:underline underline-offset-4"
-                      >
-                        学习环自测
-                      </Link>
+                          stub 气泡链同一函数，离面即记回程（回当前 Clew 上下文）。
+                          T51 B：双链吃 progress* 池（fail-closed 0）——===0 降 muted 纯文
+                          「暂无原子/暂无待核」不可点；>0 保持 Link + return 接线。 */}
+                      {atomN > 0 ? (
+                        <Link
+                          href={studyHref}
+                          onClick={rememberClewReturn}
+                          className="text-cinnabar no-underline hover:underline underline-offset-4"
+                        >
+                          学习环自测
+                        </Link>
+                      ) : (
+                        <span title="当前范围没有可练原子">暂无原子</span>
+                      )}
                       <span>→</span>
-                      <Link
-                        href={reviewHref}
-                        onClick={rememberClewReturn}
-                        className="text-cinnabar no-underline hover:underline underline-offset-4"
-                      >
-                        核页对页
-                      </Link>
+                      {pendingN > 0 ? (
+                        <Link
+                          href={reviewHref}
+                          onClick={rememberClewReturn}
+                          className="text-cinnabar no-underline hover:underline underline-offset-4"
+                        >
+                          核页对页
+                        </Link>
+                      ) : (
+                        <span title="当前范围没有待核 cite">暂无待核</span>
+                      )}
                     </p>
                     <p className="mt-1 text-[11px] leading-5 text-muted">
                       另导入其他教材：
@@ -393,7 +421,9 @@ export default function ClewPane() {
                     </p>
                   </>
                 ) : (
-                  /* T44 C：无书才走 ingest 冷启动首环（与 buildSuggestions 无书句同真）。 */
+                  /* T44 C：无书才走 ingest 冷启动首环（与 buildSuggestions 无书句同真）。
+                     T51 B：撤掉尾环「学习环自测」——无书时 studyHref 回落裸 /study（全书空池），
+                     朱红链装作能练是谎言；冷启动止于「导入→书架→书桌」，练核等有书有池再给。 */
                   <>
                     <p className="text-xs leading-6 text-muted">
                       还没接模型（stub）。书库为空——请带着页码对照的问题发问；先按这条路径走通：
@@ -404,14 +434,6 @@ export default function ClewPane() {
                       <Link href="/" className="text-cinnabar no-underline hover:underline underline-offset-4">书架打开</Link>
                       <span>→</span>
                       <Link href={bookHref} className="text-cinnabar no-underline hover:underline underline-offset-4">书桌读实体卡/章页</Link>
-                      <span>→</span>
-                      <Link
-                        href={studyHref}
-                        onClick={rememberClewReturn}
-                        className="text-cinnabar no-underline hover:underline underline-offset-4"
-                      >
-                        学习环自测
-                      </Link>
                     </p>
                   </>
                 )}
@@ -449,19 +471,26 @@ export default function ClewPane() {
                   >
                     <span className="mono mr-1 text-[10px] text-muted">stub</span>
                     {m.text}
-                    {/* T33 D：行动链 muted 文字（非实心、非裸 URL）——对页/练/核可点；点练/核前兑现快照 return。 */}
+                    {/* T33 D：行动链 muted 文字（非实心、非裸 URL）——对页/练/核可点；点练/核前兑现快照 return。
+                        T51 A：PlainLink（空池占位）渲染 muted 纯文——无 href 不可点、不写 return。 */}
                     {m.links?.length ? (
                       <span className="mt-1.5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                        {m.links.map((l) => (
-                          <Link
-                            key={`${l.label}|${l.href}`}
-                            href={l.href}
-                            onClick={() => fireLinkReturn(l)}
-                            className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
-                          >
-                            {l.label}
-                          </Link>
-                        ))}
+                        {m.links.map((l) =>
+                          "plain" in l ? (
+                            <span key={l.label} className="text-xs text-muted">
+                              {l.label}
+                            </span>
+                          ) : (
+                            <Link
+                              key={`${l.label}|${l.href}`}
+                              href={l.href}
+                              onClick={() => fireLinkReturn(l)}
+                              className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                            >
+                              {l.label}
+                            </Link>
+                          ),
+                        )}
                       </span>
                     ) : null}
                   </div>
@@ -560,6 +589,13 @@ function ChangesPanel({
   }, []);
 
   const acts: Act[] = [];
+  /**
+   * T51 C：空态双链 / 筛空单侧 CTA 的池门禁——与 stub 气泡 / chat 空态 / Queue 主 CTA
+   * 同一 progress* 口径（fail-closed 缺省 0）；===0 降 muted 纯文不可点，>0 保持 +
+   * rememberReturn。只门禁 CTA，不动 T43 筛选芯片 /「还有 N」截断 / 本轮标记模型。
+   */
+  const atomN = clew.progressAtoms?.length ?? 0;
+  const pendingN = clew.progressItems?.length ?? 0;
   for (const [key, g] of Object.entries(grades)) {
     if (typeof g?.t !== "number" || g.t < since) continue;
     // T33 B：`${cardId}/${atomId}` 取首段 cardId（fail-closed：无斜杠/空段 → 无链纯文行）。
@@ -716,20 +752,32 @@ function ChangesPanel({
         <div className="mt-6 border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
           本轮还没有本机标记——去学习环自评或核页对页后回到这里。
           <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-            <Link
-              href={studyHref}
-              onClick={rememberReturn}
-              className="text-cinnabar no-underline hover:underline underline-offset-4"
-            >
-              去学习环自评 →
-            </Link>
-            <Link
-              href={reviewHref}
-              onClick={rememberReturn}
-              className="text-cinnabar no-underline hover:underline underline-offset-4"
-            >
-              去核页对页 →
-            </Link>
+            {atomN > 0 ? (
+              <Link
+                href={studyHref}
+                onClick={rememberReturn}
+                className="text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                去学习环自评 →
+              </Link>
+            ) : (
+              <span className="text-muted" title="当前范围没有可练原子">
+                暂无原子
+              </span>
+            )}
+            {pendingN > 0 ? (
+              <Link
+                href={reviewHref}
+                onClick={rememberReturn}
+                className="text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                去核页对页 →
+              </Link>
+            ) : (
+              <span className="text-muted" title="当前范围没有待核 cite">
+                暂无待核
+              </span>
+            )}
           </p>
         </div>
       ) : shown.length === 0 ? (
@@ -741,15 +789,23 @@ function ChangesPanel({
             ? `只有核页标记（${heyeCount} 条）写入了本机记录。`
             : `只有学习环自评（${studyCount} 条）写入了本机记录。`}
           <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+            {/* T43 D 筛空只给对应侧 CTA；T51 C 同池门禁——===0 纯文（不装能进空环），
+                >0 保持 + rememberReturn（T40/T41 接线不拆）。 */}
             {kindFilter === "study" ? (
-              <Link
-                href={studyHref}
-                onClick={rememberReturn}
-                className="text-cinnabar no-underline hover:underline underline-offset-4"
-              >
-                去学习环自评 →
-              </Link>
-            ) : (
+              atomN > 0 ? (
+                <Link
+                  href={studyHref}
+                  onClick={rememberReturn}
+                  className="text-cinnabar no-underline hover:underline underline-offset-4"
+                >
+                  去学习环自评 →
+                </Link>
+              ) : (
+                <span className="text-muted" title="当前范围没有可练原子">
+                  暂无原子
+                </span>
+              )
+            ) : pendingN > 0 ? (
               <Link
                 href={reviewHref}
                 onClick={rememberReturn}
@@ -757,6 +813,10 @@ function ChangesPanel({
               >
                 去核页对页 →
               </Link>
+            ) : (
+              <span className="text-muted" title="当前范围没有待核 cite">
+                暂无待核
+              </span>
             )}
           </p>
         </div>
@@ -847,6 +907,14 @@ function QueuePanel({
   }, []);
 
   const hasPool = (clew.progressAtoms?.length ?? 0) + (clew.progressItems?.length ?? 0) > 0;
+  /**
+   * T51 D：主 CTA / 去学习环的池门禁（fail-closed 缺省 0）——待核池===0 时「打开核页工作台」
+   * 降 muted 纯文（无池 →「未定位章 · 暂无范围池」，与上方同句族；有池 0 →「暂无待核」）；
+   * 原子池===0 时「去学习环」同理「暂无原子」。>0 保持朱红主钮 / 次级链 + rememberReturn。
+   * 分段 seg N>0/N=0（T36/T40）只回归；非 Due、非 FSRS。
+   */
+  const atomN = clew.progressAtoms?.length ?? 0;
+  const pendingN = clew.progressItems?.length ?? 0;
   const pool = clew.progressAtoms ? poolGrades(clew.progressAtoms, grades) : null;
   const marks = clew.progressItems ? countPoolMarks(clew.progressItems, heye) : null;
   const globalKnown = Object.values(grades).filter((g) => g.k === 1).length;
@@ -945,20 +1013,35 @@ function QueuePanel({
         本面板不存自己的队列；打开工作台看实时池数与本机标记。
       </p>
       <div className="mt-5 flex flex-wrap items-center gap-4">
-        <Link
-          href={reviewHref}
-          onClick={rememberReturn}
-          className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-        >
-          打开核页工作台 →
-        </Link>
-        <Link
-          href={studyHref}
-          onClick={rememberReturn}
-          className="text-sm text-muted no-underline hover:text-cinnabar"
-        >
-          去学习环 →
-        </Link>
+        {pendingN > 0 ? (
+          <Link
+            href={reviewHref}
+            onClick={rememberReturn}
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+          >
+            打开核页工作台 →
+          </Link>
+        ) : (
+          <span
+            className="text-sm text-muted"
+            title={hasPool ? "当前范围没有待核 cite" : "未定位章，无章/页范围池可开"}
+          >
+            {hasPool ? "暂无待核" : "未定位章 · 暂无范围池"}
+          </span>
+        )}
+        {atomN > 0 ? (
+          <Link
+            href={studyHref}
+            onClick={rememberReturn}
+            className="text-sm text-muted no-underline hover:text-cinnabar"
+          >
+            去学习环 →
+          </Link>
+        ) : (
+          <span className="text-sm text-muted" title="当前范围没有可练原子">
+            暂无原子
+          </span>
+        )}
       </div>
     </div>
   );

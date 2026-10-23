@@ -503,15 +503,26 @@ export default function DocumentPane({
               T35 B：「学习环 · 自评」显式 mode=all（对齐同页 stripStudyHref）——本标签 sticky
               停在 unknown/ungraded 空档时点书头入口仍落可见全部池。
               T42 A：两链点前 rememberDeskCardReturn——与旁边 Strip returnTo={deskReturnPayload}
-              同一函数/payload（有阅读页→书桌 p.N，否则书级），书头入口与 Strip 条末同真回程。 */}
+              同一函数/payload（有阅读页→书桌 p.N，否则书级），书头入口与 Strip 条末同真回程。
+              T51 F：「学习环 · 自评」章空池门禁——chapterAtoms===0（对齐 Overview 章行 chAtoms /
+              T48 F，href 即章作用域）降 muted 纯文「本章暂无原子」不可点；>0 保持链。「练本页」只回归。 */}
           <span className="flex flex-wrap items-baseline gap-4">
-            <Link
-              href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=all`}
-              onClick={rememberDeskCardReturn}
-              className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
-            >
-              学习环 · 自评 →
-            </Link>
+            {chapterAtoms.length > 0 ? (
+              <Link
+                href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=all`}
+                onClick={rememberDeskCardReturn}
+                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+              >
+                学习环 · 自评 →
+              </Link>
+            ) : (
+              <span
+                className="text-sm text-muted"
+                title="本章实体卡均未萃取出知识原子"
+              >
+                本章暂无原子
+              </span>
+            )}
             {studyPageScope ? (
               <Link
                 href={stripStudyHref}
@@ -968,13 +979,22 @@ function QuizPanel({
             本章暂无原子 · 去学习环放宽到本书 →
           </Link>
         )}
-        <Link
-          href={reviewHref}
-          onClick={rememberReturn}
-          className="text-sm text-muted no-underline hover:text-cinnabar"
-        >
-          去核页 →
-        </Link>
+        {/* T51 G：「去核页」空池门禁——items（= stripItems，与 reviewHref 同章/页池）===0 降
+            muted 纯文「暂无待核」不可点；>0 保持链 + rememberReturn。练侧 atomCount===0 放宽链
+            （T45 A）语义不动；内嵌 Strip 条末已由 T51 E 组件级接线。 */}
+        {items.length > 0 ? (
+          <Link
+            href={reviewHref}
+            onClick={rememberReturn}
+            className="text-sm text-muted no-underline hover:text-cinnabar"
+          >
+            去核页 →
+          </Link>
+        ) : (
+          <span className="text-sm text-muted" title="当前范围没有待核 cite">
+            暂无待核
+          </span>
+        )}
       </div>
     </section>
   );

@@ -538,8 +538,14 @@ async function StudyBody({
             {/* T33 A：交叉弱链的 sticky 延伸——长队列滚离页头后仍能去同范围核；
                 muted 次级文字（非第二颗实心朱红），href 与页头 Strip 同一 progressReviewHref。
                 T40 C：Server 页不能挂 onClick——换薄客户端岛 CrossScopeReturnLink，
-                点前 saveReturn（payload=studyReturnTo，与页头 Strip 同一来源）。 */}
-            <CrossScopeReturnLink href={progressReviewHref} returnTo={studyReturnTo}>
+                点前 saveReturn（payload=studyReturnTo，与页头 Strip 同一来源）。
+                T51 H：对侧（核）池 0 → 纯文「同范围暂无待核」（stripItemKeys 与页头 Strip /
+                Bridge progress* 同源，fail-closed）；>0 保持链 + return。 */}
+            <CrossScopeReturnLink
+              href={progressReviewHref}
+              returnTo={studyReturnTo}
+              emptyLabel={stripItemKeys.length === 0 ? "同范围暂无待核" : undefined}
+            >
               去核同范围 →
             </CrossScopeReturnLink>
           </div>
@@ -587,14 +593,22 @@ async function StudyBody({
                 </Link>
                 {/* T42 B：Server 页不能挂 onClick——「核本卡」换 CrossScopeReturnLink 岛，
                     点前 saveReturn（returnTo=studyReturnTo，与页头 Strip/sticky 交叉同一份）；
-                    className 对齐相邻「回本卡」次级 text-sm 链。 */}
-                <CrossScopeReturnLink
-                  href={reviewHref}
-                  returnTo={studyReturnTo}
-                  className="text-sm text-muted no-underline hover:text-cinnabar"
-                >
-                  核本卡 →
-                </CrossScopeReturnLink>
+                    className 对齐相邻「回本卡」次级 text-sm 链。
+                    T51 I：空原子分支同门禁——heyeItems（= reviewHref 同族 card/page 池）
+                    ===0 → 宿主三元降纯文「本卡暂无待核」，不走岛（纯文无 href 不写 return）。 */}
+                {heyeItems.length > 0 ? (
+                  <CrossScopeReturnLink
+                    href={reviewHref}
+                    returnTo={studyReturnTo}
+                    className="text-sm text-muted no-underline hover:text-cinnabar"
+                  >
+                    核本卡 →
+                  </CrossScopeReturnLink>
+                ) : (
+                  <span className="text-sm text-muted" title="本卡暂无待核 cite">
+                    本卡暂无待核
+                  </span>
+                )}
               </>
             ) : null}
             {/* T27 C：本页空 → 主 CTA 优先放宽（清 page 留 chapter/book，一颗实心）；
@@ -645,6 +659,10 @@ async function StudyBody({
           bookByChapter={bookByChapter}
           deskHref={deskHref}
           reviewHref={reviewHref}
+          /* T51 I：交叉核链对侧真池——heyeItems（card/page 过滤的 collectCiteQueue，与
+             reviewHref / progressReview 同族同范围；无页时即 stripItemKeys 同池）；
+             缺省/解析不出当 0 fail-closed，不造假正数。 */
+          pendingCount={heyeItems.length}
           cardHref={cardHref}
           allHref={`/study${qs({ mode: "all" })}`}
           unknownHref={`/study${qs({ mode: "unknown" })}`}
