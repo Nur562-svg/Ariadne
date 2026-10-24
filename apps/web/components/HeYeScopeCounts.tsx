@@ -31,9 +31,15 @@ export default function HeYeScopeCounts({
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setStore(loadHeYeStore());
-    setReady(true);
-    return subscribeHeYeStore(() => setStore(loadHeYeStore()));
+    // T65 G：fail-closed——装载/订阅抛错仍 setReady(true)（空计数），绝不永挂「读取中」。
+    try {
+      setStore(loadHeYeStore());
+      setReady(true);
+      return subscribeHeYeStore(() => setStore(loadHeYeStore()));
+    } catch {
+      setReady(true);
+      return;
+    }
   }, []);
 
   if (!ready) {

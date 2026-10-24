@@ -894,16 +894,24 @@ function QueuePanel({
   const [ready, setReady] = useState(false);
 
   // 只读双 store 的唯一消费者（外层 ClewPane 已收敛为单路订阅，见其审计注释）。
+  // T65 G：fail-closed——装载/订阅抛错仍 setReady(true)（空计数），绝不永挂「读取中」。
   useEffect(() => {
-    setGrades(loadGrades());
-    setHeYe(loadHeYeStore());
-    setReady(true);
-    const u1 = subscribeStudyGrades(() => setGrades(loadGrades()));
-    const u2 = subscribeHeYeStore(() => setHeYe(loadHeYeStore()));
-    return () => {
-      u1();
-      u2();
-    };
+    try {
+      setGrades(loadGrades());
+      setHeYe(loadHeYeStore());
+      setReady(true);
+      const u1 = subscribeStudyGrades(() => setGrades(loadGrades()));
+      const u2 = subscribeHeYeStore(() => setHeYe(loadHeYeStore()));
+      return () => {
+        u1();
+        u2();
+      };
+    } catch {
+      setGrades({});
+      setHeYe({});
+      setReady(true);
+      return;
+    }
   }, []);
 
   const hasPool = (clew.progressAtoms?.length ?? 0) + (clew.progressItems?.length ?? 0) > 0;

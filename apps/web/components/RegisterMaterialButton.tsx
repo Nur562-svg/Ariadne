@@ -160,8 +160,8 @@ export default function RegisterMaterialButton({
           role="status"
           className="mt-2 block rounded-lg border border-amber-300 bg-status-warn-bg px-3 py-2 text-xs leading-6 text-status-warn"
         >
-          抽取质量偏弱：OCR未见 {qualityWarn.ocrMiss} · missRate{" "}
-          {(qualityWarn.missRate * 100).toFixed(1)}% · 零原子卡 {qualityWarn.zeroAtomCards} ·
+          抽取质量偏弱：OCR未见 {qualityWarn.ocrMiss}（未见率{" "}
+          {(qualityWarn.missRate * 100).toFixed(1)}%） · 零原子卡 {qualityWarn.zeroAtomCards} ·
           无页 p.? {qualityWarn.nullPage}
           {(qualityWarn.incompleteAtoms ?? 0) > 0
             ? ` · 不完备原子 ${qualityWarn.incompleteAtoms}（空 prompt ${qualityWarn.emptyPromptAtoms ?? 0} / 空 answer ${qualityWarn.emptyAnswerAtoms ?? 0}）`
@@ -171,14 +171,14 @@ export default function RegisterMaterialButton({
             ? ` · OCR 覆盖偏弱（空 ${qualityWarn.emptyPages ?? 0} 页 / 稀 ${qualityWarn.sparsePages ?? 0} 页）`
             : ""}
           {(qualityWarn.darkCount ?? 0) > 0
-            ? ` · 暗页 ${qualityWarn.darkCount}（darkRate ${((qualityWarn.darkRate ?? 0) * 100).toFixed(0)}%）——实质 OCR 页未成原子${
+            ? ` · 暗页 ${qualityWarn.darkCount}（暗率 ${((qualityWarn.darkRate ?? 0) * 100).toFixed(0)}%）——实质 OCR 页未成原子${
                 (qualityWarn.darkPages ?? []).length > 0
                   ? `：${(qualityWarn.darkPages ?? []).map((p) => `p.${p}`).join(" ")}`
                   : ""
               }`
             : ""}
           {(qualityWarn.shallowCount ?? 0) > 0
-            ? ` · 浅页 ${qualityWarn.shallowCount}（shallowRate ${((qualityWarn.shallowRate ?? 0) * 100).toFixed(0)}%）——已 cite 页原子极稀${
+            ? ` · 浅页 ${qualityWarn.shallowCount}（浅率 ${((qualityWarn.shallowRate ?? 0) * 100).toFixed(0)}%）——已 cite 页原子极稀${
                 (qualityWarn.shallowPages ?? []).length > 0
                   ? `：${(qualityWarn.shallowPages ?? []).map((p) => `p.${p}`).join(" ")}`
                   : ""

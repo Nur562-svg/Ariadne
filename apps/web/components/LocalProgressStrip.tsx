@@ -91,23 +91,46 @@ export default function LocalProgressStrip({
   const [grades, setGrades] = useState<GradeMap>({});
   const [heye, setHeYe] = useState<HeYeStore>({});
   const [ready, setReady] = useState(false);
+  /** T65 G：装载失败（storage 读抛错等）——仍 ready，条降「本机暂无进度」，绝不永挂读取中。 */
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
-    setGrades(loadGrades());
-    setHeYe(loadHeYeStore());
-    setReady(true);
-    const u1 = subscribeStudyGrades(() => setGrades(loadGrades()));
-    const u2 = subscribeHeYeStore(() => setHeYe(loadHeYeStore()));
-    return () => {
-      u1();
-      u2();
-    };
+    // T65 G：fail-closed——loader 内部各有 try/catch，但订阅注册 / 未来改动若抛错也必须
+    // setReady(true)，绝不永挂「本机进度读取中…」；失败态静默空 store，不装掌握%。
+    try {
+      setGrades(loadGrades());
+      setHeYe(loadHeYeStore());
+      setReady(true);
+      const u1 = subscribeStudyGrades(() => setGrades(loadGrades()));
+      const u2 = subscribeHeYeStore(() => setHeYe(loadHeYeStore()));
+      return () => {
+        u1();
+        u2();
+      };
+    } catch {
+      setGrades({});
+      setHeYe({});
+      setLoadFailed(true);
+      setReady(true);
+      return;
+    }
   }, []);
 
   if (!ready) {
     return (
       <p className="text-xs text-muted">
         {compact ? "本机进度读取中…" : "本机进度读取中…"}
+      </p>
+    );
+  }
+
+  if (loadFailed) {
+    return (
+      <p
+        className={`text-xs text-muted ${compact ? "leading-5" : "mt-2 leading-6"}`}
+        aria-label="本机学习与核页进度"
+      >
+        本机进度暂不可读（本机暂无进度） · 仅这个浏览器 · 非掌握度 · 与 seed verified 无关
       </p>
     );
   }

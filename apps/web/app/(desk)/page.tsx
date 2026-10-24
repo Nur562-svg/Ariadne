@@ -388,7 +388,10 @@ export default function Library() {
                   T59 G：浅信号**旁挂**本行（暗与浅同点名行分列；书级 shallowCount 合计，
                   loadExtractPageDensity 与 pnpm density-check 同真）——只任暗或任浅才出，
                   好书静音；缺 cards/blocks 章＝未检不抬假阳；仍不拆 cite|parse|暗 三分列
-                  骨架、不造第四大红独立列。 */}
+                  骨架、不造第四大红独立列。
+                  T65 A：徽内比率是**本书**实质页口径的合计（如 4/89≈4%），与章级驾驶舱的
+                  单章 24% 是两套分母——文案改中文「占实质页」并标「本书」防误读；数学仍
+                  bookExtractPage/bookDensity 书级合计，不假贴章级数。 */}
               {(() => {
                 const be = bookExtractPage[b.id];
                 const bd = bookDensity[b.id];
@@ -398,15 +401,16 @@ export default function Library() {
                     <span className="rounded border border-amber-300 bg-status-warn-bg px-2 py-0.5">
                       抽出偏稀
                       {be && be.dark > 0
-                        ? ` · 暗${be.dark}（darkRate ${(be.darkRate * 100).toFixed(0)}%）`
+                        ? ` · 暗页 ${be.dark}（本书占实质页 ${(be.darkRate * 100).toFixed(0)}%）`
                         : ""}
                       {bd && bd.shallow > 0
-                        ? ` · 浅${bd.shallow}（shallowRate ${(bd.shallowRate * 100).toFixed(0)}%）`
+                        ? ` · 浅页 ${bd.shallow}（本书占实质页 ${(bd.shallowRate * 100).toFixed(0)}%）`
                         : ""}
                     </span>
                     <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
                       去重抽 →
                     </Link>
+                    <span className="text-muted">弱章明细见下方章质检驾驶舱</span>
                   </p>
                 );
               })()}

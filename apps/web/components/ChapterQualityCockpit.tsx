@@ -328,7 +328,7 @@ function ChapterRow({
                     <Link
                       key={id}
                       href={`/desk/card/${encodeURIComponent(id)}`}
-                      className="mono text-cinnabar no-underline hover:underline underline-offset-4"
+                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4"
                     >
                       {id}
                     </Link>
@@ -343,7 +343,7 @@ function ChapterRow({
                     <Link
                       key={id}
                       href={`/desk/card/${encodeURIComponent(id)}`}
-                      className="mono text-cinnabar no-underline hover:underline underline-offset-4"
+                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4"
                     >
                       {id}
                     </Link>
@@ -361,7 +361,7 @@ function ChapterRow({
                     <Link
                       key={p}
                       href={`/viewer/${p}`}
-                      className="mono text-cinnabar no-underline hover:underline underline-offset-4"
+                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4"
                     >
                       p.{p}
                     </Link>
@@ -375,7 +375,7 @@ function ChapterRow({
                     <Link
                       key={p}
                       href={`/viewer/${p}`}
-                      className="mono text-cinnabar no-underline hover:underline underline-offset-4"
+                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4"
                     >
                       p.{p}
                     </Link>

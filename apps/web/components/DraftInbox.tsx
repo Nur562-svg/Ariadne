@@ -241,6 +241,23 @@ export default function DraftInbox({
         </div>
       ) : null}
 
+      {/* T65 D：空岛常显静默壳——无草稿且无不完备待补时仍保留可发现的效用区（标题 + 免责 +
+          空态短句 + 下方 DraftPortBlock 折叠），对齐 ProgressPortability 常显壳节奏；
+          静默 border-line，禁大红 empty-CTA。上方两条非空路径（琥珀卡 / muted 引导）
+          形状不变——T62/T64 收件箱主路径不 redo。 */}
+      {draftedIds.length === 0 && incompleteNoDraft.length === 0 ? (
+        <div className="rounded-lg border border-line bg-card px-4 py-3">
+          <h2 className="text-sm font-semibold">本机草稿收件箱</h2>
+          <p className="mt-1 text-xs leading-6 text-muted">
+            暂无本机草稿 · 无不完备待补——草稿在卡详的原子行 / 字段行就地编辑，有真改动才会在此点名。
+          </p>
+          {/* F：空壳次级说明——草稿 ≠ 进度包（练/核带走在上方「本机进度带走」；草稿只在下方折叠区单独带走）。 */}
+          <p className="mt-1 text-[11px] leading-5 text-muted">
+            草稿 ≠ 练/核进度包——进度带走见上方「本机进度带走」；草稿单独带走见下方折叠区。{INBOX_DISCLAIMER}
+          </p>
+        </div>
+      ) : null}
+
       {/* G：草稿单独带走（与练/核进度包分离；draft-port ≠ progress-port）。折叠区默认不吵。 */}
       <DraftPortBlock store={store} />
     </section>

@@ -347,7 +347,7 @@ export default function IngestPage() {
                             if (!epc) return null;
                             return (
                               <span className={epc.weak ? "text-status-warn" : undefined}>
-                                抽出页 实质 {epc.substantialPages} · 已cite {epc.citedPages} · 暗 {epc.darkCount} · darkRate {(epc.darkRate * 100).toFixed(0)}%
+                                抽出页 实质 {epc.substantialPages} · 已cite {epc.citedPages} · 暗 {epc.darkCount} · 暗率 {(epc.darkRate * 100).toFixed(0)}%
                               </span>
                             );
                           })()}
@@ -360,7 +360,7 @@ export default function IngestPage() {
                             if (!den) return null;
                             return (
                               <span className={den.weak ? "text-status-warn" : undefined}>
-                                浅密度 实质 {den.substantialPages} · 有原子 {den.citedAtomPages} · 浅 {den.shallowCount} · shallowRate {(den.shallowRate * 100).toFixed(0)}%
+                                浅密度 实质 {den.substantialPages} · 有原子 {den.citedAtomPages} · 浅 {den.shallowCount} · 浅率 {(den.shallowRate * 100).toFixed(0)}%
                               </span>
                             );
                           })()}

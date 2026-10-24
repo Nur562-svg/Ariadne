@@ -39,9 +39,15 @@ export default function StudyScopeCounts({
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setGrades(loadGrades());
-    setReady(true);
-    return subscribeStudyGrades(() => setGrades(loadGrades()));
+    // T65 G：fail-closed——装载/订阅抛错仍 setReady(true)（空计数），绝不永挂「读取中」。
+    try {
+      setGrades(loadGrades());
+      setReady(true);
+      return subscribeStudyGrades(() => setGrades(loadGrades()));
+    } catch {
+      setReady(true);
+      return;
+    }
   }, []);
 
   if (!ready) {
