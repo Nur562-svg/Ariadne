@@ -1,0 +1,147 @@
+════════════════════════════════════
+Task 55 · pipeline-miss-remediate-01 · MEGA · zcode GLM5.3 max thinking
+════════════════════════════════════
+仓库：/Users/nukeab/projects/Ariadne
+Tip 前置（硬）：994602f（docs T54） atop d90d951（feat T54 pipeline-cite-ocr-quality-01） atop d518876（T53 docs）。
+git log -1 --oneline 须含 994602f。若停在 d90d951 或更早 → 停，对齐后再开工。
+先读 docs/frontend-aesthetics.md。对照 SCOPE：docs/task-55-SCOPE.md 或 /workspace/reports/ariadne-task-55/SCOPE.md。
+体量：约 180–300+ 分钟真实编码。A–J 全部交。只做 shelf 徽或只扩 CLI = 拒收。15–30/90 分钟假装收工 = 漏做。又一轮 empty-CTA densify / return densify / CitePeek 正文·trap redo / 写 verified:true / 自动写 entities / 重做 T46–T54 = 主题偏了，拒收。
+不 push。验收 PASS 后站规 auto-push（勿问「推」）。
+
+────────────────────────────────────
+空池 CTA / return / 深链 / T54 井（硬声明 · 写进回复）
+────────────────────────────────────
+T43–T51 empty-pool CTA densify 已饱和；T35–T42 return densify 已饱和；T52–T53 已闭空·完成/鬼页深链/HeYe u/z；T54 已闭 cite↔OCR 检测 + ingest 质量条 + Register 软门禁 + Entity/HeYe/CiteChip「OCR 未见」（不写 verified:true）。
+本刀不是再扩 empty-CTA，不是 return densify，不是重做 T54 bigram/软门禁骨架，不是 CitePeek 正文/trap，不是自动写 seed。
+主题 = 材料→原子 pipeline 第二刀：OCR未见/零原子/空 prompt·answer 补救面 + 附近 OCR 窗 + 重抽/建议摘录可复制 + 书架书卡质量徽。检测→定位→复制补救→书库扫视。不写 verified:true，不自动 PATCH entities。
+
+────────────────────────────────────
+三子主题
+────────────────────────────────────
+1) 质量 lib 扩展（附近 OCR + 原子完备）+ CLI 明细/书级 — A · B · C
+2) ingest 补救面板 + Register 软门禁扩 incomplete — D · E
+3) Entity/HeYe 复制级补救 + 书架质量徽 — F · G · H
+I = 装配；J = build + cite-check + heye-only DEFER + 回归
+
+────────────────────────────────────
+A · lib 扩展 cite-ocr-quality
+────────────────────────────────────
+1) 扩展 apps/web/lib/cite-ocr-quality.ts + 孪生 scripts/lib/cite-ocr-quality.mjs（keep in sync；勿 substring-only 分叉；保留 T54 quoteInOcr thr=0.6 / scoreChapter 旧字段）。
+2) ocrNeighborhood(quote, pageText, opts?)→{snippet, approxStart?, approxEnd?}｜null（空页/空 quote→null；只读）。
+3) suggestQuoteFromOcr(...)：基于 neighborhood 的启发式建议摘录（禁 LLM）。
+4) cardCiteMisses 每条增 ocrSnippet? · suggestQuote?（截断≤120）。
+5) scoreCard/scoreChapter/CiteQuality 增 emptyPromptAtoms · emptyAnswerAtoms · incompleteAtoms（空 prompt∨空 answer；zeroAtomCards 口径保持，勿与 incomplete 重复整卡双计——注释写清）。
+6) 只读；禁止写 verified / entities。
+
+────────────────────────────────────
+B · CLI cite-check 明细
+────────────────────────────────────
+1) 汇总行加空prompt/空answer/不完备原子。
+2) --misses：逐条打印 cardId · p · cov · quote · OCR附近。
+3) data/qa/<ch>.cite-ocr.json 同步新字段（仍 gitignore）。
+4) 可选 --book <bookId>：按 config/books.json 折叠多章一行；无 flag 保持章级。
+5) 禁止改 data/cards/*.entities.json。
+
+────────────────────────────────────
+C · extract 后置完备
+────────────────────────────────────
+1) stderr 兼报 emptyPrompt/emptyAnswer/incomplete。
+2) --strict 且（missRate>0.4 或 zeroAtomCards>0 或 incompleteAtoms>0）→ 非零退出；已有 entities → 拒绝覆盖。
+3) 默认警告仍写。勿大修 extract system prompt（可选一行「atoms.prompt/answer 勿空」）。
+
+────────────────────────────────────
+D · ingest 补救面板
+────────────────────────────────────
+1) extracted/ready 且 ocrMiss|zeroAtom|incomplete>0：章级可展开补救——miss 样例≤8（链实体卡、页、cov、OCR附近 mono）+ 零原子卡 id 链 + CopyCommand「pnpm extract -- <ch>」（多章按 missing 子集拼）。
+2) 健壮章不渲面板；uploaded/parsed 不装假表。
+3) 保留 T54 质量条；勿重做 T45 N/M · T49 三连。
+
+────────────────────────────────────
+E · Register 软门禁扩
+────────────────────────────────────
+1) qualityWarn 增 emptyPromptAtoms?/emptyAnswerAtoms?/incompleteAtoms?。
+2) 触发：既有 missRate≥0.25||zeroAtomCards>0，另加 incompleteAtoms>0 → 琥珀点名 + 二次「仍要注册」。
+3) API 不因质量 4xx；T49 成功三连只回归。
+
+────────────────────────────────────
+F · EntityCardDetail 复制级补救
+────────────────────────────────────
+1) miss cite：附近 OCR 截断 +「复制建议摘录」按钮（clipboard；不可用则隐藏，对齐 CopyCommand 诚实）。
+2) 脚注：建议≠写回 seed≠改 verified≠本机核页标记。
+3) 禁改 CitePeek quote/trap/定位；禁自动 PATCH entities。
+
+────────────────────────────────────
+G · HeYe 附近 OCR
+────────────────────────────────────
+1) 既有未见琥珀下：附近一行 mono +「复制附近」。
+2) 匹配/无 quote/无 text 不额外吵。
+3) 勿拆 T54 琥珀句 · T53 u/z · 开桌鬼页 · mark/undo/verified。
+
+────────────────────────────────────
+H · 书架质量徽
+────────────────────────────────────
+1) app/(desk)/page.tsx：每书折叠其 chapterIds 的 scoreChapter（缺 OCR 文本章＝未检，不抬假阳）。
+2) 弱书（ocrMiss>0||zeroAtom>0||incomplete>0）：琥珀短徽「OCR未见 M」等（有 Z/K 则点名）；好书不吵。
+3) 可选次级链 /ingest；禁掌握%/Due角标/圆环。
+4) Overview 章行小徽可选（非拒收，有则加分）。
+
+────────────────────────────────────
+I · 装配线
+────────────────────────────────────
+1) ingest → 补救面板用 score+cardCiteMisses（A）。
+2) Register → qualityWarn 含完备字段。
+3) desk/card + entities/[id] → Detail miss 明细/snippet（服务端算优）。
+4) review/page HeYe → G 用 pages[].text 现算 neighborhood。
+5) 书架 → bookQuality 下传或页内算。
+6) 缺 pageText → 未检（不抬假阳）。
+
+────────────────────────────────────
+J · build · DEFER · 回归
+────────────────────────────────────
+1) pnpm --filter web build PASS。
+2) pnpm cite-check -- ch01 与 --misses（或等价）跑通。
+3) 不要 push。
+4) heye-only invent DEFER：禁止 seed；回复写明 deferred。
+5) diff 禁止 verified:true 写入；禁止补救写回 entities。
+6) 回归：T54 quoteInOcr/scoreChapter/cite-check/ingest质量条/Register软门禁/Entity OCR未见/HeYe琥珀/CiteChip ocrMiss；T53 pageInOcr/deskPageHref/CiteChip鬼页/Peek开桌/瓷砖对页/HeYe开桌/Study deskBack/HeYe u/z；T52 空·完成/Quiz书空/Viewer带页/Entity对页；T51 Clew/Strip/书头/Quiz核/交叉离面空池；T50 Shelf/Footer/LibraryContinuity/Sidebar/book-pools；T49 IngestReady/Register/CitePeek 浮层练核CTA + 正文/trap 未毁；T48 CardCard/EntitySearch/轨核/CardVs/Sticky标N/Overview章行；T47 TOC/KINDS/Continuity 0-OCR壳；T46 书架OCR/换书/模式；T45 Quiz练侧/ingest N/M/CopyCommand；T44 Clew空态分型骨架；T43 Changes筛选/截断；T42–T28 leaveReturn/书头return/CrossScope return 接线未拆；ModeChips 未插进练中；Queue 未改 Due；LocalProgressStrip 视觉未毁；Study u/z 未毁。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–54 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC（含 T47 counts）、Clew stub 三 tab、卡页 CitePeek 正文与 trap、/review·/study 诚实切片、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、healOpenedIfDirty、book-pools.ts、ocr-page.ts（T53）、cite-ocr-quality（T54 口径）、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CardHubReturnLinks、IngestReadyLinks、CopyCommand、LibraryContinuity/ShelfBookContinuity、T34–T54 已交切片、T26 稀疏琥珀、T41 sticky N=0 门禁、T48 sticky 标 N、T51 Clew/Strip/交叉空池、T52 emptyKind/书空/Viewer带页、T53 鬼页深链/HeYe undo、T54 质量条/软门禁/OCR未见。勿 verified:true 过关。勿自动写 entities。A–J 范围保持完整；主题是 pipeline miss 补救 + 书架质量徽，不是 empty-CTA，不是 return，不是 T46–T54 重做。
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true 写入 / 自动 PATCH entities / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / empty-CTA densify 当主题 / 重做 T46–T54 已交（拆 bigram / 拆软门禁 / 重做 OCR 未见条） / 只扩 CLI 或只做 shelf 徽就收工
+- Register API 因质量硬 4xx（本刀 UI 软门禁）
+- Next.js security upgrade 当本刀主题（ops note only）
+- 假云端 OCR / 假进度条动画 / 假正数池 / 把 OCR 未见或建议摘录伪装成 seed verified
+- 发明 atoms.gloss 当主题
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T54 已交切片
+- 整段 port ariadnemini版 verify/clew-API
+- push（写手禁；验收 PASS 后站规 auto-push，勿问「推」）
+
+════════════════════════════════════
+自测（回复须勾）
+════════════════════════════════════
+1) ocrNeighborhood 有窗→非空；空页→null；与 quoteInOcr 同页口径
+2) scoreChapter 含 emptyPromptAtoms/emptyAnswerAtoms/incompleteAtoms；旧字段仍在
+3) pnpm cite-check -- ch01 汇总含完备字段；--misses 出 OCR附近；entities 未改
+4) extract --strict 在 incomplete>0 或既有 miss/zero 条件拒写；默认只警告
+5) ingest · 弱章见补救面板（样例+零原子链+CopyCommand）；健壮章不吵；uploaded 无假表
+6) Register · incomplete>0 也二次确认；API 不 4xx
+7) Entity · miss 见附近 OCR + 复制建议；seed/verified 未变；CitePeek 正文/trap 未毁
+8) HeYe · 未见下有附近+复制；匹配无；T54 琥珀与 T53 u/z 未毁
+9) 书架 · 弱书琥珀徽；好书无；无掌握%/Due；build PASS；cite-check 可跑；未 push；heye-only DEFER；无 verified/entities 写入
+10) 回归 T54–T28；ModeChips未插队；Queue非Due；CitePeek正文/trap未毁；empty-CTA门禁未拆；T54 质量条/软门禁未毁
+
+做完叫验收。A–J 全交才过。
