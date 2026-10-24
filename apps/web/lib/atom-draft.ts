@@ -1,0 +1,305 @@
+/**
+ * 本机草稿原子字段编辑器存取（T61 atom-local-draft-01；客户端专用，与 lib/study.ts /
+ * lib/heye-store.ts 对称，只跑在浏览器）。本模块不 import 任何含 fs 的模块（类型
+ * import 编译期擦除，同 lib/cite-ocr-quality.ts 的引用方式），保证客户端安全引入。
+ *
+ * 五禁（T61 合同，写死在此 · 任何改动不得触碰）：
+ * 1. 新键 only：ariadne.atom-draft.v1。永不改名 / 迁移 / 复用 ariadne.study.v1 ·
+ *    ariadne.heye.v1 · ariadne.desk.return.v1 · session / view / last-opened / recent-books。
+ * 2. 永不写 verified:true——草稿里没有 verified 字段，导出 patch 也不含 verified 翻改；
+ *    「本机草稿」不等于 seed 抽查 verified，不等于 heye 本机已对，不等于 study 练分。
+ * 3. 永不 auto PATCH / fetch / fs 写 data/cards/*.entities.json 或 blocks——seed 服务端
+ *    读路径只读不变；导出只进剪贴板，人核后自行改 seed / 开 PR。
+ * 4. 永不 Clew LLM 真写 / 提案自动落盘——本模块与 Clew 写路径无关。
+ * 5. 永不改名既有 storage keys；progress-port 不吞草稿键（草稿不进 study/heye 导出包）。
+ */
+
+import type { Atom, Cite, EntityCard } from "@/lib/entities";
+
+export const ATOM_DRAFT_STORE_KEY = "ariadne.atom-draft.v1";
+
+/**
+ * 单条草稿：只含可编辑字段子集（atom：prompt/answer + 可选 citeQuote 供贴 T55 建议
+ * 摘录；field：value）。没有 verified / difficulty / page 等只读字段——草稿永远
+ * 翻不了 verified。citeQuote 只覆盖 quote 文本，不造页码、不造抽查结论。
+ */
+export type DraftEntry = {
+  prompt?: string;
+  answer?: string;
+  value?: string;
+  citeQuote?: string;
+  t: number;
+};
+
+/** Record<draftKey, DraftEntry>；draftKey = `${cardId}/atom:${atomId}` 或 `${cardId}/field:${index}`。 */
+export type AtomDraftStore = Record<string, DraftEntry>;
+
+export function atomDraftKey(cardId: string, atomId: string): string {
+  return `${cardId}/atom:${atomId}`;
+}
+
+export function fieldDraftKey(cardId: string, index: number): string {
+  return `${cardId}/field:${index}`;
+}
+
+/** 从 draftKey 取回 cardId 前缀（卡 id 是 slug，不含「/」；拆失败返回 null 不抛）。 */
+export function draftCardId(key: string): string | null {
+  const i = key.indexOf("/");
+  return i > 0 ? key.slice(0, i) : null;
+}
+
+/** 读本机草稿；SSR / 隐私模式读失败 / 形状不对一律 {}，不抛。 */
+export function loadAtomDraftStore(): AtomDraftStore {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem(ATOM_DRAFT_STORE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as AtomDraftStore;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * 写回 localStorage；隐私模式写失败不抛。返回 persisted=false 让 UI 可感知
+ * （「草稿仅本次会话可见，未持久化」——绝不装已持久化）。
+ */
+function persistAtomDraftStore(next: AtomDraftStore): boolean {
+  try {
+    window.localStorage.setItem(ATOM_DRAFT_STORE_KEY, JSON.stringify(next));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** 同页多个组件（草稿条 / 原子行 / 字段行 / 编辑器）共享本机态的轻量订阅（对齐 heye-store）。 */
+const listeners = new Set<() => void>();
+
+export function subscribeAtomDraftStore(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function emitAtomDraftChanged() {
+  for (const l of listeners) l();
+}
+
+export type DraftWriteResult = { persisted: boolean };
+
+/** 整条覆盖保存（编辑器「保存本条草稿」——编辑器掌控全部可编辑字段，故整条替换）。 */
+export function setAtomDraft(key: string, fields: Omit<DraftEntry, "t">): DraftWriteResult {
+  const next = { ...loadAtomDraftStore(), [key]: { ...fields, t: Date.now() } as DraftEntry };
+  emitAtomDraftChanged();
+  return { persisted: persistAtomDraftStore(next) };
+}
+
+/** 合并字段（如 T55 建议摘录「填入草稿 quote」只动 citeQuote，不动已有 prompt/answer 草稿）。 */
+export function mergeAtomDraft(key: string, fields: Omit<DraftEntry, "t">): DraftWriteResult {
+  const store = loadAtomDraftStore();
+  const prev = store[key] ?? { t: 0 };
+  const next = { ...store, [key]: { ...prev, ...fields, t: Date.now() } as DraftEntry };
+  emitAtomDraftChanged();
+  return { persisted: persistAtomDraftStore(next) };
+}
+
+/** 放弃本条草稿（删单 key）。 */
+export function clearAtomDraft(key: string): DraftWriteResult {
+  const next = { ...loadAtomDraftStore() };
+  delete next[key];
+  emitAtomDraftChanged();
+  return { persisted: persistAtomDraftStore(next) };
+}
+
+/** 清除本卡全部草稿（卡级草稿条「清除本卡草稿」——只删本卡前缀，不误伤他卡）。 */
+export function clearCardDrafts(cardId: string): DraftWriteResult {
+  const next = { ...loadAtomDraftStore() };
+  let changed = false;
+  for (const k of Object.keys(next)) {
+    if (k.startsWith(`${cardId}/`)) {
+      delete next[k];
+      changed = true;
+    }
+  }
+  if (changed) emitAtomDraftChanged();
+  return { persisted: persistAtomDraftStore(next) };
+}
+
+// ---- overlay helpers（显示 = seed ⊕ draft overlay；服务端 loadCards 只读不变） ----
+
+/** 与打分相关的最小原子形状（结构兼容 lib/entities 的 Atom；不 import 含 fs 的模块）。 */
+export type DraftableAtom = Pick<Atom, "id" | "prompt" | "answer" | "difficulty"> & {
+  cite?: Cite;
+};
+/** 与打分相关的最小字段形状（结构兼容 EntityCard.fields 项）。 */
+export type DraftableField = { label: string; value: string; cite?: Cite };
+
+function nonEmptyDraft(s: string | undefined): boolean {
+  return s != null && s.trim().length > 0;
+}
+
+/**
+ * 原子 overlay：有草稿字段覆盖 seed，无草稿保持 seed。citeQuote 仅在 seed 已有 cite 时
+ * 覆盖 quote 文本（seed 无 cite 不凭空造 cite——页码 / verified 永远来自 seed）。
+ */
+export function applyAtomDraft(
+  seedAtom: DraftableAtom,
+  entry: DraftEntry | undefined,
+): DraftableAtom {
+  if (!entry) return seedAtom;
+  return {
+    ...seedAtom,
+    prompt: nonEmptyDraft(entry.prompt) ? (entry.prompt as string) : seedAtom.prompt,
+    answer: nonEmptyDraft(entry.answer) ? (entry.answer as string) : seedAtom.answer,
+    cite:
+      nonEmptyDraft(entry.citeQuote) && seedAtom.cite
+        ? { ...seedAtom.cite, quote: entry.citeQuote as string }
+        : seedAtom.cite,
+  };
+}
+
+/** 字段 overlay：value 可草稿；label 只读（F 最小面）。 */
+export function applyFieldDraft(
+  seedField: DraftableField,
+  entry: DraftEntry | undefined,
+): DraftableField {
+  if (!entry) return seedField;
+  return {
+    ...seedField,
+    value: nonEmptyDraft(entry.value) ? (entry.value as string) : seedField.value,
+  };
+}
+
+/** 本卡草稿条数（atom + field 全部 target，前缀精确匹配本卡）。 */
+export function cardDraftCount(store: AtomDraftStore, cardId: string): number {
+  let n = 0;
+  for (const k of Object.keys(store)) {
+    if (k.startsWith(`${cardId}/`)) n++;
+  }
+  return n;
+}
+
+/** seed 口径单原子不完备（对齐 T55 scoreCard 的 incompleteAtoms：trim 空 prompt ∨ 空 answer）。 */
+export function atomIncomplete(a: DraftableAtom): boolean {
+  return (a.prompt ?? "").trim().length === 0 || (a.answer ?? "").trim().length === 0;
+}
+
+export type IncompleteDraftTarget = {
+  atomId: string;
+  key: string;
+  emptyPrompt: boolean;
+  emptyAnswer: boolean;
+  /** 该原子已有本机草稿（旁挂用；草稿是否真的补上了空字段由 overlay 显示说话）。 */
+  hasDraft: boolean;
+};
+
+/**
+ * 列出 seed 口径不完备原子（trim 空 prompt/answer，与 T55 incompleteAtoms 同口径不另造
+ * 分叉）；供卡级草稿条「可开本机草稿补空字段」引导与编辑入口点名。零原子卡返回空
+ * （没有 atoms 可数，不编造目标）。
+ */
+export function listIncompleteDraftTargets(
+  card: Pick<EntityCard, "id" | "atoms">,
+  store?: AtomDraftStore,
+): IncompleteDraftTarget[] {
+  const s = store ?? {};
+  const out: IncompleteDraftTarget[] = [];
+  for (const a of card.atoms ?? []) {
+    const emptyPrompt = (a.prompt ?? "").trim().length === 0;
+    const emptyAnswer = (a.answer ?? "").trim().length === 0;
+    if (!emptyPrompt && !emptyAnswer) continue;
+    const key = atomDraftKey(card.id, a.id);
+    out.push({ atomId: a.id, key, emptyPrompt, emptyAnswer, hasDraft: key in s });
+  }
+  return out;
+}
+
+// ---- 剪贴板 JSON patch 导出（只生成字符串，不碰任何写文件 API） ----
+
+/** 一处草稿字段的 before/after（人核后自行改 seed；before 永远是 seed 原文）。 */
+export type DraftPatchEntry = {
+  target: string;
+  field: "prompt" | "answer" | "citeQuote" | "value";
+  before: string | null;
+  after: string;
+};
+
+export type AtomDraftPatchDoc = {
+  schema: "ariadne.atom-draft-patch.v1";
+  cardId: string;
+  chapterId?: string;
+  note: string;
+  entries: DraftPatchEntry[];
+};
+
+/** 只发真改动的字段（trim 比较：草稿 === seed 的字段不发，空草稿字段不发）。 */
+function pushIfChanged(
+  entries: DraftPatchEntry[],
+  target: string,
+  field: DraftPatchEntry["field"],
+  seed: string | null,
+  draft: string | undefined,
+) {
+  if (!nonEmptyDraft(draft)) return;
+  const d = draft as string;
+  if (seed != null && d.trim() === seed.trim()) return;
+  entries.push({ target, field, before: seed, after: d });
+}
+
+/** 原子草稿是否至少有一个字段真改动（trim 比较 seed；空草稿字段不算——「已改草稿」旁挂与补丁导出同口径）。 */
+export function atomDraftDiffers(
+  seed: { prompt: string; answer: string; citeQuote?: string | null },
+  entry: DraftEntry | undefined,
+): boolean {
+  if (!entry) return false;
+  let changed = false;
+  if (nonEmptyDraft(entry.prompt)) changed = (entry.prompt as string).trim() !== seed.prompt.trim() || changed;
+  if (nonEmptyDraft(entry.answer)) changed = (entry.answer as string).trim() !== seed.answer.trim() || changed;
+  if (nonEmptyDraft(entry.citeQuote) && seed.citeQuote != null)
+    changed = (entry.citeQuote as string).trim() !== seed.citeQuote.trim() || changed;
+  if (nonEmptyDraft(entry.citeQuote) && seed.citeQuote == null) changed = true;
+  return changed;
+}
+
+/** 字段草稿是否真改动（同 atomDraftDiffers 口径）。 */
+export function fieldDraftDiffers(seedValue: string, entry: DraftEntry | undefined): boolean {
+  if (!entry) return false;
+  return nonEmptyDraft(entry.value) && (entry.value as string).trim() !== seedValue.trim();
+}
+
+/**
+ * 组可读 JSON patch 文档——给人核后手动改 seed / 开 PR 用；不是 git apply 格式，也永远
+ * 不会被本应用自动执行。只发真改动的字段（草稿 === seed 的 no-op 不发）；空草稿 →
+ * entries 为空数组（调用方诚实「无草稿可导出」）。永不包含 verified 翻改指令。
+ */
+export function buildAtomDraftPatchDoc(card: EntityCard, store: AtomDraftStore): AtomDraftPatchDoc {
+  const doc: AtomDraftPatchDoc = {
+    schema: "ariadne.atom-draft-patch.v1",
+    cardId: card.id,
+    ...(card.chapterId ? { chapterId: card.chapterId } : {}),
+    note: "本机草稿导出 · 人核后自行改 seed / 开 PR · 本浏览器不会写回仓库 · 不含 verified 翻改",
+    entries: [],
+  };
+  for (const a of card.atoms) {
+    const entry = store[atomDraftKey(card.id, a.id)];
+    if (!entry) continue;
+    pushIfChanged(doc.entries, `atom:${a.id}`, "prompt", a.prompt, entry.prompt);
+    pushIfChanged(doc.entries, `atom:${a.id}`, "answer", a.answer, entry.answer);
+    // citeQuote 的 before 取 seed cite 原文；seed 无 cite → null（表示「新增 quote」候选）。
+    pushIfChanged(doc.entries, `atom:${a.id}`, "citeQuote", a.cite?.quote ?? null, entry.citeQuote);
+  }
+  card.fields.forEach((f, i) => {
+    const entry = store[fieldDraftKey(card.id, i)];
+    if (!entry) return;
+    pushIfChanged(doc.entries, `field:${i}`, "value", f.value, entry.value);
+  });
+  return doc;
+}
+
+/** patch 文档的 pretty JSON 字符串（剪贴板导出用）。 */
+export function buildAtomDraftPatch(card: EntityCard, store: AtomDraftStore): string {
+  return JSON.stringify(buildAtomDraftPatchDoc(card, store), null, 2);
+}

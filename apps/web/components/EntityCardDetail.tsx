@@ -9,8 +9,9 @@ import { withQsMode } from "@/lib/qs-mode";
 import { deskPageHref as buildDeskPageHref, pageInOcr } from "@/lib/ocr-page";
 import { citeOcrMiss, cardCiteMisses, enumerateCardCites, quoteInOcr } from "@/lib/cite-ocr-quality";
 import CopyTextButton from "@/components/CopyTextButton";
-
-const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
+import CardDraftBar from "@/components/CardDraftBar";
+import { AtomDraftLine, FieldDraftLine, FillAtomQuoteDraft } from "@/components/AtomDraftEditor";
+import { atomIncomplete } from "@/lib/atom-draft";
 
 /** 本卡全部 cite 来源的诚实汇总（cites + fields[].cite + atoms[].cite，按 page|verified|quote 去重）。 */
 function citeStats(card: EntityCard): {
@@ -141,6 +142,18 @@ export function EntityCardDetail({
   const missDetails =
     pageTextByPage == null ? [] : cardCiteMisses(card, pageTextByPage).slice(0, 8);
   /**
+   * T61 E：miss → 原子 quote 草稿目标（按 page + quote 前缀匹配回 atoms[].cite——
+   * cardCiteMisses 的 quote 截到 30 字，故去「…」后 startsWith 比对）。取首匹配原子，
+   * 按钮 title 点名原子 id，不静默写多条；找不到 → 不渲染「填入草稿 quote」（不猜目标）。
+   * 只写本机草稿 citeQuote——不写回 seed / 不翻 verified / 不记核页标记。
+   */
+  const atomTargetOfMiss = (page: number, quote: string) => {
+    const q = quote.replace(/…$/, "");
+    return card.atoms.find(
+      (a) => a.cite?.page === page && q.length > 0 && (a.cite?.quote ?? "").startsWith(q),
+    );
+  };
+  /**
    * T35 A/B：卡枢纽练/核显式默认档（练 mode=all · 核 mode=open）——CardHubReturnLinks /
    * 本卡 Strip 消费同一对 href；本标签 sticky 停在非默认空档时从卡面进练/核仍落可见池。
    */
@@ -214,7 +227,8 @@ export function EntityCardDetail({
         ) : null}
         <p className="w-full text-xs leading-6 text-muted">
           练：本卡 {card.atoms.length} 个原子逐个自评；核：把引用对着该页 OCR 原文核对。
-          两者的进度都只记本机浏览器，不回写教材数据。
+          两者的进度都只记本机浏览器，不回写教材数据。本机草稿（若有）同样只存本浏览器，
+          未写回教材数据。
         </p>
       </section>
 
@@ -286,6 +300,14 @@ export function EntityCardDetail({
                       <span className="min-w-0 flex-1">
                         建议摘录（人核后再贴）：<span className="text-foreground/90">“{mm.suggestQuote}”</span>
                       </span>
+                      {/* T61 E：建议摘录除复制外可一键「填入草稿 quote」——仍只写本机草稿
+                          （原子 cite.quote），未写回 seed / 不翻 verified。 */}
+                      {(() => {
+                        const tgt = atomTargetOfMiss(mm.page, mm.quote);
+                        return tgt ? (
+                          <FillAtomQuoteDraft cardId={card.id} atomId={tgt.id} quote={mm.suggestQuote} />
+                        ) : null;
+                      })()}
                       <CopyTextButton text={mm.suggestQuote} label="复制建议摘录" />
                     </span>
                   ) : null}
@@ -324,6 +346,10 @@ export function EntityCardDetail({
           doubt: withQsMode(reviewHref, "doubt"),
         }}
       />
+      {/* T61 G：卡级草稿条（客户端岛；Server 读 seed，Client 读 draft ariadne.atom-draft.v1）。
+          有草稿 → 计数 + 复制补丁 + 两击确认清除；无草稿但有 seed 口径不完备原子 → 次级
+          文字引导。无草稿且无不完备 → 不渲（不加空条 chrome）。 */}
+      <CardDraftBar card={card} />
 
       <section className="mt-8">
         <h2 className="text-sm font-semibold text-muted">字段</h2>
@@ -370,7 +396,11 @@ export function EntityCardDetail({
                   ) : null}
                 </span>
               </div>
-              <dd className="mt-1.5 text-sm leading-7 text-foreground/90">{f.value}</dd>
+              {/* T61 F：字段 value 草稿岛（最小面）——label 只读、CitePeek/对页行不动；
+                  overlay 显示 + 极简编辑器只进本机草稿。 */}
+              <dd className="mt-1.5">
+                <FieldDraftLine cardId={card.id} fieldIndex={i} seedValue={f.value} />
+              </dd>
             </div>
           ))}
           </dl>
@@ -437,23 +467,20 @@ export function EntityCardDetail({
           <ol className="mt-3 space-y-3">
             {card.atoms.map((a) => (
             <li key={a.id} className="rounded-lg border border-line p-4">
-              <div className="flex items-start justify-between gap-3">
-                <p className="min-w-0 font-medium leading-7">
-                  <span className="mono mr-2 align-middle text-[11px] text-muted">{a.id}</span>
-                  {a.prompt}
-                </p>
-                <span className="mono shrink-0 rounded border border-line px-1.5 py-0.5 text-[11px] text-muted">
-                  {DIFF_ZH[a.difficulty]}
-                </span>
-              </div>
-              <details className="mt-2">
-                <summary className="cursor-pointer select-none text-sm text-muted hover:text-cinnabar">
-                  显示答案
-                </summary>
-                <p className="mt-2 border-l-2 border-cinnabar/40 pl-3 text-sm leading-7">
-                  {a.answer}
-                </p>
-              </details>
+              {/* T61 E：原子行草稿岛（客户端）——显示 seed ⊕ draft overlay 的 prompt/answer；
+                  有真改动草稿 → 琥珀「已改草稿」旁挂；seed 口径空 prompt/answer → 「待补草稿」
+                  入口；「编辑草稿」展开编辑器（prompt/answer/cite.quote 可编，id/difficulty/
+                  cite.page 只读）。下方 cite 行（CitePeek + 对页）保持服务端渲染，契约不变。 */}
+              <AtomDraftLine
+                cardId={card.id}
+                atomId={a.id}
+                seedPrompt={a.prompt}
+                seedAnswer={a.answer}
+                seedDifficulty={a.difficulty}
+                seedCitePage={a.cite?.page ?? null}
+                seedCiteQuote={a.cite?.quote}
+                incomplete={atomIncomplete(a)}
+              />
               {a.cite ? (
                 <div className="mt-2 flex flex-wrap items-center gap-3">
                   <CitePeek

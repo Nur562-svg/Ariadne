@@ -23,6 +23,7 @@ import { loadExtractPageCoverage } from "@/lib/extract-page-coverage-server";
 import type { ExtractPageCoverage } from "@/lib/extract-page-coverage";
 import { loadExtractPageDensity } from "@/lib/extract-page-density-server";
 import type { ExtractPageDensity } from "@/lib/extract-page-density";
+import { atomIncomplete } from "@/lib/atom-draft";
 import IngestUpload from "@/components/IngestUpload";
 import RegisterMaterialButton from "@/components/RegisterMaterialButton";
 import IngestReadyLinks from "@/components/IngestReadyLinks";
@@ -154,6 +155,9 @@ export default function IngestPage() {
                   ocrSnippet?: string;
                 }[];
                 zeroAtomCardIds: string[];
+                /** T61 G：含 seed 口径不完备原子（空 prompt ∨ 空 answer，同 T55 口径）的卡 id——
+                    补救面板「到卡详开草稿」次级链用；只链不阻断 register API。 */
+                incompleteCardIds: string[];
               };
               const chapterChecks = new Map<string, ChCheck>();
               for (const c of m.chapters) {
@@ -171,6 +175,9 @@ export default function IngestPage() {
                     .slice(0, 8),
                   zeroAtomCardIds: chCards
                     .filter((cd) => (cd.atoms ?? []).length === 0)
+                    .map((cd) => cd.id),
+                  incompleteCardIds: chCards
+                    .filter((cd) => (cd.atoms ?? []).some((a) => atomIncomplete(a)))
                     .map((cd) => cd.id),
                 });
               }
@@ -503,10 +510,31 @@ export default function IngestPage() {
                             </p>
                           ) : null}
                           {ck.quality.incompleteAtoms > 0 ? (
-                            <p className="mt-1.5 text-xs leading-5 text-status-warn">
-                              不完备原子 {ck.quality.incompleteAtoms}（空 prompt{" "}
-                              {ck.quality.emptyPromptAtoms} / 空 answer{" "}
-                              {ck.quality.emptyAnswerAtoms}）——重抽或人工补 seed 后再注册。
+                            <p className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-xs leading-5 text-status-warn">
+                              <span>
+                                不完备原子 {ck.quality.incompleteAtoms}（空 prompt{" "}
+                                {ck.quality.emptyPromptAtoms} / 空 answer{" "}
+                                {ck.quality.emptyAnswerAtoms}）——重抽或人工补 seed 后再注册；
+                              </span>
+                              {/* T61 G：不完备卡次级链「到卡详开草稿」——本机草稿补空字段、
+                                  导出补丁自行落盘（草稿 ≠ seed，不阻断 register）。 */}
+                              {ck.incompleteCardIds.length > 0 ? (
+                                <span className="flex flex-wrap items-baseline gap-x-2">
+                                  <span>或到卡详开本机草稿：</span>
+                                  {ck.incompleteCardIds.slice(0, 6).map((id) => (
+                                    <Link
+                                      key={id}
+                                      href={`/desk/card/${encodeURIComponent(id)}`}
+                                      className="mono text-cinnabar no-underline hover:underline underline-offset-4"
+                                    >
+                                      {id}
+                                    </Link>
+                                  ))}
+                                  {ck.incompleteCardIds.length > 6 ? (
+                                    <span className="text-muted">等 {ck.incompleteCardIds.length} 张卡</span>
+                                  ) : null}
+                                </span>
+                              ) : null}
                             </p>
                           ) : null}
                         </details>
