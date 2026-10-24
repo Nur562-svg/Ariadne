@@ -9,6 +9,7 @@ import {
 import { collectCiteQueue } from "@/lib/heye";
 import { collectBookPools, type BookPools } from "@/lib/book-pools";
 import { scoreChapter, type CiteQuality } from "@/lib/cite-ocr-quality";
+import { loadParseCoverage } from "@/lib/parse-ocr-coverage-server";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
@@ -81,6 +82,30 @@ export default function Library() {
     );
     folded.missRate = folded.cites > 0 ? folded.ocrMiss / folded.cites : 0;
     bookQuality[b.id] = folded;
+  }
+
+  /**
+   * T56 G/I：书级 parse 覆盖徽装配——各章 loadParseCoverage（与 pnpm parse-check 同真；
+   * 缺 blocks 章＝未检，不装完美覆盖）；任章 weak → 书级琥珀徽（空/稀书级合计）。
+   * 与 T55 cite 质量徽**分列**（两枚徽、两行口径），不合并不改写。
+   */
+  const bookParse: Record<string, { weak: boolean; empty: number; sparse: number; unchecked: number }> = {};
+  for (const b of books) {
+    let weak = false;
+    let empty = 0;
+    let sparse = 0;
+    let unchecked = 0;
+    for (const chId of b.chapterIds) {
+      const cov = loadParseCoverage(chId);
+      if (cov == null) {
+        unchecked++;
+        continue;
+      }
+      if (cov.weak) weak = true;
+      empty += cov.emptyPages;
+      sparse += cov.sparsePages;
+    }
+    bookParse[b.id] = { weak, empty, sparse, unchecked };
   }
 
   if (books.length === 0) {
@@ -222,6 +247,25 @@ export default function Library() {
                     </span>
                     <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
                       去补救 →
+                    </Link>
+                  </p>
+                );
+              })()}
+              {/* T56 G：书级 parse 覆盖徽——与上方 T55 cite 质量徽**分列**（独立一行、独立口径：
+                  空页/稀页是 OCR 阶段信号，OCR未见是 cite↔OCR 比对信号）。任章 weak 才出，
+                  好书/未检不吵；次级 /ingest 补扫；无掌握% / Due / 圆环。 */}
+              {(() => {
+                const bp = bookParse[b.id];
+                if (!bp || !bp.weak) return null;
+                return (
+                  <p className="mt-2 flex flex-wrap items-baseline gap-2 text-xs leading-6 text-status-warn">
+                    <span className="rounded border border-amber-300 bg-status-warn-bg px-2 py-0.5">
+                      OCR覆盖偏弱
+                      {bp.empty > 0 ? ` · 空 ${bp.empty}` : ""}
+                      {bp.sparse > 0 ? ` · 稀 ${bp.sparse}` : ""}
+                    </span>
+                    <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
+                      去补扫 →
                     </Link>
                   </p>
                 );

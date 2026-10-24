@@ -10,10 +10,14 @@ can jump to the page. Regions: main | sidebar | header | footer.
 Usage:
     .venv/bin/python scripts/parse_chapter.py            # all chapters in config
     .venv/bin/python scripts/parse_chapter.py ch01       # one chapter
+    .venv/bin/python scripts/parse_chapter.py --strict ch01  # 覆盖偏弱拒写（见 T56 C）
 
     # uploaded material PDF (ingest 落盘 data/uploads/<id>.pdf)——不传 --pdf 才用
     # config/chapter.json 的 seed PDF（免疫学）：
     .venv/bin/python scripts/parse_chapter.py --pdf data/uploads/m-xxx.pdf ch05 ch06
+
+T56 C：写盘后 stderr 报覆盖机检（空/稀/coverageRate）；--strict 且 coverageRate<0.5
+或 空/期望≥0.25 → 非零退出，已有 blocks 拒绝覆盖。只警告不改 OCR 引擎/DPI/区域算法。
 """
 from __future__ import annotations
 
@@ -29,6 +33,32 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = json.loads((ROOT / "config" / "chapter.json").read_text())
+
+# T56 C：与 scripts/lib/parse-ocr-coverage.mjs / apps/web/lib/parse-ocr-coverage.ts
+# 同口径（keep in sync）——稀页阈值与覆盖率公式只有这一份。
+SPARSE_CHAR_THR = 40
+
+
+def parse_coverage(doc: dict) -> dict:
+    """只读覆盖机检（不写盘、不改 blocks）：期望/实有/空/稀/覆盖率。"""
+    pages = doc.get("pages", [])
+    present = len(pages)
+    empty = sum(1 for p in pages if not (p.get("text") or "").strip())
+    sparse = sum(
+        1
+        for p in pages
+        if 0 < len((p.get("text") or "").strip()) < SPARSE_CHAR_THR
+    )
+    start, end = doc["chapter"]["pages"]["book"]
+    expected = end - start + 1
+    coverage = min(1.0, (present - empty) / expected) if expected > 0 else 1.0
+    return {
+        "expected": expected,
+        "present": present,
+        "empty": empty,
+        "sparse": sparse,
+        "coverage": coverage,
+    }
 
 
 def resolve_pdf(arg: str | None) -> Path:
@@ -133,6 +163,11 @@ def main() -> None:
         default=None,
         help="PDF 路径（相对仓库根或绝对；缺省回落 config/chapter.json 的 seed PDF）",
     )
+    ap.add_argument(
+        "--strict",
+        action="store_true",
+        help="覆盖偏弱拒写：coverageRate<0.5 或 空/期望≥0.25 → 非零退出，已有 blocks 拒绝覆盖",
+    )
     args = ap.parse_args()
 
     pdf = resolve_pdf(args.pdf)
@@ -149,9 +184,30 @@ def main() -> None:
         print(f"parsing {ch['id']} ({ch['title']}) from {source} …", file=sys.stderr)
         doc = parse_chapter(ch, pdf, source)
         out = outdir / f"{ch['id']}.blocks.json"
+        # T56 C：写盘前覆盖机检（只读 doc；默认警告仍写，--strict 弱覆盖拒写/拒覆盖）。
+        cov = parse_coverage(doc)
+        strict_fail = cov["coverage"] < 0.5 or (
+            cov["expected"] > 0 and cov["empty"] / cov["expected"] >= 0.25
+        )
+        if args.strict and strict_fail:
+            had_old = out.exists()
+            print(
+                f"--strict 拒绝 {ch['id']}: 覆盖率 {cov['coverage']:.0%} / 空页 {cov['empty']}"
+                f"/{cov['expected']}——{('拒绝覆盖已有 ' + str(out)) if had_old else '拒绝写盘'}"
+                f"；可 pnpm parse-check -- --sparse {ch['id']} 复核",
+                file=sys.stderr,
+            )
+            sys.exit(1)
         out.write_text(json.dumps(doc, ensure_ascii=False, indent=1))
         n_main = sum(1 for b in doc["blocks"] if b["region"] == "main")
         print(f"wrote {out} ({len(doc['blocks'])} blocks, {n_main} main-region)", file=sys.stderr)
+        print(
+            f"覆盖机检: 期望 {cov['expected']} · 实有 {cov['present']} · 空 {cov['empty']} · "
+            f"稀 {cov['sparse']} · 覆盖率 {cov['coverage']:.0%}"
+            + ("（偏弱：有空页/稀页或覆盖<85%，parse-check 可复核）"
+               if (cov['empty'] > 0 or cov['sparse'] > 0 or cov['coverage'] < 0.85) else ""),
+            file=sys.stderr,
+        )
 
 
 if __name__ == "__main__":

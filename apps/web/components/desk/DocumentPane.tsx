@@ -21,6 +21,7 @@ import { loadViewMode, saveViewMode } from "@/lib/view-continuity";
 import { saveReturn } from "@/lib/return-stack";
 import { deskPageHref } from "@/lib/ocr-page";
 import { citeOcrMiss } from "@/lib/cite-ocr-quality";
+import { scoreParseChapter } from "@/lib/parse-ocr-coverage";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -926,6 +927,27 @@ function OverviewPanel({
                 ) : (
                   <span className="shrink-0 text-xs text-muted">本章暂无卡</span>
                 )}
+                {/* T56 F：章行 parse 覆盖徽（与书架 bookParse / pnpm parse-check 同真）——
+                    空页/稀页任一 > 0 → 琥珀短徽「空E · 稀S」（只列 >0 项）；好章不吵；
+                    无 OCR 章沿用上方「无 OCR 页」文案，此处不出徽（无 pages 可评）。 */}
+                {(() => {
+                  if (count === 0) return null; // 无 OCR 页章走既有「无 OCR 页」
+                  const cov = scoreParseChapter({
+                    pages: pages.filter((p) => p.chapterId === c.id),
+                  });
+                  if (cov.emptyPages === 0 && cov.sparsePages === 0) return null;
+                  const parts: string[] = [];
+                  if (cov.emptyPages > 0) parts.push(`空 ${cov.emptyPages}`);
+                  if (cov.sparsePages > 0) parts.push(`稀 ${cov.sparsePages}`);
+                  return (
+                    <span
+                      title="本章有空页/稀页（OCR 正文 0 字或 <40 字）——pnpm parse-check 可复核"
+                      className="mono shrink-0 rounded border border-amber-300 bg-status-warn-bg px-1.5 py-0.5 text-[10px] text-status-warn"
+                    >
+                      {parts.join(" · ")}
+                    </span>
+                  );
+                })()}
               </div>
             </li>
           );

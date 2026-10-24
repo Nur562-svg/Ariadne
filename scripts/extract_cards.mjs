@@ -26,6 +26,7 @@ import path from "node:path";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText } from "ai";
 import { scoreChapter } from "./lib/cite-ocr-quality.mjs";
+import { loadParseCoverage } from "./lib/parse-ocr-coverage.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
@@ -49,6 +50,20 @@ const blocksDoc = JSON.parse(
 );
 const pages = blocksDoc.pages.filter((p) => p.page != null && p.text.trim());
 const [bookStart, bookEnd] = blocksDoc.chapter.pages.book;
+
+/**
+ * T56 E：开抽前 parse 覆盖预检（与 pnpm parse-check 同真算法）——weak 只警告不阻断
+ * 默认路径（抽取基于缺页正文，cite 质量风险由 T54 后置机检兜住）；--strict 下
+ * coverageRate<0.5 或 emptyPages>0 与 T54/T55 strict 条件**或**并存（见写盘前判断）。
+ */
+const parseCov = loadParseCoverage(ROOT, chapterId);
+if (parseCov != null && parseCov.weak) {
+  process.stderr.write(
+    `parse 覆盖偏弱: 期望 ${parseCov.expectedPages} · 空 ${parseCov.emptyPages} · ` +
+      `稀 ${parseCov.sparsePages} · 覆盖率 ${(parseCov.coverageRate * 100).toFixed(1)}%` +
+      `——抽取基于缺页正文，cite 质量风险高（pnpm parse-check -- --sparse ${chapterId} 复核）\n`,
+  );
+}
 
 // ---- provider：直连 GLM 或 DeepSeek ----
 const provider = process.env.DEEPSEEK_API_KEY
@@ -179,10 +194,18 @@ process.stderr.write(
     `空prompt ${quality.emptyPromptAtoms} · 空answer ${quality.emptyAnswerAtoms} · ` +
     `不完备原子 ${quality.incompleteAtoms}\n`,
 );
-// T55 C：--strict 追加不完备原子（空 prompt ∨ 空 answer >0）——与 missRate/零原子「或」关系。
+// T55 C + T56 E：--strict 拒写条件（各条**或**关系，注释为证）：
+//   T54   missRate > 0.4（cite↔OCR 未见率）
+//   T55   zeroAtomCards > 0（零原子卡）或 incompleteAtoms > 0（空 prompt ∨ 空 answer）
+//   T56   parseCov.coverageRate < 0.5 或 parseCov.emptyPages > 0（OCR 覆盖偏弱，可 null=未检）
+const parseStrictFail =
+  parseCov != null && (parseCov.coverageRate < 0.5 || parseCov.emptyPages > 0);
 if (
   strict &&
-  (quality.missRate > 0.4 || quality.zeroAtomCards > 0 || quality.incompleteAtoms > 0)
+  (quality.missRate > 0.4 ||
+    quality.zeroAtomCards > 0 ||
+    quality.incompleteAtoms > 0 ||
+    parseStrictFail)
 ) {
   const outStrict = path.join(ROOT, "data/cards", `${chapterId}.entities.json`);
   const hadOldStrict = fs.existsSync(outStrict);

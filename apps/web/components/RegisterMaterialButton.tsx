@@ -48,6 +48,13 @@ export default function RegisterMaterialButton({
     emptyPromptAtoms?: number;
     emptyAnswerAtoms?: number;
     incompleteAtoms?: number;
+    /**
+     * T56 E/I：parse/OCR 覆盖弱标记（ingest 从 blocks 装载）——有则琥珀点名 OCR 空/稀页，
+     * 并计入软二次触发；不阻断 API；不拆既有 missRate/zeroAtom/incomplete 触发。
+     */
+    parseWeak?: boolean;
+    emptyPages?: number;
+    sparsePages?: number;
   };
 }) {
   const router = useRouter();
@@ -60,7 +67,8 @@ export default function RegisterMaterialButton({
     qualityWarn != null &&
     (qualityWarn.missRate >= 0.25 ||
       qualityWarn.zeroAtomCards > 0 ||
-      (qualityWarn.incompleteAtoms ?? 0) > 0);
+      (qualityWarn.incompleteAtoms ?? 0) > 0 ||
+      (qualityWarn.parseWeak ?? false));
 
   /**
    * T39 A：注册成功后的三连（打开书桌 / 学习环 / 核页）点前写 return 短链——
@@ -140,6 +148,9 @@ export default function RegisterMaterialButton({
             ? ` · 不完备原子 ${qualityWarn.incompleteAtoms}（空 prompt ${qualityWarn.emptyPromptAtoms ?? 0} / 空 answer ${qualityWarn.emptyAnswerAtoms ?? 0}）`
             : ""}
           ——注册会把这些一起带进书库（练核池可见同数）。
+          {(qualityWarn.parseWeak ?? false)
+            ? ` · OCR 覆盖偏弱（空 ${qualityWarn.emptyPages ?? 0} 页 / 稀 ${qualityWarn.sparsePages ?? 0} 页）`
+            : ""}
           {confirmWeak ? " 再点一次「仍要注册」确认。" : " 可先 pnpm cite-check 看样例。"}
         </span>
       ) : null}

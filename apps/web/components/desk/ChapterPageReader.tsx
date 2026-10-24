@@ -8,6 +8,7 @@ import PageCardRailMarks from "@/components/desk/PageCardRailMarks";
 import SessionKeyHint from "@/components/SessionKeyHint";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import { saveReturn } from "@/lib/return-stack";
+import { SPARSE_CHAR_THR } from "@/lib/parse-ocr-coverage";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -356,6 +357,21 @@ export default function ChapterPageReader({
               <span className="ml-3 text-xs font-normal text-muted">
                 PDF 物理页 {pg.physicalPage} · {pg.chapterId}
               </span>
+              {/* T56 H：稀页提示——当前页 OCR 正文 trim 后 0 < N < SPARSE_CHAR_THR（40，
+                  与 parse-check / 书架徽同一口径）→ 琥珀一行点名；正常页不吵；
+                  无 text 走既有缺页分支，不出此提示。 */}
+              {(() => {
+                const chars = (pg.text ?? "").trim().length;
+                if (chars === 0 || chars >= SPARSE_CHAR_THR) return null;
+                return (
+                  <span
+                    title="本页 OCR 正文不足 40 字——常为分隔页/图版页或 OCR 漏扫；pnpm parse-check 可复核"
+                    className="ml-2 rounded border border-amber-300 bg-status-warn-bg px-1.5 py-0.5 text-[10px] font-normal text-status-warn"
+                  >
+                    本页 OCR 偏稀（{chars} 字）
+                  </span>
+                );
+              })()}
             </h3>
             <nav
               className="flex items-baseline gap-3 text-sm"

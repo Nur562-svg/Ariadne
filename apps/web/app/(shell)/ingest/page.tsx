@@ -18,6 +18,7 @@ import {
   scoreChapter,
   type CiteQuality,
 } from "@/lib/cite-ocr-quality";
+import { loadParseCoverage } from "@/lib/parse-ocr-coverage-server";
 import IngestUpload from "@/components/IngestUpload";
 import RegisterMaterialButton from "@/components/RegisterMaterialButton";
 import IngestReadyLinks from "@/components/IngestReadyLinks";
@@ -191,6 +192,28 @@ export default function IngestPage() {
                   ck.quality.zeroAtomCards > 0 ||
                   ck.quality.incompleteAtoms > 0,
               );
+              /**
+               * T56 D：parse 覆盖（只对**已有 blocks** 的章装载；缺文件 null=未检不装完美）。
+               * uploaded 缺 blocks 章走既有 parse 命令；已解析子集如实显示各自覆盖，
+               * 不假装整物料 parsed；uploaded/parsed 章无 cards → 不装 cite 假 0 条
+               * （chapterChecks 只装有 cards 的章）。
+               */
+              const chapterCoverage = new Map<string, ReturnType<typeof loadParseCoverage>>();
+              for (const c of m.chapters) {
+                if (!materialChapterHasBlocks(m, c.id)) continue;
+                chapterCoverage.set(c.id, loadParseCoverage(c.id));
+              }
+              const weakParseChapters = [...chapterCoverage.entries()].filter(
+                ([, cov]) => cov != null && cov.weak,
+              );
+              const covEmpty = [...chapterCoverage.values()].reduce(
+                (n, cov) => n + (cov?.emptyPages ?? 0),
+                0,
+              );
+              const covSparse = [...chapterCoverage.values()].reduce(
+                (n, cov) => n + (cov?.sparsePages ?? 0),
+                0,
+              );
               return (
                 <li key={m.id} className="rounded-lg border border-line bg-card p-5">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -241,10 +264,37 @@ export default function IngestPage() {
                               机检 卡 {q.cards} · 原子 {q.atoms} · OCR未见 {q.ocrMiss} · 无页 p.? {q.nullPage} · 零原子卡 {q.zeroAtomCards} · 不完备原子 {q.incompleteAtoms}
                             </span>
                           ) : null}
+                          {(() => {
+                            /* T56 D：有 blocks 的章给 parse 覆盖真数（期望/实有/空/稀/块/覆盖率）；
+                                weak 琥珀点名；未检（缺文件）不装完美覆盖。 */
+                            const cov = chapterCoverage.get(c.id);
+                            if (!cov) return null;
+                            return (
+                              <span className={cov.weak ? "text-status-warn" : undefined}>
+                                OCR 期望 {cov.expectedPages} · 实有 {cov.pagesPresent} · 空 {cov.emptyPages} · 稀 {cov.sparsePages} · 块 {cov.blockCount} · 覆盖 {(cov.coverageRate * 100).toFixed(0)}%
+                              </span>
+                            );
+                          })()}
                         </li>
                       );
                     })}
                   </ul>
+                  {/* T56 D：parse 覆盖偏弱块（任 weak 章才渲）——琥珀点名 + 补扫命令可复制
+                      （弱章子集，区别于 T55 抽取弱章命令）；与 T55 cite 补救面板分列。 */}
+                  {weakParseChapters.length > 0 ? (
+                    <div className="mt-3 rounded-lg border border-amber-300/60 px-3 py-2">
+                      <p className="text-xs leading-6 text-status-warn">
+                        OCR 覆盖偏弱 · 空 {covEmpty} 页 · 稀 {covSparse} 页（弱章：
+                        {weakParseChapters.map(([id]) => id).join(" ")}）——稀页/空页常为
+                        分隔页或漏扫，补扫后重跑 parse-check 复核；不阻断抽出/注册。
+                      </p>
+                      <div className="mt-2">
+                        <CopyCommand
+                          command={`pnpm parse ${weakParseChapters.map(([id]) => id).join(" ")}`}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
                   {/* T55 D：补救面板（extracted/ready 且有弱章才渲；uploaded/parsed 不装假表）——
                       每弱章 <details> 展开 miss 样例（≤8，链卡 + p.N + cov + OCR 附近 mono）+
                       零原子卡 id 链 + 不完备原子点名；重抽命令可复制（多章按弱章子集拼）。
@@ -358,9 +408,20 @@ export default function IngestPage() {
                               ocrPageCount={ocrPageCount}
                               atomCount={atomCount}
                               pendingCount={pendingCount}
-                              /* T54 E/I：物料章机检汇总（有 cards 的章实算）——软门禁只点名不阻断，
+                              /* T54 E/I + T56 E/I：物料章机检汇总（有 cards 的章实算）+ parse
+                                 覆盖弱标记（有 blocks 的章装载）——软门禁只点名不阻断，
                                  API 不因质量 4xx；低风险保持一键注册。 */
-                              qualityWarn={materialWarn}
+                              qualityWarn={{
+                                ...(materialWarn ?? {
+                                  ocrMiss: 0,
+                                  zeroAtomCards: 0,
+                                  missRate: 0,
+                                  nullPage: 0,
+                                }),
+                                parseWeak: weakParseChapters.length > 0,
+                                emptyPages: covEmpty,
+                                sparsePages: covSparse,
+                              }}
                             />
                           )}
                         </p>
