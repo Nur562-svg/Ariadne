@@ -1,0 +1,122 @@
+════════════════════════════════════
+Task 62 · atom-draft-inbox-apply-01 · MEGA · zcode GLM5.3 max thinking
+════════════════════════════════════
+仓库：/Users/nukeab/projects/Ariadne
+Tip 前置（硬）：5df0db3（docs T61 atom-local-draft-01） atop 12e7c81（feat T61） atop 087fd12（T60 docs）。
+git log -1 --oneline 须含 5df0db3。若停在 12e7c81（仅 feat）或 087fd12 或更早 → 停，对齐后再开工。
+先读 docs/frontend-aesthetics.md。对照 SCOPE：docs/task-62-SCOPE.md 或 /workspace/reports/ariadne-task-62/SCOPE.md。
+体量：约 180–300+ 分钟真实编码。A–J 全部交。只做一行「有草稿」计数无多卡列表/无统一包/无人核清单就收工 = 拒收。15–30/90 分钟假装收工 = 漏做。又一轮 empty-CTA densify / return densify / CitePeek 正文·trap redo / 写 verified:true / 自动写 entities / Clew LLM 真写 / 改名既有 storage keys / 把 draft 塞进 progress-port study/heye 包 / 重做 T46–T61（含 AtomDraftEditor 主路径 redo） / 自动发明原子补浅 / emptyKind:'dark'|:'shallow' / 第四书架徽列 densify / 「一键写回仓库」= 主题偏了，拒收。
+不 push。验收 PASS 后站规 auto-push（勿问「推」）。
+
+────────────────────────────────────
+空池 CTA / return / 深链 / T54–T61 井（硬声明 · 写进回复）
+────────────────────────────────────
+T43–T51 empty-pool CTA densify 已饱和；T35–T42 return densify 已饱和；T52–T53 已闭空·完成/鬼页深链/HeYe u/z；T54 已闭 cite↔OCR 检测；T55 已闭 miss 补救/incompleteAtoms（剪贴板-only，不写 verified:true）；T56 已闭 parse/OCR 覆盖诚实；T57 已闭抽出后暗页覆盖；T58 已闭学习环可考覆盖诚实；T59 已闭浅抽出密度生产诚实；T60 已闭学习环浅密度诚实；T61 已闭本机草稿原子字段编辑器（ariadne.atom-draft.v1 · AtomDraftEditor · CardDraftBar · 剪贴板 patch）——Atom editor DONE，禁止 redo。
+本刀不是再扩 empty-CTA，不是 return densify，不是重做 T54–T61（禁止重写编辑器主路径 / cite/dark/shallow 算法 / 拆三分列徽 / 拆补救面板），不是 CitePeek 正文/trap，不是自动写 seed，不是把 draft 并进 progress-port。
+主题 = 材料→原子脊梁第九刀：书桌多卡草稿收件箱 + 统一补丁包 + 人核落盘引导 + 草稿单独可移植。永不 verified:true，永不 auto PATCH entities/blocks，永不 Clew LLM 真写，永不改名既有键，永不把 draft 塞进 ProgressPayload。
+
+human-apply-only 合同（硬 · 每个字母遵守）：
+1) 继续只用 ariadne.atom-draft.v1。禁止改名/迁移/复用 study/heye/return/session/view/last-opened/recent-books。
+2) 统一包 schema ariadne.atom-draft-pack.v1 = { schema, exportedAt, note, cards: AtomDraftPatchDoc[] }；复用 buildAtomDraftPatchDoc；只含真改动。
+3) 人核落盘清单 = 剪贴板/本地下载文本（markdown 或 JSON ariadne.atom-draft-apply-guide.v1）；seedPath 必须是 data/cards/<chapterId>.entities.json（entities 按章存；禁止臆造 per-card 文件路径；缺 chapterId → 诚实提示按卡 id 搜索）。禁止任何自动写文件 / fetch 写 seed / 「一键写回仓库」。
+4) 禁止 verified:true（无翻 verified 控件；清单/补丁不得含改 verified→true）。
+5) 禁止 Clew LLM 真写 / 提案自动落盘。
+6) 草稿可移植独立 schema ariadne.atom-draft-port.v1——只动 ATOM_DRAFT_STORE_KEY；禁止修改 ProgressPayload / progress-port.ts 并入 study/heye。
+7) 文案：草稿 ≠ seed；收件箱/补丁包 ≠ 已落盘；草稿 ≠ heye；草稿 ≠ study；draft-port ≠ progress-port。
+8) 精炼书桌：琥珀/muted 收件箱；朱砂唯一强调色；禁第二排实心芯片 densify；禁营销英雄。
+9) 不 redo T61 AtomDraftEditor / CardDraftBar 主契约（可复用 helpers + 链回卡详）。
+
+────────────────────────────────────
+三子主题
+────────────────────────────────────
+1) pack + 跨卡 summarize + 人核清单 — A · B · C
+2) Desk DraftInbox 多卡列表 / incomplete 引导 / 复制 — D · E · F
+3) 草稿单独可移植 + 诚实文案 — G · H
+I = 装配；J = build + cite/parse/page/density-check 回归 + DEFER
+
+────────────────────────────────────
+A · pack + summarize helpers
+────────────────────────────────────
+1) 扩展 apps/web/lib/atom-draft.ts（或薄拆 atom-draft-pack.ts 再导出；客户端安全：勿 import fs）。
+2) buildAtomDraftPack(cards, store) → pretty-able doc：schema ariadne.atom-draft-pack.v1；cards[] 复用 buildAtomDraftPatchDoc；跳过 entries 空的卡。
+3) summarizeDraftStore(store, cards) / listDraftedCardIds：每卡 draftCount、realEntryCount、incompleteNoDraft（对齐 T55 incomplete 口径）。
+4) 注释写死：不并进 progress-port · 无 verified · 无 auto PATCH · 无 Clew 真写 · 不改名既有 keys。
+
+────────────────────────────────────
+B · 人核落盘清单
+────────────────────────────────────
+1) buildSeedApplyGuide(...) → markdown 字符串（或 JSON guide schema）。
+2) 每条：seedPath=data/cards/<chapterId>.entities.json · cardId · target · field · before → after。
+3) 文首硬声明「人核后自行改 seed / 开 PR · 本浏览器不会写回仓库 · 不含 verified 翻改」。
+4) 禁止任何写仓库 / PATCH / fs API。缺 chapterId 须诚实降级文案。
+
+────────────────────────────────────
+C · 草稿单独可移植
+────────────────────────────────────
+1) payload：{ schema:"ariadne.atom-draft-port.v1", exportedAt, draft: AtomDraftStore }。
+2) exportAtomDraftPort / parseAtomDraftPort / importAtomDraftPort(merge|replace)；merge 按条目 t 较新者胜；fail-closed。
+3) 只读写 ATOM_DRAFT_STORE_KEY；订阅 notify 对齐既有。
+4) 禁止改 progress-port.ts / ProgressPayload 形状；禁止把 draft 字段塞进练/核导出包。
+
+────────────────────────────────────
+D · DraftInbox 客户岛
+────────────────────────────────────
+1) 新组件 apps/web/components/DraftInbox.tsx；挂书桌书库效用区（近 ProgressPortability，独立区块；勿塞 Clew）。
+2) 有跨卡真草稿 → 琥珀「本机草稿卡 N · 条目 M · 未写回 seed」+ 卡列表（名/id/草稿数 + Link /desk/card/<id>）+「复制统一补丁包」+「复制人核落盘清单」。
+3) 0 真草稿 → 默认不吵（见 E 的 incomplete 例外）。
+
+────────────────────────────────────
+E · incomplete 无草稿引导（最小面）
+────────────────────────────────────
+1) Server 可下传 incompleteCardSummaries（seed 口径 incompleteAtoms>0 的卡摘要）给 DraftInbox。
+2) Client 交叉 draft store：incomplete>0 且无真草稿 → 次级 muted「可开本机草稿」列表 + 链卡详。
+3) 禁止第二大红主 CTA；禁止借机 empty-CTA densify；好书/无 incomplete 不吵。
+
+────────────────────────────────────
+F · 复制诚实契约
+────────────────────────────────────
+1) 统一包 / 人核清单均复用 CopyTextButton（clipboard 不可用则隐藏，不装假已复制）。
+2) 空包 → 禁用或诚实「无草稿可导出」。
+3) 可选：浏览器本地下载 .json / .md（本地文件，不是写仓库）。
+
+────────────────────────────────────
+G · 草稿 Portability UI
+────────────────────────────────────
+1) DraftInbox 折叠区或紧邻 ProgressPortability 的独立「本机草稿带走」小节。
+2) 导出 draft-port JSON；导入选 merge/replace；非法 JSON → 琥珀提示、本机草稿保持原样。
+3) 明示「与练/核进度包分离 · ProgressPortability 不包含草稿」。
+4) 禁塞进 Clew QueuePanel。
+
+────────────────────────────────────
+H · 诚实文案
+────────────────────────────────────
+1) 多处短句：草稿 ≠ seed；收件箱/补丁包 ≠ 已落盘；草稿 ≠ heye；草稿 ≠ study；draft-port ≠ progress-port。
+2) 隐私模式写失败 → 可见错误，不装已持久化。
+3) 禁掌握%/Due；禁 ModeChips 中插队；禁 Clew 真写入口；禁营销英雄文案。
+
+────────────────────────────────────
+I · 装配
+────────────────────────────────────
+1) apps/web/app/(desk)/page.tsx 挂 DraftInbox（+ 可选 incomplete 种子 props）；Server 读 seed，Client 读 draft。
+2) fail-closed 无 window。
+3) 勿毁 ProgressPortability · CardDraftBar · AtomDraftEditor · T55 补救/cite 徽 · T56 parse/稀 · T57 暗徽 · T58/T60 examinable · T59 density · HeYe orphan · ModeChips · book-pools · StickyPageLoopKeys · shelf 三分列 · CitePeek · deriveMaterialStage · study/heye 键名与 ProgressPayload 形状。
+
+────────────────────────────────────
+J · build · DEFER · 回归
+────────────────────────────────────
+1) pnpm --filter web build PASS（若遇 SecurityFatalError 可再跑一次；Next.js security = ops not theme，勿当本刀主题去升级）。
+2) pnpm cite-check -- ch01 + parse-check + page-check + density-check 回归绿（本刀不改算法仍绿）。
+3) 回复必须明示合同：继续 ariadne.atom-draft.v1 · pack/guide/port 新 schema · 无 verified:true · 无 auto PATCH · 无 Clew 真写 · 不改名既有 keys · draft 不进 progress-port。
+4) DEFER：heye-only invent；QA 仪表盘；批量重抽；quiz densify；Register API 硬门禁。
+5) 禁止写 verified:true；禁止写回 entities/blocks；禁止改名 storage keys；禁止改 ProgressPayload。
+6) 回归 T61–T28；写手不 push。
+
+────────────────────────────────────
+硬 OUT（拒收）
+────────────────────────────────────
+empty-CTA densify · return densify · CitePeek 正文/trap redo · 写 verified:true · 自动 PATCH entities/blocks · Clew LLM 真写 · 改名既有 storage keys · 把 draft 塞进 progress-port study/heye 包 · 重做 T46–T61 / AtomDraftEditor 主路径 · 发明原子补浅 · emptyKind:'dark'|:'shallow' · 第四书架徽列 densify · FSRS/Due · Queue→Due · ModeChips 中插队 · ⌘K · DeskShell 重写 · 掌握% · 硬阻断 register · 把草稿伪造成 seed 已核/heye 已对 · 只交一行计数无多卡列表/无统一包/无人核清单 · 臆造 per-card entities 路径 · 「一键写回仓库」 · push
+
+────────────────────────────────────
+验收口令
+────────────────────────────────────
+做完叫验收。A–J 全交才过。
