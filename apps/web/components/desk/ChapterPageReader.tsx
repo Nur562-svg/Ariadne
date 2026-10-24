@@ -9,6 +9,7 @@ import SessionKeyHint from "@/components/SessionKeyHint";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import { saveReturn } from "@/lib/return-stack";
 import { SPARSE_CHAR_THR } from "@/lib/parse-ocr-coverage";
+import { SHALLOW_ATOM_MAX, SHALLOW_CHARS_PER_ATOM } from "@/lib/extract-page-density";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -60,6 +61,7 @@ export default function ChapterPageReader({
   pendingPageCount,
   pendingByCard,
   citedPages,
+  atomCountByPage,
   onOpenOverview,
   variant = "full",
 }: {
@@ -90,6 +92,15 @@ export default function ChapterPageReader({
    * 不点名；chars<40 只走 T56 稀页提示，不双吵（两条件按 chars 阈值天然互斥）。
    */
   citedPages?: Set<number>;
+  /**
+   * T59 H/I：当前章页 → 可考原子数表（DocumentPane 用 collectAtomCountByPage 从**章内**
+   * cards 派生下传——与 pnpm density-check 章口径同真，只计 atoms[].cite.page）——
+   * 当前页 OCR 实质（chars≥SPARSE_CHAR_THR=40）∧ 1≤atomCount≤SHALLOW_ATOM_MAX(2) ∧
+   * chars/atomCount≥SHALLOW_CHARS_PER_ATOM(400) → 浅页提示一行。优先序：稀页（T56，
+   * chars<40）> 暗页（T57，零 cite）> 浅页（本刀）——atomCount≥1 蕴含已 cite，与暗页
+   * 天然互斥不双吵；chars<40 只走 T56 稀页提示。缺省（未装配＝章内无卡）不点名。
+   */
+  atomCountByPage?: Map<number, number>;
   /** 无页章次级「回概览」：DocumentPane 切回概览段（可选，避免组件耦合段状态）。 */
   onOpenOverview?: () => void;
   /** sticky 工具带贴合方式：full = 章页整宽模式（吃掉中栏 px-8）；column = 分栏右列（吃掉 pl-6）。 */
@@ -483,17 +494,32 @@ export default function ChapterPageReader({
         <>
           {/* T57 H：暗页提示——当前页 OCR 实质（chars≥SPARSE_CHAR_THR=40）且不在本书
               citedSet（宿主下传；未装配不点名）→ 琥珀一行；chars<40 只走上方 T56 稀页
-              提示（阈值天然互斥，不双吵）；已 cite 页不吵。禁 OCR canvas / CitePeek 改动。 */}
-          {citedPages != null && pg.page != null && (() => {
-            const chars = (pg.text ?? "").trim().length;
-            if (chars < SPARSE_CHAR_THR) return null; // 空/稀页归 T56 口径
-            if (citedPages.has(pg.page)) return null; // 已 cite 页不吵
-            return (
-              <p className="mt-3 text-xs leading-6 text-status-warn">
-                本页 OCR 实质（{chars} 字）但无抽出 cite · 可能未覆盖进原子（暗页；pnpm page-check 可复核）。
-              </p>
-            );
-          })()}
+              提示（阈值天然互斥，不双吵）；已 cite 页不吵。禁 OCR canvas / CitePeek 改动。
+              T59 H：浅页提示（优先序 稀>T56 > 暗>T57 > 浅>本刀）——同一块内先暗后浅：
+              暗 = 零 cite（citedSet 判定）；浅 = atomCount≥1（蕴含已 cite，与暗互斥）
+              且 1≤atomCount≤2 且 chars/atomCount≥400。atomCount=0∩已 cite（仅卡级/
+              字段 cite，无原子）既非暗也非浅，不提示——四概念分列不伪装。 */}
+          {pg.page != null &&
+            (() => {
+              const chars = (pg.text ?? "").trim().length;
+              if (chars < SPARSE_CHAR_THR) return null; // 空/稀页归 T56 口径
+              if (citedPages != null && !citedPages.has(pg.page)) {
+                return (
+                  <p className="mt-3 text-xs leading-6 text-status-warn">
+                    本页 OCR 实质（{chars} 字）但无抽出 cite · 可能未覆盖进原子（暗页；pnpm page-check 可复核）。
+                  </p>
+                );
+              }
+              if (atomCountByPage == null) return null; // 未装配（章内无卡）不点名
+              const atomCount = atomCountByPage.get(pg.page) ?? 0;
+              if (atomCount < 1 || atomCount > SHALLOW_ATOM_MAX) return null;
+              if (chars / atomCount < SHALLOW_CHARS_PER_ATOM) return null;
+              return (
+                <p className="mt-3 text-xs leading-6 text-status-warn">
+                  本页已抽出但原子偏稀（{atomCount} 原子 · {chars} 字）· 可考密度不足（pnpm density-check 可复核）。
+                </p>
+              );
+            })()}
           <article className="mt-4 whitespace-pre-wrap rounded-lg border border-line bg-card p-6 text-[15px] leading-9">
             {pg.text}
           </article>

@@ -8,6 +8,7 @@
     "cite-check": "node scripts/cite-ocr-check.mjs",
     "parse-check": "node scripts/parse-ocr-check.mjs",
     "page-check": "node scripts/extract-page-check.mjs",
+    "density-check": "node scripts/extract-density-check.mjs",
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
     "lint": "pnpm --filter web lint"

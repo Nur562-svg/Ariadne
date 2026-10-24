@@ -23,6 +23,10 @@ import { deskPageHref } from "@/lib/ocr-page";
 import { citeOcrMiss } from "@/lib/cite-ocr-quality";
 import { scoreParseChapter } from "@/lib/parse-ocr-coverage";
 import { collectCitedPages, scoreExtractPageCoverage } from "@/lib/extract-page-coverage";
+import {
+  collectAtomCountByPage,
+  scoreExtractPageDensity,
+} from "@/lib/extract-page-density";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -449,6 +453,16 @@ export default function DocumentPane({
     [chapterCards],
   );
   /**
+   * T59 H/I：当前章页 → 可考原子数表（章内 cards 的 atoms[].cite.page 计数——
+   * collectAtomCountByPage 与 pnpm density-check 章口径同真）——下传 ChapterPageReader
+   * 做浅页提示（当前页 chars≥40 ∧ 1≤atomCount≤2 ∧ chars/atomCount≥400）。章内无卡 →
+   * undefined（未抽出＝未装配，不点名浅页）；换章随 chapterCards 重算。
+   */
+  const chapterAtomCountByPage = useMemo(
+    () => (chapterCards.length > 0 ? collectAtomCountByPage(chapterCards) : undefined),
+    [chapterCards],
+  );
+  /**
    * T52 A/I：本书可练原子数——与书头「N 个知识原子」同一 reduce（cards 即本书卡
    * loadCards({bookId})，等于 collectStudyAtoms({bookId}).length 同池）；下传 QuizPanel
    * 做「放宽到本书」书空门禁：本章 0 且本书 0 → 纯文「本书暂无原子」，不再链放宽。
@@ -745,6 +759,7 @@ export default function DocumentPane({
             pendingPageCount={pagePendingCount}
             pendingByCard={pendingByCard}
             citedPages={chapterCitedPages}
+            atomCountByPage={chapterAtomCountByPage}
             onOpenOverview={() => setSection("overview")}
             variant="full"
           />
@@ -786,6 +801,7 @@ export default function DocumentPane({
               pendingPageCount={pagePendingCount}
               pendingByCard={pendingByCard}
               citedPages={chapterCitedPages}
+              atomCountByPage={chapterAtomCountByPage}
               onOpenOverview={() => setSection("overview")}
               variant="column"
             />
@@ -879,6 +895,16 @@ function OverviewPanel({
           const chExaminable =
             count > 0 && cardCount > 0
               ? scoreExtractPageCoverage({
+                  pages: pages.filter((p) => p.chapterId === c.id),
+                  cards: chCards,
+                })
+              : null;
+          /* T59 F：章级抽出密度（scoreExtractPageDensity 与 pnpm density-check 同真）——
+             有 cards 且有 OCR 页才实算；shallowCount>0 → 下方琥珀短徽「浅S」。无卡/无页章
+             null（未检不装浅假 0）；与暗徽分列并列（暗+浅可同章）。 */
+          const chDensity =
+            count > 0 && cardCount > 0
+              ? scoreExtractPageDensity({
                   pages: pages.filter((p) => p.chapterId === c.id),
                   cards: chCards,
                 })
@@ -994,6 +1020,27 @@ function OverviewPanel({
                       className="mono shrink-0 rounded border border-amber-300 bg-status-warn-bg px-1.5 py-0.5 text-[10px] text-status-warn"
                     >
                       暗{epc.darkCount}
+                    </span>
+                  );
+                })()}
+                {/* T59 F：章行浅页徽（与 T56 空/稀徽、T57 暗徽并列的第四信号——同为琥珀
+                    短徽族，非新独立列）——有 cards 且有 OCR 页才实算（chDensity，与
+                    pnpm density-check 同真：浅页 = chars≥40 实质页 ∧ 1≤原子数≤2 ∧
+                    均摊≥400 字，原子只计 atoms[].cite.page）；shallowCount>0 → 琥珀短徽
+                    「浅S」；好章不吵；无 cards（未抽出）不装浅徽（未检 ≠ 零浅）。
+                    无掌握% / Due；不改写 cite/parse/暗徽文案。 */}
+                {(() => {
+                  const den = chDensity;
+                  if (!den || den.shallowCount === 0) return null;
+                  return (
+                    <span
+                      title={`本章 ${den.shallowCount} 个已 cite 实质页原子极稀（浅页：${den.shallowPages
+                        .slice(0, 6)
+                        .map((s) => `p.${s.page}(${s.atomCount}原子/${s.chars}字)`)
+                        .join(" ")}）——可考密度不足；pnpm density-check -- --shallow ${c.id} 可复核`}
+                      className="mono shrink-0 rounded border border-amber-300 bg-status-warn-bg px-1.5 py-0.5 text-[10px] text-status-warn"
+                    >
+                      浅{den.shallowCount}
                     </span>
                   );
                 })()}

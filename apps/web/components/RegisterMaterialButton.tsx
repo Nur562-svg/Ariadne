@@ -63,6 +63,15 @@ export default function RegisterMaterialButton({
     darkPages?: number[];
     darkCount?: number;
     darkRate?: number;
+    /**
+     * T59 E/I：抽出密度旁挂（ingest 对有 cards 的章实算）——有浅页则琥珀点名
+     * 「浅页 S」（shallowPages 页码样例 ≤8）；shallowCount>0 **OR 入**既有软二次
+     * 触发族。只拦人不拦 API；浅 ≠ 暗（浅 = 已 cite 页原子极稀，暗 = 零 cite），
+     * 不拆 missRate/zeroAtom/incomplete/parseWeak/dark* 任何既有条件。
+     */
+    shallowPages?: number[];
+    shallowCount?: number;
+    shallowRate?: number;
   };
 }) {
   const router = useRouter();
@@ -77,7 +86,8 @@ export default function RegisterMaterialButton({
       qualityWarn.zeroAtomCards > 0 ||
       (qualityWarn.incompleteAtoms ?? 0) > 0 ||
       (qualityWarn.parseWeak ?? false) ||
-      (qualityWarn.darkCount ?? 0) > 0);
+      (qualityWarn.darkCount ?? 0) > 0 ||
+      (qualityWarn.shallowCount ?? 0) > 0);
 
   /**
    * T39 A：注册成功后的三连（打开书桌 / 学习环 / 核页）点前写 return 短链——
@@ -164,6 +174,13 @@ export default function RegisterMaterialButton({
             ? ` · 暗页 ${qualityWarn.darkCount}（darkRate ${((qualityWarn.darkRate ?? 0) * 100).toFixed(0)}%）——实质 OCR 页未成原子${
                 (qualityWarn.darkPages ?? []).length > 0
                   ? `：${(qualityWarn.darkPages ?? []).map((p) => `p.${p}`).join(" ")}`
+                  : ""
+              }`
+            : ""}
+          {(qualityWarn.shallowCount ?? 0) > 0
+            ? ` · 浅页 ${qualityWarn.shallowCount}（shallowRate ${((qualityWarn.shallowRate ?? 0) * 100).toFixed(0)}%）——已 cite 页原子极稀${
+                (qualityWarn.shallowPages ?? []).length > 0
+                  ? `：${(qualityWarn.shallowPages ?? []).map((p) => `p.${p}`).join(" ")}`
                   : ""
               }`
             : ""}

@@ -21,6 +21,8 @@ import {
 import { loadParseCoverage } from "@/lib/parse-ocr-coverage-server";
 import { loadExtractPageCoverage } from "@/lib/extract-page-coverage-server";
 import type { ExtractPageCoverage } from "@/lib/extract-page-coverage";
+import { loadExtractPageDensity } from "@/lib/extract-page-density-server";
+import type { ExtractPageDensity } from "@/lib/extract-page-density";
 import IngestUpload from "@/components/IngestUpload";
 import RegisterMaterialButton from "@/components/RegisterMaterialButton";
 import IngestReadyLinks from "@/components/IngestReadyLinks";
@@ -241,6 +243,34 @@ export default function IngestPage() {
               );
               const bookDarkRate =
                 substantialTotal > 0 ? darkTotal / substantialTotal : 0;
+              /**
+               * T59 D/I：抽出后浅密度（只对**有 cards** 的章装载——与 T54 chapterChecks /
+               * T57 chapterExtractPage 同门禁；缺 blocks/entities → null=未检不装完美）。
+               * uploaded/parsed 无 cards 章不出浅假 0 条（未抽出 ≠ shallowCount=0）；
+               * 算法与 pnpm density-check / extract 后置同真（lib/extract-page-density，
+               * 浅页 = 已 cite 实质页原子极稀；原子只计 atoms[].cite.page）。
+               */
+              const chapterDensity = new Map<string, ExtractPageDensity | null>();
+              for (const c of m.chapters) {
+                if (!materialChapterHasCards(m, c.id)) continue;
+                chapterDensity.set(c.id, loadExtractPageDensity(c.id));
+              }
+              /** T59 D：弱章集合（任浅页）——浅密度面板与重抽命令子集；样例 ≤6。 */
+              const shallowChapters = [...chapterDensity.entries()].filter(
+                ([, den]) => den != null && den.weak,
+              );
+              const shallowTotal = [...chapterDensity.values()].reduce(
+                (n, den) => n + (den?.shallowCount ?? 0),
+                0,
+              );
+              const densitySubstantialTotal = [...chapterDensity.values()].reduce(
+                (n, den) => n + (den?.substantialPages ?? 0),
+                0,
+              );
+              const bookShallowRate =
+                densitySubstantialTotal > 0
+                  ? shallowTotal / densitySubstantialTotal
+                  : 0;
               return (
                 <li key={m.id} className="rounded-lg border border-line bg-card p-5">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -314,6 +344,19 @@ export default function IngestPage() {
                               </span>
                             );
                           })()}
+                          {(() => {
+                            /* T59 D：有 cards 的章给抽出密度真数（实质/有原子页/浅/shallowRate）；
+                                weak 琥珀点名；未抽出（无 cards）不装浅假 0——与 T54 机检、
+                                T56 OCR 覆盖、T57 暗页四概念分列，勿吞勿改写（浅 ≠ 暗：浅是
+                                已 cite 页原子极稀，暗是零 cite）。 */
+                            const den = chapterDensity.get(c.id);
+                            if (!den) return null;
+                            return (
+                              <span className={den.weak ? "text-status-warn" : undefined}>
+                                浅密度 实质 {den.substantialPages} · 有原子 {den.citedAtomPages} · 浅 {den.shallowCount} · shallowRate {(den.shallowRate * 100).toFixed(0)}%
+                              </span>
+                            );
+                          })()}
                         </li>
                       );
                     })}
@@ -367,6 +410,44 @@ export default function IngestPage() {
                       <div className="mt-2">
                         <CopyCommand
                           command={`pnpm extract -- ${darkChapters.map(([id]) => id).join(" ")}`}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                  {/* T59 D：抽出密度偏稀块（任浅页章才渲；与 T57 暗页块 / T56 parse 覆盖块 /
+                      T55 补救面板**分列**）——琥珀点名 + 顶层浅页样例 ≤6（页码 mono + 原子数 +
+                      字数）+ 重抽命令可复制（弱章子集）。浅 ≠ 暗：浅是已 cite 实质页原子极稀
+                      （可考密度不足），暗是零 cite。只展示 + 剪贴板——不自动 PATCH entities /
+                      不发明原子「补浅」；浅不伪装成暗/稀/cite miss，不阻断注册。 */}
+                  {shallowChapters.length > 0 ? (
+                    <div className="mt-3 rounded-lg border border-amber-300/60 px-3 py-2">
+                      <p className="text-xs leading-6 text-status-warn">
+                        抽出密度偏稀 · 已 cite 页原子极少（浅 {shallowTotal} 页 · 弱章：
+                        {shallowChapters.map(([id]) => id).join(" ")}）——这些实质页已被
+                        cite 但每页只扛 1–2 个原子，可考密度不足；重抽或人工补 seed 后
+                        pnpm density-check 复核；不阻断注册。
+                      </p>
+                      {(() => {
+                        const shallowSamples = shallowChapters
+                          .flatMap(([id, den]) =>
+                            (den?.shallowPages ?? []).map((s) => ({ ch: id, ...s })),
+                          )
+                          .slice(0, 6);
+                        if (shallowSamples.length === 0) return null;
+                        return (
+                          <p className="mt-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-0.5 text-xs leading-5 text-muted">
+                            <span>浅页样例：</span>
+                            {shallowSamples.map((s) => (
+                              <span key={`${s.ch}:${s.page}`} className="mono">
+                                {s.ch} p.{s.page}（{s.atomCount}原子·{s.chars}字）
+                              </span>
+                            ))}
+                          </p>
+                        );
+                      })()}
+                      <div className="mt-2">
+                        <CopyCommand
+                          command={`pnpm extract -- ${shallowChapters.map(([id]) => id).join(" ")}`}
                         />
                       </div>
                     </div>
@@ -507,6 +588,16 @@ export default function IngestPage() {
                                   .slice(0, 8),
                                 darkCount: darkTotal,
                                 darkRate: bookDarkRate,
+                                /* T59 E/I：抽出密度旁挂（有 cards 的章实算；shallowPages 点名
+                                   ≤8）——shallowCount>0 **OR 入**既有软二次触发族，API 不 4xx；
+                                   浅与暗分列点数，不吞不改写既有条件。 */
+                                shallowPages: shallowChapters
+                                  .flatMap(
+                                    ([, den]) => (den?.shallowPages ?? []).map((s) => s.page),
+                                  )
+                                  .slice(0, 8),
+                                shallowCount: shallowTotal,
+                                shallowRate: bookShallowRate,
                               }}
                             />
                           )}

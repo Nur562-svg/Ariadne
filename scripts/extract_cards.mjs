@@ -25,6 +25,12 @@
  * pnpm page-check / web 同真）——暗页 = 实质 OCR 页（chars≥SPARSE_CHAR_THR=40）零
  * cite。默认只警告仍写盘（扉页/小结/跨章扉可能合理暗）；--strict 另或 darkRate≥0.35
  * 或 darkCount≥5（文档化阈值）→ 拒写。绝不自动发明 cite/原子填暗页。
+ *
+ * T59 C：写盘前兼报抽出后浅密度（scripts/lib/extract-page-density.mjs，与
+ * pnpm density-check / web 同真）——浅页 = 实质 OCR 页已抽出原子但极稀（1≤atomCount
+ * ≤2 且 chars/atomCount≥400；原子只计 atoms[].cite.page）。默认只警告仍写盘（浅 ≠
+ * 错稿，人工补 seed / 重抽是后置决策）；--strict 另或 shallowRate≥0.35 或
+ * shallowCount≥5（文档化阈值）→ 拒写。绝不自动发明原子「补浅」。
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -33,6 +39,7 @@ import { generateText } from "ai";
 import { scoreChapter } from "./lib/cite-ocr-quality.mjs";
 import { loadParseCoverage } from "./lib/parse-ocr-coverage.mjs";
 import { scoreExtractPageCoverage } from "./lib/extract-page-coverage.mjs";
+import { scoreExtractPageDensity } from "./lib/extract-page-density.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
@@ -214,29 +221,47 @@ if (pageCov.darkCount > 0) {
       `暗页样例 ${darkSample}（扉页/小结/跨章扉可能合理暗；pnpm page-check -- --dark ${chapterId} 复核）\n`,
   );
 }
-// T55 C + T56 E + T57 C：--strict 拒写条件（各条**或**关系，注释为证）：
+// ---- T59 C：抽出后浅密度兼报（写盘前算；用完整 blocksDoc.pages 与本次抽出 all——
+// 与 pnpm density-check 同真。默认只警告；--strict 高浅拒写见下。绝不发明原子补浅。）----
+const density = scoreExtractPageDensity({ pages: blocksDoc.pages ?? [], cards: all });
+if (density.shallowCount > 0) {
+  const shallowSample = density.shallowPages
+    .slice(0, 8)
+    .map((s) => `p.${s.page}(${s.chars}字/${s.atomCount}原子)`)
+    .join(" ");
+  process.stderr.write(
+    `抽出密度: 实质页 ${density.substantialPages} · 有原子页 ${density.citedAtomPages} · ` +
+      `浅 ${density.shallowCount}（shallowRate ${(density.shallowRate * 100).toFixed(1)}%）——` +
+      `浅页样例 ${shallowSample}（已 cite 实质页原子极稀；pnpm density-check -- --shallow ${chapterId} 复核）\n`,
+  );
+}
+// T55 C + T56 E + T57 C + T59 C：--strict 拒写条件（各条**或**关系，注释为证）：
 //   T54   missRate > 0.4（cite↔OCR 未见率）
 //   T55   zeroAtomCards > 0（零原子卡）或 incompleteAtoms > 0（空 prompt ∨ 空 answer）
 //   T56   parseCov.coverageRate < 0.5 或 parseCov.emptyPages > 0（OCR 覆盖偏弱，可 null=未检）
 //   T57   pageCov.darkRate ≥ 0.35 或 darkCount ≥ 5（抽出页覆盖极稀——实质页大量未成原子）
+//   T59   density.shallowRate ≥ 0.35 或 shallowCount ≥ 5（浅密度极稀——已 cite 实质页原子极少）
 const parseStrictFail =
   parseCov != null && (parseCov.coverageRate < 0.5 || parseCov.emptyPages > 0);
 const pageStrictFail = pageCov.darkRate >= 0.35 || pageCov.darkCount >= 5;
+const densityStrictFail = density.shallowRate >= 0.35 || density.shallowCount >= 5;
 if (
   strict &&
   (quality.missRate > 0.4 ||
     quality.zeroAtomCards > 0 ||
     quality.incompleteAtoms > 0 ||
     parseStrictFail ||
-    pageStrictFail)
+    pageStrictFail ||
+    densityStrictFail)
 ) {
   const outStrict = path.join(ROOT, "data/cards", `${chapterId}.entities.json`);
   const hadOldStrict = fs.existsSync(outStrict);
   console.error(
     `--strict 拒绝：missRate ${(quality.missRate * 100).toFixed(1)}%（>40%）/ 零原子卡 ${quality.zeroAtomCards} / ` +
       `不完备原子 ${quality.incompleteAtoms} / 抽出暗页 ${pageCov.darkCount}（darkRate ` +
-      `${(pageCov.darkRate * 100).toFixed(1)}%，阈值 35% 或 ≥5 页）任一命中——` +
-      `${hadOldStrict ? `拒绝覆盖已有 ${outStrict}` : "拒绝写盘"}；可 pnpm cite-check -- --misses ${chapterId} 或 pnpm page-check -- --dark ${chapterId} 看样例后人工复核`,
+      `${(pageCov.darkRate * 100).toFixed(1)}%，阈值 35% 或 ≥5 页）/ 浅页 ${density.shallowCount}（shallowRate ` +
+      `${(density.shallowRate * 100).toFixed(1)}%，阈值 35% 或 ≥5 页）任一命中——` +
+      `${hadOldStrict ? `拒绝覆盖已有 ${outStrict}` : "拒绝写盘"}；可 pnpm cite-check -- --misses ${chapterId} 或 pnpm density-check -- --shallow ${chapterId} 看样例后人工复核`,
   );
   process.exit(1);
 }

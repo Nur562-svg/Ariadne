@@ -11,6 +11,7 @@ import { collectBookPools, type BookPools } from "@/lib/book-pools";
 import { scoreChapter, type CiteQuality } from "@/lib/cite-ocr-quality";
 import { loadParseCoverage } from "@/lib/parse-ocr-coverage-server";
 import { loadExtractPageCoverage } from "@/lib/extract-page-coverage-server";
+import { loadExtractPageDensity } from "@/lib/extract-page-density-server";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
@@ -139,6 +140,40 @@ export default function Library() {
       weak,
       dark,
       darkRate: substantial > 0 ? dark / substantial : 0,
+      unchecked,
+    };
+  }
+
+  /**
+   * T59 G/I：书级抽出密度折叠——各章 loadExtractPageDensity（与 pnpm density-check
+   * 同真；缺 blocks/entities 章＝未检，不装 shallowCount=0 完美）。任章 weak → 书级
+   * 浅信号（浅页书级合计，shallowRate 按合计重算）**旁挂**在 T57「抽出偏稀」行——
+   * 不拆 cite|parse|暗 三分列骨架、不造第四大红独立列；浅 ≠ 暗（浅 = 已 cite 页原子
+   * 极稀，暗 = 零 cite），两概念在同一点名行分列不合并。
+   */
+  const bookDensity: Record<
+    string,
+    { weak: boolean; shallow: number; shallowRate: number; unchecked: number }
+  > = {};
+  for (const b of books) {
+    let weak = false;
+    let shallow = 0;
+    let substantial = 0;
+    let unchecked = 0;
+    for (const chId of b.chapterIds) {
+      const den = loadExtractPageDensity(chId);
+      if (den == null) {
+        unchecked++;
+        continue;
+      }
+      if (den.weak) weak = true;
+      shallow += den.shallowCount;
+      substantial += den.substantialPages;
+    }
+    bookDensity[b.id] = {
+      weak,
+      shallow,
+      shallowRate: substantial > 0 ? shallow / substantial : 0,
       unchecked,
     };
   }
@@ -308,14 +343,25 @@ export default function Library() {
               {/* T57 G：书级抽出页覆盖徽——第三枚，与 T55 cite / T56 parse 徽三分列（独立
                   一行、独立口径：暗页 = 实质 OCR 页 chars≥40 零 cite，抽出后未成原子）。
                   任章 weak 才出（D=书级合计）；好书/未检不吵；次级 /ingest 重抽；
-                  无掌握% / Due / 圆环；不自动发明 cite 填暗页。 */}
+                  无掌握% / Due / 圆环；不自动发明 cite 填暗页。
+                  T59 G：浅信号**旁挂**本行（暗与浅同点名行分列；书级 shallowCount 合计，
+                  loadExtractPageDensity 与 pnpm density-check 同真）——只任暗或任浅才出，
+                  好书静音；缺 cards/blocks 章＝未检不抬假阳；仍不拆 cite|parse|暗 三分列
+                  骨架、不造第四大红独立列。 */}
               {(() => {
                 const be = bookExtractPage[b.id];
-                if (!be || !be.weak) return null;
+                const bd = bookDensity[b.id];
+                if ((!be || !be.weak) && (!bd || !bd.weak)) return null;
                 return (
                   <p className="mt-2 flex flex-wrap items-baseline gap-2 text-xs leading-6 text-status-warn">
                     <span className="rounded border border-amber-300 bg-status-warn-bg px-2 py-0.5">
-                      抽出偏稀 · 暗{be.dark}（darkRate {(be.darkRate * 100).toFixed(0)}%）
+                      抽出偏稀
+                      {be && be.dark > 0
+                        ? ` · 暗${be.dark}（darkRate ${(be.darkRate * 100).toFixed(0)}%）`
+                        : ""}
+                      {bd && bd.shallow > 0
+                        ? ` · 浅${bd.shallow}（shallowRate ${(bd.shallowRate * 100).toFixed(0)}%）`
+                        : ""}
                     </span>
                     <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
                       去重抽 →
