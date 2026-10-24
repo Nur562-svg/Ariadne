@@ -313,11 +313,14 @@ async function ReviewBody({
   const clearChapterHref = effChapter && !card ? `/review${qs({ chapter: null })}` : undefined;
 
   /**
-   * T58 F/I：孤儿核旁挂暗页判定（**消费** T57；ghost 页 / 章未抽出 → 非 dark 不点名）——
-   * 只旁挂一句，emptyKind 三态与 orphan 主 CTA 契约不动。
+   * T58 F/I + T60 F/I：本页可考性（**消费** T57/T59；ghost 页 / 章未抽出 → 非
+   * dark/shallow 不点名）——orphanDark 只旁挂 orphan×dark 一句（emptyKind 三态与
+   * orphan 主 CTA 契约不动）；pageShallow 只旁挂**匹配中**（非 orphan）浅页一句
+   * （浅页有 cite 不是 orphan 主题，勿吞 orphan 分型）。一次装载两用。
    */
-  const orphanDark =
-    orphanReview && loadPageExaminable(pageNum)?.hint === "dark";
+  const pageExam = pageNum != null ? loadPageExaminable(pageNum) : null;
+  const orphanDark = orphanReview && pageExam?.hint === "dark";
+  const pageShallow = !orphanReview && pageExam?.hint === "shallow";
 
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">
@@ -620,6 +623,9 @@ async function ReviewBody({
         orphanPage={orphanReview}
         /* T58 F：orphan 旁挂暗页（hint==='dark' 才 true）；分型三态与 CTA 不动。 */
         orphanDark={orphanDark}
+        /* T60 F：匹配中本页浅旁挂（hint==='shallow' 才 true；非 orphan 主题）；
+           无 emptyKind:'shallow'，orphan/card-out/true-empty 分型不动。 */
+        pageShallow={pageShallow}
         loopKeys={stickyKeys}
         leaveReturnTo={reviewReturnTo}
       />

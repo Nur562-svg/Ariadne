@@ -108,6 +108,8 @@ export default function StudySession({
   leaveReturnTo,
   examinableWeak,
   darkCount,
+  densityWeak,
+  shallowCount,
 }: {
   /** 当前范围全池（未按档位过滤；档位在客户端按本机评分过滤）。 */
   atoms: StudyAtom[];
@@ -173,6 +175,15 @@ export default function StudySession({
   examinableWeak?: boolean;
   /** T58 E：scope 暗页数（examinableWeak 为 true 时点名 暗{darkCount}）。 */
   darkCount?: number;
+  /**
+   * T60 E/I：scope 浅密度旁挂（父页消费 T59 装配；单卡/未检出省略 → 缺省 false/0）——
+   * 池非空且当前档评完时，完成卡下方琥珀一句「评完池 ≠ 可考够」（浅页已 cite 但原子
+   * 极稀）。与 T58 暗句**并列不互吞**；只提示，不改完成主 CTA（不做成「去补浅」
+   * 强推），不写 verified / 不 PATCH entities。
+   */
+  densityWeak?: boolean;
+  /** T60 E：scope 浅页数（densityWeak 为 true 时点名 浅{shallowCount}）。 */
+  shallowCount?: number;
 }) {
   const [grades, setGrades] = useState<GradeMap>({});
   const [order, setOrder] = useState<StudyAtom[]>([]);
@@ -352,6 +363,18 @@ export default function StudySession({
             pnpm page-check 可复核。
           </p>
         ) : null}
+        {/* T60 E：评完族浅旁挂（与 T58 暗句并列不互吞）——浅页已 cite 但原子极稀，
+            评完池 ≠ 可考够；主 CTA 不改「去补浅」，只给次级 /ingest 文字链。 */}
+        {ungradedDone && densityWeak && (shallowCount ?? 0) > 0 ? (
+          <p className="mt-2 text-xs leading-6 text-status-warn">
+            本机已评完池内原子 · 本范围仍有浅页可考密度不足（浅{shallowCount}）——池内原子 ≠
+            可考够，可回{" "}
+            <Link className="underline underline-offset-4" href="/ingest">
+              /ingest
+            </Link>{" "}
+            或 pnpm density-check 复核。
+          </p>
+        ) : null}
         <StudyModeChips
           pool={pool}
           mode={mode}
@@ -496,6 +519,18 @@ export default function StudySession({
           <p className="mt-2 text-xs leading-6 text-status-warn">
             本机已评完池内原子 · 本范围仍有暗页未覆盖进原子（暗{darkCount}）——材料未全覆盖，
             pnpm page-check 可复核。
+          </p>
+        ) : null}
+        {/* T60 E：完成态浅旁挂（densityWeak 且浅页>0 才出；与 T58 暗句并列不互吞）——
+            评完的是池内原子，浅页（已 cite 原子极稀）仍是可考密度缺口。 */}
+        {densityWeak && (shallowCount ?? 0) > 0 ? (
+          <p className="mt-2 text-xs leading-6 text-status-warn">
+            本机已评完池内原子 · 本范围仍有浅页可考密度不足（浅{shallowCount}）——池内原子 ≠
+            可考够，可回{" "}
+            <Link className="underline underline-offset-4" href="/ingest">
+              /ingest
+            </Link>{" "}
+            或 pnpm density-check 复核。
           </p>
         ) : null}
         {resumed ? (

@@ -104,6 +104,7 @@ export default function HeYeSession({
   clearPageHref,
   orphanPage,
   orphanDark,
+  pageShallow,
   loopKeys,
   scopeKey,
   leaveReturnTo,
@@ -161,6 +162,14 @@ export default function HeYeSession({
    * 清本页契约、**勿**吞 card-out / true-empty；非暗/未检出不吵。
    */
   orphanDark?: boolean;
+  /**
+   * T60 F/I：匹配中 / sticky 页**旁挂**浅判定（父页 loadPageExaminable(pageNum)
+   * .hint==='shallow'，非 orphan 主题——浅页有 cite 才浅）——会话顶一句琥珀「本页
+   * 已抽出但原子偏稀（浅）」。**勿**新增 emptyKind:'shallow' / 'dark'、**勿**吞
+   * orphan×dark（T58 F）/ card-out / true-empty 分型；非浅不吵。只提示：本页 cite
+   * 核得完 ≠ 本页可考密度够。
+   */
+  pageShallow?: boolean;
   /**
    * T29 E：父页算好的本页环键（g 清本页 / ⇧[ ⇧] 切章；与 sticky 键岛同源 stickyKeys）——
    * 仅当前真可用时传入；无本页过滤不列 g，无章芯片不列 ⇧[]，题内键恒保留。
@@ -735,8 +744,17 @@ export default function HeYeSession({
           </button>
         </nav>
       </div>
+      {/* T60 F：匹配中本页浅旁挂（父页 hint==='shallow' 才传）——本页 cite 已抽出但
+          原子极稀（浅 ≠ 暗 ≠ 稀 ≠ cite miss）；只旁挂一句，不动分型/CTA/批量契约，
+          非浅不吵。 */}
+      {pageShallow ? (
+        <p className="mt-2 border-l-2 border-amber-300 pl-3 text-xs leading-5 text-status-warn">
+          （旁挂）本页已抽出但原子偏稀（浅）——本页 cite 核得完 ≠ 本页可考密度够；
+          pnpm density-check -- --shallow 可复核。
+        </p>
+      ) : null}
       {/* T25 B：键说明与 study 对齐一族风格（muted 小字 + mono 键帽）；b 仅待核档。
-          T28 F→T29 E：本页环键（g 清本页 / ⇧[] 切章）由父页按当前真可用性传入 loopKeys
+          T28 F→T29 E：本页环键（g 清本页 / ⇧[ ⇧] 切章）由父页按当前真可用性传入 loopKeys
           （与 sticky 键岛同源）——无本页过滤不列 g，无章芯片不列 ⇧[]，题内键恒保留。
           T44 B：键帽与 onKey 同真——上下条拆两行列出 j 与 k（核侧导航，非练侧 j/k 评分）。
           T53 H：u/z 撤销本轮最后一标（onKey 同真；b 批量整条回滚）。 */}

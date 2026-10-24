@@ -560,6 +560,9 @@ export default function IngestPage() {
                               /* T58 G：ready 三连旁挂书级暗 D（与上方 T57 暗页条/书架暗徽
                                  同数）——只短徽不阻断；T49 三门禁不动。 */
                               darkCount={darkTotal}
+                              /* T60 G：ready 三连旁挂书级浅 S（与上方 T59 浅密度条/
+                                 书架浅徽同数）——与暗D 徽并列可同真；只旁挂不阻断。 */
+                              shallowCount={shallowTotal}
                             />
                           ) : (
                             <RegisterMaterialButton

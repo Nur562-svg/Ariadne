@@ -25,6 +25,7 @@ export default function IngestReadyLinks({
   atomCount,
   pendingCount,
   darkCount,
+  shallowCount,
 }: {
   bookId: string;
   /** T49 A：该书已解析 OCR 印刷页数（loadBookValidPages；缺省当 0 · fail-closed）。 */
@@ -39,6 +40,12 @@ export default function IngestReadyLinks({
    * 三门禁（atomCount===0 仍纯文不可点），不阻断打开书桌，无 Register 硬 4xx。
    */
   darkCount?: number;
+  /**
+   * T60 G/I：书级浅页数（宿主消费 T59 装配，与 ingest 浅密度条/书架浅徽同数）——>0
+   * 时「学习环」旁琥珀短徽「抽出密度偏稀 · 浅S」（与暗D 徽并列可同真）。只旁挂：
+   * 不影响三门禁、不阻断书桌、无 Register 硬 4xx；浅 ≠ 暗（浅是已 cite 页原子极稀）。
+   */
+  shallowCount?: number;
 }) {
   function rememberUploadReturn() {
     saveReturn({ href: "/ingest", label: "上传", at: Date.now() });
@@ -92,6 +99,16 @@ export default function IngestReadyLinks({
           className="mono rounded border border-amber-300 bg-status-warn-bg px-1.5 py-0.5 text-[10px] text-status-warn"
         >
           抽出偏稀 · 暗{darkCount}
+        </span>
+      ) : null}
+      {/* T60 G：学习环旁浅密度短徽（书级 S；与暗D 徽并列可同真，好范围不吵）——
+          已 cite 实质页原子极稀：池内原子 ≠ 可考够。 */}
+      {(shallowCount ?? 0) > 0 ? (
+        <span
+          title={`已 cite 实质页原子极稀（浅页）${shallowCount} 页——学习环练的是池内原子，不等于可考密度够；/ingest 浅密度条与 pnpm density-check 可复核`}
+          className="mono rounded border border-amber-300 bg-status-warn-bg px-1.5 py-0.5 text-[10px] text-status-warn"
+        >
+          抽出密度偏稀 · 浅{shallowCount}
         </span>
       ) : null}
       {(pendingCount ?? 0) > 0 ? (

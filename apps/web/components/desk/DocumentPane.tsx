@@ -909,6 +909,22 @@ function OverviewPanel({
                   cards: chCards,
                 })
               : null;
+          /* T58 H + T60 H：练本章 title 旁挂——章 weak（T57 暗页）点名暗 D、章
+             shallowCount>0（T59 浅密度）点名浅 S（练本章 ≠ 覆盖暗页 / ≠ 可考密度够）；
+             两句可兼（"；"连接）；好章不加 title 不吵。次级链语义不动，行尾 T56/T57/T59
+             生产徽（空稀/暗/浅）保留——练入口与生产面同真不同位，不重复铺徽。 */
+          const chShallowCount = chDensity?.shallowCount ?? 0;
+          const chPracticeTitle =
+            [
+              chExaminable?.weak
+                ? `本章还有 ${chExaminable.darkCount} 个暗页（实质 OCR 未抽出原子）——练本章不覆盖暗页；pnpm page-check 可复核`
+                : null,
+              chShallowCount > 0
+                ? `本章 ${chShallowCount} 个已 cite 实质页原子极稀（浅S）——练本章不等于可考密度够；pnpm density-check -- --shallow ${c.id} 可复核`
+                : null,
+            ]
+              .filter((x): x is string => x != null)
+              .join("；") || undefined;
           return (
             <li key={c.id}>
               {/* 章行卡片容器（对齐 CardCard 容器模式）：主按钮（开章 OCR）占满左区，
@@ -950,13 +966,10 @@ function OverviewPanel({
                       <Link
                         href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(c.id)}&mode=all`}
                         onClick={rememberReturn}
-                        /* T58 H：练入口 title 旁挂——章 weak 时点名暗 D（练本章 ≠ 覆盖本章
-                           暗页）；好章不加 title 不吵。次级链语义不动。 */
-                        title={
-                          chExaminable?.weak
-                            ? `本章还有 ${chExaminable.darkCount} 个暗页（实质 OCR 未抽出原子）——练本章不覆盖暗页；pnpm page-check 可复核`
-                            : undefined
-                        }
+                        /* T58 H + T60 H：练入口 title 旁挂（暗D / 浅S 可兼，见
+                           chPracticeTitle 构造点）；好章不加 title 不吵。
+                           次级链语义不动。 */
+                        title={chPracticeTitle}
                         className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                       >
                         练本章 →

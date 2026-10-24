@@ -19,13 +19,21 @@ export type StudyScopeHrefs = { all?: string; unknown?: string; ungraded?: strin
  * 学习会话里每评一张，这里同步刷新。绿/琥珀只作状态色，不作品牌色。
  * T35 C：分段计数可点——有 hrefs 且 N>0 时切到对应档（认识→all · 不熟→unknown · 未评→ungraded）；
  * N=0 或无 href 纯文。保持页头轻量文字链，不做第二排实心芯片（空/完成态 ModeChips 仍负责芯片 UI）。
+ * T60 C：scope 浅密度旁挂（父页消费 T59 装配 examCoverage 同一份）——densityWeak 时
+ * 行尾琥珀「浅S 页可考密度不足」。只旁挂提示：不改三档分段/N=0 纯文逻辑，不加实心芯片。
  */
 export default function StudyScopeCounts({
   atoms,
   hrefs,
+  densityWeak = false,
+  shallowCount = 0,
 }: {
   atoms: StudyAtom[];
   hrefs?: StudyScopeHrefs;
+  /** T60 C：scope 浅密度偏弱（examCoverage.densityWeak；单卡/未检 → 缺省 false 不吵）。 */
+  densityWeak?: boolean;
+  /** T60 C：scope 浅页数（旁挂点名用，densityWeak 为 true 时才渲）。 */
+  shallowCount?: number;
 }) {
   const [grades, setGrades] = useState<GradeMap>({});
   const [ready, setReady] = useState(false);
@@ -70,6 +78,10 @@ export default function StudyScopeCounts({
       {seg(c.unknown, "不熟", hrefs?.unknown, "text-status-warn")}
       <span> · </span>
       {seg(c.ungraded, "未评", hrefs?.ungraded, "")}
+      {/* T60 C：浅密度旁挂——池内原子 ≠ 可考够（浅页已 cite 但原子极稀）；好范围/未检不吵。 */}
+      {densityWeak && shallowCount > 0 ? (
+        <span className="text-status-warn"> · 浅{shallowCount} 页可考密度不足</span>
+      ) : null}
     </p>
   );
 }

@@ -347,10 +347,12 @@ async function StudyBody({
           : chapters.map((c) => c.id);
   const examCoverage = examChapterIds ? scopeExaminableCoverage(examChapterIds) : null;
   /**
-   * T58 D/I：本页可考性 hint（orphan 分型点名用）——只对孤儿页算（ghost 页 / 章未抽出
-   * → 不点名暗）；sparse 归 T56 口径只轻提，dark 才换暗页正文。
+   * T58 D + T60 D/I：本页可考性 hint——orphan 分型点名（ghost 页 / 章未抽出 → 不点名
+   * 暗）；sparse 归 T56 口径只轻提，dark 才换暗页正文。T60 起非 orphan 页也算（浅旁挂：
+   * 本页有原子 × hint==='shallow' 时点名「原子偏稀」——浅页有 cite 不是 orphan，勿改写
+   * orphan 暗正文）。atomCount 只计 atoms[].cite.page（与 density-check 同口径）。
    */
-  const pageExam = orphanStudy ? loadPageExaminable(pageNum) : null;
+  const pageExam = pageNum != null ? loadPageExaminable(pageNum) : null;
 
   return (
     <div className="mx-auto w-full max-w-3xl px-8 py-10">
@@ -438,7 +440,9 @@ async function StudyBody({
           </p>
         ) : null}
         {/* T35 C：页头范围计数可点——与 sticky 三档 tablist / StudySession allHref·unknownHref·
-            ungradedHref 同一 qs({ mode }) 口径（保留 card/book/chapter/page）；N=0 纯文。 */}
+            ungradedHref 同一 qs({ mode }) 口径（保留 card/book/chapter/page）；N=0 纯文。
+            T60 C：scope densityWeak 时行尾旁挂「浅S 页可考密度不足」（单卡/未检不吵）——
+            与 B 页头浅条同真同源（examCoverage 同一份），N=0 段逻辑不动。 */}
         <StudyScopeCounts
           atoms={atoms}
           hrefs={{
@@ -446,6 +450,8 @@ async function StudyBody({
             unknown: `/study${qs({ mode: "unknown" })}`,
             ungraded: `/study${qs({ mode: "ungraded" })}`,
           }}
+          densityWeak={examCoverage?.densityWeak ?? false}
+          shallowCount={examCoverage?.shallowCount ?? 0}
         />
         {/* 作用域进度（T18：同范围练+核分列；本页即练环，不重复练链）。
             T27 C：有效页时练/核两列都是本页池（collectCiteQueue 同样带 page），标签「本页 p.N」。
@@ -591,6 +597,34 @@ async function StudyBody({
           可考覆盖偏稀 · 暗{examCoverage.darkCount} 页未进可练池（实质页{" "}
           {examCoverage.substantialPages} · 已cite {examCoverage.citedPages}）——池内原子 ≠
           材料已覆盖；扉页/小结/跨章扉可能合理暗，pnpm page-check 可复核。
+        </p>
+      ) : null}
+      {/* T60 B：页头浅密度条（消费 T59，与暗条并列可同真）——scope densityWeak 才出：
+          已 cite 实质页原子极稀（浅 ≠ 暗：浅是练得出但题太少，暗是零 cite 零题）。
+          缺 density 章 = 浅未检跳过（fold 不装 0 完美）；单卡/未检不吵；无掌握% / Due。 */}
+      {examCoverage?.densityWeak ? (
+        <p className="mt-1 text-xs leading-6 text-status-warn">
+          可考密度偏稀 · 浅{examCoverage.shallowCount} 页已 cite 但原子极少（实质页{" "}
+          {examCoverage.substantialPages} · 有原子 {examCoverage.atomPages}）——池内原子 ≠
+          可考够；pnpm density-check 可复核。
+        </p>
+      ) : null}
+      {/* T60 D：本页有原子 × 浅（非 orphan——浅页有 cite，练得出但原子极稀）——琥珀一行
+          点名原子/字数（atoms[].cite.page 口径）+ 复核链；不新增主 CTA、不改 orphan 暗正文
+          （orphan × dark 走下方空态 T58 D 分支），sparse 由优先序保证不与浅双吵。 */}
+      {!orphanStudy && pageExam?.hint === "shallow" ? (
+        <p className="mt-1 text-xs leading-6 text-status-warn">
+          本页已抽出但原子偏稀（{pageExam.atomCount} 原子 · {pageExam.chars} 字）·
+          可考密度不足——练完本页 ≠ 本页可考够；可回{" "}
+          <Link className="underline underline-offset-4" href="/ingest">
+            /ingest
+          </Link>
+          {pageOwner?.chapterId ? (
+            <>
+              {" "}· <span className="mono">pnpm density-check -- --shallow {pageOwner.chapterId}</span>
+            </>
+          ) : null}
+          。
         </p>
       ) : null}
 
@@ -749,6 +783,10 @@ async function StudyBody({
              一行「评完池 ≠ 材料可考完」；不改完成主 CTA，不写 verified。 */
           examinableWeak={examCoverage?.weak ?? false}
           darkCount={examCoverage?.darkCount ?? 0}
+          /* T60 E/I：scope 浅密度旁挂（densityWeak 且 shallowCount>0 才出）——完成态
+             另一句琥珀「评完池 ≠ 可考够」；与 T58 暗句并列不互吞；不 PATCH entities。 */
+          densityWeak={examCoverage?.densityWeak ?? false}
+          shallowCount={examCoverage?.shallowCount ?? 0}
         />
       )}
     </div>
