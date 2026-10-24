@@ -13,7 +13,11 @@ import {
   materialChapterHasCards,
 } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
-import { scoreChapter, type CiteQuality } from "@/lib/cite-ocr-quality";
+import {
+  cardCiteMisses,
+  scoreChapter,
+  type CiteQuality,
+} from "@/lib/cite-ocr-quality";
 import IngestUpload from "@/components/IngestUpload";
 import RegisterMaterialButton from "@/components/RegisterMaterialButton";
 import IngestReadyLinks from "@/components/IngestReadyLinks";
@@ -129,12 +133,24 @@ export default function IngestPage() {
               const blocksN = m.chapters.filter((c) => materialChapterHasBlocks(m, c.id)).length;
               const cardsN = m.chapters.filter((c) => materialChapterHasCards(m, c.id)).length;
               /**
-               * T54 D/I：章级 cite↔OCR 机检（只对**有 cards** 的章实算——uploaded/parsed
-               * 不装假 0 条）；算法与 pnpm cite-check / extract 后置同真
+               * T54 D/I + T55 D/I：章级 cite↔OCR 机检（只对**有 cards** 的章实算——
+               * uploaded/parsed 不装假 0 条）；算法与 pnpm cite-check / extract 后置同真
                * （lib/cite-ocr-quality，bigram≥0.6）。缺该章 OCR 文本的 cite 不计 miss
-               * （未检不抬假阳）。汇总供注册软门禁（qualityWarn）与章清单质量行共用。
+               * （未检不抬假阳）。T55 增完备计数 + miss 样例（≤8，含 OCR 附近窗）与
+               * 零原子卡 id——补救面板 / 章清单质量行 / 注册软门禁（qualityWarn）共用。
                */
-              const chapterQuality = new Map<string, CiteQuality>();
+              type ChCheck = {
+                quality: CiteQuality;
+                misses: {
+                  cardId: string;
+                  page: number;
+                  coverage: number;
+                  quote: string;
+                  ocrSnippet?: string;
+                }[];
+                zeroAtomCardIds: string[];
+              };
+              const chapterChecks = new Map<string, ChCheck>();
               for (const c of m.chapters) {
                 if (!materialChapterHasCards(m, c.id)) continue;
                 const chCards = loadCards({ chapterId: c.id });
@@ -143,9 +159,17 @@ export default function IngestPage() {
                 for (const p of loadChapterPages(c.id)) {
                   if (p.page != null) textByPage[p.page] = p.text;
                 }
-                chapterQuality.set(c.id, scoreChapter(chCards, textByPage));
+                chapterChecks.set(c.id, {
+                  quality: scoreChapter(chCards, textByPage),
+                  misses: chCards
+                    .flatMap((cd) => cardCiteMisses(cd, textByPage))
+                    .slice(0, 8),
+                  zeroAtomCardIds: chCards
+                    .filter((cd) => (cd.atoms ?? []).length === 0)
+                    .map((cd) => cd.id),
+                });
               }
-              const warnQs = [...chapterQuality.values()];
+              const warnQs = [...chapterChecks.values()].map((ck) => ck.quality);
               const warnCites = warnQs.reduce((n, q) => n + q.cites, 0);
               const warnMiss = warnQs.reduce((n, q) => n + q.ocrMiss, 0);
               const materialWarn =
@@ -155,8 +179,18 @@ export default function IngestPage() {
                       zeroAtomCards: warnQs.reduce((n, q) => n + q.zeroAtomCards, 0),
                       missRate: warnCites > 0 ? warnMiss / warnCites : 0,
                       nullPage: warnQs.reduce((n, q) => n + q.nullPage, 0),
+                      emptyPromptAtoms: warnQs.reduce((n, q) => n + q.emptyPromptAtoms, 0),
+                      emptyAnswerAtoms: warnQs.reduce((n, q) => n + q.emptyAnswerAtoms, 0),
+                      incompleteAtoms: warnQs.reduce((n, q) => n + q.incompleteAtoms, 0),
                     }
                   : undefined;
+              /** T55 D：弱章集合（OCR未见/零原子/不完备 任一 >0）——补救面板与重抽命令子集。 */
+              const weakChapters = [...chapterChecks.entries()].filter(
+                ([, ck]) =>
+                  ck.quality.ocrMiss > 0 ||
+                  ck.quality.zeroAtomCards > 0 ||
+                  ck.quality.incompleteAtoms > 0,
+              );
               return (
                 <li key={m.id} className="rounded-lg border border-line bg-card p-5">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -183,10 +217,15 @@ export default function IngestPage() {
                     {m.chapters.map((c) => {
                       const hasBlocks = materialChapterHasBlocks(m, c.id);
                       const hasCards = materialChapterHasCards(m, c.id);
-                      const q = hasCards ? chapterQuality.get(c.id) : undefined;
-                      /** T54 D：有 cards 的章给机检真数（卡/原子/OCR未见/无页/零原子卡）；
-                          M/K/Z > 0 琥珀点名——弱稿注册前可见；有 cards 但读不到卡（罕见）不装 0。 */
-                      const qWarn = q != null && (q.ocrMiss > 0 || q.nullPage > 0 || q.zeroAtomCards > 0);
+                      const q = hasCards ? chapterChecks.get(c.id)?.quality : undefined;
+                      /** T54 D + T55 D：有 cards 的章给机检真数（卡/原子/OCR未见/无页/零原子卡/
+                          不完备原子）；任一弱项 > 0 琥珀点名——弱稿注册前可见；不装 0。 */
+                      const qWarn =
+                        q != null &&
+                        (q.ocrMiss > 0 ||
+                          q.nullPage > 0 ||
+                          q.zeroAtomCards > 0 ||
+                          q.incompleteAtoms > 0);
                       return (
                         <li
                           key={c.id}
@@ -199,13 +238,82 @@ export default function IngestPage() {
                           <span>cards {hasCards ? "有" : "无"}</span>
                           {q ? (
                             <span className={qWarn ? "text-status-warn" : undefined}>
-                              机检 卡 {q.cards} · 原子 {q.atoms} · OCR未见 {q.ocrMiss} · 无页 p.? {q.nullPage} · 零原子卡 {q.zeroAtomCards}
+                              机检 卡 {q.cards} · 原子 {q.atoms} · OCR未见 {q.ocrMiss} · 无页 p.? {q.nullPage} · 零原子卡 {q.zeroAtomCards} · 不完备原子 {q.incompleteAtoms}
                             </span>
                           ) : null}
                         </li>
                       );
                     })}
                   </ul>
+                  {/* T55 D：补救面板（extracted/ready 且有弱章才渲；uploaded/parsed 不装假表）——
+                      每弱章 <details> 展开 miss 样例（≤8，链卡 + p.N + cov + OCR 附近 mono）+
+                      零原子卡 id 链 + 不完备原子点名；重抽命令可复制（多章按弱章子集拼）。
+                      只展示 + 剪贴板——不自动 PATCH entities / 不写 verified。 */}
+                  {weakChapters.length > 0 ? (
+                    <div className="mt-3 rounded-lg border border-amber-300/60 px-3 py-2">
+                      {weakChapters.map(([chId, ck]) => (
+                        <details key={chId} className="py-1">
+                          <summary className="cursor-pointer select-none text-xs leading-6 text-status-warn">
+                            补救 · {chId}：OCR未见 {ck.quality.ocrMiss} · 零原子卡{" "}
+                            {ck.quality.zeroAtomCards} · 不完备原子 {ck.quality.incompleteAtoms}
+                          </summary>
+                          {ck.misses.length > 0 ? (
+                            <ul className="mt-1.5 space-y-1.5">
+                              {ck.misses.map((mm, i) => (
+                                <li key={`${mm.cardId}:${mm.page}:${i}`} className="text-xs leading-5 text-muted">
+                                  <Link
+                                    href={`/desk/card/${encodeURIComponent(mm.cardId)}`}
+                                    className="mono mr-1 text-cinnabar no-underline hover:underline underline-offset-4"
+                                  >
+                                    {mm.cardId}
+                                  </Link>
+                                  · p.{mm.page} · cov {mm.coverage} · “{mm.quote}”
+                                  {mm.ocrSnippet ? (
+                                    <span className="mono mt-0.5 block text-[11px] leading-5 text-foreground/80">
+                                      OCR附近：{mm.ocrSnippet}
+                                    </span>
+                                  ) : null}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="mt-1.5 text-xs leading-5 text-muted">
+                              （本章无 OCR 未见样例——弱项为零原子卡 / 不完备原子，见下）
+                            </p>
+                          )}
+                          {ck.zeroAtomCardIds.length > 0 ? (
+                            <p className="mt-1.5 flex flex-wrap items-baseline gap-x-2 text-xs leading-5 text-muted">
+                              <span>零原子卡（练不出题）：</span>
+                              {ck.zeroAtomCardIds.map((id) => (
+                                <Link
+                                  key={id}
+                                  href={`/desk/card/${encodeURIComponent(id)}`}
+                                  className="mono text-cinnabar no-underline hover:underline underline-offset-4"
+                                >
+                                  {id}
+                                </Link>
+                              ))}
+                            </p>
+                          ) : null}
+                          {ck.quality.incompleteAtoms > 0 ? (
+                            <p className="mt-1.5 text-xs leading-5 text-status-warn">
+                              不完备原子 {ck.quality.incompleteAtoms}（空 prompt{" "}
+                              {ck.quality.emptyPromptAtoms} / 空 answer{" "}
+                              {ck.quality.emptyAnswerAtoms}）——重抽或人工补 seed 后再注册。
+                            </p>
+                          ) : null}
+                        </details>
+                      ))}
+                      <div className="mt-2">
+                        <CopyCommand
+                          command={`pnpm extract -- ${weakChapters.map(([id]) => id).join(" ")}`}
+                        />
+                      </div>
+                      <p className="mt-1 text-[11px] leading-5 text-muted">
+                        补救 = 展示 + 剪贴板：建议摘录 / 重抽命令由人核后手动执行，不自动写 entities。
+                      </p>
+                    </div>
+                  ) : null}
                   <p className="mt-3 text-sm leading-7 text-foreground/90">{hint.text}</p>
                   {/* T45 E：下一步命令进可复制 mono 块（CopyCommand 客户端岛，朱红只强调复制动作）。 */}
                   {hint.command ? <CopyCommand command={hint.command} /> : null}

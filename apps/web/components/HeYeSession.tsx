@@ -20,7 +20,8 @@ import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadReturn, saveReturn, type ReturnEntry } from "@/lib/return-stack";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
-import { quoteInOcr } from "@/lib/cite-ocr-quality";
+import CopyTextButton from "@/components/CopyTextButton";
+import { ocrNeighborhood, quoteInOcr } from "@/lib/cite-ocr-quality";
 
 /**
  * 档位芯片（T25 A）：待核/已对/存疑 本机计数，可点切档（URL 规则与 sticky 三档一致）；
@@ -811,13 +812,29 @@ export default function HeYeSession({
             </p>
           )}
 
-          {/* T54 G：摘录机检琥珀——有 quote、该页 OCR 文本在、bigram<0.6 未命中 → 点名
+          {/* T54 G + T55 G：摘录机检琥珀——有 quote、该页 OCR 文本在、bigram<0.6 未命中 → 点名
               「可能 OCR 误差或抽取出错」，提示逐字核对；匹配 / 无 quote / 页无文本不吵
-              （缺文本不抬假阳）。只提示，不改 mark / u-z 撤销 / verified 语义。 */}
+              （缺文本不抬假阳）。只提示，不改 mark / u-z 撤销 / verified 语义。
+              T55：琥珀下给附近 OCR 一行（mono，最稠密命中簇的原始文本窗）+「复制附近」——
+              人核后手动改 seed，不自动 PATCH。 */}
           {cur.quote && pg && !quoteInOcr(cur.quote, pg.text) ? (
-            <p className="mt-2 rounded border border-amber-300 bg-status-warn-bg px-3 py-2 text-xs leading-5 text-status-warn">
-              摘录未在本页 OCR 中找到（可能 OCR 误差或抽取出错）——逐字核对后再标「本机已对」。
-            </p>
+            <div className="mt-2 rounded border border-amber-300 bg-status-warn-bg px-3 py-2 text-xs leading-5 text-status-warn">
+              <p>
+                摘录未在本页 OCR 中找到（可能 OCR 误差或抽取出错）——逐字核对后再标「本机已对」。
+              </p>
+              {(() => {
+                const nb = ocrNeighborhood(cur.quote, pg.text);
+                if (!nb) return null;
+                return (
+                  <p className="mt-1 flex flex-wrap items-baseline gap-2">
+                    <span className="mono min-w-0 flex-1 text-[11px] leading-5 text-foreground/80">
+                      OCR附近：{nb.snippet}
+                    </span>
+                    <CopyTextButton text={nb.snippet} label="复制附近" />
+                  </p>
+                );
+              })()}
+            </div>
           ) : null}
 
           {cur.context && cur.context !== cur.quote ? (

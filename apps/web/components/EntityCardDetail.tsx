@@ -7,7 +7,8 @@ import CardVsStudyLink from "@/components/CardVsStudyLink";
 import DeskOpenReturnLink from "@/components/DeskOpenReturnLink";
 import { withQsMode } from "@/lib/qs-mode";
 import { deskPageHref as buildDeskPageHref, pageInOcr } from "@/lib/ocr-page";
-import { citeOcrMiss, enumerateCardCites, quoteInOcr } from "@/lib/cite-ocr-quality";
+import { citeOcrMiss, cardCiteMisses, enumerateCardCites, quoteInOcr } from "@/lib/cite-ocr-quality";
+import CopyTextButton from "@/components/CopyTextButton";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
 
@@ -133,6 +134,13 @@ export function EntityCardDetail({
     return n;
   })();
   /**
+   * T55 F/I：miss 明细（含 OCR 附近窗 + 启发式建议摘录，server 侧算优）——补救面板
+   * 逐条展示 + 复制建议摘录（剪贴板；人核后再贴）。只展示 + 复制：不自动 PATCH
+   * entities / 不写 verified / 不记本机核页标记。未装配页文本 → 空列表（未检）。
+   */
+  const missDetails =
+    pageTextByPage == null ? [] : cardCiteMisses(card, pageTextByPage).slice(0, 8);
+  /**
    * T35 A/B：卡枢纽练/核显式默认档（练 mode=all · 核 mode=open）——CardHubReturnLinks /
    * 本卡 Strip 消费同一对 href；本标签 sticky 停在非默认空档时从卡面进练/核仍落可见池。
    */
@@ -249,11 +257,43 @@ export function EntityCardDetail({
               {ocrMissCount != null
                 ? "「OCR 未见」是机检（引文与该页 OCR 原文的 bigram 覆盖 < 0.6，可能 OCR 误差或抽取出错）——不是 seed verified，也不写你的核页标记。"
                 : ""}
+              {missDetails.length > 0
+                ? " 建议摘录为启发式建议——人核后再贴；不会写回 seed / 改 verified / 记核页标记。"
+                : ""}
             </p>
           </>
         ) : (
           <p className="text-muted">本卡暂无引用记录（卡引用 / 字段 / 原子均无 cite）。</p>
         )}
+        {/* T55 F：复制级补救——OCR 未见逐条展开（p.N · cov · quote · OCR 附近 mono +
+            复制建议摘录）。只展示 + 剪贴板，不自动改 seed；未检（无页文本）不渲。 */}
+        {missDetails.length > 0 ? (
+          <details className="mt-3 rounded-lg border border-amber-300/60 px-3 py-2">
+            <summary className="cursor-pointer select-none text-xs leading-6 text-status-warn">
+              补救 · OCR 未见 {ocrMissCount} 条{ocrMissCount != null && ocrMissCount > missDetails.length ? `（列前 ${missDetails.length}）` : ""} · 建议摘录可复制
+            </summary>
+            <ul className="mt-1.5 space-y-2">
+              {missDetails.map((mm, i) => (
+                <li key={`${mm.page}:${i}`} className="text-xs leading-5 text-muted">
+                  <span className="mono">p.{mm.page}</span> · cov {mm.coverage} · “{mm.quote}”
+                  {mm.ocrSnippet ? (
+                    <span className="mono mt-0.5 block text-[11px] leading-5 text-foreground/80">
+                      OCR附近：{mm.ocrSnippet}
+                    </span>
+                  ) : null}
+                  {mm.suggestQuote ? (
+                    <span className="mt-0.5 flex flex-wrap items-baseline gap-2">
+                      <span className="min-w-0 flex-1">
+                        建议摘录（人核后再贴）：<span className="text-foreground/90">“{mm.suggestQuote}”</span>
+                      </span>
+                      <CopyTextButton text={mm.suggestQuote} label="复制建议摘录" />
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
       </section>
 
       {/* 跨面本机进度：本卡原子（练）+ 本卡核池（核）；条末弱链进同范围练/核（不重复动作条主 CTA）。

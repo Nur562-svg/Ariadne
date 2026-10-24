@@ -94,7 +94,8 @@ function buildPrompt(chunk) {
 3. 每张卡 1~3 个知识原子（可测单元：定义=what / 机制一步=why / 临床应用=case），原子 id 格式 "${chapterId}:<slug>:<序号>"。
 4. 易混概念写进 confusions（如 TD-Ag vs TI-Ag）。
 5. 不写诊断、不开处方；只做教材范围内的定义/机制。
-6. 只输出 JSON，不要多余文字。schema：
+6. 每个原子的 prompt 与 answer 必须非空（可测问法 + 教材内答案），禁止留空。
+7. 只输出 JSON，不要多余文字。schema：
 ${SCHEMA_HINT}
 
 原文（印刷页 p.${chunk[0].page}–p.${chunk[chunk.length - 1].page}）：
@@ -167,21 +168,28 @@ const doc = {
   cards: all,
 };
 
-// ---- T54 C：写盘前 cite↔OCR 机检（同真算法；只读，不改 verified）----
+// ---- T54 C + T55 C：写盘前 cite↔OCR 机检 + 原子完备（同真算法；只读，不改 verified）----
 const pageTextByPage = {};
 for (const p of pages) if (p.page != null) pageTextByPage[p.page] = p.text;
 const quality = scoreChapter(all, pageTextByPage);
 process.stderr.write(
   `质量机检: 卡 ${quality.cards} · 原子 ${quality.atoms} · 有页 cite ${quality.cites} · ` +
     `OCR未见 ${quality.ocrMiss}（missRate ${(quality.missRate * 100).toFixed(1)}%）· ` +
-    `无页 ${quality.nullPage} · 零原子卡 ${quality.zeroAtomCards}\n`,
+    `无页 ${quality.nullPage} · 零原子卡 ${quality.zeroAtomCards} · ` +
+    `空prompt ${quality.emptyPromptAtoms} · 空answer ${quality.emptyAnswerAtoms} · ` +
+    `不完备原子 ${quality.incompleteAtoms}\n`,
 );
-if (strict && (quality.missRate > 0.4 || quality.zeroAtomCards > 0)) {
+// T55 C：--strict 追加不完备原子（空 prompt ∨ 空 answer >0）——与 missRate/零原子「或」关系。
+if (
+  strict &&
+  (quality.missRate > 0.4 || quality.zeroAtomCards > 0 || quality.incompleteAtoms > 0)
+) {
   const outStrict = path.join(ROOT, "data/cards", `${chapterId}.entities.json`);
   const hadOldStrict = fs.existsSync(outStrict);
   console.error(
-    `--strict 拒绝：missRate ${(quality.missRate * 100).toFixed(1)}%（>40%）或零原子卡 ${quality.zeroAtomCards}（>0）——` +
-      `${hadOldStrict ? `拒绝覆盖已有 ${outStrict}` : "拒绝写盘"}；可 pnpm cite-check -- ${chapterId} 看样例后人工复核`,
+    `--strict 拒绝：missRate ${(quality.missRate * 100).toFixed(1)}%（>40%）/ 零原子卡 ${quality.zeroAtomCards} / ` +
+      `不完备原子 ${quality.incompleteAtoms} 任一命中——` +
+      `${hadOldStrict ? `拒绝覆盖已有 ${outStrict}` : "拒绝写盘"}；可 pnpm cite-check -- --misses ${chapterId} 看样例后人工复核`,
   );
   process.exit(1);
 }

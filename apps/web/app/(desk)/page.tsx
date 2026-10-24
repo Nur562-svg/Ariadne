@@ -1,7 +1,14 @@
 import Link from "next/link";
-import { collectStudyAtoms, loadBooks, loadBookValidPages, loadCards } from "@/lib/entities";
+import {
+  collectStudyAtoms,
+  loadBooks,
+  loadBookValidPages,
+  loadCards,
+  loadChapterPages,
+} from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import { collectBookPools, type BookPools } from "@/lib/book-pools";
+import { scoreChapter, type CiteQuality } from "@/lib/cite-ocr-quality";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
@@ -26,6 +33,55 @@ export default function Library() {
    */
   const poolsByBook: Record<string, BookPools> = {};
   for (const b of books) poolsByBook[b.id] = collectBookPools(b.id);
+
+  /**
+   * T55 H/I：书级质量徽装配——各书折叠其章 scoreChapter（与 pnpm cite-check / ingest
+   * 章清单同真算法；缺 OCR 文本的 cite 不计 miss＝未检，不抬假阳）。章级 textByPage /
+   * cards 跨书缓存一次；弱书（OCR未见/零原子/不完备 任一 >0）才出琥珀徽，好书不吵。
+   */
+  const qualityTextByCh = new Map<string, Record<number, string>>();
+  const qualityCardsByCh = new Map<string, Parameters<typeof scoreChapter>[0]>();
+  function chapterCheck(chId: string): CiteQuality | null {
+    if (!qualityTextByCh.has(chId)) {
+      const textByPage: Record<number, string> = {};
+      for (const p of loadChapterPages(chId)) {
+        if (p.page != null) textByPage[p.page] = p.text;
+      }
+      qualityTextByCh.set(chId, textByPage);
+      qualityCardsByCh.set(chId, loadCards({ chapterId: chId }));
+    }
+    const chCards = qualityCardsByCh.get(chId) ?? [];
+    if (chCards.length === 0) return null; // 无 entities＝未检，不装 0 假数
+    return scoreChapter(chCards, qualityTextByCh.get(chId) ?? {});
+  }
+  const bookQuality: Record<string, CiteQuality | null> = {};
+  for (const b of books) {
+    const qs = b.chapterIds.map((chId) => chapterCheck(chId)).filter((q): q is CiteQuality => q != null);
+    if (qs.length === 0) {
+      bookQuality[b.id] = null;
+      continue;
+    }
+    const folded = qs.reduce<CiteQuality>(
+      (acc, q) => {
+        acc.cards += q.cards;
+        acc.atoms += q.atoms;
+        acc.cites += q.cites;
+        acc.nullPage += q.nullPage;
+        acc.ocrMiss += q.ocrMiss;
+        acc.zeroAtomCards += q.zeroAtomCards;
+        acc.emptyPromptAtoms += q.emptyPromptAtoms;
+        acc.emptyAnswerAtoms += q.emptyAnswerAtoms;
+        acc.incompleteAtoms += q.incompleteAtoms;
+        return acc;
+      },
+      {
+        cards: 0, atoms: 0, cites: 0, nullPage: 0, ocrMiss: 0, zeroAtomCards: 0,
+        missRate: 0, emptyPromptAtoms: 0, emptyAnswerAtoms: 0, incompleteAtoms: 0,
+      },
+    );
+    folded.missRate = folded.cites > 0 ? folded.ocrMiss / folded.cites : 0;
+    bookQuality[b.id] = folded;
+  }
 
   if (books.length === 0) {
     return (
@@ -148,6 +204,28 @@ export default function Library() {
                   </div>
                 ))}
               </dl>
+              {/* T55 H：书级质量徽——弱书（OCR未见 / 零原子卡 / 不完备原子 任一 >0）琥珀
+                  点名（只列 >0 项），好书不吵；次级 /ingest 去补救（miss 样例 / 重抽命令在
+                  物料面板）。非掌握% / 非 Due 角标 / 无圆环；未检（无 entities）不出徽。 */}
+              {(() => {
+                const q = bookQuality[b.id];
+                if (q == null) return null;
+                if (q.ocrMiss === 0 && q.zeroAtomCards === 0 && q.incompleteAtoms === 0) return null;
+                const parts: string[] = [];
+                if (q.ocrMiss > 0) parts.push(`OCR未见 ${q.ocrMiss}`);
+                if (q.zeroAtomCards > 0) parts.push(`零原子卡 ${q.zeroAtomCards}`);
+                if (q.incompleteAtoms > 0) parts.push(`空原子字段 ${q.incompleteAtoms}`);
+                return (
+                  <p className="mt-3 flex flex-wrap items-baseline gap-2 text-xs leading-6 text-status-warn">
+                    <span className="rounded border border-amber-300 bg-status-warn-bg px-2 py-0.5">
+                      质量偏弱 · {parts.join(" · ")}
+                    </span>
+                    <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
+                      去补救 →
+                    </Link>
+                  </p>
+                );
+              })()}
               <p className="mt-4 text-xs leading-6 text-muted">章 {b.chapterIds.join(" · ")}</p>
               {/* T21 B2：每书本机练/核计数（传该书 atoms/items 池；无掌握% / 圆环 / Due 角标）。
                   T36 D：书级池分段可点——三档从条末书级 href mode-swap（?book=&mode=*）；

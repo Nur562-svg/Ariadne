@@ -35,12 +35,20 @@ export default function RegisterMaterialButton({
   /** T49 C：该书/物料章级待核 cite 数（collectCiteQueue 同池族；缺省当 0）。 */
   pendingCount?: number;
   /**
-   * T54 E/I：物料章 cite↔OCR 机检汇总（ingest 页实算；缺省 undefined = 无可检章）。
-   * missRate≥0.25 或 zeroAtomCards>0 → 软门禁：琥珀点名 + 首次点击改为
-   * 「质量偏弱 · 仍要注册 →」二次确认——只拦人不拦 API（/api/ingest/register
-   * 不因质量 4xx）；低风险保持一键「注册进书库 →」。
+   * T54 E/I + T55 E/I：物料章 cite↔OCR 机检汇总（ingest 页实算；缺省 undefined = 无可检章）。
+   * missRate≥0.25 或 zeroAtomCards>0（T54）**另加 incompleteAtoms>0**（T55，空 prompt ∨
+   * 空 answer）→ 软门禁：琥珀点名 + 首次点击改为「质量偏弱 · 仍要注册 →」二次确认——
+   * 只拦人不拦 API（/api/ingest/register 不因质量 4xx）；低风险保持一键「注册进书库 →」。
    */
-  qualityWarn?: { ocrMiss: number; zeroAtomCards: number; missRate: number; nullPage: number };
+  qualityWarn?: {
+    ocrMiss: number;
+    zeroAtomCards: number;
+    missRate: number;
+    nullPage: number;
+    emptyPromptAtoms?: number;
+    emptyAnswerAtoms?: number;
+    incompleteAtoms?: number;
+  };
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -50,7 +58,9 @@ export default function RegisterMaterialButton({
   const [confirmWeak, setConfirmWeak] = useState(false);
   const weak =
     qualityWarn != null &&
-    (qualityWarn.missRate >= 0.25 || qualityWarn.zeroAtomCards > 0);
+    (qualityWarn.missRate >= 0.25 ||
+      qualityWarn.zeroAtomCards > 0 ||
+      (qualityWarn.incompleteAtoms ?? 0) > 0);
 
   /**
    * T39 A：注册成功后的三连（打开书桌 / 学习环 / 核页）点前写 return 短链——
@@ -116,8 +126,8 @@ export default function RegisterMaterialButton({
         </button>
         <span className="text-xs text-muted">写入 config · 本机 · 非云同步</span>
       </span>
-      {/* T54 E：弱稿琥珀点名（missRate≥25% 或零原子卡）——机检数字与 ingest 章清单 /
-          pnpm cite-check 同真；不阻断 API，只要求二次确认。 */}
+      {/* T54 E + T55 E：弱稿琥珀点名（missRate≥25% / 零原子卡 / 不完备原子）——机检数字
+          与 ingest 章清单 / pnpm cite-check 同真；不阻断 API，只要求二次确认。 */}
       {weak && qualityWarn ? (
         <span
           role="status"
@@ -125,7 +135,11 @@ export default function RegisterMaterialButton({
         >
           抽取质量偏弱：OCR未见 {qualityWarn.ocrMiss} · missRate{" "}
           {(qualityWarn.missRate * 100).toFixed(1)}% · 零原子卡 {qualityWarn.zeroAtomCards} ·
-          无页 p.? {qualityWarn.nullPage}——注册会把这些一起带进书库（练核池可见同数）。
+          无页 p.? {qualityWarn.nullPage}
+          {(qualityWarn.incompleteAtoms ?? 0) > 0
+            ? ` · 不完备原子 ${qualityWarn.incompleteAtoms}（空 prompt ${qualityWarn.emptyPromptAtoms ?? 0} / 空 answer ${qualityWarn.emptyAnswerAtoms ?? 0}）`
+            : ""}
+          ——注册会把这些一起带进书库（练核池可见同数）。
           {confirmWeak ? " 再点一次「仍要注册」确认。" : " 可先 pnpm cite-check 看样例。"}
         </span>
       ) : null}
