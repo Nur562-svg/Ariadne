@@ -31,3 +31,4 @@ pnpm-debug.log*
 next-env.d.ts
 data/qa/*.cite-ocr.json
 data/qa/*.parse-ocr.json
+data/qa/*.extract-page.json

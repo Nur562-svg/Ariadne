@@ -22,6 +22,7 @@ import { saveReturn } from "@/lib/return-stack";
 import { deskPageHref } from "@/lib/ocr-page";
 import { citeOcrMiss } from "@/lib/cite-ocr-quality";
 import { scoreParseChapter } from "@/lib/parse-ocr-coverage";
+import { collectCitedPages, scoreExtractPageCoverage } from "@/lib/extract-page-coverage";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -438,6 +439,16 @@ export default function DocumentPane({
     return m;
   }, [pages]);
   /**
+   * T57 H/I：当前章已 cite 印刷页集合（章内 cards 的 cites/fields[].cite/atoms[].cite
+   * 并集——collectCitedPages 与 pnpm page-check 章口径同真）——下传 ChapterPageReader
+   * 做暗页提示（当前页实质 chars≥40 且 ∉ citedSet）。章内无卡 → undefined（未抽出＝
+   * 未装配，不点名暗页，不装满暗假象）；换章随 chapterCards 重算。
+   */
+  const chapterCitedPages = useMemo(
+    () => (chapterCards.length > 0 ? collectCitedPages(chapterCards) : undefined),
+    [chapterCards],
+  );
+  /**
    * T52 A/I：本书可练原子数——与书头「N 个知识原子」同一 reduce（cards 即本书卡
    * loadCards({bookId})，等于 collectStudyAtoms({bookId}).length 同池）；下传 QuizPanel
    * 做「放宽到本书」书空门禁：本章 0 且本书 0 → 纯文「本书暂无原子」，不再链放宽。
@@ -733,6 +744,7 @@ export default function DocumentPane({
             citingCards={pageCitingCards}
             pendingPageCount={pagePendingCount}
             pendingByCard={pendingByCard}
+            citedPages={chapterCitedPages}
             onOpenOverview={() => setSection("overview")}
             variant="full"
           />
@@ -773,6 +785,7 @@ export default function DocumentPane({
               citingCards={pageCitingCards}
               pendingPageCount={pagePendingCount}
               pendingByCard={pendingByCard}
+              citedPages={chapterCitedPages}
               onOpenOverview={() => setSection("overview")}
               variant="column"
             />
@@ -945,6 +958,29 @@ function OverviewPanel({
                       className="mono shrink-0 rounded border border-amber-300 bg-status-warn-bg px-1.5 py-0.5 text-[10px] text-status-warn"
                     >
                       {parts.join(" · ")}
+                    </span>
+                  );
+                })()}
+                {/* T57 F：章行暗页徽（与 T56 空/稀徽、T55 cite 徽三分列）——有 cards 且有
+                    OCR 页才实算（scoreExtractPageCoverage 与 pnpm page-check 同真：暗页 =
+                    chars≥40 实质页零 cite）；darkCount>0 → 琥珀短徽「暗D」；好章不吵；
+                    无 cards（未抽出）不装暗徽（未检 ≠ 零暗）。无掌握% / Due。 */}
+                {(() => {
+                  if (count === 0 || cardCount === 0) return null;
+                  const epc = scoreExtractPageCoverage({
+                    pages: pages.filter((p) => p.chapterId === c.id),
+                    cards: chCards,
+                  });
+                  if (epc.darkCount === 0) return null;
+                  return (
+                    <span
+                      title={`本章 ${epc.darkCount} 个实质 OCR 页未被任何卡 cite（暗页：${epc.darkPages
+                        .slice(0, 6)
+                        .map((d) => `p.${d.page}`)
+                        .join(" ")}）——扉页/小结可能合理暗；pnpm page-check -- --dark ${c.id} 可复核`}
+                      className="mono shrink-0 rounded border border-amber-300 bg-status-warn-bg px-1.5 py-0.5 text-[10px] text-status-warn"
+                    >
+                      暗{epc.darkCount}
                     </span>
                   );
                 })()}

@@ -19,6 +19,8 @@ import {
   type CiteQuality,
 } from "@/lib/cite-ocr-quality";
 import { loadParseCoverage } from "@/lib/parse-ocr-coverage-server";
+import { loadExtractPageCoverage } from "@/lib/extract-page-coverage-server";
+import type { ExtractPageCoverage } from "@/lib/extract-page-coverage";
 import IngestUpload from "@/components/IngestUpload";
 import RegisterMaterialButton from "@/components/RegisterMaterialButton";
 import IngestReadyLinks from "@/components/IngestReadyLinks";
@@ -214,6 +216,31 @@ export default function IngestPage() {
                 (n, cov) => n + (cov?.sparsePages ?? 0),
                 0,
               );
+              /**
+               * T57 D/I：抽出页覆盖（只对**有 cards** 的章装载——与 T54 chapterChecks 同
+               * 门禁；缺 blocks/entities → null=未检不装完美）。uploaded/parsed 无 cards 章
+               * 不出暗假 0 条（未抽出 ≠ 零暗页）；算法与 pnpm page-check / extract 后置同真
+               * （lib/extract-page-coverage，暗页 = chars≥40 实质页零 cite）。
+               */
+              const chapterExtractPage = new Map<string, ExtractPageCoverage | null>();
+              for (const c of m.chapters) {
+                if (!materialChapterHasCards(m, c.id)) continue;
+                chapterExtractPage.set(c.id, loadExtractPageCoverage(c.id));
+              }
+              /** T57 D：弱章集合（任暗页）——暗页面板与重抽命令子集；样例 ≤6。 */
+              const darkChapters = [...chapterExtractPage.entries()].filter(
+                ([, cov]) => cov != null && cov.weak,
+              );
+              const darkTotal = [...chapterExtractPage.values()].reduce(
+                (n, cov) => n + (cov?.darkCount ?? 0),
+                0,
+              );
+              const substantialTotal = [...chapterExtractPage.values()].reduce(
+                (n, cov) => n + (cov?.substantialPages ?? 0),
+                0,
+              );
+              const bookDarkRate =
+                substantialTotal > 0 ? darkTotal / substantialTotal : 0;
               return (
                 <li key={m.id} className="rounded-lg border border-line bg-card p-5">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -275,6 +302,18 @@ export default function IngestPage() {
                               </span>
                             );
                           })()}
+                          {(() => {
+                            /* T57 D：有 cards 的章给抽出页覆盖真数（实质/已cite/暗/darkRate）；
+                                weak 琥珀点名；未抽出（无 cards）不装暗假 0——与 T54 机检条、
+                                T56 OCR 覆盖条三分列，勿吞勿改写。 */
+                            const epc = chapterExtractPage.get(c.id);
+                            if (!epc) return null;
+                            return (
+                              <span className={epc.weak ? "text-status-warn" : undefined}>
+                                抽出页 实质 {epc.substantialPages} · 已cite {epc.citedPages} · 暗 {epc.darkCount} · darkRate {(epc.darkRate * 100).toFixed(0)}%
+                              </span>
+                            );
+                          })()}
                         </li>
                       );
                     })}
@@ -291,6 +330,43 @@ export default function IngestPage() {
                       <div className="mt-2">
                         <CopyCommand
                           command={`pnpm parse ${weakParseChapters.map(([id]) => id).join(" ")}`}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                  {/* T57 D：抽出页覆盖偏弱块（任暗页章才渲；与 T56 parse 覆盖块 / T55 补救
+                      面板**分列**）——琥珀点名 + 顶层暗页样例 ≤6（页码 mono + chars）+ 重抽
+                      命令可复制（弱章子集）。只展示 + 剪贴板——不自动 PATCH entities /
+                      不发明 cite 填暗页；扉页/小结/跨章扉可能合理暗，不阻断注册。 */}
+                  {darkChapters.length > 0 ? (
+                    <div className="mt-3 rounded-lg border border-amber-300/60 px-3 py-2">
+                      <p className="text-xs leading-6 text-status-warn">
+                        抽出页覆盖偏稀 · 暗页未成原子（暗 {darkTotal} 页 · 弱章：
+                        {darkChapters.map(([id]) => id).join(" ")}）——实质 OCR 页没有任何卡
+                        cite；扉页/小结/跨章扉可能合理暗，重抽或人工补 seed 后 pnpm page-check
+                        复核；不阻断注册。
+                      </p>
+                      {(() => {
+                        const darkSamples = darkChapters
+                          .flatMap(([id, cov]) =>
+                            (cov?.darkPages ?? []).map((d) => ({ ch: id, ...d })),
+                          )
+                          .slice(0, 6);
+                        if (darkSamples.length === 0) return null;
+                        return (
+                          <p className="mt-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-0.5 text-xs leading-5 text-muted">
+                            <span>暗页样例：</span>
+                            {darkSamples.map((s) => (
+                              <span key={`${s.ch}:${s.page}`} className="mono">
+                                {s.ch} p.{s.page}（{s.chars}字）
+                              </span>
+                            ))}
+                          </p>
+                        );
+                      })()}
+                      <div className="mt-2">
+                        <CopyCommand
+                          command={`pnpm extract -- ${darkChapters.map(([id]) => id).join(" ")}`}
                         />
                       </div>
                     </div>
@@ -421,6 +497,13 @@ export default function IngestPage() {
                                 parseWeak: weakParseChapters.length > 0,
                                 emptyPages: covEmpty,
                                 sparsePages: covSparse,
+                                /* T57 E/I：抽出页覆盖旁挂（有 cards 的章实算；darkPages 点名
+                                   ≤8 供琥珀短句）——软二次触发 OR 入族，API 不 4xx。 */
+                                darkPages: darkChapters
+                                  .flatMap(([, cov]) => (cov?.darkPages ?? []).map((d) => d.page))
+                                  .slice(0, 8),
+                                darkCount: darkTotal,
+                                darkRate: bookDarkRate,
                               }}
                             />
                           )}

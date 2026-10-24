@@ -10,6 +10,7 @@ import { collectCiteQueue } from "@/lib/heye";
 import { collectBookPools, type BookPools } from "@/lib/book-pools";
 import { scoreChapter, type CiteQuality } from "@/lib/cite-ocr-quality";
 import { loadParseCoverage } from "@/lib/parse-ocr-coverage-server";
+import { loadExtractPageCoverage } from "@/lib/extract-page-coverage-server";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
@@ -106,6 +107,40 @@ export default function Library() {
       sparse += cov.sparsePages;
     }
     bookParse[b.id] = { weak, empty, sparse, unchecked };
+  }
+
+  /**
+   * T57 G/I：书级抽出页覆盖徽装配——各章 loadExtractPageCoverage（与 pnpm page-check
+   * 同真；缺 blocks/entities 章＝未检，不装 darkCount=0 完美）；任章 weak → 书级琥珀
+   * 徽（暗页书级合计，darkRate 按合计重算）。与 T55 cite 质量徽 / T56 parse 覆盖徽
+   * **三分列**（三枚徽、三行口径，不合并不改写——暗页是抽出后「实质页未成原子」
+   * 信号，与 OCR 空稀、cite↔OCR 比对互斥不伪装）。
+   */
+  const bookExtractPage: Record<
+    string,
+    { weak: boolean; dark: number; darkRate: number; unchecked: number }
+  > = {};
+  for (const b of books) {
+    let weak = false;
+    let dark = 0;
+    let substantial = 0;
+    let unchecked = 0;
+    for (const chId of b.chapterIds) {
+      const cov = loadExtractPageCoverage(chId);
+      if (cov == null) {
+        unchecked++;
+        continue;
+      }
+      if (cov.weak) weak = true;
+      dark += cov.darkCount;
+      substantial += cov.substantialPages;
+    }
+    bookExtractPage[b.id] = {
+      weak,
+      dark,
+      darkRate: substantial > 0 ? dark / substantial : 0,
+      unchecked,
+    };
   }
 
   if (books.length === 0) {
@@ -266,6 +301,24 @@ export default function Library() {
                     </span>
                     <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
                       去补扫 →
+                    </Link>
+                  </p>
+                );
+              })()}
+              {/* T57 G：书级抽出页覆盖徽——第三枚，与 T55 cite / T56 parse 徽三分列（独立
+                  一行、独立口径：暗页 = 实质 OCR 页 chars≥40 零 cite，抽出后未成原子）。
+                  任章 weak 才出（D=书级合计）；好书/未检不吵；次级 /ingest 重抽；
+                  无掌握% / Due / 圆环；不自动发明 cite 填暗页。 */}
+              {(() => {
+                const be = bookExtractPage[b.id];
+                if (!be || !be.weak) return null;
+                return (
+                  <p className="mt-2 flex flex-wrap items-baseline gap-2 text-xs leading-6 text-status-warn">
+                    <span className="rounded border border-amber-300 bg-status-warn-bg px-2 py-0.5">
+                      抽出偏稀 · 暗{be.dark}（darkRate {(be.darkRate * 100).toFixed(0)}%）
+                    </span>
+                    <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
+                      去重抽 →
                     </Link>
                   </p>
                 );

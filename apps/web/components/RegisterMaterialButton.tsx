@@ -55,6 +55,14 @@ export default function RegisterMaterialButton({
     parseWeak?: boolean;
     emptyPages?: number;
     sparsePages?: number;
+    /**
+     * T57 E/I：抽出页覆盖旁挂（ingest 对有 cards 的章实算）——有暗页则琥珀点名
+     * 「暗页 D」（darkPages 页码样例 ≤8）；darkCount>0 **OR 入**既有软二次触发族。
+     * 只拦人不拦 API；不拆 missRate/zeroAtom/incomplete/parseWeak 任何既有条件。
+     */
+    darkPages?: number[];
+    darkCount?: number;
+    darkRate?: number;
   };
 }) {
   const router = useRouter();
@@ -68,7 +76,8 @@ export default function RegisterMaterialButton({
     (qualityWarn.missRate >= 0.25 ||
       qualityWarn.zeroAtomCards > 0 ||
       (qualityWarn.incompleteAtoms ?? 0) > 0 ||
-      (qualityWarn.parseWeak ?? false));
+      (qualityWarn.parseWeak ?? false) ||
+      (qualityWarn.darkCount ?? 0) > 0);
 
   /**
    * T39 A：注册成功后的三连（打开书桌 / 学习环 / 核页）点前写 return 短链——
@@ -150,6 +159,13 @@ export default function RegisterMaterialButton({
           ——注册会把这些一起带进书库（练核池可见同数）。
           {(qualityWarn.parseWeak ?? false)
             ? ` · OCR 覆盖偏弱（空 ${qualityWarn.emptyPages ?? 0} 页 / 稀 ${qualityWarn.sparsePages ?? 0} 页）`
+            : ""}
+          {(qualityWarn.darkCount ?? 0) > 0
+            ? ` · 暗页 ${qualityWarn.darkCount}（darkRate ${((qualityWarn.darkRate ?? 0) * 100).toFixed(0)}%）——实质 OCR 页未成原子${
+                (qualityWarn.darkPages ?? []).length > 0
+                  ? `：${(qualityWarn.darkPages ?? []).map((p) => `p.${p}`).join(" ")}`
+                  : ""
+              }`
             : ""}
           {confirmWeak ? " 再点一次「仍要注册」确认。" : " 可先 pnpm cite-check 看样例。"}
         </span>

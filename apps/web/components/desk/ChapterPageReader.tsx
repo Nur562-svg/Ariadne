@@ -59,6 +59,7 @@ export default function ChapterPageReader({
   citingCards,
   pendingPageCount,
   pendingByCard,
+  citedPages,
   onOpenOverview,
   variant = "full",
 }: {
@@ -82,6 +83,13 @@ export default function ChapterPageReader({
    * 不进空 open 池；缺省当 0（fail-closed）。非第二套「待核」定义（非 Due、非本机核页标记）。
    */
   pendingByCard?: Record<string, number>;
+  /**
+   * T57 H/I：当前章已 cite 印刷页集合（DocumentPane 用 collectCitedPages 从**章内**
+   * cards 派生下传——与 pnpm page-check 章口径同真）——当前页 OCR 实质（chars≥
+   * SPARSE_CHAR_THR=40）且 ∉ 集合 → 暗页提示一行。缺省（未装配＝章内无卡，未抽出）
+   * 不点名；chars<40 只走 T56 稀页提示，不双吵（两条件按 chars 阈值天然互斥）。
+   */
+  citedPages?: Set<number>;
   /** 无页章次级「回概览」：DocumentPane 切回概览段（可选，避免组件耦合段状态）。 */
   onOpenOverview?: () => void;
   /** sticky 工具带贴合方式：full = 章页整宽模式（吃掉中栏 px-8）；column = 分栏右列（吃掉 pl-6）。 */
@@ -472,9 +480,24 @@ export default function ChapterPageReader({
           </div>
         </div>
       ) : (
-        <article className="mt-4 whitespace-pre-wrap rounded-lg border border-line bg-card p-6 text-[15px] leading-9">
-          {pg.text}
-        </article>
+        <>
+          {/* T57 H：暗页提示——当前页 OCR 实质（chars≥SPARSE_CHAR_THR=40）且不在本书
+              citedSet（宿主下传；未装配不点名）→ 琥珀一行；chars<40 只走上方 T56 稀页
+              提示（阈值天然互斥，不双吵）；已 cite 页不吵。禁 OCR canvas / CitePeek 改动。 */}
+          {citedPages != null && pg.page != null && (() => {
+            const chars = (pg.text ?? "").trim().length;
+            if (chars < SPARSE_CHAR_THR) return null; // 空/稀页归 T56 口径
+            if (citedPages.has(pg.page)) return null; // 已 cite 页不吵
+            return (
+              <p className="mt-3 text-xs leading-6 text-status-warn">
+                本页 OCR 实质（{chars} 字）但无抽出 cite · 可能未覆盖进原子（暗页；pnpm page-check 可复核）。
+              </p>
+            );
+          })()}
+          <article className="mt-4 whitespace-pre-wrap rounded-lg border border-line bg-card p-6 text-[15px] leading-9">
+            {pg.text}
+          </article>
+        </>
       )}
 
       {/* 本页相关实体卡轨（次级扫视面：页 → 卡 → 枢纽；空态诚实，不造假卡）。 */}
