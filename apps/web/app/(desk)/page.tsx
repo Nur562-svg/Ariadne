@@ -15,6 +15,8 @@ import { loadExtractPageDensity } from "@/lib/extract-page-density-server";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
+import DraftInbox from "@/components/DraftInbox";
+import { atomIncomplete } from "@/lib/atom-draft";
 import ShelfBookContinuity, { ShelfBookFooterLinks } from "@/components/ShelfBookContinuity";
 import { withQsMode } from "@/lib/qs-mode";
 
@@ -36,6 +38,26 @@ export default function Library() {
    */
   const poolsByBook: Record<string, BookPools> = {};
   for (const b of books) poolsByBook[b.id] = collectBookPools(b.id);
+
+  /**
+   * T62 I：草稿收件箱种子 props——slim 卡索引（全库 id/名/章，不整库下传 entities）+
+   * seed 口径 incomplete 摘要（atomIncomplete 与 T55 incompleteAtoms 同口径；只列 >0 的卡）。
+   * Server 只读 loadCards；Client 读草稿键并按需只读 GET /api/entities/<id>（详见 DraftInbox）。
+   */
+  const inboxCards = loadCards();
+  const draftCardIndex = inboxCards.map((c) => ({
+    id: c.id,
+    nameZh: c.name_zh,
+    chapterId: c.chapterId,
+  }));
+  const incompleteCardSummaries = inboxCards
+    .map((c) => ({
+      id: c.id,
+      name: c.name_zh,
+      chapterId: c.chapterId,
+      incompleteAtoms: c.atoms.filter((a) => atomIncomplete(a)).length,
+    }))
+    .filter((s) => s.incompleteAtoms > 0);
 
   /**
    * T55 H/I：书级质量徽装配——各书折叠其章 scoreChapter（与 pnpm cite-check / ingest
@@ -421,6 +443,12 @@ export default function Library() {
 
       {/* T24 C：书库效用区「本机进度带走」——导出/导入 study+heye JSON（纯客户端，非云同步）。 */}
       <ProgressPortability />
+
+      {/* T62 I：书库效用区「本机草稿收件箱」——多卡草稿 + 统一补丁包 + 人核落盘清单 + 草稿单独带走。
+          Server 只读 loadCards 下传 slim 索引与 seed 口径 incomplete 摘要（T55 同口径）；
+          Client 读 ariadne.atom-draft.v1，只对有草稿的卡按需只读 GET /api/entities/<id> 组包。
+          与 ProgressPortability 分列：draft-port ≠ progress-port，草稿永不并进 study/heye 包。 */}
+      <DraftInbox cardIndex={draftCardIndex} incompleteCardSummaries={incompleteCardSummaries} />
 
       <p className="mt-10 text-sm text-muted">
         导入新书：<Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">/ingest 上传 PDF</Link>

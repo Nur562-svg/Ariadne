@@ -12,6 +12,8 @@
  *    读路径只读不变；导出只进剪贴板，人核后自行改 seed / 开 PR。
  * 4. 永不 Clew LLM 真写 / 提案自动落盘——本模块与 Clew 写路径无关。
  * 5. 永不改名既有 storage keys；progress-port 不吞草稿键（草稿不进 study/heye 导出包）。
+ *    T62：草稿可移植走独立 ariadne.atom-draft-port.v1（lib/atom-draft-port.ts），
+ *    永不并进 ProgressPayload / progress-port.ts 的 study/heye 包。
  */
 
 import type { Atom, Cite, EntityCard } from "@/lib/entities";
@@ -125,6 +127,16 @@ export function clearCardDrafts(cardId: string): DraftWriteResult {
     }
   }
   if (changed) emitAtomDraftChanged();
+  return { persisted: persistAtomDraftStore(next) };
+}
+
+/**
+ * T62 C：整库覆写口（atom-draft-port 导入专用）——只写 ATOM_DRAFT_STORE_KEY + 广播。
+ * 独立成口而非复用 setAtomDraft：导入是「外部整包进入」，语义与单条编辑不同；
+ * 仍永不并进 progress-port 的 study/heye 包（ProgressPayload 形状不动）。
+ */
+export function saveWholeAtomDraftStore(next: AtomDraftStore): DraftWriteResult {
+  emitAtomDraftChanged();
   return { persisted: persistAtomDraftStore(next) };
 }
 
@@ -302,4 +314,130 @@ export function buildAtomDraftPatchDoc(card: EntityCard, store: AtomDraftStore):
 /** patch 文档的 pretty JSON 字符串（剪贴板导出用）。 */
 export function buildAtomDraftPatch(card: EntityCard, store: AtomDraftStore): string {
   return JSON.stringify(buildAtomDraftPatchDoc(card, store), null, 2);
+}
+
+// ---- T62 A：跨卡统一补丁包 + 收件箱索引（human-apply-only：只生成文档，永不自动落盘） ----
+
+/** 统一补丁包：多卡真改动一次带走（cards[] 复用 AtomDraftPatchDoc；空包诚实 entries=[]）。 */
+export type AtomDraftPackDoc = {
+  schema: "ariadne.atom-draft-pack.v1";
+  exportedAt: string;
+  note: string;
+  cards: AtomDraftPatchDoc[];
+};
+
+/** pack 的 pretty JSON 字符串（剪贴板/下载导出用）。 */
+export function buildAtomDraftPack(cards: EntityCard[], store: AtomDraftStore): AtomDraftPackDoc {
+  const out: AtomDraftPatchDoc[] = [];
+  for (const c of cards) {
+    const doc = buildAtomDraftPatchDoc(c, store);
+    if (doc.entries.length > 0) out.push(doc); // 跳过无真改动的卡（空转草稿不发）
+  }
+  return {
+    schema: "ariadne.atom-draft-pack.v1",
+    exportedAt: new Date().toISOString(),
+    note: "本机草稿统一补丁包 · 人核后自行改 seed / 开 PR · 本浏览器不会写回仓库 · 不含 verified 翻改",
+    cards: out,
+  };
+}
+
+/** store 里出现过的全部卡 id（draftKey 前缀去重；顺序稳定按首次出现）。 */
+export function listDraftedCardIds(store: AtomDraftStore): string[] {
+  const seen: string[] = [];
+  const set = new Set<string>();
+  for (const k of Object.keys(store)) {
+    const cid = draftCardId(k);
+    if (cid && !set.has(cid)) {
+      set.add(cid);
+      seen.push(cid);
+    }
+  }
+  return seen;
+}
+
+/** 收件箱行摘要：每张**有草稿**的卡一条（draftCount>0 才入列；与 E 的 seed 口径 incomplete 摘要分列）。 */
+export type CardDraftSummary = {
+  cardId: string;
+  nameZh?: string;
+  chapterId?: string;
+  /** 本机草稿条目数（含与 seed 无差异的空转条目——显示与清账口径）。 */
+  draftCount: number;
+  /** 真改动字段条数（= patch entries；补丁包只含这些）。 */
+  realEntryCount: number;
+  /** seed 口径待补（空 prompt/answer）且尚无草稿的原子数（T55 incompleteAtoms 同口径）。 */
+  incompleteNoDraft: number;
+};
+
+export function summarizeDraftStore(
+  cards: EntityCard[],
+  store: AtomDraftStore,
+): CardDraftSummary[] {
+  const out: CardDraftSummary[] = [];
+  for (const c of cards) {
+    const draftCount = cardDraftCount(store, c.id);
+    if (draftCount === 0) continue;
+    out.push({
+      cardId: c.id,
+      nameZh: c.name_zh,
+      chapterId: c.chapterId,
+      draftCount,
+      realEntryCount: buildAtomDraftPatchDoc(c, store).entries.length,
+      incompleteNoDraft: listIncompleteDraftTargets(c, store).filter((t) => !t.hasDraft).length,
+    });
+  }
+  return out;
+}
+
+// ---- T62 B：人核落盘清单（markdown 文本；不是 git apply，不触任何写文件 API） ----
+
+/** 补丁字段 → seed 内定位说明（人核时按此找位置；不臆造 per-card 文件路径）。 */
+const GUIDE_FIELD_LOC: Record<DraftPatchEntry["field"], string> = {
+  prompt: "atoms[].prompt",
+  answer: "atoms[].answer",
+  citeQuote: "atoms[].cite.quote（该原子的 cite.quote）",
+  value: "fields[N].value（N = 卡内字段序）",
+};
+
+function guideOneLine(s: string): string {
+  return s.replace(/\r?\n/g, " ⏎ ");
+}
+
+/**
+ * 人核落盘 markdown 清单：每卡 seedPath = data/cards/<chapterId>.entities.json
+ * （entities 按章存；缺 chapterId → 诚实降级「按卡 id 在 data/cards/*.entities.json 内搜索」），
+ * 每条 target · field · before → after。文首硬声明人核后自行改 seed / 开 PR ·
+ * 本浏览器不会写回仓库 · 不含 verified 翻改。无真改动 → 只有头部说明 + 「无真改动条目」。
+ */
+export function buildSeedApplyGuide(cards: EntityCard[], store: AtomDraftStore): string {
+  const lines: string[] = [
+    "# Ariadne 草稿人核落盘清单",
+    "",
+    "> 人核后自行改 seed / 开 PR · 本浏览器不会写回仓库 · 不含 verified 翻改。",
+    "> 本清单不是 git apply；entities 按章存于 data/cards/<chapterId>.entities.json。",
+    "> 草稿 ≠ seed 已核 · ≠ heye 本机已对 · ≠ study 练分；核对无误再改。",
+    "",
+  ];
+  let total = 0;
+  for (const c of cards) {
+    const doc = buildAtomDraftPatchDoc(c, store);
+    if (doc.entries.length === 0) continue;
+    total += doc.entries.length;
+    lines.push(`## ${c.name_zh}（${c.id}）`);
+    lines.push("");
+    lines.push(
+      c.chapterId
+        ? `- seedPath: \`data/cards/${c.chapterId}.entities.json\`（按章存，卡 ${c.id} 在其 cards 数组内）`
+        : `- seedPath: （缺 chapterId——请按卡 id \`${c.id}\` 在 data/cards/*.entities.json 内搜索）`,
+    );
+    for (const e of doc.entries) {
+      lines.push("");
+      lines.push(`- [ ] \`${e.target}\` · ${e.field} → ${GUIDE_FIELD_LOC[e.field]}`);
+      lines.push(`  - before: ${e.before == null ? "（seed 无此文本——新增候选）" : guideOneLine(e.before)}`);
+      lines.push(`  - after: ${guideOneLine(e.after)}`);
+    }
+    lines.push("");
+  }
+  if (total === 0) lines.push("（无真改动条目——草稿与 seed 无差异，无需落盘。）");
+  lines.push(`--- 共 ${total} 条真改动 · 收件箱/补丁包 ≠ 已落盘`);
+  return lines.join("\n");
 }
