@@ -1,0 +1,9 @@
+# Task 61 — Trae / zcode prompt index
+
+**Paste file (full brief for writer)**: `trae-prompt-paste.txt`  
+**Theme**: `atom-local-draft-01`  
+**Tip (hard)**: `087fd12`  
+**Est**: ~180–300+ min · A–J MEGA  
+**Close**: 做完叫验收。A–J 全交才过。
+
+Copy the entire contents of `trae-prompt-paste.txt` into the writer. Do not start zcode from this SCOPE run. Do not commit/push from this pack authoring.

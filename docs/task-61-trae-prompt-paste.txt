@@ -1,0 +1,124 @@
+════════════════════════════════════
+Task 61 · atom-local-draft-01 · MEGA · zcode GLM5.3 max thinking
+════════════════════════════════════
+仓库：/Users/nukeab/projects/Ariadne
+Tip 前置（硬）：087fd12（docs T60 study-shallow-density-01） atop 9f3e143（feat T60） atop a18ada3（T59 docs）。
+git log -1 --oneline 须含 087fd12。若停在 9f3e143（仅 feat）或 a18ada3 或更早 → 停，对齐后再开工。
+先读 docs/frontend-aesthetics.md。对照 SCOPE：docs/task-61-SCOPE.md 或 /workspace/reports/ariadne-task-61/SCOPE.md。
+体量：约 180–300+ 分钟真实编码。A–J 全部交。只做一行 textarea 无 store/无导出/无诚实文案就收工 = 拒收。15–30/90 分钟假装收工 = 漏做。又一轮 empty-CTA densify / return densify / CitePeek 正文·trap redo / 写 verified:true / 自动写 entities / Clew LLM 真写 / 改名既有 storage keys / 重做 T46–T60 / 自动发明原子补浅 / emptyKind:'dark'|:'shallow' / 第四书架徽列 densify = 主题偏了，拒收。
+不 push。验收 PASS 后站规 auto-push（勿问「推」）。
+
+────────────────────────────────────
+空池 CTA / return / 深链 / T54–T60 井（硬声明 · 写进回复）
+────────────────────────────────────
+T43–T51 empty-pool CTA densify 已饱和；T35–T42 return densify 已饱和；T52–T53 已闭空·完成/鬼页深链/HeYe u/z；T54 已闭 cite↔OCR 检测；T55 已闭 miss 补救/附近 OCR/重抽复制/书架 cite 质量徽/incompleteAtoms（剪贴板-only，不写 verified:true）；T56 已闭 parse/OCR 覆盖诚实；T57 已闭抽出后暗页覆盖；T58 已闭学习环可考覆盖诚实（消费暗）；T59 已闭浅抽出密度生产诚实；T60 已闭学习环浅密度诚实（消费浅 · Study/HeYe/ready · 无 emptyKind shallow）。
+本刀不是再扩 empty-CTA，不是 return densify，不是重做 T54–T60（禁止重写 cite/dark/shallow 算法 / 拆三分列徽 / 拆补救面板 / 重做 Study examinable / 重做 Reader 优先序），不是 CitePeek 正文/trap，不是自动写 seed。
+主题 = 材料→原子脊梁第八刀：本机草稿原子字段编辑器（local-draft-only）——新键 ariadne.atom-draft.v1，卡详编辑 prompt/answer（及最小字段 value），剪贴板导出 JSON patch，人核后自行落盘。不写 verified:true，不自动 PATCH entities/blocks，不 Clew LLM 真写，不改名 study/heye/return 等既有键，不改 deriveMaterialStage。
+
+local-draft-only 合同（硬 · 每个字母遵守）：
+1) 新键 only：ariadne.atom-draft.v1。禁止改名/迁移/复用 ariadne.study.v1 · ariadne.heye.v1 · ariadne.desk.return.v1 · session/view/last-opened/recent-books。
+2) 显示 = seed ⊕ draft overlay；服务端 loadCards / entities JSON 只读不变。
+3) 导出 = 剪贴板 JSON patch 文档（建议 schema ariadne.atom-draft-patch.v1）；禁止任何自动写文件 / fetch 写 seed。
+4) 禁止 verified:true（无翻 verified 控件；patch 不得含改 verified→true）。
+5) 禁止 Clew LLM 真写 / 提案自动落盘。
+6) 草稿 ≠ 本机核页(heye) ≠ 本机练分(study)——文案三分列。
+7) 精炼书桌：琥珀/muted「本机草稿」旁挂；朱砂唯一强调色；禁第二排实心芯片 densify。
+
+────────────────────────────────────
+三子主题
+────────────────────────────────────
+1) draft store + overlay + patch 导出 — A · B · C
+2) EntityCardDetail 原子/字段草稿岛 + incomplete 入口 — D · E · F
+3) 草稿条/清除/诚实文案 — G · H
+I = 装配；J = build + cite/parse/page/density-check 回归 + DEFER
+
+────────────────────────────────────
+A · lib atom-draft store
+────────────────────────────────────
+1) 新增 apps/web/lib/atom-draft.ts（客户端安全：勿 import fs / entities）。
+2) ATOM_DRAFT_STORE_KEY = "ariadne.atom-draft.v1"。
+3) 类型：AtomDraftStore / DraftEntry / draftKey（建议 `${cardId}/atom:${atomId}` 或 `${cardId}/field:${index}`）。
+4) loadAtomDraftStore / setAtomDraft / clearAtomDraft / clearCardDrafts / subscribe + notify（对齐 heye-store 模式）。
+5) SSR / 隐私模式读失败 → {}；写失败不抛，UI 须可感知。
+6) 文件头注释写死五禁：新键 · 无 verified · 无 auto PATCH · 无 Clew 真写 · 不改名既有 keys。
+
+────────────────────────────────────
+B · overlay helpers
+────────────────────────────────────
+1) applyAtomDraft(seedAtom, entry) → displayAtom；applyFieldDraft 同理。
+2) cardDraftCount(cardId)；listIncompleteDraftTargets(card)——空 prompt/answer（trim）优先，对齐 T55 incompleteAtoms 口径。
+3) 禁止改 scoreCard / cite-ocr / density / dark 算法；质量分仍只看 seed；可另显「本机已有草稿 N」。
+
+────────────────────────────────────
+C · 剪贴板 JSON patch 导出
+────────────────────────────────────
+1) buildAtomDraftPatch(card, store) → pretty JSON 字符串（建议含 schema、cardId、chapterId?、entries[{target,before,after}]）。
+2) 「复制草稿补丁」按钮：复用 CopyTextButton 或同契约（clipboard 不可用则隐藏，不装假已复制）。
+3) 文案：「人核后自行改 seed / 开 PR · 本浏览器不会写回仓库」。
+4) 无草稿 → 禁用或诚实「无草稿可导出」。禁止任何写文件 API。
+
+────────────────────────────────────
+D · AtomDraftEditor 客户端岛
+────────────────────────────────────
+1) 可编：atom.prompt / atom.answer；可选 cite.quote 草稿（便于贴 T55 建议摘录）——仍只进 draft。
+2) 只读展示：atom.id / difficulty / cite.page。
+3) 顶部硬横幅：「本机草稿 · 未写回 seed · 不等于抽查 verified · 不等于本机已对」。
+4) 保存 → setAtomDraft；放弃本条 → clearAtomDraft。
+5) 禁止 verified 开关；禁止「提交到服务器」类 CTA。
+
+────────────────────────────────────
+E · EntityCardDetail 原子区
+────────────────────────────────────
+1) 每原子：显示 overlay 文；有 draft → 琥珀「已改草稿」旁挂。
+2) seed 口径 incomplete（空 prompt/answer）→ 「待补草稿」入口。
+3) 「编辑草稿」打开 D。
+4) T55 OCR 未见补救块保留；建议摘录可「填入草稿 quote」但仍只写 draft。
+5) 勿改 CitePeek / 对页 / LocalProgressStrip 主契约。
+
+────────────────────────────────────
+F · EntityCardDetail 字段区（最小面）
+────────────────────────────────────
+1) field.value 可草稿；label 只读。
+2) 有 draft 旁挂同 E。
+3) 0 字段诚实句保留（T47）；禁止借机空表 densify / 新大红主 CTA。
+
+────────────────────────────────────
+G · 卡级草稿条 + incomplete 入口
+────────────────────────────────────
+1) 卡详顶部或原子区上方：cardDraftCount>0 → 「本卡本机草稿 N · 未写回 seed」+ 复制补丁 + 清除本卡草稿（确认）。
+2) incompleteAtoms>0 且无草稿 → 次级文字引导「可开本机草稿补空字段」（非第二大红主 CTA）。
+3) 可选：ingest / Register incomplete 旁次级链到 /desk/card/<id>「到卡详开草稿」——禁止硬阻断 register API。
+
+────────────────────────────────────
+H · 诚实文案三分列
+────────────────────────────────────
+1) 多处短句：草稿 ≠ seed；草稿 ≠ heye 本机已对；草稿 ≠ study 练分。
+2) 隐私模式写失败 → 可见错误，不装已持久化。
+3) 禁掌握%/Due；禁 ModeChips 中插队；禁 Clew 真写入口；禁营销英雄文案。
+
+────────────────────────────────────
+I · 装配
+────────────────────────────────────
+1) /desk/card/[id] 所挂 EntityCardDetail 接入 D–G；Server 读 seed，Client 读 draft。
+2) fail-closed 无 window。
+3) 勿毁 T55 补救/cite 徽 · T56 parse/稀 · T57 暗徽 · T58/T60 examinable · T59 density · HeYe orphan 三态 · ModeChips · book-pools · StickyPageLoopKeys · shelf 三分列 · CitePeek · deriveMaterialStage · study/heye 键名与形状。
+
+────────────────────────────────────
+J · build · DEFER · 回归
+────────────────────────────────────
+1) pnpm --filter web build PASS（若遇 SecurityFatalError 可再跑一次；Next.js security = ops not theme，勿当本刀主题去升级）。
+2) pnpm cite-check -- ch01 + parse-check + page-check + density-check 回归绿（本刀不改算法仍绿）。
+3) 回复必须明示合同五禁：新键 ariadne.atom-draft.v1 · 无 verified:true · 无 auto PATCH · 无 Clew 真写 · 不改名既有 keys。
+4) DEFER：heye-only invent；QA 仪表盘；批量重抽；quiz densify。
+5) 禁止写 verified:true；禁止写回 entities/blocks；禁止改名 storage keys。
+6) 回归 T60–T28；写手不 push。
+
+────────────────────────────────────
+硬 OUT（拒收）
+────────────────────────────────────
+empty-CTA densify · return densify · CitePeek 正文/trap redo · 写 verified:true · 自动 PATCH entities/blocks · Clew LLM 真写 · 改名既有 storage keys · 重做 T46–T60 · 发明原子补浅 · emptyKind:'dark'|:'shallow' · 第四书架徽列 densify · FSRS/Due · Queue→Due · ModeChips 中插队 · ⌘K · DeskShell 重写 · 掌握% · 硬阻断 register · 把草稿伪造成 seed 已核/heye 已对 · 只交一行 textarea 无 store/导出 · push · 把 draft 塞进 progress-port study/heye 包
+
+────────────────────────────────────
+验收口令
+────────────────────────────────────
+做完叫验收。A–J 全交才过。
