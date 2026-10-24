@@ -17,6 +17,7 @@ export function CiteChip({
   q,
   deskBookId,
   bookValidPages,
+  ocrMiss,
 }: {
   cite?: Cite;
   q?: string;
@@ -27,10 +28,17 @@ export function CiteChip({
    * 书桌深链鬼页降纯文；由 CitePeek 等宿主透传，不重复装配。
    */
   bookValidPages?: number[];
+  /**
+   * T54 H/I：该 cite 机检「OCR 未见」（宿主 server 侧 quoteInOcr 实算；缺省不点名）——
+   * chip 文本后缀「· OCR 未见」+ title 说明；不改 Link 门禁（鬼页仍吃 T53 pageInOcr），
+   * 也不是 seed verified（两个概念分列互不写入）。
+   */
+  ocrMiss?: boolean;
 }) {
   if (!cite) return null;
   const known = cite.page != null;
-  const label = known ? `p.${cite.page}` : "p.?";
+  const baseLabel = known ? `p.${cite.page}` : "p.?";
+  const label = ocrMiss ? `${baseLabel} · OCR 未见` : baseLabel;
   const cls = cite.verified
     ? "text-muted hover:text-cinnabar border-line"
     : "cite-unverified text-status-warn border-amber-300";
@@ -43,11 +51,13 @@ export function CiteChip({
     ? "未验证：未找到确切页码，禁止伪造"
     : ghostInDesk
       ? "该印刷页尚未解析 OCR——书桌章页定位不了"
-      : deskBookId
-        ? `在书桌打开印刷页 p.${cite.page}${cite.verified ? "" : "（待抽查验证）"}`
-        : cite.verified
-          ? `跳转到印刷页 ${cite.page}`
-          : `印刷页 p.${cite.page}（待抽查验证）`;
+      : ocrMiss
+        ? `机检：引文未在该页 OCR 命中（bigram<0.6，可能 OCR 误差或抽取出错）· 印刷页 p.${cite.page}`
+        : deskBookId
+          ? `在书桌打开印刷页 p.${cite.page}${cite.verified ? "" : "（待抽查验证）"}`
+          : cite.verified
+            ? `跳转到印刷页 ${cite.page}`
+            : `印刷页 p.${cite.page}（待抽查验证）`;
   // fail-closed（review-fix-integrity E）：无页码不是链接——渲染 <span>（同视觉、同琥珀族），
   // 禁止 href="#" 假链（点击跳页顶 / 污染 URL 锚点）。有页仍走 Link 深链。
   if (!known) {

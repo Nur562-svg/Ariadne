@@ -24,6 +24,7 @@ export default function RegisterMaterialButton({
   ocrPageCount,
   atomCount,
   pendingCount,
+  qualityWarn,
 }: {
   materialId: string;
   title: string;
@@ -33,11 +34,23 @@ export default function RegisterMaterialButton({
   atomCount?: number;
   /** T49 C：该书/物料章级待核 cite 数（collectCiteQueue 同池族；缺省当 0）。 */
   pendingCount?: number;
+  /**
+   * T54 E/I：物料章 cite↔OCR 机检汇总（ingest 页实算；缺省 undefined = 无可检章）。
+   * missRate≥0.25 或 zeroAtomCards>0 → 软门禁：琥珀点名 + 首次点击改为
+   * 「质量偏弱 · 仍要注册 →」二次确认——只拦人不拦 API（/api/ingest/register
+   * 不因质量 4xx）；低风险保持一键「注册进书库 →」。
+   */
+  qualityWarn?: { ocrMiss: number; zeroAtomCards: number; missRate: number; nullPage: number };
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
+  /** T54 E：弱稿二次确认态——首次点击只布防（按钮改「仍要注册」），再点才提交。 */
+  const [confirmWeak, setConfirmWeak] = useState(false);
+  const weak =
+    qualityWarn != null &&
+    (qualityWarn.missRate >= 0.25 || qualityWarn.zeroAtomCards > 0);
 
   /**
    * T39 A：注册成功后的三连（打开书桌 / 学习环 / 核页）点前写 return 短链——
@@ -73,19 +86,49 @@ export default function RegisterMaterialButton({
     }
   }
 
+  function onClickRegister() {
+    // T54 E：弱稿软门禁——首次点击只布防并点亮琥珀，不发起注册；二次点击才提交。
+    if (weak && !confirmWeak) {
+      setConfirmWeak(true);
+      return;
+    }
+    onRegister();
+  }
+
   return (
     <p className="mt-3">
       <span className="flex flex-wrap items-center gap-4">
         <button
           type="button"
-          onClick={onRegister}
+          onClick={onClickRegister}
           disabled={busy}
-          className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-colors hover:opacity-90 disabled:opacity-50 motion-reduce:transition-none"
+          className={
+            weak && confirmWeak
+              ? "rounded-md border border-amber-300 bg-status-warn-bg px-4 py-2 text-sm text-status-warn transition-colors hover:opacity-90 disabled:opacity-50 motion-reduce:transition-none"
+              : "rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-colors hover:opacity-90 disabled:opacity-50 motion-reduce:transition-none"
+          }
         >
-          {busy ? "注册中…" : "注册进书库 →"}
+          {busy
+            ? "注册中…"
+            : weak && confirmWeak
+              ? "质量偏弱 · 仍要注册 →"
+              : "注册进书库 →"}
         </button>
         <span className="text-xs text-muted">写入 config · 本机 · 非云同步</span>
       </span>
+      {/* T54 E：弱稿琥珀点名（missRate≥25% 或零原子卡）——机检数字与 ingest 章清单 /
+          pnpm cite-check 同真；不阻断 API，只要求二次确认。 */}
+      {weak && qualityWarn ? (
+        <span
+          role="status"
+          className="mt-2 block rounded-lg border border-amber-300 bg-status-warn-bg px-3 py-2 text-xs leading-6 text-status-warn"
+        >
+          抽取质量偏弱：OCR未见 {qualityWarn.ocrMiss} · missRate{" "}
+          {(qualityWarn.missRate * 100).toFixed(1)}% · 零原子卡 {qualityWarn.zeroAtomCards} ·
+          无页 p.? {qualityWarn.nullPage}——注册会把这些一起带进书库（练核池可见同数）。
+          {confirmWeak ? " 再点一次「仍要注册」确认。" : " 可先 pnpm cite-check 看样例。"}
+        </span>
+      ) : null}
       {error ? (
         <span role="alert" className="mt-2 block text-sm leading-6 text-status-warn">
           {error}

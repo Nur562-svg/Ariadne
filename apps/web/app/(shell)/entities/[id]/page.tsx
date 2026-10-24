@@ -1,6 +1,12 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { loadBookValidPages, loadBooks, loadCard, loadCards } from "@/lib/entities";
+import {
+  loadBookValidPages,
+  loadBooks,
+  loadCard,
+  loadCards,
+  loadChapterPages,
+} from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import { EntityCardDetail } from "@/components/EntityCardDetail";
 
@@ -104,6 +110,18 @@ async function EntityDetail({
         /* T52 H/I：该书已解析印刷页表——三处「对页」+「在书桌打开本页」OCR 有效性门禁；
            未注册章的卡保持无书语境不传（缺省不门禁，保持链）。 */
         bookValidPages={book ? loadBookValidPages()[book.id] : undefined}
+        /* T54 F/I：该书 page→OCR 原文——卡详「OCR 未见」机检（与 desk 卡页同装配）。 */
+        pageTextByPage={
+          book
+            ? Object.fromEntries(
+                book.chapterIds.flatMap((chId) =>
+                  loadChapterPages(chId)
+                    .filter((p) => p.page != null)
+                    .map((p) => [p.page, p.text]),
+                ),
+              )
+            : undefined
+        }
         returnTo={listReturnTo}
         openDeskReturnTo={listReturnTo}
       />

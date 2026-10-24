@@ -6,11 +6,14 @@ import {
   loadAllChapterPages,
   loadBooks,
   loadBookValidPages,
+  loadCards,
+  loadChapterPages,
   loadMaterials,
   materialChapterHasBlocks,
   materialChapterHasCards,
 } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
+import { scoreChapter, type CiteQuality } from "@/lib/cite-ocr-quality";
 import IngestUpload from "@/components/IngestUpload";
 import RegisterMaterialButton from "@/components/RegisterMaterialButton";
 import IngestReadyLinks from "@/components/IngestReadyLinks";
@@ -125,6 +128,35 @@ export default function IngestPage() {
               /** T45 E：分章就绪 N/M（磁盘事实推导；纯文本计数，不做假进度条）。 */
               const blocksN = m.chapters.filter((c) => materialChapterHasBlocks(m, c.id)).length;
               const cardsN = m.chapters.filter((c) => materialChapterHasCards(m, c.id)).length;
+              /**
+               * T54 D/I：章级 cite↔OCR 机检（只对**有 cards** 的章实算——uploaded/parsed
+               * 不装假 0 条）；算法与 pnpm cite-check / extract 后置同真
+               * （lib/cite-ocr-quality，bigram≥0.6）。缺该章 OCR 文本的 cite 不计 miss
+               * （未检不抬假阳）。汇总供注册软门禁（qualityWarn）与章清单质量行共用。
+               */
+              const chapterQuality = new Map<string, CiteQuality>();
+              for (const c of m.chapters) {
+                if (!materialChapterHasCards(m, c.id)) continue;
+                const chCards = loadCards({ chapterId: c.id });
+                if (chCards.length === 0) continue;
+                const textByPage: Record<number, string> = {};
+                for (const p of loadChapterPages(c.id)) {
+                  if (p.page != null) textByPage[p.page] = p.text;
+                }
+                chapterQuality.set(c.id, scoreChapter(chCards, textByPage));
+              }
+              const warnQs = [...chapterQuality.values()];
+              const warnCites = warnQs.reduce((n, q) => n + q.cites, 0);
+              const warnMiss = warnQs.reduce((n, q) => n + q.ocrMiss, 0);
+              const materialWarn =
+                warnQs.length > 0
+                  ? {
+                      ocrMiss: warnMiss,
+                      zeroAtomCards: warnQs.reduce((n, q) => n + q.zeroAtomCards, 0),
+                      missRate: warnCites > 0 ? warnMiss / warnCites : 0,
+                      nullPage: warnQs.reduce((n, q) => n + q.nullPage, 0),
+                    }
+                  : undefined;
               return (
                 <li key={m.id} className="rounded-lg border border-line bg-card p-5">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -151,6 +183,10 @@ export default function IngestPage() {
                     {m.chapters.map((c) => {
                       const hasBlocks = materialChapterHasBlocks(m, c.id);
                       const hasCards = materialChapterHasCards(m, c.id);
+                      const q = hasCards ? chapterQuality.get(c.id) : undefined;
+                      /** T54 D：有 cards 的章给机检真数（卡/原子/OCR未见/无页/零原子卡）；
+                          M/K/Z > 0 琥珀点名——弱稿注册前可见；有 cards 但读不到卡（罕见）不装 0。 */
+                      const qWarn = q != null && (q.ocrMiss > 0 || q.nullPage > 0 || q.zeroAtomCards > 0);
                       return (
                         <li
                           key={c.id}
@@ -161,6 +197,11 @@ export default function IngestPage() {
                           <span className="mono">页 {c.physicalStart}–{c.physicalEnd}</span>
                           <span>blocks {hasBlocks ? "有" : "无"}</span>
                           <span>cards {hasCards ? "有" : "无"}</span>
+                          {q ? (
+                            <span className={qWarn ? "text-status-warn" : undefined}>
+                              机检 卡 {q.cards} · 原子 {q.atoms} · OCR未见 {q.ocrMiss} · 无页 p.? {q.nullPage} · 零原子卡 {q.zeroAtomCards}
+                            </span>
+                          ) : null}
                         </li>
                       );
                     })}
@@ -209,6 +250,9 @@ export default function IngestPage() {
                               ocrPageCount={ocrPageCount}
                               atomCount={atomCount}
                               pendingCount={pendingCount}
+                              /* T54 E/I：物料章机检汇总（有 cards 的章实算）——软门禁只点名不阻断，
+                                 API 不因质量 4xx；低风险保持一键注册。 */
+                              qualityWarn={materialWarn}
                             />
                           )}
                         </p>

@@ -9,20 +9,28 @@
  * 用法：
  *   pnpm extract -- ch01            # 重抽某章（写 data/cards/<id>.entities.json）
  *   pnpm extract -- ch01 --dry      # 只打印 prompt/结果，不写文件
+ *   pnpm extract -- ch01 --strict   # 机检后置：missRate>0.4 或零原子卡>0 → 非零退出拒写
  *
  * Fail-closed 约束（脚本侧硬校验，模型侧 prompt 约束）：
  *   - page 超出本章页码范围 → 置 null + verified:false（p.?）
  *   - quote 超 30 字 → 截断
  *   - one_liner 超 40 字 → 截断
+ *
+ * T54 C：写盘前跑 cite↔OCR 机检（scripts/lib/cite-ocr-quality.mjs，bigram≥0.6，
+ * 与 web / pnpm cite-check 同真）——stderr 报 ocrMiss / missRate / 零原子卡。
+ * 默认只警告仍写盘（弱稿可见、可人工复核）；--strict 且 missRate>0.4 或零原子卡>0
+ * → 非零退出，已有 entities 拒绝覆盖。机检只读，绝不改写 verified。
  */
 import fs from "node:fs";
 import path from "node:path";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText } from "ai";
+import { scoreChapter } from "./lib/cite-ocr-quality.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
 const dry = args.includes("--dry");
+const strict = args.includes("--strict");
 const chapterId = args.find((a) => !a.startsWith("--"));
 if (!chapterId) {
   console.error("usage: node scripts/extract_cards.mjs <chapterId> [--dry]");
@@ -158,6 +166,25 @@ const doc = {
   generated_by: `extract_cards.mjs · ${provider.model} · ${new Date().toISOString()}`,
   cards: all,
 };
+
+// ---- T54 C：写盘前 cite↔OCR 机检（同真算法；只读，不改 verified）----
+const pageTextByPage = {};
+for (const p of pages) if (p.page != null) pageTextByPage[p.page] = p.text;
+const quality = scoreChapter(all, pageTextByPage);
+process.stderr.write(
+  `质量机检: 卡 ${quality.cards} · 原子 ${quality.atoms} · 有页 cite ${quality.cites} · ` +
+    `OCR未见 ${quality.ocrMiss}（missRate ${(quality.missRate * 100).toFixed(1)}%）· ` +
+    `无页 ${quality.nullPage} · 零原子卡 ${quality.zeroAtomCards}\n`,
+);
+if (strict && (quality.missRate > 0.4 || quality.zeroAtomCards > 0)) {
+  const outStrict = path.join(ROOT, "data/cards", `${chapterId}.entities.json`);
+  const hadOldStrict = fs.existsSync(outStrict);
+  console.error(
+    `--strict 拒绝：missRate ${(quality.missRate * 100).toFixed(1)}%（>40%）或零原子卡 ${quality.zeroAtomCards}（>0）——` +
+      `${hadOldStrict ? `拒绝覆盖已有 ${outStrict}` : "拒绝写盘"}；可 pnpm cite-check -- ${chapterId} 看样例后人工复核`,
+  );
+  process.exit(1);
+}
 
 if (dry) {
   console.log(JSON.stringify(doc, null, 1));

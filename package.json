@@ -5,6 +5,7 @@
   "scripts": {
     "parse": ".venv/bin/python scripts/parse_chapter.py",
     "extract": "node scripts/extract_cards.mjs",
+    "cite-check": "node scripts/cite-ocr-check.mjs",
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
     "lint": "pnpm --filter web lint"

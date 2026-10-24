@@ -20,6 +20,7 @@ import {
 import { loadViewMode, saveViewMode } from "@/lib/view-continuity";
 import { saveReturn } from "@/lib/return-stack";
 import { deskPageHref } from "@/lib/ocr-page";
+import { citeOcrMiss } from "@/lib/cite-ocr-quality";
 
 const KIND_ZH: Record<string, string> = {
   concept: "概念",
@@ -74,6 +75,7 @@ function CardCard({
   pendingCiteCount,
   pendingByPage,
   bookValidPages,
+  pageTextByPage,
 }: {
   card: EntityCard;
   bookId?: string;
@@ -98,9 +100,15 @@ function CardCard({
    * 与「摘」浮层 CiteChip/「在书桌打开」的鬼页门禁（共享 helper）；练/核空池门禁不动。
    */
   bookValidPages?: number[];
+  /**
+   * T54 H/I：该书 page→OCR 原文（DocumentPane 自 pages prop 派生，客户端纯计算）——
+   * 主 cite 机检「OCR 未见」点名（citeOcrMiss 同真算法；缺文本不抬假阳）。
+   */
+  pageTextByPage?: Record<number, string>;
 }) {
   /** 主 cite（卡级第一条有页引用）；无页则没有可 Peek 的定位，不渲染。 */
   const primaryCite = card.cites.find((x) => x.page != null);
+  const primaryOcrMiss = citeOcrMiss(primaryCite, pageTextByPage);
   return (
     <div className="block h-full rounded-lg border border-line bg-card p-4 transition-shadow hover:shadow-md">
       <Link href={`/desk/card/${card.id}`} className="block no-underline">
@@ -129,6 +137,7 @@ function CardCard({
               deskBookId={bookId}
               cardId={card.id}
               bookValidPages={bookValidPages}
+              ocrMiss={primaryOcrMiss}
               pendingCiteCount={pendingCiteCount}
               pendingPageCount={
                 pendingByPage != null && primaryCite.page != null
@@ -418,6 +427,15 @@ export default function DocumentPane({
     case: filterCards("case", cards).length,
     quiz: stripAtoms.length,
   };
+  /**
+   * T54 I：本书 page→OCR 原文（pages prop 即该书真印刷页，含 text）——卡瓷砖主 cite
+   * 机检「OCR 未见」点名用（citeOcrMiss 同真；缺页文本不抬假阳）。纯客户端派生。
+   */
+  const pageTextByBook = useMemo(() => {
+    const m: Record<number, string> = {};
+    for (const p of pages) if (p.page != null) m[p.page] = p.text;
+    return m;
+  }, [pages]);
   /**
    * T52 A/I：本书可练原子数——与书头「N 个知识原子」同一 reduce（cards 即本书卡
    * loadCards({bookId})，等于 collectStudyAtoms({bookId}).length 同池）；下传 QuizPanel
@@ -736,6 +754,7 @@ export default function DocumentPane({
               pendingByCard={pendingByCard}
               pendingByPage={pendingByPage}
               bookValidPages={bookValidPages?.[book.id]}
+              pageTextByPage={pageTextByBook}
             />
           </div>
           <div className="min-w-0 border-l border-line pl-6 max-xl:border-l-0 max-xl:pl-0">
@@ -767,6 +786,7 @@ export default function DocumentPane({
           pendingByCard={pendingByCard}
           pendingByPage={pendingByPage}
           bookValidPages={bookValidPages?.[book.id]}
+          pageTextByPage={pageTextByBook}
         />
       )}
     </div>
@@ -1052,6 +1072,7 @@ function SectionCards({
   pendingByCard,
   pendingByPage,
   bookValidPages,
+  pageTextByPage,
 }: {
   section: SectionId;
   cards: EntityCard[];
@@ -1065,6 +1086,8 @@ function SectionCards({
   pendingByPage?: Record<number, number>;
   /** T53 D/I：该书已解析印刷页[]——瓷砖「对页」/摘浮层鬼页门禁（共享 helper）。 */
   bookValidPages?: number[];
+  /** T54 H/I：该书 page→OCR 原文——瓷砖主 cite 机检点名（透传 CardCard）。 */
+  pageTextByPage?: Record<number, string>;
 }) {
   if (cards.length === 0) {
     return (
@@ -1091,6 +1114,7 @@ function SectionCards({
                     pendingCiteCount={pendingByCard?.[c.id] ?? 0}
                     pendingByPage={pendingByPage}
                     bookValidPages={bookValidPages}
+                    pageTextByPage={pageTextByPage}
                   />
                 </li>
               ))}
@@ -1115,6 +1139,7 @@ function SectionCards({
               pendingCiteCount={pendingByCard?.[c.id] ?? 0}
               pendingByPage={pendingByPage}
               bookValidPages={bookValidPages}
+              pageTextByPage={pageTextByPage}
             />
           </li>
         ))}

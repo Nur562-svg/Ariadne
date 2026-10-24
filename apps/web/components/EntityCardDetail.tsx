@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { EntityCard } from "@/lib/entities";
+import type { Cite, EntityCard } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import CardHubReturnLinks from "@/components/CardHubReturnLinks";
@@ -7,6 +7,7 @@ import CardVsStudyLink from "@/components/CardVsStudyLink";
 import DeskOpenReturnLink from "@/components/DeskOpenReturnLink";
 import { withQsMode } from "@/lib/qs-mode";
 import { deskPageHref as buildDeskPageHref, pageInOcr } from "@/lib/ocr-page";
+import { citeOcrMiss, enumerateCardCites, quoteInOcr } from "@/lib/cite-ocr-quality";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
 
@@ -65,6 +66,7 @@ export function EntityCardDetail({
   confusionAtomCounts,
   heyePoolKeys,
   bookValidPages,
+  pageTextByPage,
   openDeskReturnTo,
   returnTo,
 }: {
@@ -96,6 +98,13 @@ export function EntityCardDetail({
    */
   bookValidPages?: number[];
   /**
+   * T54 F/I：该书 page → OCR 原文（服务端 loadChapterPages 装配；缺省 undefined = 未检，
+   * 不显示「OCR 未见」也不抬假阳）。本组件在 server 侧用它机检：诚实条「OCR 未见 N」
+   * （与 seed 抽查 verified **分列**）+ 字段/原子/页脚 CitePeek 的 per-cite ocrMiss。
+   * 只读——绝不把结果写回 entities 的 verified。
+   */
+  pageTextByPage?: Record<number, string>;
+  /**
    * T41 D：「在书桌打开本卡 / 本页」点前 saveReturn 的回程 payload（desk 卡页=本卡枢纽；
    * shell 详情=实体列表）。Server 组件不能挂 onClick——两链换 DeskOpenReturnLink 岛消费。
    */
@@ -107,6 +116,22 @@ export function EntityCardDetail({
   returnTo?: { href: string; label: string };
 }) {
   const stats = citeStats(card);
+  /**
+   * T54 F/H：per-cite 机检（server 侧；quoteInOcr bigram≥0.6，与 cite-check 同真）——
+   * 有页 + 有引文 + 该页 OCR 文本在 → 覆盖 <0.6 才算「未见」；缺页文本 / 无引文不计
+   * （不抬假阳）。ocrMissCount 按与 citeStats 相同的 page|verified|quote 去重口径数，
+   * 页文本未装配（pageTextByPage undefined）→ 未检，诚实条不出「OCR 未见」列。
+   */
+  const ocrMissOf = (c?: Cite) => citeOcrMiss(c, pageTextByPage);
+  const ocrMissCount = (() => {
+    if (pageTextByPage == null) return null;
+    let n = 0;
+    for (const c of enumerateCardCites(card)) {
+      if (c.page == null || (c.quote ?? "").trim() === "") continue;
+      if (pageTextByPage[c.page] != null && !quoteInOcr(c.quote, pageTextByPage[c.page])) n++;
+    }
+    return n;
+  })();
   /**
    * T35 A/B：卡枢纽练/核显式默认档（练 mode=all · 核 mode=open）——CardHubReturnLinks /
    * 本卡 Strip 消费同一对 href；本标签 sticky 停在非默认空档时从卡面进练/核仍落可见池。
@@ -209,10 +234,21 @@ export function EntityCardDetail({
                   {stats.unverified}
                 </span>
               </span>
+              {/* T54 F：机检「OCR 未见」——与 seed 抽查 verified 分列（另开信号，互不写入）；
+                  N=0 不吵；页文本未装配（未检）不出列。 */}
+              {ocrMissCount != null && ocrMissCount > 0 ? (
+                <span className="text-status-warn">
+                  OCR 未见{" "}
+                  <span className="mono font-medium text-status-warn">{ocrMissCount}</span>
+                </span>
+              ) : null}
             </p>
             <p className="mt-1 text-xs leading-6 text-muted">
               「抽查未核」是教材数据（seed）自带的 verified 标记，未经本机对页——不计为已核；
               你在核页标「本机已对」只存本浏览器，与这里的数字互不写入。本卡核页状态不在此条伪造。
+              {ocrMissCount != null
+                ? "「OCR 未见」是机检（引文与该页 OCR 原文的 bigram 覆盖 < 0.6，可能 OCR 误差或抽取出错）——不是 seed verified，也不写你的核页标记。"
+                : ""}
             </p>
           </>
         ) : (
@@ -273,6 +309,7 @@ export function EntityCardDetail({
                     deskBookId={deskBookId}
                     cardId={card.id}
                     pendingCiteCount={pendingCiteCount}
+                    ocrMiss={ocrMissOf(f.cite)}
                   />
                   {/* T33 E：字段 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（与原子 T30 C 同族
                       muted 文字链，非实心；与 CitePeek 浮层内「在书桌打开」同目标，免开浮层一步）。
@@ -385,6 +422,7 @@ export function EntityCardDetail({
                     deskBookId={deskBookId}
                     cardId={card.id}
                     pendingCiteCount={pendingCiteCount}
+                    ocrMiss={ocrMissOf(a.cite)}
                   />
                   {/* T30 C：原子 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（muted 文字链，
                       非实心；与 CitePeek 浮层内「在书桌打开」同目标，这里免开浮层一步）。
@@ -420,6 +458,7 @@ export function EntityCardDetail({
               deskBookId={deskBookId}
               cardId={card.id}
               pendingCiteCount={pendingCiteCount}
+              ocrMiss={ocrMissOf(c)}
             />
             {/* T33 E：页脚 cite 有页 + 书桌语境 → 次级「对页」（字段/原子同真，同卡不互谎）。
                 T52 H：页落在未解析 OCR → 纯文「本页无 OCR」（三处对页同一判定）。 */}

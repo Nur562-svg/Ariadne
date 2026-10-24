@@ -20,6 +20,7 @@ import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadReturn, saveReturn, type ReturnEntry } from "@/lib/return-stack";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
+import { quoteInOcr } from "@/lib/cite-ocr-quality";
 
 /**
  * 档位芯片（T25 A）：待核/已对/存疑 本机计数，可点切档（URL 规则与 sticky 三档一致）；
@@ -809,6 +810,15 @@ export default function HeYeSession({
               这条引用没有记录引文片段——按上下文到右页找对应位置。
             </p>
           )}
+
+          {/* T54 G：摘录机检琥珀——有 quote、该页 OCR 文本在、bigram<0.6 未命中 → 点名
+              「可能 OCR 误差或抽取出错」，提示逐字核对；匹配 / 无 quote / 页无文本不吵
+              （缺文本不抬假阳）。只提示，不改 mark / u-z 撤销 / verified 语义。 */}
+          {cur.quote && pg && !quoteInOcr(cur.quote, pg.text) ? (
+            <p className="mt-2 rounded border border-amber-300 bg-status-warn-bg px-3 py-2 text-xs leading-5 text-status-warn">
+              摘录未在本页 OCR 中找到（可能 OCR 误差或抽取出错）——逐字核对后再标「本机已对」。
+            </p>
+          ) : null}
 
           {cur.context && cur.context !== cur.quote ? (
             <p className="mt-3 text-sm leading-7 text-muted">

@@ -27,6 +27,7 @@ export default function CitePeek({
   deskBookId,
   cardId,
   bookValidPages,
+  ocrMiss,
   pageAtomCount,
   pendingPageCount,
   pendingCiteCount,
@@ -43,6 +44,11 @@ export default function CitePeek({
    * 浮层布局一概不动（正文/trap forever OUT）。
    */
   bookValidPages?: number[];
+  /**
+   * T54 H/I：该 cite 的机检「OCR 未见」（宿主 server 侧 quoteInOcr 实算，缺省不点名）——
+   * 只透传给内部 CiteChip 做后缀/title 提示；不改任何 Link 门禁（鬼页仍吃 T53 pageInOcr）。
+   */
+  ocrMiss?: boolean;
   /**
    * T49 D：浮层 nav CTA 空池门禁（只动 nav，quote/trap/定位/verified 文案/布局一概不动）——
    * 父传入且对应 ===0 → 该 CTA 降 muted 纯文不可点；未传入 → 保持既有 Link（宿主能取到
@@ -235,7 +241,7 @@ export default function CitePeek({
 
   return (
     <span ref={rootRef} className="relative inline-flex items-center gap-1">
-      <CiteChip cite={cite} q={q} deskBookId={deskBookId} bookValidPages={bookValidPages} />
+      <CiteChip cite={cite} q={q} deskBookId={deskBookId} bookValidPages={bookValidPages} ocrMiss={ocrMiss} />
       <button
         ref={toggleRef}
         onClick={() => (open ? close() : setOpen(true))}
