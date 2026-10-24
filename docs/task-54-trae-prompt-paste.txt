@@ -1,0 +1,140 @@
+════════════════════════════════════
+Task 54 · pipeline-cite-ocr-quality-01 · MEGA · zcode GLM5.3 max thinking
+════════════════════════════════════
+仓库：/Users/nukeab/projects/Ariadne
+Tip 前置（硬）：d518876（docs T53） atop eefb0e0（feat T53） atop 2f43ce9（T52 docs）。
+git log -1 --oneline 须含 d518876。若停在 eefb0e0 或更早 → 停，对齐后再开工。
+先读 docs/frontend-aesthetics.md。对照 SCOPE：docs/task-54-SCOPE.md 或 /workspace/reports/ariadne-task-54/SCOPE.md。
+体量：约 180–300+ 分钟真实编码。A–J 全部交。只做 lib 或只做 HeYe 一条琥珀 = 拒收。15–30/90 分钟假装收工 = 漏做。又一轮 empty-CTA densify / return densify / CitePeek 正文·trap redo / 写 verified:true / 重做 T46–T53 = 主题偏了，拒收。
+不 push。验收 PASS 后站规 auto-push（勿问「推」）。
+
+────────────────────────────────────
+空池 CTA / return / 深链井（硬声明 · 写进回复）
+────────────────────────────────────
+T43–T51 empty-pool CTA densify 已饱和；T35–T42 return densify 已饱和；T52–T53 已闭空·完成/Quiz书空/Viewer带页/Entity对页/pageInOcr/鬼页深链/HeYe u/z。
+本刀不是再扩 empty-CTA，不是 return densify，不是重做 T53，不是 CitePeek 正文/trap。
+主题 = 材料→原子 pipeline 第一刀：cite quote↔OCR 质量门（bigram≥0.6）+ extract/CLI 报告 + ingest 质量条 + 注册软门禁 + Entity/HeYe/CiteChip「OCR 未见」日用诚实。不写 verified:true。
+
+────────────────────────────────────
+三子主题
+────────────────────────────────────
+1) 共享算法 + CLI / extract 后置 — A · B · C
+2) ingest 质量条 + 注册软门禁 — D · E
+3) 卡详 / 核页 / CiteChip OCR 未见 — F · G · H
+I = 装配；J = build + cite-check + heye-only DEFER + 回归
+
+────────────────────────────────────
+A · lib cite-ocr-quality
+────────────────────────────────────
+1) 新建 apps/web/lib/cite-ocr-quality.ts（无 "use client"）+ 孪生 scripts/lib/cite-ocr-quality.mjs（算法同真，头注释 keep in sync）。
+2) normalizeText · bigramCoverage(quote, pageText)→[0,1] · quoteInOcr(..., thr=0.6)。
+3) scoreCard(card, pageTextByPage) · scoreChapter(cards, pageTextByPage)→{cards,atoms,cites,nullPage,ocrMiss,zeroAtomCards,missRate}。
+4) 只读；禁止写 verified。
+
+────────────────────────────────────
+B · CLI cite-check
+────────────────────────────────────
+1) scripts/cite-ocr-check.mjs；package.json 加 "cite-check": "node scripts/cite-ocr-check.mjs"。
+2) pnpm cite-check -- ch01：读 cards+blocks，打印汇总，写 data/qa/ch01.cite-ocr.json（含 miss 样例）。
+3) 禁止改 data/cards/*.entities.json。
+
+────────────────────────────────────
+C · extract 后置
+────────────────────────────────────
+1) extract_cards.mjs 写盘前 score；stderr 打 ocrMiss/missRate/zeroAtomCards。
+2) 默认警告仍写；--strict 且（missRate>0.4 或 zeroAtomCards>0）→ 非零退出；已有 entities → 拒绝覆盖。
+3) dry-run 可打印分数。
+
+────────────────────────────────────
+D · ingest 质量条
+────────────────────────────────────
+1) extracted/ready：章级/物料级质量条「卡 N · 原子 N · OCR未见 M · 无页 p.? K · 零原子卡 Z」；M/K/Z>0 琥珀。
+2) uploaded/parsed 不装假 0 条。
+3) 勿重做 T45 N/M·CopyCommand；T49 三连只回归。
+
+────────────────────────────────────
+E · Register 软门禁
+────────────────────────────────────
+1) qualityWarn?: {ocrMiss,zeroAtomCards,missRate,nullPage}；missRate≥0.25 或 zeroAtomCards>0 → 琥珀 + 二次确认「质量偏弱 · 仍要注册 →」。
+2) 低风险保持一键「注册进书库 →」。
+3) API 不因质量 4xx；T49 成功三连空池只回归。
+
+────────────────────────────────────
+F · EntityCardDetail OCR 未见
+────────────────────────────────────
+1) 诚实条加「OCR 未见 N」（与「抽查未核」分列）；N>0 琥珀。
+2) 脚注：机检未见 ≠ 改 seed verified ≠ 本机核页标记。
+3) 优先服务端预计算 ocrMissCount；禁改 CitePeek quote/trap/定位。
+
+────────────────────────────────────
+G · HeYe 摘录未见琥珀
+────────────────────────────────────
+1) cur.quote+page 且 pages[page].text 在、!quoteInOcr → blockquote 下琥珀「摘录未在本页 OCR 中找到（可能 OCR 误差或抽取出错）」。
+2) 匹配/无 quote/无 text 不额外吵。
+3) 勿拆 T53 u/z·开桌鬼页·T52 emptyKind·T51 atomCount·leaveReturn。
+
+────────────────────────────────────
+H · CiteChip ocrMiss
+────────────────────────────────────
+1) 可选 ocrMiss?: boolean → title 或后缀「· OCR 未见」。
+2) 不改 T53 鬼页 Link 门禁（pageInOcr 优先）。
+3) Entity 字段/原子、CardCard 主 cite 能算则传。
+
+────────────────────────────────────
+I · 装配线
+────────────────────────────────────
+1) ingest → Register qualityWarn（物料章 score 汇总）。
+2) desk/card + entities/[id] → Detail ocrMissCount。
+3) DocumentPane CardCard → CiteChip ocrMiss。
+4) review/page 确认 HeYe pages.text → G。
+5) 缺 pageText → 未检（不抬假阳 ocrMiss）。
+
+────────────────────────────────────
+J · build · DEFER · 回归
+────────────────────────────────────
+1) pnpm --filter web build PASS。
+2) pnpm cite-check -- ch01 跑通。
+3) 不要 push。
+4) heye-only invent DEFER：禁止 seed；回复写明 deferred。
+5) diff 禁止把 entities verified 写成 true。
+6) 回归：T53 pageInOcr/deskPageHref/CiteChip鬼页/Peek开桌/瓷砖对页/HeYe开桌/Study deskBack/HeYe u/z；T52 空·完成/Quiz书空/Viewer带页/Entity对页；T51 Clew/Strip/书头/Quiz核/交叉离面空池；T50 Shelf/Footer/LibraryContinuity/Sidebar/book-pools；T49 IngestReady/Register/CitePeek 浮层练核CTA + 正文/trap 未毁；T48 CardCard/EntitySearch/轨核/CardVs/Sticky标N/Overview章行；T47 TOC/KINDS/Continuity 0-OCR壳；T46 书架OCR/换书/模式；T45 Quiz练侧/ingest N/M；T44 Clew空态分型骨架；T43 Changes筛选/截断；T42–T28 leaveReturn/书头return/CrossScope return 接线未拆；ModeChips 未插进练中；Queue 未改 Due；LocalProgressStrip 视觉未毁；Study u/z 未毁。
+
+════════════════════════════════════
+硬保留
+════════════════════════════════════
+Task 07–53 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC（含 T47 counts）、Clew stub 三 tab、卡页 CitePeek 正文与 trap、/review·/study 诚实切片、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、healOpenedIfDirty、book-pools.ts、ocr-page.ts（T53）、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CardHubReturnLinks、IngestReadyLinks、CopyCommand、LibraryContinuity/ShelfBookContinuity、T34–T53 已交切片、T26 稀疏琥珀、T41 sticky N=0 门禁、T48 sticky 标 N、T51 Clew/Strip/交叉空池、T52 emptyKind/书空/Viewer带页、T53 鬼页深链/HeYe undo。勿 verified:true 过关。A–J 范围保持完整；主题是 pipeline cite↔OCR 质量 + 日用未见诚实，不是 empty-CTA，不是 return，不是 T46–T53 重做。
+
+════════════════════════════════════
+不做（硬）
+════════════════════════════════════
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true 写入 / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / empty-CTA densify 当主题 / 重做 T46–T53 已交 / 只抽 lib 不接线或多面漏做就收工 / 只做 HeYe 琥珀就收工
+- Register API 因质量硬 4xx（本刀 UI 软门禁）
+- Next.js security upgrade 当本刀主题（ops note only）
+- 假云端 OCR / 假进度条动画 / 假正数池 / 把 OCR 未见伪装成 seed verified
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T53 已交切片
+- 整段 port ariadnemini版 verify/clew-API
+- push（写手禁；验收 PASS 后站规 auto-push，勿问「推」）
+
+════════════════════════════════════
+自测（回复须勾）
+════════════════════════════════════
+1) quoteInOcr 有原文→true；无关→false；thr 默认 0.6；scoreChapter missRate 对称
+2) pnpm cite-check -- ch01 出汇总 + data/qa/ch01.cite-ocr.json；entities verified 未改
+3) extract --strict 高 miss 拒写；默认只警告
+4) ingest · extracted/ready 质量条可见；uploaded 无假 0 条
+5) Register · 高 miss/零原子 → 琥珀+二次仍要注册；低 miss 一键仍在
+6) EntityCardDetail · OCR 未见 N 与抽查未核分列；CitePeek 正文/trap 未改
+7) HeYe · 未见琥珀出现；匹配无琥珀；T53 u/z 与开桌鬼页未毁
+8) CiteChip ocrMiss 提示；T53 鬼页门禁未毁
+9) pnpm --filter web build PASS；cite-check 可跑；未 push；heye-only DEFER；无 verified:true 写入
+10) 回归 T53–T28；ModeChips未插队；Queue非Due；CitePeek正文/trap未毁；empty-CTA门禁未拆
+
+做完叫验收。A–J 全交才过。
