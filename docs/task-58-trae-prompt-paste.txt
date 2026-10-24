@@ -1,0 +1,148 @@
+════════════════════════════════════
+Task 58 · study-examinable-coverage-01 · MEGA · zcode GLM5.3 max thinking
+════════════════════════════════════
+仓库：/Users/nukeab/projects/Ariadne
+Tip 前置（硬）：1b609dc（docs T57） atop 9b32776（feat T57 pipeline-extract-page-coverage-01） atop ee323f3（T56 docs）。
+git log -1 --oneline 须含 1b609dc。若停在 9b32776（仅 feat）或更早 → 停，对齐后再开工。
+先读 docs/frontend-aesthetics.md。对照 SCOPE：docs/task-58-SCOPE.md 或 /workspace/reports/ariadne-task-58/SCOPE.md。
+体量：约 180–300+ 分钟真实编码。A–J 全部交。只做 Study 一行数字或只旁挂 ready 就收工 = 拒收。15–30/90 分钟假装收工 = 漏做。又一轮 empty-CTA densify / return densify / CitePeek 正文·trap redo / 写 verified:true / 自动写 entities / Clew LLM 真写 / 真·卡内联编辑器 / 重做 T46–T57 / 吞改 HeYe orphan 分型 = 主题偏了，拒收。
+不 push。验收 PASS 后站规 auto-push（勿问「推」）。
+
+────────────────────────────────────
+空池 CTA / return / 深链 / T54–T57 井（硬声明 · 写进回复）
+────────────────────────────────────
+T43–T51 empty-pool CTA densify 已饱和；T35–T42 return densify 已饱和；T52–T53 已闭空·完成/鬼页深链/HeYe u/z；T54 已闭 cite↔OCR 检测；T55 已闭 miss 补救/附近 OCR/重抽复制/书架 cite 质量徽（剪贴板-only，不写 verified:true）；T56 已闭 parse/OCR 覆盖诚实；T57 已闭抽出后暗页覆盖（page-check · ingest 暗页条 · Overview/书架暗徽 · Reader 暗页提示 · 与 cite/parse 三分列）。
+本刀不是再扩 empty-CTA，不是 return densify，不是重做 T54–T57（禁止重写暗页算法 / 拆三分列徽 / 拆补救面板），不是 CitePeek 正文/trap，不是自动写 seed，不是真·卡编辑器。
+主题 = 材料→原子脊梁第五刀：学习环可考覆盖诚实——**消费** T57 extract-page 信号，让 Study 页头/本页 orphan/完成态、HeYe orphan 旁挂、ingest ready 三连与书桌练入口看见「池内原子 ≠ 材料已覆盖」。不写 verified:true，不自动 PATCH entities/blocks，不改 deriveMaterialStage，不自动发明 cite 填暗页，不吞改 HeYe emptyKind。
+
+真·卡内联编辑器：T55→T57→T58+ 已三次 DEFER；本刀诚实评估后仍 **DEFER → T59+**。若日后开刀必须 local-draft-only（新键如 ariadne.atom-draft.v1 · 无 verified · 无 auto PATCH · 无 Clew 真写 · 不改名既有 storage keys）。本刀不吞。
+
+────────────────────────────────────
+三子主题
+────────────────────────────────────
+1) examinable-coverage 薄适配（消费 T57）+ Study 页头/范围条 — A · B · C
+2) Study orphan/完成态 + HeYe orphan 旁挂 — D · E · F
+3) ingest ready 三连旁挂 + 书桌练入口旁挂 — G · H
+I = 装配；J = build + page/cite/parse-check 回归 + DEFER
+
+────────────────────────────────────
+A · lib examinable-coverage（消费 T57）
+────────────────────────────────────
+1) 新建 apps/web/lib/examinable-coverage.ts（可选极薄 server helper）。
+2) **消费** loadExtractPageCoverage / scoreExtractPageCoverage（T57）；禁止复制第二套暗页算法；禁止漂移 SPARSE_CHAR_THR；禁止改 cite-ocr / parse-ocr 口径。
+3) scopeExaminableCoverage({ chapterIds }) → ExaminableCoverage：substantialPages · citedPages · darkCount · darkPages（有序样例≤8）· examinableRate（cited/substantial；substantial=0 → null 或文档化 0+weak=false）· weak（darkCount>0）。多章折叠与书架 bookExtractPage 同口径（合计）。
+4) pageExaminableHint({ page, pageText, citedSet }) → 'dark' | 'sparse' | 'ok' | 'unchecked'：chars<thr→sparse（归 T56）；chars≥thr ∩ ¬cited→dark；缺 citedSet/文本→unchecked。
+5) 缺章文件 → 该章未检；整 scope 全未检 → null（禁止装 examinableRate=1 完美）。
+6) 禁止写 entities/verified；禁止改 deriveMaterialStage。
+
+────────────────────────────────────
+B · Study 页头可考覆盖条
+────────────────────────────────────
+1) /study 页头：在「N 个知识原子」旁或下行——scope 能算出 ExaminableCoverage 且 weak → 琥珀短句「可考覆盖偏稀 · 暗D · 实质页 S · 已cite C」。
+2) 全好不吵；无 cards/blocks（未抽出）不装假 0 暗。
+3) 单卡 scope：推荐跳过章级条（卡级无「暗页章」意义）；若做，仅文档化一种口径。
+4) 禁掌握%/Due；禁第二排实心芯片 densify。
+
+────────────────────────────────────
+C · StudyScopeCounts 旁挂
+────────────────────────────────────
+1) StudyScopeCounts 旁或页头独立 muted/琥珀一行：weak 时「暗D 页未进可练池」。
+2) N=0 段逻辑不动——禁止借机 empty-CTA densify / 新大红主 CTA。
+3) 若与 B 合并成一行亦可，但 B+C 语义都须在 UI 可见；不可只交 B 砍掉覆盖信号。
+
+────────────────────────────────────
+D · Study 本页 orphan × 暗页
+────────────────────────────────────
+1) orphanStudy 且 pageExaminableHint==='dark' → 正文点名：「本页有实质 OCR（N 字）却无任何卡 cite（暗页）——不是页上没教材，是抽出未覆盖；可清本页放宽，或回 /ingest · pnpm page-check / 重抽」。
+2) sparse：可选轻提 T56 稀页一句；勿与暗页双吵。
+3) 非 dark orphan：保持既有「没有卡引用它」句。
+4) 真无原子/无书空态：禁止改写成暗页主题。
+5) 放宽链/次级链保持既有；禁止新主 CTA 大红 densify。
+
+────────────────────────────────────
+E · StudySession 完成态旁挂
+────────────────────────────────────
+1) 池非空且当前档评完：父传 examinableWeak / darkCount>0 → 完成卡下方琥珀一行「本机已评完池内原子 · 本范围仍有暗页未覆盖进原子（暗D）」。
+2) 可选次级文字链 /ingest 或书桌概览；禁止把完成主 CTA 改成「去补暗」强推。
+3) 全好不吵；禁止写 verified / PATCH entities。
+
+────────────────────────────────────
+F · HeYe orphan 旁挂（勿吞分型）
+────────────────────────────────────
+1) emptyKind==='orphan' 且当前页 pageExaminableHint==='dark' → 在既有 orphan 句后加一句琥珀「（旁挂）本页为暗页：实质 OCR 未抽出 cite」。
+2) 禁止新增 emptyKind: 'dark'；禁止改 orphan 主 CTA / 清本页契约；禁止吞 card-out / true-empty。
+3) 匹配中 / 非暗不吵。
+
+────────────────────────────────────
+G · ingest ready 三连旁挂
+────────────────────────────────────
+1) IngestReadyLinks 或宿主：书级 ExaminableCoverage.weak → atomCount 旁琥珀短徽/title「抽出偏稀 · 暗D」（D=书级）。
+2) 不影响 T49 OCR/原子/待核门禁（atomCount===0 仍纯文不可点）。
+3) extracted 注册前已有 T57 暗页条——ready 再挂短信号即可；禁止硬阻断打开书桌；禁止 Register API 硬 4xx。
+
+────────────────────────────────────
+H · 书桌练入口旁挂
+────────────────────────────────────
+1) DocumentPane Overview 章行「去学习」类链：章 weak 时 title 含「暗D」（或等价旁注）。
+2) 可选：ChapterPageReader「练本页」在 dark 页——T57 已有暗页提示则确认并列不双吵、练入口文案不推翻暗口径；无则最小补一句。
+3) 禁掌握%/Due；禁重写 shelf cite/parse/暗 三分列徽骨架。
+
+────────────────────────────────────
+I · 装配
+────────────────────────────────────
+1) study/page.tsx：book/chapter scope → scopeExaminableCoverage(chapterIds)；page scope → 章 coverage + pageExaminableHint；下传 StudySession examinableWeak/darkCount。
+2) review/page.tsx：下传 HeYeSession pageExaminableHint（或等价）。
+3) ingest ready←书级 coverage；Overview←章；fail-closed 缺文件未检。
+4) 勿毁 T55 补救/cite 徽 · T56 parse 徽/稀页 · T57 暗徽/Reader 暗提示 · HeYe orphan 三态 · ModeChips 契约 · book-pools · StickyPageLoopKeys。
+
+────────────────────────────────────
+J · build · DEFER · 回归
+────────────────────────────────────
+1) pnpm --filter web build PASS。
+2) pnpm page-check -- ch01 回归绿（本刀不改暗页算法）；pnpm cite-check -- ch01 与 pnpm parse-check -- ch01 回归绿。
+3) heye-only invent DEFER；真·卡内联编辑器 DEFER T59+（local-draft-only 合同备注）；QA 仪表盘 / 浅抽出密度（cited 但原子极稀）DEFER——回复写明。
+4) 禁止写 verified:true；禁止写回 entities/blocks「补暗」；写手不 push。
+5) 回归 T57–T28；ModeChips 未插队；Queue 非 Due；deriveMaterialStage 未改；CitePeek/canvas 未动；HeYe emptyKind 未新增 dark。
+
+────────────────────────────────────
+保留（勿毁）
+────────────────────────────────────
+Task 07–57 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC、Clew stub、卡页 CitePeek 正文与 trap、/review·/study、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、book-pools.ts、ocr-page.ts、cite-ocr-quality（T54/T55）、parse-ocr-coverage（T56）、extract-page-coverage（T57）、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CopyCommand、LibraryContinuity/ShelfBookContinuity、T34–T57 已交切片、T26 稀疏琥珀、T41 sticky N=0 门禁、T55 补救面板与 shelf cite 徽、T56 shelf parse 徽与 Reader 稀页提示、T57 shelf 暗徽与 Reader 暗页提示、HeYe emptyKind orphan|card-out|true-empty。勿 verified:true 过关。勿自动写 entities/blocks。A–J 范围保持完整；主题是学习环可考覆盖诚实（消费暗页信号），不是 empty-CTA，不是 return，不是 T46–T57 重做，不是卡编辑器，不是吞 orphan。
+
+────────────────────────────────────
+不做（硬）
+────────────────────────────────────
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true 写入 / 自动 PATCH entities 或 blocks / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / empty-CTA densify 当主题 / 重做 T46–T57 已交 / 只交页头一行或只旁挂 ready 就收工
+- Register API 因质量硬 4xx（本刀 UI 软旁挂）
+- 改 deriveMaterialStage / 自动给暗页发明 cite 或原子
+- 真·实体卡内联编辑器 / QA 仪表盘路由当本刀主题
+- Next.js security upgrade 当本刀主题（ops note only）
+- 假云端 OCR / 假进度条动画 / 假正数池 / 把暗页伪装成 cite OCR未见或 parse 稀页或 seed verified
+- 发明 atoms.gloss 当主题
+- 吞改 HeYe orphan 分型当暗页主题（可旁挂提示，勿改 orphan CTA 契约；禁止 emptyKind:'dark'）
+- 重写 T57 暗页算法 / 拆 shelf cite·parse·暗 三分列徽骨架 / 拆 T55 补救面板
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T57 已交切片
+- 整段 port ariadnemini版 verify/clew-API
+- push（写手禁；验收 PASS 后站规 auto-push，勿问「推」）
+
+────────────────────────────────────
+自测（回复须勾）
+────────────────────────────────────
+1) scopeExaminableCoverage([ch01]) weak 且 darkCount≥1；缺文件→null；分数与 T57 page-check 不漂移
+2) /study?book=（seed）页头见可考覆盖偏稀琥珀（暗≥1）；好书/无暗不吵；单卡跳过或按文档口径
+3) /study?book=&page= 暗页（如 p.7）orphan 正文点名实质 OCR 未抽出；非暗 orphan 句保持；无书/真无原子空态未改成暗页主题
+4) StudySession 完成态：weak scope 见「评完池内 · 仍有暗页」；全好无；主 CTA 未改成强推补暗
+5) HeYe orphan 暗页旁挂一句；emptyKind 仍 orphan；CTA 未改；card-out/true-empty 未吞
+6) ingest ready：弱书三连旁挂暗 D；T49 门禁未拆；不阻断开桌
+7) Overview 练入口 title 或等价旁挂；shelf 三分列未改写；Reader 暗提示未毁
+8) build PASS；page-check + cite-check + parse-check 回归；未 push；编辑器/heye-only/QA/浅密度 DEFER；无 verified/entities 写入；回归 T57–T28；ModeChips未插队；Queue非Due；deriveMaterialStage 未改；CitePeek/canvas 未动；HeYe emptyKind 未新增 dark
+
+做完叫验收。A–J 全交才过。
