@@ -1,0 +1,120 @@
+════════════════════════════════════
+Task 60 · study-shallow-density-01 · MEGA · zcode GLM5.3 max thinking
+════════════════════════════════════
+仓库：/Users/nukeab/projects/Ariadne
+Tip 前置（硬）：a18ada3（docs T59） atop 9a1303a（feat T59 pipeline-extract-shallow-density-01） atop 1b66b9e（T58 docs）。
+git log -1 --oneline 须含 a18ada3。若停在 9a1303a（仅 feat）或更早 → 停，对齐后再开工。
+先读 docs/frontend-aesthetics.md。对照 SCOPE：docs/task-60-SCOPE.md 或 /workspace/reports/ariadne-task-60/SCOPE.md。
+体量：约 180–300+ 分钟真实编码。A–J 全部交。只做 Study 一行数字或只旁挂 ready 就收工 = 拒收。15–30/90 分钟假装收工 = 漏做。又一轮 empty-CTA densify / return densify / CitePeek 正文·trap redo / 写 verified:true / 自动写 entities / Clew LLM 真写 / 真·卡内联编辑器 / 重做 T46–T59 / 自动发明原子补浅 / emptyKind:'dark'|:'shallow' / 第四书架徽列 densify = 主题偏了，拒收。
+不 push。验收 PASS 后站规 auto-push（勿问「推」）。
+
+────────────────────────────────────
+空池 CTA / return / 深链 / T54–T59 井（硬声明 · 写进回复）
+────────────────────────────────────
+T43–T51 empty-pool CTA densify 已饱和；T35–T42 return densify 已饱和；T52–T53 已闭空·完成/鬼页深链/HeYe u/z；T54 已闭 cite↔OCR 检测；T55 已闭 miss 补救/附近 OCR/重抽复制/书架 cite 质量徽（剪贴板-only，不写 verified:true）；T56 已闭 parse/OCR 覆盖诚实；T57 已闭抽出后暗页覆盖；T58 已闭学习环可考覆盖诚实（消费暗 · Study/HeYe/ready · 无 emptyKind dark）；T59 已闭浅抽出密度生产诚实（density-check · ingest 浅条 · Overview/书架旁挂浅 S · Reader 稀>暗>浅 · 不发明原子补浅 · 不第四徽列）。
+本刀不是再扩 empty-CTA，不是 return densify，不是重做 T54–T59（禁止重写暗/浅算法 / 拆三分列徽 / 拆补救面板 / 重做 Study examinable 暗面 / 重做 Reader 生产优先序），不是 CitePeek 正文/trap，不是自动写 seed，不是真·卡编辑器。
+主题 = 材料→原子脊梁第七刀：学习环浅密度诚实——**消费** T59 extract-page-density 信号，让 Study 页头/本页浅旁挂/完成态、HeYe 浅页旁挂、ingest ready 与书桌练入口看见「池内已有原子 ≠ 可考够」。不写 verified:true，不自动 PATCH entities/blocks，不改 deriveMaterialStage，不自动发明原子补浅，不吞改 HeYe emptyKind。
+
+真·卡内联编辑器：T55→T59→T60 已多次 DEFER；本刀诚实评估后仍 **DEFER → T61+**。若日后开刀必须 local-draft-only（新键如 ariadne.atom-draft.v1 · 无 verified · 无 auto PATCH · 无 Clew 真写 · 不改名既有 storage keys）。本刀不吞。
+
+────────────────────────────────────
+三子主题
+────────────────────────────────────
+1) examinable-coverage 扩展（消费 T59）+ Study 页头/范围条 — A · B · C
+2) Study 本页浅旁挂/完成态 + HeYe 浅页旁挂 — D · E · F
+3) ingest ready 浅S 旁挂 + 书桌练入口旁挂 — G · H
+I = 装配；J = build + density/page/cite/parse-check 回归 + DEFER
+
+────────────────────────────────────
+A · lib examinable-coverage 扩展（消费 T59）
+────────────────────────────────────
+1) 扩展 apps/web/lib/examinable-coverage.ts + examinable-coverage-server.ts。
+2) **消费** loadExtractPageDensity / scoreExtractPageDensity / collectAtomCountByPage（T59）；复用 SHALLOW_ATOM_MAX=2 · SHALLOW_CHARS_PER_ATOM=400 · SPARSE_CHAR_THR=40；禁止复制第二套浅算法；禁止漂移常量；禁止改 cite-ocr / parse-ocr / dark 口径。
+3) ExaminableCoverage 增：shallowCount · shallowPages（有序样例≤8）· densityWeak（shallowCount>0）。既有 darkCount / weak（暗）保留——weak 仍只表暗，浅用 densityWeak，禁止把浅并进 darkCount。
+4) fold：逐章 loadExtractPageCoverage + loadExtractPageDensity；缺 density 章跳过浅（未检），勿装 shallowCount=0 完美；整 scope 全未检 → null。
+5) pageExaminableHint → 'dark' | 'sparse' | 'shallow' | 'ok' | 'unchecked'。优先序：sparse > dark > shallow > ok。浅判定须用 atoms[].cite.page 计数（禁止 card cites / fields[].cite 单独膨胀）。
+6) loadPageExaminable：可返回 atomCount / chars 供正文点名；ghost/未抽出 → unchecked。
+7) 禁止写 entities/verified；禁止改 deriveMaterialStage。
+
+────────────────────────────────────
+B · Study 页头浅密度条
+────────────────────────────────────
+1) /study 页头：scope densityWeak → 琥珀短句「可考密度偏稀 · 浅S · 有原子页已 cite 但原子极少」（可附实质/有原子摘要）。
+2) 可与 T58 暗条并列（同行兼点或次行）；全好不吵；无 cards/blocks 不装假 0 浅。
+3) 单卡 scope：跳过章级条（与 T58 同口径）。
+4) 禁掌握%/Due；禁第二排实心芯片 densify。
+
+────────────────────────────────────
+C · StudyScopeCounts 旁挂
+────────────────────────────────────
+1) StudyScopeCounts 旁或与 B 合并可见：densityWeak 时「浅S 页可考密度不足」。
+2) N=0 段逻辑不动——禁止借机 empty-CTA densify / 新大红主 CTA。
+3) B+C 语义都须在 UI 可见；不可只交 B 砍掉密度信号。
+
+────────────────────────────────────
+D · Study 本页有原子 × 浅（非 orphan）
+────────────────────────────────────
+1) pageNum 合法且非 orphan 且 pageExaminableHint==='shallow' → 琥珀一行：「本页已抽出但原子偏稀（N 原子 · M 字）· 可考密度不足；可回 /ingest · pnpm density-check -- --shallow <ch>」。
+2) orphan × dark：保持 T58 D 暗正文——禁止改写成浅主题。
+3) sparse：保持轻提；勿与浅双吵（优先序已保证）。
+4) 真无原子/无书空态：禁止改写成浅主题。
+5) 放宽链/次级链保持既有；禁止新主 CTA 大红 densify。
+
+────────────────────────────────────
+E · StudySession 完成态旁挂
+────────────────────────────────────
+1) 父增传 densityWeak / shallowCount：池非空且当前档评完且 densityWeak → 完成卡下方琥珀「本机已评完池内原子 · 本范围仍有浅页可考密度不足（浅S）」。
+2) 可与 T58 暗完成旁挂并列——禁止吞掉暗句。
+3) 可选次级文字链 /ingest；禁止把完成主 CTA 改成「去补浅」强推。
+4) 全好不吵；禁止写 verified / PATCH entities。
+
+────────────────────────────────────
+F · HeYe 浅页旁挂（勿吞分型）
+────────────────────────────────────
+1) 当前页 hint==='shallow'（匹配中 / sticky，非 orphan 主题）→ 琥珀旁挂「本页已抽出但原子偏稀（浅）」。
+2) orphan × dark：保持 T58 F。
+3) 禁止新增 emptyKind: 'shallow' 或 'dark'；禁止改 orphan 主 CTA / 清本页契约；禁止吞 card-out / true-empty。
+4) 非浅不吵。
+
+────────────────────────────────────
+G · ingest ready 三连旁挂
+────────────────────────────────────
+1) IngestReadyLinks 或宿主：书级 densityWeak → atomCount 旁琥珀短徽/title「抽出密度偏稀 · 浅S」。
+2) 可与既有「抽出偏稀 · 暗D」并列。
+3) 不影响 T49 OCR/原子/待核门禁；禁止硬阻断打开书桌；禁止 Register API 硬 4xx。
+
+────────────────────────────────────
+H · 书桌练入口旁挂
+────────────────────────────────────
+1) DocumentPane Overview 章行「去学习」类链：章 densityWeak 时 title/旁注含「浅S」（可与暗D 兼）。
+2) T59 F 生产浅徽保留；本刀保证练入口也说浅。
+3) 不要重做 Reader（T59 H 已有稀>暗>浅）；确认练链不推翻浅口径即可。
+4) 禁掌握%/Due；禁重写 shelf cite/parse/暗 三分列；禁第四大红徽列 densify。
+
+────────────────────────────────────
+I · 装配
+────────────────────────────────────
+1) study/page.tsx：scope fold 含 shallow；非 orphan 页也算 pageExaminableHint（供 D）；下传 StudySession densityWeak/shallowCount。
+2) review/page.tsx：下传 HeYeSession pageShallow（或 hint）。
+3) ingest ready←书级 shallow；Overview←章；fail-closed 缺文件未检。
+4) 勿毁 T55 补救/cite 徽 · T56 parse/稀 · T57 暗徽 · T58 examinable 暗面 · T59 density 生产面 · HeYe orphan 三态 · ModeChips · book-pools · StickyPageLoopKeys · shelf 三分列。
+
+────────────────────────────────────
+J · build · DEFER · 回归
+────────────────────────────────────
+1) pnpm --filter web build PASS（若遇 SecurityFatalError 可再跑一次；Next.js security = ops not theme，勿当本刀主题去升级）。
+2) pnpm density-check -- ch01（及 --shallow）回归绿；ch01 浅≥1（seed 浅 3：p.2/p.6/p.8）。
+3) pnpm page-check -- ch01 + cite-check + parse-check 回归绿。
+4) DEFER：heye-only invent；真·卡内联编辑器 → T61+（local-draft-only 合同：ariadne.atom-draft.v1 · 无 verified · 无 auto PATCH · 无 Clew 真写 · 不改名既有 keys）；QA 仪表盘；批量重抽；quiz densify。
+5) 禁止写 verified:true；禁止写回 entities/blocks「补浅」。
+6) 回归 T59–T28；写手不 push。
+
+────────────────────────────────────
+硬 OUT（拒收）
+────────────────────────────────────
+empty-CTA densify · return densify · CitePeek 正文/trap redo · 写 verified:true · 自动 PATCH entities/blocks · Clew LLM 真写 · 真·卡内联编辑器当主题 · 重做 T46–T59 · 发明原子补浅 · emptyKind:'dark'|:'shallow' · 第四书架徽列 densify · FSRS/Due · Queue→Due · ModeChips 中插队 · ⌘K · DeskShell 重写 · 掌握% · 改名 storage keys · 硬阻断 register · 把浅伪装成暗/稀/cite miss/orphan · 只交一行 Study 数字或只旁挂 ready · push
+
+────────────────────────────────────
+验收口令
+────────────────────────────────────
+做完叫验收。A–J 全交才过。
