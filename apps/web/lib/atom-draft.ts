@@ -441,3 +441,128 @@ export function buildSeedApplyGuide(cards: EntityCard[], store: AtomDraftStore):
   lines.push(`--- 共 ${total} 条真改动 · 收件箱/补丁包 ≠ 已落盘`);
   return lines.join("\n");
 }
+
+// ---- T67 G：Clew 建议补丁粘贴导入（patch.v1 → merge 进 ariadne.atom-draft.v1；人点才写） ----
+
+export type ParsePatchResult =
+  | { ok: true; doc: AtomDraftPatchDoc }
+  | { ok: false; error: string };
+
+/**
+ * 解析粘贴的 ariadne.atom-draft-patch.v1 JSON（Clew「复制为草稿补丁」产物 / 卡详导出同形）。
+ * 严格整包校验：非法 JSON / 顶层非对象 / schema 不符 / cardId 缺 / entries 非数组 / 任一条
+ * target/field/before/after 形状不对 / 带 verified 等写入意图键 → **整包拒收**（本机草稿
+ * 保持原样）。不校验 target 是否存在于某卡——那要卡上下文，归 validateAtomDraftPatch。
+ */
+export function parseAtomDraftPatch(text: string): ParsePatchResult {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    return { ok: false, error: "不是合法 JSON——整包拒收，本机草稿保持原样。" };
+  }
+  if (raw === null || typeof raw !== "object" || Array.isArray(raw)) {
+    return { ok: false, error: "顶层不是对象——整包拒收，本机草稿保持原样。" };
+  }
+  const o = raw as Record<string, unknown>;
+  if (o.schema !== "ariadne.atom-draft-patch.v1") {
+    return {
+      ok: false,
+      error: "schema 不符（期望 ariadne.atom-draft-patch.v1；整卡草稿带走走 port.v1，见下方折叠区）——拒收。",
+    };
+  }
+  if (typeof o.cardId !== "string" || !o.cardId.trim()) {
+    return { ok: false, error: "缺 cardId——整包拒收，本机草稿保持原样。" };
+  }
+  if (!Array.isArray(o.entries)) {
+    return { ok: false, error: "entries 不是数组——整包拒收，本机草稿保持原样。" };
+  }
+  const entries: DraftPatchEntry[] = [];
+  for (const item of o.entries) {
+    if (item === null || typeof item !== "object" || Array.isArray(item)) {
+      return { ok: false, error: "entries 含非对象条目——整包拒收，本机草稿保持原样。" };
+    }
+    const e = item as Record<string, unknown>;
+    if ("verified" in e || "write" in e || "apply" in e) {
+      return { ok: false, error: "条目带 verified/write/apply 写入意图键——整包拒收（本面板永不翻 verified）。" };
+    }
+    if (typeof e.target !== "string" || !e.target.trim()) {
+      return { ok: false, error: "条目缺 target——整包拒收，本机草稿保持原样。" };
+    }
+    if (e.field !== "prompt" && e.field !== "answer" && e.field !== "citeQuote" && e.field !== "value") {
+      return { ok: false, error: `条目 ${e.target} 的 field 不在 prompt|answer|citeQuote|value——整包拒收。` };
+    }
+    if (e.before !== null && typeof e.before !== "string") {
+      return { ok: false, error: `条目 ${e.target} 的 before 须为 string|null——整包拒收。` };
+    }
+    if (typeof e.after !== "string" || !e.after.trim()) {
+      return { ok: false, error: `条目 ${e.target} 的 after 为空——整包拒收（宁拒不造）。` };
+    }
+    entries.push({ target: e.target, field: e.field, before: e.before as string | null, after: e.after });
+  }
+  return {
+    ok: true,
+    doc: {
+      schema: "ariadne.atom-draft-patch.v1",
+      cardId: o.cardId.trim(),
+      ...(typeof o.chapterId === "string" && o.chapterId.trim() ? { chapterId: o.chapterId.trim() } : {}),
+      note: typeof o.note === "string" ? o.note : "",
+      entries,
+    },
+  };
+}
+
+/**
+ * 对具体卡校验补丁 targets：cardId 必须匹配；每条 target 必须命中**既有**原子 id / 字段下标，
+ * 且 field 与 target 类型匹配（atom:→prompt|answer|citeQuote；field:N→value）。任一未知/越界/
+ * 错配 → 返回拒收原因（整包拒，一条不并）。纯函数（不触 localStorage），供单测与 UI 共用。
+ */
+export function validateAtomDraftPatch(
+  card: Pick<EntityCard, "id" | "atoms" | "fields">,
+  doc: Pick<AtomDraftPatchDoc, "cardId" | "entries">,
+): string | null {
+  if (doc.cardId !== card.id) {
+    return `cardId 不符（补丁 ${doc.cardId} ≠ 本卡 ${card.id}）——整包拒收。`;
+  }
+  const atomIds = new Set((card.atoms ?? []).map((a) => a.id));
+  const fieldCount = (card.fields ?? []).length;
+  for (const e of doc.entries) {
+    if (e.target.startsWith("atom:")) {
+      const id = e.target.slice(5);
+      if (!atomIds.has(id)) return `target ${e.target} 不是本卡既有原子 id——整包拒收（永不发明原子）。`;
+      if (e.field === "value") return `target ${e.target} 只可 prompt|answer|citeQuote——整包拒收。`;
+    } else if (e.target.startsWith("field:")) {
+      const idx = Number(e.target.slice(6));
+      if (!Number.isInteger(idx) || idx < 0 || idx >= fieldCount) {
+        return `target ${e.target} 超出本卡字段下标（0–${Math.max(fieldCount - 1, 0)}）——整包拒收。`;
+      }
+      if (e.field !== "value") return `target ${e.target} 只可 value——整包拒收。`;
+    } else {
+      return `target ${e.target} 形如 atom:<id> 或 field:<N>——整包拒收。`;
+    }
+  }
+  return null;
+}
+
+export type ApplyPatchResult =
+  | { ok: true; merged: number; persisted: boolean }
+  | { ok: false; error: string };
+
+/**
+ * 应用补丁到本机草稿（mergeAtomDraft 逐条合并；只写 ATOM_DRAFT_STORE_KEY）：先整包
+ * validate，任一拒因 → 一条不写；全过 → merge 全部 entries 并返回合并条数。
+ * 只由**用户显式点击**触发（DraftInbox 粘贴导入）；永不 entities / verified / 自动调用。
+ */
+export function applyAtomDraftPatch(card: EntityCard, doc: AtomDraftPatchDoc): ApplyPatchResult {
+  const bad = validateAtomDraftPatch(card, doc);
+  if (bad != null) return { ok: false, error: bad };
+  let persisted = true;
+  for (const e of doc.entries) {
+    const fields: Partial<Omit<DraftEntry, "t">> = { [e.field]: e.after };
+    const r = e.target.startsWith("field:")
+      ? mergeAtomDraft(fieldDraftKey(card.id, Number(e.target.slice(6))), fields)
+      : mergeAtomDraft(atomDraftKey(card.id, e.target.slice(5)), fields);
+    persisted = persisted && r.persisted;
+  }
+  return { ok: true, merged: doc.entries.length, persisted };
+}

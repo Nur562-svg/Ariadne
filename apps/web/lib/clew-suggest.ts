@@ -1,5 +1,6 @@
 /**
- * T66 C：Clew 只读建议——请求体校验 + 系统提示 + 书桌上下文拼装 + 剪贴板带走文本（纯函数）。
+ * T66 C / T67 C·D·E：Clew 只读建议——请求体校验 + 系统提示 + 书桌上下文拼装 + 剪贴板带走
+ * + 流事件编码 + 结构化补丁解析（纯函数）。
  * 无 "use client"、无 import、无 fs、无 process.env：服务端 route 与客户端 ClewPane 共用形状，
  * scripts/clew-suggest-check.mjs 直接 import 本 .ts 单测（Node ≥ 23.6 原生剥类型）。
  *
@@ -9,7 +10,11 @@
  *      extract·parse·ingest 作业形一律 4xx 拒收（parseSuggestBody）。
  *   3. 不做诊断：系统提示写死；回答 ≠ seed verified ≠ heye 已对 ≠ study 已练。
  *   4. 页码只采信请求上下文：模型自造页码须标「未核验」；系统提示明示只能引用给定页。
- *   5. 钥不经此文件：不读 env、不碰 key；provider 解析在 lib/clew-provider.ts，调用在 route。
+ *   5. 钥不经此文件：不读 env、不碰 key；流事件（encodeClewStreamEvent）只携带公开投影
+ *      （provider 名 + 模型名），永不携带 apiKey / baseURL。
+ *   6. T67 结构化补丁：仅可对**服务端 grounding 列出的既有原子/字段**建议填空；解析侧
+ *      （parseSuggestPatchEntries）target 白名单过滤——发明 id / 未知 field / verified 意图
+ *      一律丢弃；进本机草稿永远要用户显式粘贴或点击（G），发送回调永不静默 setAtomDraft。
  */
 
 // ---- 形状 ----
@@ -48,6 +53,8 @@ export type ClewGrounding = {
     one_liner?: string;
     citePages: number[];
   };
+  /** T67 D：当前卡 seed 口径不完备清单（仅既有 id / 下标；无卡或不完备=0 → undefined）。 */
+  incomplete?: ClewIncompleteGrounding;
 };
 
 /** 答面元信息（UI 短标 / 带走文本用）。 */
@@ -58,13 +65,42 @@ export type ClewAnswerMeta = {
   pageWindow?: { page: number; chars: number; truncated: boolean };
 };
 
+/**
+ * T67 D：服务端只读 grounding 的不完备清单——仅**既有**原子 id / 字段下标；
+ * 既有非空字段值只读截断（GROUND_VALUE_MAX_CHARS）供模型参照，空字段只标空不给值。
+ */
+export type ClewIncompleteGrounding = {
+  atoms: {
+    id: string;
+    emptyPrompt: boolean;
+    emptyAnswer: boolean;
+    emptyCiteQuote: boolean;
+    /** 既有非空值只读截断（无则不发）。 */
+    prompt?: string;
+    answer?: string;
+  }[];
+  fields: { index: number; label: string }[];
+};
+
 export const QUESTION_MAX_CHARS = 2000;
 export const PAGE_TEXT_MAX_CHARS = 3000;
 export const CITE_PAGES_MAX = 8;
-/** 单答输出上限（小能力 · 复习提示，不是长文）。 */
-export const ANSWER_MAX_OUTPUT_TOKENS = 700;
-/** 上游超时（ms）；超时 → 502 可见错 + 保留原问可重试。 */
+/** 单答输出上限（小能力 · 复习提示 + 可选结构化补丁尾块）。 */
+export const ANSWER_MAX_OUTPUT_TOKENS = 900;
+/** 流式 chunk 间空闲超时（ms）——超过按上游中断处理（error 事件 + 客户端可重试）。 */
+export const STREAM_INACTIVITY_TIMEOUT_MS = 25_000;
+/** 流式总时长上限（ms）。 */
+export const STREAM_OVERALL_TIMEOUT_MS = 90_000;
+/** 非流兼容枝（stream:false）上游超时（ms）。 */
 export const UPSTREAM_TIMEOUT_MS = 30_000;
+/** grounding 既有值只读截断（字符）。 */
+export const GROUND_VALUE_MAX_CHARS = 80;
+/** grounding 列表上限（prompt 体积护栏；超出如实标注「还有 N 个未列」。 */
+export const GROUND_ATOMS_MAX = 6;
+export const GROUND_FIELDS_MAX = 4;
+/** 结构化补丁：单条 after 截断 / 条数上限。 */
+export const PATCH_AFTER_MAX_CHARS = 500;
+export const PATCH_ENTRIES_MAX = 20;
 
 /** G：诚实脚注——ClewPane 底栏与 docs 同源一句（保留既有「以教材页码为准」口径）。 */
 export const CLEW_HONESTY_FOOTNOTE =
@@ -220,7 +256,56 @@ export const CLEW_SYSTEM_PROMPT = `你是 Ariadne 书桌右栏「Clew」的只�
 3. 你的回答不是核对结论：不要出现「已核」「已确认」「verified」之类措辞；教材印刷页才是唯一权威，你的回答只是复习提示。
 4. 你没有写入权限：不要生成或建议「写入 seed / entities / blocks / 置 verified:true / 自动补丁」的指令；学生要改卡会自己到草稿编辑器里改。
 5. 用学生提问的语言回答（中文问中文答）；简洁、分点、面向复习与易混辨析；专业术语保留中英对照；默认不超过约 300 字，学生明确要求再展开。
-6. 页面小窗若已截断，可说明「本页小窗只有前 N 字」；小窗为空或没有页上下文时，直说「本次没有页面原文可对照」，再按概念层面作答。`;
+6. 页面小窗若已截断，可说明「本页小窗只有前 N 字」；小窗为空或没有页上下文时，直说「本次没有页面原文可对照」，再按概念层面作答。
+7. 若上下文末尾带「结构化补丁规则」块：按该块在回答**末尾**追加一个 \`\`\`json 围栏（形如该块所示）；没有该块就不要输出任何围栏，也不要输出 entries。`;
+
+// ---- T67 D/E：不完备 grounding → 补丁指令 + target 白名单 + 解析校验 ----
+
+/** grounding 允许的结构化 target 集（仅既有原子 id / 字段下标；无 grounding → 空集=全拒）。 */
+export function incompleteTargets(g?: ClewGrounding): string[] {
+  if (!g?.incomplete) return [];
+  const out: string[] = [];
+  for (const a of g.incomplete.atoms) out.push(`atom:${a.id}`);
+  for (const f of g.incomplete.fields) out.push(`field:${f.index}`);
+  return out;
+}
+
+/**
+ * 补丁指令块（拼在 prompt 末尾；无不完备 grounding → 空串，模型不输出围栏）。
+ * 铁规则写死：只可填所列既有 target；禁止发明 id；禁止 verified；无可填直接不输出。
+ */
+export function buildPatchInstructionBlock(g?: ClewGrounding): string {
+  const inc = g?.incomplete;
+  if (!inc || (inc.atoms.length === 0 && inc.fields.length === 0)) return "";
+  const lines: string[] = ["【结构化补丁规则 · 只可对下列既有目标建议填空】"];
+  lines.push(
+    "若你的回答能帮当前卡补上列空字段，在回答最末尾追加一个 ```json 围栏，形如：",
+    '```json',
+    '{"patch":{"entries":[{"target":"atom:<所列原子id>","field":"prompt","after":"建议填入的文本"}]}}',
+    "```",
+    "规则：target 只能取下方所列；field ∈ prompt|answer|citeQuote（原子）或 value（字段）；",
+    "after 是建议填空文本（中文、简洁、仅教材概念层面）；禁止发明新原子 id / 新字段下标；",
+    "禁止输出 verified / 页码 / 任何写入指令；没有可填的就**不要**输出围栏。",
+    "",
+    "可建议填空的既有目标：",
+  );
+  for (const a of inc.atoms) {
+    const empties = [
+      a.emptyPrompt ? "prompt" : null,
+      a.emptyAnswer ? "answer" : null,
+      a.emptyCiteQuote ? "citeQuote" : null,
+    ].filter(Boolean);
+    const given = [
+      a.prompt ? `已有 prompt：${a.prompt}` : null,
+      a.answer ? `已有 answer：${a.answer}` : null,
+    ].filter(Boolean);
+    lines.push(`- atom:${a.id}（空：${empties.join("、")}${given.length ? ` · ${given.join(" · ")}` : ""}）`);
+  }
+  for (const f of inc.fields) {
+    lines.push(`- field:${f.index}（字段「${f.label}」value 为空）`);
+  }
+  return lines.join("\n");
+}
 
 // ---- 上下文拼装 ----
 
@@ -272,19 +357,90 @@ export function buildContextBlock(ctx: ClewSuggestContext, g?: ClewGrounding): s
   return lines.join("\n");
 }
 
-/** route 用：system + prompt 一对（generateText 入参形）。 */
+/** route 用：system + prompt 一对（generateText/streamText 入参形）；有不完备 grounding 时拼补丁指令块。 */
 export function buildPrompt(
   question: string,
   ctx: ClewSuggestContext,
   g?: ClewGrounding,
 ): { system: string; prompt: string } {
+  const patchBlock = buildPatchInstructionBlock(g);
   return {
     system: CLEW_SYSTEM_PROMPT,
-    prompt: `${buildContextBlock(ctx, g)}\n\n【学生问】\n${question}`,
+    prompt:
+      `${buildContextBlock(ctx, g)}\n\n【学生问】\n${question}` +
+      (patchBlock ? `\n\n${patchBlock}` : ""),
   };
 }
 
 // ---- F：剪贴板带走（只生成字符串；永不写 store / 仓库） ----
+
+/**
+ * T67 E：模型建议的结构化补丁条目（形状与 lib/atom-draft.ts DraftPatchEntry 兼容；
+ * before 客户端无 seed 值可对 → null，人核/粘贴合并时以本机卡为准）。永不含 verified。
+ */
+export type SuggestPatchEntry = {
+  target: string;
+  field: "prompt" | "answer" | "citeQuote" | "value";
+  before: string | null;
+  after: string;
+};
+
+const SUGGEST_PATCH_FIELDS = new Set(["prompt", "answer", "citeQuote", "value"]);
+
+/**
+ * 校验模型/粘贴给出的 entries：只留 target ∈ allowedTargets、field 合法枚举、after 为非空
+ * 字符串、无 verified/写入意图键的条目；after 截 PATCH_AFTER_MAX_CHARS；最多 PATCH_ENTRIES_MAX
+ * 条（超出丢弃——宁少勿造）。allowedTargets 为空 → 全拒（无 grounding 就没有合法 target）。
+ */
+export function parseSuggestPatchEntries(
+  raw: unknown,
+  allowedTargets: readonly string[],
+): SuggestPatchEntry[] {
+  if (!Array.isArray(raw)) return [];
+  const allowed = new Set(allowedTargets);
+  const out: SuggestPatchEntry[] = [];
+  for (const item of raw) {
+    if (out.length >= PATCH_ENTRIES_MAX) break;
+    if (item === null || typeof item !== "object" || Array.isArray(item)) continue;
+    const o = item as Record<string, unknown>;
+    if ("verified" in o || "write" in o || "apply" in o) continue; // 写入意图整条丢弃
+    const target = o.target;
+    const field = o.field;
+    const after = o.after;
+    if (typeof target !== "string" || !allowed.has(target)) continue; // 发明/未知 target 丢弃
+    if (typeof field !== "string" || !SUGGEST_PATCH_FIELDS.has(field)) continue;
+    if (typeof after !== "string" || !after.trim()) continue;
+    out.push({ target, field: field as SuggestPatchEntry["field"], before: null, after: after.slice(0, PATCH_AFTER_MAX_CHARS) });
+  }
+  return out;
+}
+
+/** 从答案全文剥**尾随**最后一个 ```json 围栏（中段围栏不剥——那是正文代码示例）。 */
+export function splitStructuredPatch(
+  fullText: string,
+  allowedTargets: readonly string[],
+): { answer: string; entries: SuggestPatchEntry[] } {
+  const m = fullText.match(/```json\s*([\s\S]*?)\s*```\s*$/);
+  if (!m) return { answer: fullText.trimEnd(), entries: [] };
+  const answer = fullText.slice(0, m.index ?? 0).trimEnd();
+  let entries: SuggestPatchEntry[] = [];
+  try {
+    const parsed: unknown = JSON.parse(m[1]);
+    const o = parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : {};
+    const rawEntries = Array.isArray(o.entries)
+      ? o.entries
+      : o.patch !== null && typeof o.patch === "object" && !Array.isArray(o.patch) &&
+          Array.isArray((o.patch as Record<string, unknown>).entries)
+        ? (o.patch as Record<string, unknown>).entries
+        : null;
+    entries = parseSuggestPatchEntries(rawEntries, allowedTargets);
+  } catch {
+    entries = []; // 坏 JSON → 诚实无补丁（答案仍展示），不抛
+  }
+  return { answer, entries };
+}
 
 function contextLine(ctx: ClewSuggestContext): string {
   return [
@@ -327,9 +483,11 @@ export function buildTakeawayText(
 }
 
 /**
- * 「复制为草稿补丁形」：对齐 lib/atom-draft.ts 的 `ariadne.atom-draft-patch.v1`
- * （schema / cardId / chapterId? / note / entries）。**entries 恒为空数组**——Clew 只给文字建议，
- * 不发明原子 / 字段改动；问答放 note，人核后自己到 AtomDraftEditor 手填。无当前卡 → null。
+ * 「复制为草稿补丁」：对齐 lib/atom-draft.ts 的 `ariadne.atom-draft-patch.v1`
+ * （schema / cardId / chapterId? / note / entries）。entries 可非空——但每条都出自
+ * parseSuggestPatchEntries 白名单（仅既有 target，模型建议填空），不是发明的原子/字段改动；
+ * before 恒 null（建议无 seed 原文可比，人核时以本机卡为准）；永不含 verified 翻改。
+ * 问答在 note；用户自行粘贴到 DraftInbox 导入或卡详编辑器。无当前卡 → null。
  * 本函数只组字符串；永不 setAtomDraft / PATCH / writeFile。
  */
 export type ClewPatchEnvelope = {
@@ -337,7 +495,7 @@ export type ClewPatchEnvelope = {
   cardId: string;
   chapterId?: string;
   note: string;
-  entries: never[];
+  entries: SuggestPatchEntry[];
 };
 
 export function buildSuggestPatchEnvelope(
@@ -345,6 +503,7 @@ export function buildSuggestPatchEnvelope(
   answer: string,
   ctx: ClewSuggestContext,
   meta: ClewAnswerMeta,
+  entries: SuggestPatchEntry[] = [],
 ): ClewPatchEnvelope | null {
   if (!ctx.card) return null;
   const src = meta.mode === "live" ? `${meta.provider ?? "?"}${meta.model ? `/${meta.model}` : ""}` : "stub";
@@ -355,9 +514,11 @@ export function buildSuggestPatchEnvelope(
     note:
       `Clew 只读建议（${src} · 未核 · 本浏览器不会写回仓库 · 不含 verified 翻改）` +
       `${ctx.page != null ? ` · 对照 p.${ctx.page}` : ""}\n` +
-      `问：${question}\n答：${answer}\n` +
-      "entries 为空：Clew 不发明原子/字段改动；要改 seed 请人核后在草稿编辑器手填。",
-    entries: [],
+      `问：${question}\n答：${answer}` +
+      (entries.length > 0
+        ? `\nentries：模型建议填空 ${entries.length} 条（仅既有原子/字段，人核后粘贴导入或手抄；before=null——以本机卡为准）`
+        : "\nentries 为空：无可建议填空的既有目标；要改 seed 请人核后在草稿编辑器手填"),
+    entries,
   };
   return doc;
 }
@@ -367,7 +528,30 @@ export function buildSuggestPatchText(
   answer: string,
   ctx: ClewSuggestContext,
   meta: ClewAnswerMeta,
+  entries: SuggestPatchEntry[] = [],
 ): string | null {
-  const doc = buildSuggestPatchEnvelope(question, answer, ctx, meta);
+  const doc = buildSuggestPatchEnvelope(question, answer, ctx, meta, entries);
   return doc ? JSON.stringify(doc, null, 2) : null;
+}
+
+// ---- T67 C：流式事件（NDJSON 行；只携带公开投影，永不携带 apiKey / baseURL） ----
+
+export type ClewStreamEvent =
+  | {
+      type: "meta";
+      provider: string;
+      model: string;
+      pageWindow: { page: number; chars: number; truncated: boolean; source: "server" | "client" } | null;
+      cardSummary: { id: string; name_zh: string } | null;
+      /** 补丁 target 白名单（服务端 grounding 实算；空数组=本次无结构化目标）。 */
+      incompleteTargets: string[];
+      readonly: true;
+    }
+  | { type: "delta"; text: string }
+  | { type: "done"; finishReason?: string; usage?: { inputTokens?: number | null; outputTokens?: number | null } }
+  | { type: "error"; message: string };
+
+/** 一行 NDJSON（结尾 \n）；ClewPane 按行 JSON.parse。 */
+export function encodeClewStreamEvent(e: ClewStreamEvent): string {
+  return `${JSON.stringify(e)}\n`;
 }

@@ -19,9 +19,16 @@ import {
   CLEW_HONESTY_FOOTNOTE,
   buildSuggestPatchText,
   buildTakeawayText,
+  splitStructuredPatch,
   type ClewAnswerMeta,
   type ClewSuggestContext,
+  type SuggestPatchEntry,
 } from "@/lib/clew-suggest";
+import {
+  atomDraftKey,
+  fieldDraftKey,
+  mergeAtomDraft,
+} from "@/lib/atom-draft";
 
 /** T33 D：stub 气泡内的 muted 行动链（对页/练/核）。returnTo 有值时点前写 return 短链。 */
 type ActionLink = { label: string; href: string; returnTo?: { href: string; label: string } };
@@ -31,9 +38,12 @@ type ActionLink = { label: string; href: string; returnTo?: { href: string; labe
  */
 type PlainLink = { label: string; plain: true };
 /**
- * T66 D：助手气泡四态——live（模型只读答）| stub（缺钥/未接模型诚实占位，保留 stubReply 族）|
- * pending（在途，禁双发）| error（上游/网络失败：保留原问可重试，**不**装成功答）。
+ * T66 D / T67 B：助手气泡四态——live（模型只读答，流式逐 chunk 到达）| stub（缺钥/未接模型
+ * 诚实占位，保留 stubReply 族）| pending（在途，禁双发）| error（上游/网络/中断：保留已收文本
+ * 与原问可重试，**不**装成功答）。
  * question/ctx 在发送时快照：带走文本与重试都吃当时的问与书桌上下文，不随后续切页漂移。
+ * T67 E/F：patchEntries = 模型结构化建议（splitStructuredPatch 白名单过滤后，仅既有 target）；
+ * 永不出现在发送回调里自动写草稿——「填入本机草稿」只认用户点击。
  */
 type AssistantMsg = {
   role: "assistant";
@@ -44,6 +54,7 @@ type AssistantMsg = {
   ctx: ClewSuggestContext;
   meta?: ClewAnswerMeta;
   errorText?: string;
+  patchEntries?: SuggestPatchEntry[];
 };
 type Msg = { role: "user"; text: string } | AssistantMsg | { role: "note"; text: string };
 type Tab = "chat" | "changes" | "queue";
@@ -203,6 +214,27 @@ export default function ClewPane() {
   const [draft, setDraft] = useState("");
   /** T66 E：在途锁——sending 时 Enter / 发送钮 / 建议问都不再发第二问。 */
   const [sending, setSending] = useState(false);
+  /** T67 B：在途请求的 AbortController（「停止」钮用；取消只中止读流，无任何写副作用）。 */
+  const abortRef = useRef<AbortController | null>(null);
+  /**
+   * T67 F：显式「填入本机草稿」反馈（气泡下标 → done|unpersisted）；只由用户点击写入——
+   * 发送回调永不 setAtomDraft（铁合同 2）。
+   */
+  const [fillStates, setFillStates] = useState<Record<number, "done" | "unpersisted">>({});
+  function fillDrafts(i: number, m: AssistantMsg) {
+    const cardId = m.ctx.card?.id;
+    const entries = m.patchEntries ?? [];
+    if (!cardId || entries.length === 0 || sending) return;
+    let persisted = true;
+    for (const e of entries) {
+      const fields: Record<string, string> = { [e.field]: e.after };
+      const r = e.target.startsWith("field:")
+        ? mergeAtomDraft(fieldDraftKey(cardId, Number(e.target.slice(6))), fields)
+        : mergeAtomDraft(atomDraftKey(cardId, e.target.slice(5)), fields);
+      persisted = persisted && r.persisted;
+    }
+    setFillStates((prev) => ({ ...prev, [i]: persisted ? "done" : "unpersisted" }));
+  }
   /** T66 G：挂载探一次 /api/clew/status（不调模型）；失败 → stub（fail-closed）。 */
   const [cap, setCap] = useState<Capability | null>(null);
   const threadRef = useRef<HTMLDivElement>(null);
@@ -275,8 +307,8 @@ export default function ClewPane() {
     });
   }
 
-  /** T66 D：把最后一条 pending 助手气泡改成终态（在途锁保证同一时刻至多一条 pending）。 */
-  function settlePending(upd: Partial<Omit<AssistantMsg, "role">>) {
+  /** T66 D / T67 B：改写最后一条 pending 助手气泡（在途锁保证同一时刻至多一条 pending）。 */
+  function updatePending(upd: Partial<Omit<AssistantMsg, "role">> | ((cur: AssistantMsg) => Partial<Omit<AssistantMsg, "role">>)) {
     setMessages((prev) => {
       let i = prev.length - 1;
       while (i >= 0) {
@@ -286,48 +318,113 @@ export default function ClewPane() {
       }
       if (i < 0) return prev;
       const cur = prev[i] as AssistantMsg;
-      const next: AssistantMsg = { ...cur, ...upd };
+      const patch = typeof upd === "function" ? upd(cur) : upd;
+      const next: AssistantMsg = { ...cur, ...patch };
       return [...prev.slice(0, i), next, ...prev.slice(i + 1)];
     });
   }
 
+  /** T67 B：pending 气泡随流式 chunk 增量追加文本。 */
+  function appendPending(piece: string) {
+    updatePending((cur) => ({ text: cur.text + piece }));
+  }
+
   /**
-   * T66 D/E：真正发请求——POST /api/clew/suggest（一问 + 发送时快照的书桌上下文）。
-   *  - 200 live → 模型只读答（带 provider/model/pageWindow 元信息）；
-   *  - 503 no_provider → 诚实 stub（保留 stubReply 族文案 + 短标 stub；**不**装 live）；
-   *  - 其它 4xx/5xx/网络 → error 态：保留原问 + 可重试，**不**装成功答。
-   * 客户端永不写任何 store / 不 PATCH / 不碰钥。
+   * T66 D/E · T67 B：发请求——POST /api/clew/suggest 流式主路径（NDJSON：meta → delta* → done｜error）。
+   *  - meta → 记 provider/model/页小窗与补丁 target 白名单；
+   *  - delta → pending 气泡逐 chunk 增长；
+   *  - done → live：全文剥尾随 ```json 围栏 → answer + patchEntries（白名单过滤，发明 target 丢弃）；
+   *  - error 事件 / 流中断 / 停止 → error 态：已收文本保留 + 原问可重试，**不**装成功答；
+   *  - 503 no_provider → 诚实 stub（stubReply 族）；其它 4xx/5xx → error（服务端短讯）。
+   * 客户端永不写任何 store / 不 PATCH / 不碰钥；「填入本机草稿」只认用户点击（F）。
    */
   async function run(q: string, ctx: ClewSuggestContext, stubText: string) {
     setSending(true);
+    const ac = new AbortController();
+    abortRef.current = ac;
     try {
       const res = await fetch("/api/clew/suggest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: q, context: ctx }),
+        signal: ac.signal,
       });
-      const j: Record<string, unknown> | null = await res.json().catch(() => null);
-      if (res.ok && j?.ok === true && j.mode === "live" && typeof j.text === "string" && j.text.trim()) {
-        const pw = j.pageWindow as { page: number; chars: number; truncated: boolean } | null | undefined;
-        settlePending({
-          mode: "live",
-          text: j.text.trim(),
-          meta: {
-            mode: "live",
-            provider: typeof j.provider === "string" ? j.provider : undefined,
-            model: typeof j.model === "string" ? j.model : undefined,
-            ...(pw ? { pageWindow: { page: pw.page, chars: pw.chars, truncated: pw.truncated } } : {}),
-          },
-        });
-      } else if (res.status === 503 && j?.error === "no_provider") {
-        settlePending({ mode: "stub", text: stubText, meta: { mode: "stub" } });
-      } else {
-        const msg = typeof j?.message === "string" ? j.message : `请求失败（HTTP ${res.status}）`;
-        settlePending({ mode: "error", text: "", errorText: msg });
+      if (!res.ok) {
+        const j: Record<string, unknown> | null = await res.json().catch(() => null);
+        if (res.status === 503 && j?.error === "no_provider") {
+          updatePending({ mode: "stub", text: stubText, meta: { mode: "stub" } });
+        } else {
+          const msg = typeof j?.message === "string" ? j.message : `请求失败（HTTP ${res.status}）`;
+          updatePending({ mode: "error", errorText: msg });
+        }
+        return;
       }
-    } catch {
-      settlePending({ mode: "error", text: "", errorText: "网络不可达——原问已保留，可重试" });
+      if (!res.body) {
+        updatePending({ mode: "error", errorText: "响应无流体——原问已保留，可重试" });
+        return;
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      let allowed: string[] = [];
+      let sawDone = false;
+      let sawError: string | null = null;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let nl: number;
+        while ((nl = buf.indexOf("\n")) >= 0) {
+          const line = buf.slice(0, nl).trim();
+          buf = buf.slice(nl + 1);
+          if (!line) continue;
+          let ev: Record<string, unknown> | null = null;
+          try {
+            ev = JSON.parse(line) as Record<string, unknown>;
+          } catch {
+            continue; // 脏行丢弃（流仍续）
+          }
+          if (ev?.type === "meta") {
+            allowed = Array.isArray(ev.incompleteTargets) ? (ev.incompleteTargets as string[]) : [];
+            const pw = ev.pageWindow as { page: number; chars: number; truncated: boolean } | null | undefined;
+            updatePending({
+              meta: {
+                mode: "live",
+                provider: typeof ev.provider === "string" ? ev.provider : undefined,
+                model: typeof ev.model === "string" ? ev.model : undefined,
+                ...(pw ? { pageWindow: { page: pw.page, chars: pw.chars, truncated: pw.truncated } } : {}),
+              },
+            });
+          } else if (ev?.type === "delta" && typeof ev.text === "string") {
+            appendPending(ev.text);
+          } else if (ev?.type === "done") {
+            sawDone = true;
+          } else if (ev?.type === "error" && typeof ev.message === "string") {
+            sawError = ev.message;
+          }
+        }
+      }
+      if (sawError) {
+        updatePending({ mode: "error", errorText: sawError ?? "上游流中断" });
+      } else if (sawDone) {
+        updatePending((cur) => {
+          const { answer, entries } = splitStructuredPatch(cur.text, allowed);
+          return { mode: "live", text: answer, ...(entries.length ? { patchEntries: entries } : {}) };
+        });
+      } else {
+        updatePending({ mode: "error", errorText: "流提前结束（未收到 done）——已收文本保留，可重试" });
+      }
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") {
+        updatePending((cur) => ({
+          mode: "error",
+          errorText: cur.text ? "已停止——已收文本保留，可重试" : "已停止（未收到文本）——可重试",
+        }));
+      } else {
+        updatePending({ mode: "error", errorText: "网络不可达——原问已保留，可重试" });
+      }
     } finally {
+      abortRef.current = null;
       setSending(false);
       scrollThread();
     }
@@ -376,7 +473,7 @@ export default function ClewPane() {
     setMessages((prev) =>
       prev.map((x, i): Msg => {
         if (i !== index || x.role !== "assistant") return x;
-        return { ...x, mode: "pending", errorText: undefined };
+        return { ...x, mode: "pending", errorText: undefined, patchEntries: undefined };
       }),
     );
     void run(m.question, m.ctx, stubReply(clew));
@@ -641,23 +738,32 @@ export default function ClewPane() {
                             : "stub"}
                     </span>
                     {m.mode === "pending" ? (
-                      <span className="text-muted">正在问模型（只读）…</span>
-                    ) : m.mode === "error" ? (
                       <span className="text-muted">
-                        {m.errorText ?? "请求失败"}
-                        <button
-                          type="button"
-                          onClick={() => retry(i)}
-                          disabled={sending}
-                          className="ml-2 rounded border border-line px-1.5 py-0.5 text-xs text-cinnabar transition-colors hover:border-cinnabar disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
-                        >
-                          重试
-                        </button>
+                        {m.text ? m.text : "正在问模型（只读）…"}
+                      </span>
+                    ) : m.mode === "error" ? (
+                      <span>
+                        {/* T67 B：中断/停止时已收的部分文本如实保留（live 前缀的流式草稿），不装成功答。 */}
+                        {m.text ? <span className="whitespace-pre-wrap">{m.text}</span> : null}
+                        <span className="text-muted">
+                          {m.text ? " …" : ""}
+                          {m.errorText ?? "请求失败"}
+                          <button
+                            type="button"
+                            onClick={() => retry(i)}
+                            disabled={sending}
+                            className="ml-2 rounded border border-line px-1.5 py-0.5 text-xs text-cinnabar transition-colors hover:border-cinnabar disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+                          >
+                            重试
+                          </button>
+                        </span>
                       </span>
                     ) : (
                       <span className={m.mode === "live" ? "whitespace-pre-wrap" : undefined}>{m.text}</span>
                     )}
-                    {/* T66 F/G：live 答底——对照小窗来源 + 「未核」+ 剪贴板带走（纯文本恒有；补丁形仅有卡时）。 */}
+                    {/* T66 F/G + T67 E/F：live 答底——对照小窗来源 + 「未核」+ 剪贴板带走
+                        （纯文本恒有；补丁恒有卡时给；entries 非空=模型建议填空）。
+                        「填入本机草稿（未核）」只认用户点击（mergeAtomDraft 同族 T55），永不静默写。 */}
                     {m.mode === "live" && m.meta ? (
                       <span className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[11px] text-muted">
                         <span>
@@ -665,6 +771,7 @@ export default function ClewPane() {
                             ? `对照 p.${m.meta.pageWindow.page} 小窗${m.meta.pageWindow.truncated ? "（已截断）" : ""}`
                             : "无页小窗"}
                           {" · 未核"}
+                          {m.patchEntries?.length ? ` · 补丁建议 ${m.patchEntries.length} 条` : ""}
                         </span>
                         <CopyTextButton
                           text={buildTakeawayText(m.question, m.text, m.ctx, m.meta)}
@@ -673,10 +780,29 @@ export default function ClewPane() {
                         />
                         {m.ctx.card ? (
                           <CopyTextButton
-                            text={buildSuggestPatchText(m.question, m.text, m.ctx, m.meta) ?? ""}
-                            label="复制为草稿补丁形"
+                            text={buildSuggestPatchText(m.question, m.text, m.ctx, m.meta, m.patchEntries) ?? ""}
+                            label={`复制为草稿补丁${m.patchEntries?.length ? `（${m.patchEntries.length} 条）` : ""}`}
                             className="rounded border border-line px-1.5 py-0.5 text-[11px] text-muted transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
                           />
+                        ) : null}
+                        {m.ctx.card && m.patchEntries?.length ? (
+                          <button
+                            type="button"
+                            onClick={() => fillDrafts(i, m)}
+                            disabled={sending || fillStates[i] != null}
+                            title={`只写本机草稿（卡 ${m.ctx.card.id} 的既有原子/字段空位）；不写回 seed、不翻 verified`}
+                            className="rounded border border-line px-1.5 py-0.5 text-[11px] text-cinnabar transition-colors hover:border-cinnabar disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+                          >
+                            填入本机草稿（未核）
+                          </button>
+                        ) : null}
+                        {fillStates[i] === "done" ? (
+                          <span className="text-status-ok">已填入 {m.patchEntries?.length ?? 0} 条（未写回 seed）</span>
+                        ) : null}
+                        {fillStates[i] === "unpersisted" ? (
+                          <span role="alert" className="text-status-warn">
+                            本浏览器存储不可用——草稿仅本次会话生效
+                          </span>
                         ) : null}
                       </span>
                     ) : null}
@@ -733,6 +859,17 @@ export default function ClewPane() {
               >
                 {sending ? "发送中…" : "发送"}
               </button>
+              {/* T67 B：在途「停止」次级钮——只中止读流（服务端 cancel 连带上游 abort），无写副作用；
+                  停止后气泡转 error 态保留已收文本，可重试。 */}
+              {sending ? (
+                <button
+                  type="button"
+                  onClick={() => abortRef.current?.abort()}
+                  className="shrink-0 rounded-lg border border-line px-3 py-2 text-sm text-muted transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+                >
+                  停止
+                </button>
+              ) : null}
             </div>
           </div>
         </>
