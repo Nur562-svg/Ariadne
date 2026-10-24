@@ -1,0 +1,149 @@
+════════════════════════════════════
+Task 57 · pipeline-extract-page-coverage-01 · MEGA · zcode GLM5.3 max thinking
+════════════════════════════════════
+仓库：/Users/nukeab/projects/Ariadne
+Tip 前置（硬）：ee323f3（docs T56） atop bf8af0e（feat T56 pipeline-parse-coverage-01） atop 2389c26（T55 docs）。
+git log -1 --oneline 须含 ee323f3。若停在 bf8af0e 或更早 → 停，对齐后再开工。
+先读 docs/frontend-aesthetics.md。对照 SCOPE：docs/task-57-SCOPE.md 或 /workspace/reports/ariadne-task-57/SCOPE.md。
+体量：约 180–300+ 分钟真实编码。A–J 全部交。只做 CLI 或只做章行一行数字 = 拒收。15–30/90 分钟假装收工 = 漏做。又一轮 empty-CTA densify / return densify / CitePeek 正文·trap redo / 写 verified:true / 自动写 entities / 真·卡内联编辑器 / 重做 T46–T56 = 主题偏了，拒收。
+不 push。验收 PASS 后站规 auto-push（勿问「推」）。
+
+────────────────────────────────────
+空池 CTA / return / 深链 / T54–T56 井（硬声明 · 写进回复）
+────────────────────────────────────
+T43–T51 empty-pool CTA densify 已饱和；T35–T42 return densify 已饱和；T52–T53 已闭空·完成/鬼页深链/HeYe u/z；T54 已闭 cite↔OCR 检测；T55 已闭 miss 补救/附近 OCR/重抽复制/书架 cite 质量徽（剪贴板-only，不写 verified:true）；T56 已闭 parse/OCR 覆盖诚实（空/稀/块 · parse-check · ingest 抽出前 · Overview/书架 parse 徽 · Reader 稀页提示）。
+本刀不是再扩 empty-CTA，不是 return densify，不是重做 T54–T56，不是 CitePeek 正文/trap，不是自动写 seed，不是真·卡编辑器。
+主题 = 材料→原子 pipeline 第四刀：抽出后页→原子覆盖诚实（暗页＝chars≥SPARSE_CHAR_THR 且零 cite）+ CLI page-check + ingest extracted 暗页条 + extract 后置软警告 + Overview/书架/Reader 暗页徽（与 T55 cite · T56 parse 徽三分列）。不写 verified:true，不自动 PATCH entities/blocks，不改 deriveMaterialStage，不自动发明 cite 填暗页。
+
+────────────────────────────────────
+三子主题
+────────────────────────────────────
+1) extract-page 覆盖 lib + CLI page-check + extract 后置 — A · B · C
+2) ingest extracted 暗页条 + Register 旁挂 — D · E
+3) Overview 章行 + 书架暗页徽 + Reader 暗页提示 — F · G · H
+I = 装配；J = build + page-check + cite-check + parse-check 回归 + DEFER
+
+────────────────────────────────────
+A · lib extract-page-coverage
+────────────────────────────────────
+1) 新建 apps/web/lib/extract-page-coverage.ts + 孪生 scripts/lib/extract-page-coverage.mjs（keep in sync；注释互指）。
+2) 复用 SPARSE_CHAR_THR=40（与 T56 同口径；mjs 可复制常量+互指，勿漂移）。
+3) collectCitedPages(cards)→Set<number>（并集 cites · fields[].cite · atoms[].cite 非空 page）。
+4) scoreExtractPageCoverage({pages, cards})→ExtractPageCoverage：pagesPresent · substantialPages（chars≥thr）· citedPages · darkPages（substantial∩¬cited，有序）· darkCount · darkRate（darkCount/substantial；substantial=0 时 rate=0）· weak（建议 darkCount>0，口径写进注释）。
+5) loadExtractPageCoverage(chapterId)：缺 blocks 或缺 entities→null（未检，不装 darkCount=0 完美）。
+6) chars<thr 页不进 dark（留给 T56 空/稀）；禁止改 deriveMaterialStage；禁止把暗页写进 cite-ocr miss；禁止写 entities/verified。
+
+────────────────────────────────────
+B · CLI page-check
+────────────────────────────────────
+1) scripts/extract-page-check.mjs；package.json 加 "page-check": "node scripts/extract-page-check.mjs"。
+2) pnpm page-check -- ch01：汇总实质页/已cite/暗D/darkRate。
+3) --dark：列出暗页（页码·chars·截断预览）。
+4) 写 data/qa/<ch>.extract-page.json；.gitignore 增 data/qa/*.extract-page.json。
+5) 可选 --book <bookId> 折叠；禁止改 blocks/entities。
+6) seed 预期：ch01 darkCount≥1（含 p.7 等）。
+
+────────────────────────────────────
+C · extract 后置
+────────────────────────────────────
+1) extract_cards.mjs 写盘后 stderr 兼报 darkCount/darkRate + 暗页样例≤8。
+2) 默认警告仍写。
+3) --strict 另或（既有 T54/T55/T56 条件外）：darkRate≥0.35 或 darkCount≥5（文档化）→ 非零拒写。
+4) 勿大修 extract prompt；勿自动发明 cite/原子填暗页。
+
+────────────────────────────────────
+D · ingest extracted 暗页条
+────────────────────────────────────
+1) extracted/ready 章级条：「实质页 · 已cite · 暗D · darkRate%」；weak → 琥珀「抽出页覆盖偏稀 · 暗页未成原子」+ 样例≤6 + CopyCommand「pnpm extract -- <弱章子集>」。
+2) uploaded/parsed 禁止装暗假 0 条（无 cards＝未抽出，不是完美覆盖）。
+3) 保留 T54/T55 质量条+补救面板与 T56 parse 覆盖条（并列，勿吞）。
+4) 勿重做 T45 N/M · T49 三连。
+
+────────────────────────────────────
+E · Register 旁挂
+────────────────────────────────────
+1) qualityWarn 可选 darkPages?/darkCount?/darkRate?；有则琥珀点名暗页 D。
+2) 触发建议 OR darkCount>0 入既有 warn 族；软二次「仍要注册」；API 不 4xx。
+3) 勿拆 missRate/zeroAtom/incomplete/parseWeak。
+
+────────────────────────────────────
+F · Overview 章行
+────────────────────────────────────
+1) DocumentPane Overview 章行：有 cards+blocks 且 darkCount>0 → 琥珀短徽「暗D」；好章不吵。
+2) 无 cards（未抽出）不装暗徽。
+3) 禁掌握%/Due；可与 T55 cite / T56 空稀徽三分列并存（勿吞）。
+
+────────────────────────────────────
+G · 书架暗页徽
+────────────────────────────────────
+1) app/(desk)/page.tsx：与 bookQuality / bookParse 并列算 bookExtractPage（折叠 chapterIds 的 loadExtractPageCoverage；缺文件章=未检）。
+2) 任章 weak → 第三琥珀短徽「抽出偏稀 · 暗D」（D=书级合计）；好书静音。
+3) 与 cite 徽、parse 徽三分列——禁改写既有两徽文案骨架；可选链 /ingest；禁掌握%/Due/圆环。
+
+────────────────────────────────────
+H · Reader 暗页提示
+────────────────────────────────────
+1) ChapterPageReader：当前页 chars≥thr 且 page∉citedSet → 一行 muted/琥珀「本页 OCR 实质但无抽出 cite · 可能未覆盖进原子」。
+2) chars<thr：只走 T56 稀页提示，勿与暗页双吵。
+3) 正常页不吵；禁 OCR canvas / CitePeek 正文·trap redo。
+
+────────────────────────────────────
+I · 装配
+────────────────────────────────────
+1) ingest D←A；extract C←A；Register E←A；Overview F←loadExtractPageCoverage；书架 G←bookExtractPage 并列；Reader H←citedSet+pg.text。
+2) 可选 server helper extract-page-coverage-server.ts（对齐 parse-ocr-coverage-server）。
+3) 缺文件→未检；gitignore 确认 extract-page；勿毁 T55 补救/cite 徽 · T56 parse 徽/稀页提示 · HeYe orphan 分型。
+
+────────────────────────────────────
+J · build · DEFER · 回归
+────────────────────────────────────
+1) pnpm --filter web build PASS。
+2) pnpm page-check -- ch01 与 --dark 可跑；ch01 反映 dark≥1。
+3) pnpm cite-check -- ch01 与 pnpm parse-check -- ch01 回归绿。
+4) heye-only invent DEFER；真·卡内联编辑器 DEFER（若日后：local-draft-only · 无 verified · 无 auto PATCH · 不改名既有 storage keys）；QA 仪表盘页 DEFER——回复写明。
+5) 禁止写 verified:true；禁止写回 entities/blocks「补暗」；写手不 push。
+6) 回归 T56–T28；ModeChips 未插队；Queue 非 Due；deriveMaterialStage 未改；CitePeek/canvas 未动。
+
+────────────────────────────────────
+保留（勿毁）
+────────────────────────────────────
+Task 07–56 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC、Clew stub、卡页 CitePeek 正文与 trap、/review·/study、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、book-pools.ts、ocr-page.ts、cite-ocr-quality（T54/T55）、parse-ocr-coverage（T56）、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CopyCommand、LibraryContinuity/ShelfBookContinuity、T34–T56 已交切片、T26 稀疏琥珀、T41 sticky N=0 门禁、T55 补救面板与 shelf cite 徽、T56 shelf parse 徽与 Reader 稀页提示。勿 verified:true 过关。勿自动写 entities/blocks。A–J 范围保持完整；主题是 pipeline 抽出后页覆盖/暗页诚实，不是 empty-CTA，不是 return，不是 T46–T56 重做，不是卡编辑器。
+
+────────────────────────────────────
+不做（硬）
+────────────────────────────────────
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true 写入 / 自动 PATCH entities 或 blocks / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / empty-CTA densify 当主题 / 重做 T46–T56 已交 / 只扩 CLI 或只做一行章数字就收工
+- Register API 因质量硬 4xx（本刀 UI 软门禁）
+- 改 deriveMaterialStage / 自动给暗页发明 cite 或原子
+- 真·实体卡内联编辑器 / QA 仪表盘路由当本刀主题
+- Next.js security upgrade 当本刀主题（ops note only）
+- 假云端 OCR / 假进度条动画 / 假正数池 / 把暗页伪装成 cite OCR未见或 parse 稀页或 seed verified
+- 发明 atoms.gloss 当主题
+- 吞改 HeYe orphan 分型当暗页主题（可旁挂提示，勿改 orphan CTA 契约）
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T56 已交切片
+- 整段 port ariadnemini版 verify/clew-API
+- push（写手禁；验收 PASS 后站规 auto-push，勿问「推」）
+
+────────────────────────────────────
+自测（回复须勾）
+────────────────────────────────────
+1) scoreExtractPageCoverage(ch01) darkCount≥1（含实质暗页）；缺文件→null；chars<thr 不进 dark
+2) pnpm page-check -- ch01 汇总含实质/cite/暗/darkRate；--dark 列页；写出 extract-page.json；entities/blocks 未改
+3) extract 后置 stderr 报暗；默认可写；--strict 极高 dark 拒写（口径文档化）
+4) ingest · extracted/ready 见暗页条；weak 有 CopyCommand extract；uploaded/parsed 无暗假 0；T54–T56 条保留
+5) Register · dark 旁挂则软二次；API 不 4xx；miss/incomplete/parseWeak 未拆
+6) Overview · 暗章琥珀「暗D」；好章静音；未抽出不装暗徽
+7) 书架 · 暗页徽与 cite/parse 徽三分列；好书静音；无掌握%/Due
+8) Reader · 实质暗页提示；稀页只走 T56；正常无；CitePeek/canvas 未动
+9) HeYe orphan 分型未吞改
+10) build PASS；page-check + cite-check + parse-check 可跑；未 push；heye-only/卡编辑器/QA页 DEFER；无 verified/entities 写入；回归 T56–T28；ModeChips未插队；Queue非Due；deriveMaterialStage 未改
+
+做完叫验收。A–J 全交才过。
