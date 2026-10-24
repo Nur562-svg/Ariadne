@@ -1,0 +1,153 @@
+════════════════════════════════════
+Task 59 · pipeline-extract-shallow-density-01 · MEGA · zcode GLM5.3 max thinking
+════════════════════════════════════
+仓库：/Users/nukeab/projects/Ariadne
+Tip 前置（硬）：1b66b9e（docs T58） atop 1c27269（feat T58 study-examinable-coverage-01） atop 1b609dc（T57 docs）。
+git log -1 --oneline 须含 1b66b9e。若停在 1c27269（仅 feat）或更早 → 停，对齐后再开工。
+先读 docs/frontend-aesthetics.md。对照 SCOPE：docs/task-59-SCOPE.md 或 /workspace/reports/ariadne-task-59/SCOPE.md。
+体量：约 180–300+ 分钟真实编码。A–J 全部交。只做 CLI 或只做章行一行数字就收工 = 拒收。15–30/90 分钟假装收工 = 漏做。又一轮 empty-CTA densify / return densify / CitePeek 正文·trap redo / 写 verified:true / 自动写 entities / Clew LLM 真写 / 真·卡内联编辑器 / 重做 T46–T58 / 自动发明原子补浅 / emptyKind:'dark' = 主题偏了，拒收。
+不 push。验收 PASS 后站规 auto-push（勿问「推」）。
+
+────────────────────────────────────
+空池 CTA / return / 深链 / T54–T58 井（硬声明 · 写进回复）
+────────────────────────────────────
+T43–T51 empty-pool CTA densify 已饱和；T35–T42 return densify 已饱和；T52–T53 已闭空·完成/鬼页深链/HeYe u/z；T54 已闭 cite↔OCR 检测；T55 已闭 miss 补救/附近 OCR/重抽复制/书架 cite 质量徽（剪贴板-only，不写 verified:true）；T56 已闭 parse/OCR 覆盖诚实；T57 已闭抽出后暗页覆盖（page-check · ingest 暗页条 · Overview/书架暗徽 · Reader 暗页提示 · 与 cite/parse 三分列）；T58 已闭学习环可考覆盖诚实（examinable-coverage 消费暗页 · Study 页头/orphan/完成 · HeYe 旁挂 · ready 暗D · Overview 练入口 · 无 emptyKind dark）。
+本刀不是再扩 empty-CTA，不是 return densify，不是重做 T54–T58（禁止重写暗页算法 / 拆三分列徽 / 拆补救面板 / 重做 Study examinable 面），不是 CitePeek 正文/trap，不是自动写 seed，不是真·卡编辑器。
+主题 = 材料→原子脊梁第六刀：浅抽出密度诚实——实质页已 cite 但原子极稀（seed ch01：p.6=1633字/1原子 · p.8=1282/1 · p.2=920/2）。不写 verified:true，不自动 PATCH entities/blocks，不改 deriveMaterialStage，不自动发明原子填浅页，不把浅伪装成暗/稀/cite miss。
+
+真·卡内联编辑器：T55→T58→T59 已多次 DEFER；本刀诚实评估后仍 **DEFER → T60+**。若日后开刀必须 local-draft-only（新键如 ariadne.atom-draft.v1 · 无 verified · 无 auto PATCH · 无 Clew 真写 · 不改名既有 storage keys）。本刀不吞。
+
+────────────────────────────────────
+三子主题
+────────────────────────────────────
+1) extract-page-density lib + CLI density-check + extract 后置 — A · B · C
+2) ingest extracted 浅条 + Register 旁挂 — D · E
+3) Overview 章行 + 书架抽出行旁挂 + Reader 浅页提示 — F · G · H
+I = 装配；J = build + density/page/cite/parse-check 回归 + DEFER
+
+────────────────────────────────────
+A · lib extract-page-density
+────────────────────────────────────
+1) 新建 apps/web/lib/extract-page-density.ts + 孪生 scripts/lib/extract-page-density.mjs（keep in sync，注释互指）；可选 apps/web/lib/extract-page-density-server.ts（fs load）。
+2) 复用 SPARSE_CHAR_THR=40（从 parse-ocr-coverage import / mjs 复制常量+互指，禁止漂移）。
+3) collectAtomCountByPage(cards) → Map<page,number>：只计 atoms[].cite.page（禁止用 card cites / fields[].cite 单独膨胀冒充可考密度）。
+4) 常量文档化：SHALLOW_ATOM_MAX=2 · SHALLOW_CHARS_PER_ATOM=400。
+5) SHALLOW 定义（勿私改）：chars≥SPARSE_CHAR_THR ∧ atomCount≥1 ∧ atomCount≤SHALLOW_ATOM_MAX ∧ (chars/atomCount)≥SHALLOW_CHARS_PER_ATOM。暗页（atomCount=0∩substantial）归 T57 不进浅；稀页（chars<thr）归 T56 不进浅。
+6) scoreExtractPageDensity({ pages, cards }) → ExtractPageDensity：substantialPages · citedAtomPages（atomCount≥1）· shallowPages（有序：page/chars/atomCount/charsPerAtom/preview≤40）· shallowCount · shallowRate（shallowCount/substantial；substantial=0→0）· weak（shallowCount>0）。
+7) loadExtractPageDensity(chapterId)：缺 blocks 或缺 entities → null（未检；禁止装 shallowCount=0 完美）。
+8) 禁止写 entities/verified；禁止改 deriveMaterialStage；禁止改 T57 dark 算法；禁止把浅写进 cite-ocr miss。
+
+────────────────────────────────────
+B · CLI density-check
+────────────────────────────────────
+1) 新建 scripts/extract-density-check.mjs + package.json "density-check"。
+2) pnpm density-check -- ch01 打印：实质页 / 有原子页 / 浅S / shallowRate。
+3) --shallow（或 SHALLOW=1）列出浅页：页码 · chars · atomCount · chars/atom · 截断预览。
+4) 写 data/qa/<ch>.extract-density.json；.gitignore 增 data/qa/*.extract-density.json。
+5) 可选 --book <id> 折叠多章一行。
+6) 禁止改 blocks/entities。
+
+────────────────────────────────────
+C · extract 后置浅警告
+────────────────────────────────────
+1) extract_cards.mjs 写盘后 stderr 兼报 shallowCount/shallowRate + 顶层浅页样例≤8。
+2) 默认警告仍写；--strict 另或（既有 T54–T57 条件外）在 shallowRate≥0.35 或 shallowCount≥5（文档化，可 opts）时拒写。
+3) 禁止大修 extract prompt；禁止自动发明原子填浅页。
+
+────────────────────────────────────
+D · ingest extracted/ready 浅条
+────────────────────────────────────
+1) extracted/ready 章级浅密度条：实质页 · 有原子页 · 浅S · shallowRate%（server 用 A）。
+2) weak → 琥珀「抽出密度偏稀 · 已 cite 页原子极少」+ 浅页样例≤6（页码 mono + atomCount + chars）+ CopyCommand pnpm extract -- <ch>（弱章子集）。
+3) uploaded/parsed 禁止装浅假 0 条（无 cards＝未抽出 ≠ shallowCount=0）。
+4) 保留 T54–T58 质量/补救/parse/暗/ready 旁挂（并列勿吞）。
+
+────────────────────────────────────
+E · Register 旁挂
+────────────────────────────────────
+1) qualityWarn 可选 shallowPages? / shallowCount? / shallowRate?；有则琥珀点名「浅页 S」。
+2) 建议 OR shallowCount>0 入既有软二次确认 warn 族；禁止硬 4xx。
+3) 勿拆 missRate / zeroAtom / incomplete / parseWeak / dark*。
+
+────────────────────────────────────
+F · Overview 章行浅徽
+────────────────────────────────────
+1) DocumentPane Overview 章行：有 cards+blocks 且 shallowCount>0 → 琥珀短徽/旁注「浅S」。
+2) 可与既有「暗D」并列；全好不吵；无 cards 不装浅徽。
+3) 禁掌握%/Due；禁改写 cite/parse 徽文案。
+
+────────────────────────────────────
+G · 书架抽出行旁挂浅 S
+────────────────────────────────────
+1) app/(desk)/page.tsx：书级折叠 loadExtractPageDensity；任章 weak → 在既有「抽出偏稀 · 暗D」同行或次行旁挂「浅S」（书级 shallowCount 合计）。
+2) 禁止拆掉 cite|parse|暗 三分列骨架改造成第四大红独立列 densify。
+3) 全好不吵；缺文件章＝未检不抬假阳；可选链去 /ingest；禁掌握%/Due/圆环。
+
+────────────────────────────────────
+H · Reader 浅页提示
+────────────────────────────────────
+1) ChapterPageReader：当前页命中浅定义 → muted/琥珀一行「本页已抽出但原子偏稀（N 原子 · M 字）· 可考密度不足」。
+2) 优先序：稀页（T56）> 暗页（T57）> 浅页（本刀）。chars<thr 只稀；atomCount=0∩substantial 只暗；浅只在 atomCount≥1 时出现，勿双吵。
+3) 禁 OCR canvas / CitePeek 正文·trap redo。
+
+────────────────────────────────────
+I · 装配
+────────────────────────────────────
+1) ingest D←A；extract C←A；Register E←A；Overview F←章 density；书架 G 旁挂抽出行；Reader H←atomCountByPage + pg.text。
+2) fail-closed：缺文件→未检。
+3) .gitignore 确认 extract-density。
+4) 勿毁 T55 补救/cite 徽 · T56 parse 徽/稀页 · T57 暗徽/Reader 暗提示 · T58 examinable Study/HeYe/ready · HeYe orphan 三态 · ModeChips · book-pools · StickyPageLoopKeys。
+
+────────────────────────────────────
+J · build · DEFER · 回归
+────────────────────────────────────
+1) pnpm --filter web build PASS。
+2) pnpm density-check -- ch01（及 --shallow）可跑且 ch01 shallow≥1（预期含 p.6/p.8；p.2 若满足口径亦入）。
+3) pnpm page-check -- ch01 + cite-check -- ch01 + parse-check -- ch01 回归绿。
+4) heye-only invent DEFER；真·卡内联编辑器 DEFER T60+（local-draft-only 合同备注）；QA 仪表盘 / 批量重抽 / quiz densify DEFER——回复写明。
+5) 禁止写 verified:true；禁止写回 entities/blocks「补浅」；写手不 push。
+6) 回归 T58–T28；ModeChips 未插队；Queue 非 Due；deriveMaterialStage 未改；CitePeek/canvas 未动；HeYe emptyKind 未新增 dark；shelf cite|parse|暗 三分列骨架未拆。
+
+────────────────────────────────────
+保留（勿毁）
+────────────────────────────────────
+Task 07–58 + review-fix：书架 DeskShell、开书 /desk?book=、三栏、DocumentPane 三模（含 T46 无页降级）、TOC、Clew stub、卡页 CitePeek 正文与 trap、/review·/study、StickyPageLoopKeys、StickyModeGate、DeskSurfaceBridge、collectStudyAtoms/collectCiteQueue、loadBookValidPages、book-pools.ts、ocr-page.ts、cite-ocr-quality（T54/T55）、parse-ocr-coverage（T56）、extract-page-coverage（T57）、examinable-coverage（T58）、ariadne.study.v1 / heye.v1 / session.v1 / last-opened.v1 / recent-books.v1 / return.v1 / view.v1、CopyCommand、LibraryContinuity/ShelfBookContinuity、T34–T58 已交切片、T26 稀疏琥珀、T41 sticky N=0 门禁、T55 补救面板与 shelf cite 徽、T56 shelf parse 徽与 Reader 稀页提示、T57 shelf 暗徽与 Reader 暗页提示、T58 Study/HeYe/ready examinable、HeYe emptyKind orphan|card-out|true-empty。勿 verified:true 过关。勿自动写 entities/blocks。A–J 范围保持完整；主题是浅抽出密度诚实，不是 empty-CTA，不是 return，不是 T46–T58 重做，不是卡编辑器，不是发明原子补浅。
+
+────────────────────────────────────
+不做（硬）
+────────────────────────────────────
+- FSRS / Due / ts-fsrs / Clew LLM 真写 / Proposal 真写入 / verified:true 写入 / 自动 PATCH entities 或 blocks / 掌握% / invent heye-only 页
+- 改名 storage keys / 强制清空 recent·last-opened·return 整栈
+- CitePeek 正文/trap/定位重做 / OCR canvas / ⌘K / DeskShell 重写 / QueuePanel→Due
+- exam-anchor 全量 / ch08+ / nur-landing / PWA
+- ModeChips 会话中插队
+- ScopeCounts 再加 return / EntityCardDetail「对页」加 return
+- SessionKeyHint 大改 ShortcutSheet / 全站命令面板
+- 以 saveReturn/remember* 为主题的 densify / empty-CTA densify 当主题 / 重做 T46–T58 已交 / 只交 CLI 或只交一行章数字就收工
+- Register API 因质量硬 4xx（本刀 UI 软旁挂）
+- 改 deriveMaterialStage / 自动给浅页发明原子
+- 真·实体卡内联编辑器 / QA 仪表盘路由当本刀主题
+- Next.js security upgrade 当本刀主题（ops note only）
+- 假云端 OCR / 假进度条动画 / 假正数池 / 把浅页伪装成暗页或 cite OCR未见或 parse 稀页或 seed verified
+- 发明 atoms.gloss 当主题
+- 吞改 HeYe orphan 分型 / emptyKind:'dark'
+- 重写 T57 暗页算法 / 拆 shelf cite·parse·暗 三分列徽骨架 / 拆 T55 补救面板 / 重做 T58 examinable Study 面
+- 重做或删除 T26 稀疏琥珀条；改写 T41 sticky 门禁契约
+- 重做 T28–T58 已交切片
+- 整段 port ariadnemini版 verify/clew-API
+- push（写手禁；验收 PASS 后站规 auto-push，勿问「推」）
+
+────────────────────────────────────
+自测（回复须勾）
+────────────────────────────────────
+1) scoreExtractPageDensity(ch01) shallowCount≥1（含 p.6/p.8；p.2 若满足口径亦入）；缺文件→null；暗页/稀页不进浅
+2) pnpm density-check -- ch01 汇总含实质/有原子/浅/shallowRate；--shallow 列页；写出 extract-density.json；entities/blocks 未改
+3) extract 后置 stderr 报浅；默认可写；--strict 在极高 shallowRate/Count 拒写（口径文档化）
+4) ingest · extracted/ready 见浅条；weak 有 CopyCommand extract；uploaded/parsed 不装浅假 0；T54–T58 条保留
+5) Register · 有 shallow 旁挂则软二次；API 不 4xx；既有 warn 条件未拆
+6) Overview · 浅章琥珀「浅S」；好章不吵；未抽出不装浅徽；可与暗D 并列
+7) 书架 · 浅旁挂在抽出偏稀行；cite|parse|暗 三分列骨架未拆；好书静音；无掌握%/Due
+8) Reader · 浅页提示；稀>暗>浅优先序正确；正常页无；CitePeek/canvas 未动
+9) build PASS；density-check + page-check + cite-check + parse-check 可跑；未 push；编辑器/heye-only/QA DEFER；无 verified/entities 写入；回归 T58–T28；ModeChips未插队；Queue非Due；deriveMaterialStage 未改
+
+做完叫验收。A–J 全交才过。
