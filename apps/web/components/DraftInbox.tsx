@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import CopyCommand from "@/components/CopyCommand";
 import CopyTextButton from "@/components/CopyTextButton";
 import {
   buildAtomDraftPack,
@@ -192,6 +193,14 @@ export default function DraftInbox({
               <span className="text-xs text-muted">无草稿可导出（草稿与 seed 无差异）</span>
             )}
           </p>
+          {/* T64 E：次级 CLI 面——本机干跑只读对照命令（无「一键写回」；步骤见仓库 docs/seed-apply-mac-pr.md）。 */}
+          <div className="mt-2">
+            <p className="text-[11px] leading-4 text-muted">
+              本机干跑对照（DRY-RUN ONLY · 永不写 entities · dry-run ≠ 已落盘）· Mac
+              Draft→PR 步骤见仓库 docs/seed-apply-mac-pr.md
+            </p>
+            <CopyCommand command="pnpm seed-apply-check -- --pack ariadne-atom-draft-pack.json" />
+          </div>
           <p className="mt-1 text-xs leading-6 text-muted">
             人核清单按 data/cards/&lt;章&gt;.entities.json 逐条列 before → after——人核后自行改 seed /
             开 PR · 本浏览器不会写回仓库 · 不含 verified 翻改。{INBOX_DISCLAIMER}
