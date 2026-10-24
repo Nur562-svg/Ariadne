@@ -5,6 +5,7 @@ import {
   loadBookValidPages,
   loadCards,
   loadChapterPages,
+  loadChapters,
 } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
 import { collectBookPools, type BookPools } from "@/lib/book-pools";
@@ -12,10 +13,13 @@ import { scoreChapter, type CiteQuality } from "@/lib/cite-ocr-quality";
 import { loadParseCoverage } from "@/lib/parse-ocr-coverage-server";
 import { loadExtractPageCoverage } from "@/lib/extract-page-coverage-server";
 import { loadExtractPageDensity } from "@/lib/extract-page-density-server";
+import { loadChapterQualityRollup } from "@/lib/chapter-quality-rollup-server";
+import type { ChapterQualityRollup } from "@/lib/chapter-quality-rollup";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import LibraryContinuity from "@/components/LibraryContinuity";
 import ProgressPortability from "@/components/ProgressPortability";
 import DraftInbox from "@/components/DraftInbox";
+import ChapterQualityCockpit from "@/components/ChapterQualityCockpit";
 import { atomIncomplete } from "@/lib/atom-draft";
 import ShelfBookContinuity, { ShelfBookFooterLinks } from "@/components/ShelfBookContinuity";
 import { withQsMode } from "@/lib/qs-mode";
@@ -50,6 +54,21 @@ export default function Library() {
     nameZh: c.name_zh,
     chapterId: c.chapterId,
   }));
+
+  /**
+   * T63 I：章质检驾驶舱装配——各书各章 loadChapterQualityRollup（只拼装既有同真算法
+   * scoreChapter / loadParseCoverage / loadExtractPageCoverage / loadExtractPageDensity /
+   * T55 incomplete 口径，零重算零新阈值；缺 blocks/entities → null=未检不装完美 0）。
+   * 草稿列由 Client 读 ariadne.atom-draft.v1 交叉（T62，不改键、不进 progress-port）。
+   */
+  const chapterTitles: Record<string, string> = {};
+  for (const c of loadChapters()) chapterTitles[c.id] = c.title;
+  const rollupByChapter: Record<string, ChapterQualityRollup> = {};
+  for (const b of books) {
+    for (const chId of b.chapterIds) {
+      if (!(chId in rollupByChapter)) rollupByChapter[chId] = loadChapterQualityRollup(chId);
+    }
+  }
   const incompleteCardSummaries = inboxCards
     .map((c) => ({
       id: c.id,
@@ -449,6 +468,18 @@ export default function Library() {
           Client 读 ariadne.atom-draft.v1，只对有草稿的卡按需只读 GET /api/entities/<id> 组包。
           与 ProgressPortability 分列：draft-port ≠ progress-port，草稿永不并进 study/heye 包。 */}
       <DraftInbox cardIndex={draftCardIndex} incompleteCardSummaries={incompleteCardSummaries} />
+
+      {/* T63 E/I：书库效用区「章质检驾驶舱」——一章一眼并读六信号（cite 未见 / parse 空·稀 /
+          暗 / 浅 / 不完备 / 草稿），深链既有补救面（卡详 / viewer / 可复制 CLI）。
+          consume-only：Server 只拼装既有算法返回值；cockpit ≠ seed 已核、机检 ≠ verified、
+          草稿 ≠ 已写回、data/qa 报告 ≠ 真源；与 ProgressPortability / DraftInbox 分列，
+          不塞书架 cite|parse|暗 三分列、不造第四书架徽列、无单一健康分。 */}
+      <ChapterQualityCockpit
+        books={books.map((b) => ({ id: b.id, title: b.title, chapterIds: b.chapterIds }))}
+        chapterTitles={chapterTitles}
+        rollupByChapter={rollupByChapter}
+        cardIndex={draftCardIndex}
+      />
 
       <p className="mt-10 text-sm text-muted">
         导入新书：<Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">/ingest 上传 PDF</Link>

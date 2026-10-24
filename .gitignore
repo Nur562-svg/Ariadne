@@ -33,3 +33,4 @@ data/qa/*.cite-ocr.json
 data/qa/*.parse-ocr.json
 data/qa/*.extract-page.json
 data/qa/*.extract-density.json
+data/qa/*.quality-rollup.json
