@@ -14,6 +14,14 @@ import {
 import { saveReturn } from "@/lib/return-stack";
 import LocalProgressStrip, { poolGrades } from "@/components/LocalProgressStrip";
 import { withQsMode } from "@/lib/qs-mode";
+import CopyTextButton from "@/components/CopyTextButton";
+import {
+  CLEW_HONESTY_FOOTNOTE,
+  buildSuggestPatchText,
+  buildTakeawayText,
+  type ClewAnswerMeta,
+  type ClewSuggestContext,
+} from "@/lib/clew-suggest";
 
 /** T33 D：stub 气泡内的 muted 行动链（对页/练/核）。returnTo 有值时点前写 return 短链。 */
 type ActionLink = { label: string; href: string; returnTo?: { href: string; label: string } };
@@ -22,10 +30,25 @@ type ActionLink = { label: string; href: string; returnTo?: { href: string; labe
  * 与可点链同位渲染占住「去学习环/去核页」的位置，不装能进空环。
  */
 type PlainLink = { label: string; plain: true };
-type Msg =
-  | { role: "user" | "assistant"; text: string; links?: (ActionLink | PlainLink)[] }
-  | { role: "note"; text: string };
+/**
+ * T66 D：助手气泡四态——live（模型只读答）| stub（缺钥/未接模型诚实占位，保留 stubReply 族）|
+ * pending（在途，禁双发）| error（上游/网络失败：保留原问可重试，**不**装成功答）。
+ * question/ctx 在发送时快照：带走文本与重试都吃当时的问与书桌上下文，不随后续切页漂移。
+ */
+type AssistantMsg = {
+  role: "assistant";
+  text: string;
+  links?: (ActionLink | PlainLink)[];
+  mode: "live" | "stub" | "pending" | "error";
+  question: string;
+  ctx: ClewSuggestContext;
+  meta?: ClewAnswerMeta;
+  errorText?: string;
+};
+type Msg = { role: "user"; text: string } | AssistantMsg | { role: "note"; text: string };
 type Tab = "chat" | "changes" | "queue";
+/** T66 G：/api/clew/status 探针结果（不调模型、不含钥）；null = 探测中。 */
+type Capability = { mode: "live" | "stub"; provider?: string; model?: string };
 
 /** T33 D：点气泡行动链时兑现发送时快照的 return（无快照 = 无可回上下文，不写）。 */
 function fireLinkReturn(l: ActionLink) {
@@ -149,17 +172,60 @@ function clewReturnPayload(clew: ClewContextData): { href: string; label: string
 }
 
 /**
- * Clew 右栏（~400）：会话条 + 三 tab（对话 | 本轮变更 | 复习队列）+ 本地 stub 对话。
- * 上下文来自 DeskContext（书/章/当前页/卡/表面）；无 LLM 调用、无假写入；
+ * T66 D：发给 /api/clew/suggest 的书桌上下文——只投影书/章/页/cite 页/可见实体/卡名/表面
+ * （白名单；**不**带 progress* 池、不带任何本机 store、不带 pageText——页 OCR 小窗由服务端自取）。
+ */
+function pickSuggestContext(clew: ClewContextData): ClewSuggestContext {
+  return {
+    ...(clew.book ? { book: clew.book } : {}),
+    ...(clew.chapter ? { chapter: clew.chapter } : {}),
+    ...(clew.page != null ? { page: clew.page } : {}),
+    ...(clew.citePages.length ? { citePages: clew.citePages } : {}),
+    ...(clew.visibleEntityName ? { visibleEntityName: clew.visibleEntityName } : {}),
+    ...(clew.card ? { card: clew.card } : {}),
+    ...(clew.surface ? { surface: clew.surface } : {}),
+  };
+}
+
+/**
+ * Clew 右栏（~400）：会话条 + 三 tab（对话 | 本轮变更 | 复习队列）+ 对话。
+ * 上下文来自 DeskContext（书/章/当前页/卡/表面）；
+ * T66：对话经 POST /api/clew/suggest 取只读 live 答（单问 + 当前上下文；服务端缺钥 503 →
+ * 诚实降 stubReply；上游/网络错 → 失败条保留原问可重试）。无假写入：永不写 entities /
+ * verified / atom-draft 仓；带走只靠剪贴板。
  * 「本轮变更」只读本浏览器 session 开始以来的 study/heye 标记。「复习队列」只诚实跳转。
- * 底部常驻「不做诊断」脚注。
+ * 底部常驻诚实脚注（CLEW_HONESTY_FOOTNOTE）。
  */
 export default function ClewPane() {
   const { clew, sessionStartedAt } = useDeskContext();
   const [tab, setTab] = useState<Tab>("chat");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
+  /** T66 E：在途锁——sending 时 Enter / 发送钮 / 建议问都不再发第二问。 */
+  const [sending, setSending] = useState(false);
+  /** T66 G：挂载探一次 /api/clew/status（不调模型）；失败 → stub（fail-closed）。 */
+  const [cap, setCap] = useState<Capability | null>(null);
   const threadRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/clew/status", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j: { mode?: string; provider?: string | null; model?: string | null } | null) => {
+        if (!alive) return;
+        if (j && j.mode === "live") {
+          setCap({ mode: "live", provider: j.provider ?? undefined, model: j.model ?? undefined });
+        } else {
+          setCap({ mode: "stub" });
+        }
+      })
+      .catch(() => {
+        if (alive) setCap({ mode: "stub" });
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   // 审计结论（review-fix-integrity G）：外层曾同时订阅 study/heye 两 store 打 tick，
   // 但 ClewPane 自身渲染只消费 clew context（书/章/页/卡/表面），不读任何本机 store——
@@ -203,15 +269,80 @@ export default function ClewPane() {
     });
   }, [ctxKey, clew]);
 
+  function scrollThread() {
+    requestAnimationFrame(() => {
+      threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight });
+    });
+  }
+
+  /** T66 D：把最后一条 pending 助手气泡改成终态（在途锁保证同一时刻至多一条 pending）。 */
+  function settlePending(upd: Partial<Omit<AssistantMsg, "role">>) {
+    setMessages((prev) => {
+      let i = prev.length - 1;
+      while (i >= 0) {
+        const m = prev[i];
+        if (m.role === "assistant" && m.mode === "pending") break;
+        i--;
+      }
+      if (i < 0) return prev;
+      const cur = prev[i] as AssistantMsg;
+      const next: AssistantMsg = { ...cur, ...upd };
+      return [...prev.slice(0, i), next, ...prev.slice(i + 1)];
+    });
+  }
+
+  /**
+   * T66 D/E：真正发请求——POST /api/clew/suggest（一问 + 发送时快照的书桌上下文）。
+   *  - 200 live → 模型只读答（带 provider/model/pageWindow 元信息）；
+   *  - 503 no_provider → 诚实 stub（保留 stubReply 族文案 + 短标 stub；**不**装 live）；
+   *  - 其它 4xx/5xx/网络 → error 态：保留原问 + 可重试，**不**装成功答。
+   * 客户端永不写任何 store / 不 PATCH / 不碰钥。
+   */
+  async function run(q: string, ctx: ClewSuggestContext, stubText: string) {
+    setSending(true);
+    try {
+      const res = await fetch("/api/clew/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: q, context: ctx }),
+      });
+      const j: Record<string, unknown> | null = await res.json().catch(() => null);
+      if (res.ok && j?.ok === true && j.mode === "live" && typeof j.text === "string" && j.text.trim()) {
+        const pw = j.pageWindow as { page: number; chars: number; truncated: boolean } | null | undefined;
+        settlePending({
+          mode: "live",
+          text: j.text.trim(),
+          meta: {
+            mode: "live",
+            provider: typeof j.provider === "string" ? j.provider : undefined,
+            model: typeof j.model === "string" ? j.model : undefined,
+            ...(pw ? { pageWindow: { page: pw.page, chars: pw.chars, truncated: pw.truncated } } : {}),
+          },
+        });
+      } else if (res.status === 503 && j?.error === "no_provider") {
+        settlePending({ mode: "stub", text: stubText, meta: { mode: "stub" } });
+      } else {
+        const msg = typeof j?.message === "string" ? j.message : `请求失败（HTTP ${res.status}）`;
+        settlePending({ mode: "error", text: "", errorText: msg });
+      }
+    } catch {
+      settlePending({ mode: "error", text: "", errorText: "网络不可达——原问已保留，可重试" });
+    } finally {
+      setSending(false);
+      scrollThread();
+    }
+  }
+
   function send(text: string) {
     const q = text.trim();
-    if (!q) return;
+    if (!q || sending) return;
     /**
      * T33 D：stub 气泡附 muted 行动链——对页（有书+页）/ 去学习环 / 去核页（T31 回落链）。
      * 练/核链的 return payload 在发送时快照：气泡是历史，点旧气泡回「当时问的」上下文，
      * 不随后续上下文切换漂移；无页/无书时 stubReply 文案仍走「先开章页/卡」，不伪造行动。
      * T51 A：练/核链吃发送时 progress* 池（fail-closed 缺省 0）——池===0 该侧降 PlainLink
      * 纯文「暂无原子/暂无待核」（不可点、不写 return）；>0 保持 ActionLink + return 快照。
+     * T66 D：行动链同样挂在 live 答下；问与上下文一并快照进气泡（带走/重试用）。
      */
     const returnTo = clewReturnPayload(clew) ?? undefined;
     const links: (ActionLink | PlainLink)[] = [];
@@ -226,15 +357,29 @@ export default function ClewPane() {
         ? { label: "去核页 →", href: reviewHref, returnTo }
         : { label: "暂无待核", plain: true },
     );
+    const ctx = pickSuggestContext(clew);
     setMessages((prev) => [
       ...prev,
       { role: "user", text: q },
-      { role: "assistant", text: stubReply(clew), links },
+      { role: "assistant", mode: "pending", text: "", links, question: q, ctx },
     ]);
     setDraft("");
-    requestAnimationFrame(() => {
-      threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight });
-    });
+    scrollThread();
+    void run(q, ctx, stubReply(clew));
+  }
+
+  /** T66 E：失败条重试——复用快照的问与上下文（不是当前页），气泡回 pending 再跑一次。 */
+  function retry(index: number) {
+    if (sending) return;
+    const m = messages[index];
+    if (!m || m.role !== "assistant" || m.mode !== "error") return;
+    setMessages((prev) =>
+      prev.map((x, i): Msg => {
+        if (i !== index || x.role !== "assistant") return x;
+        return { ...x, mode: "pending", errorText: undefined };
+      }),
+    );
+    void run(m.question, m.ctx, stubReply(clew));
   }
 
   const bookHref = clew.book ? `/desk?book=${encodeURIComponent(clew.book.id)}` : "/desk";
@@ -293,6 +438,12 @@ export default function ClewPane() {
     if (p) saveReturn({ ...p, at: Date.now() });
   }
 
+  /** T66 G：头部短标——探测中 | live · provider | stub · 未接模型（探针失败即 stub，fail-closed）。 */
+  const capLabel =
+    cap == null ? "探测模型…" : cap.mode === "live" ? `live · ${cap.provider ?? "模型"}` : "stub · 未接模型";
+  /** T66 G：空态首句按探针说真话——已接只读小能力 / 还没接模型；两种空态（有书/无书）共用。 */
+  const capIntro = cap?.mode === "live" ? "已接小能力模型（只读 · 不写 seed）。" : "还没接模型（stub）。";
+
   return (
     <aside
       className="flex h-full w-[400px] shrink-0 flex-col border-l border-line bg-card"
@@ -302,7 +453,7 @@ export default function ClewPane() {
         <div className="flex items-baseline justify-between">
           <h2 className="text-sm font-semibold">Clew</h2>
           <span className="text-xs text-muted">
-            {clew.book ? "本地 stub" : "书库为空"}
+            {capLabel}
             {clew.page != null ? ` · p.${clew.page}` : ""}
           </span>
         </div>
@@ -357,7 +508,9 @@ export default function ClewPane() {
           {clew.surface ? (
             <span className="mono text-[10px]">面：{SURFACE_ZH[clew.surface] ?? clew.surface}</span>
           ) : null}
-          <span className="ml-auto text-[11px] text-muted">本地上下文 · 未接模型</span>
+          <span className="ml-auto text-[11px] text-muted">
+            本地上下文 · {cap?.mode === "live" ? "小能力只读" : "未接模型"}
+          </span>
         </div>
       </header>
 
@@ -371,7 +524,7 @@ export default function ClewPane() {
                      自测/核页点前 rememberClewReturn（T42/T31 接线不拆）；「另导入」只作次级 muted。 */
                   <>
                     <p className="text-xs leading-6 text-muted">
-                      还没接模型（stub）。当前书《{clew.book.title}
+                      {capIntro}当前书《{clew.book.title}
                     》——日用路径：
                     </p>
                     <p className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted">
@@ -426,7 +579,7 @@ export default function ClewPane() {
                      朱红链装作能练是谎言；冷启动止于「导入→书架→书桌」，练核等有书有池再给。 */
                   <>
                     <p className="text-xs leading-6 text-muted">
-                      还没接模型（stub）。书库为空——请带着页码对照的问题发问；先按这条路径走通：
+                      {capIntro}书库为空——请带着页码对照的问题发问；先按这条路径走通：
                     </p>
                     <p className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted">
                       <Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">导入教材</Link>
@@ -465,15 +618,72 @@ export default function ClewPane() {
                     {m.text}
                   </div>
                 ) : (
+                  /* T66 D/E/F：助手气泡四态——live（模型只读答，pre-wrap 保留分点）| stub（缺钥诚实占位）|
+                     pending（在途 aria-busy）| error（status-error 左线 + 可见短讯 + 重试：保留原问，不装成功）。
+                     live 答面次级复制（纯文本 / 补丁形）只写剪贴板——永不 setAtomDraft / PATCH。
+                     mono 短标区分 live·provider / stub / 失败；朱砂仍只做动作与状态强调。 */
                   <div
                     key={i}
-                    className="border-l-2 border-cinnabar/40 pl-3 text-sm leading-6 text-foreground/90"
+                    aria-busy={m.mode === "pending" || undefined}
+                    className={`border-l-2 pl-3 text-sm leading-6 text-foreground/90 ${
+                      m.mode === "error" ? "border-status-error/60" : "border-cinnabar/40"
+                    }`}
                   >
-                    <span className="mono mr-1 text-[10px] text-muted">stub</span>
-                    {m.text}
+                    <span
+                      className={`mono mr-1 text-[10px] ${m.mode === "error" ? "text-status-error" : "text-muted"}`}
+                    >
+                      {m.mode === "live"
+                        ? `live · ${m.meta?.provider ?? "模型"}`
+                        : m.mode === "pending"
+                          ? "…"
+                          : m.mode === "error"
+                            ? "失败"
+                            : "stub"}
+                    </span>
+                    {m.mode === "pending" ? (
+                      <span className="text-muted">正在问模型（只读）…</span>
+                    ) : m.mode === "error" ? (
+                      <span className="text-muted">
+                        {m.errorText ?? "请求失败"}
+                        <button
+                          type="button"
+                          onClick={() => retry(i)}
+                          disabled={sending}
+                          className="ml-2 rounded border border-line px-1.5 py-0.5 text-xs text-cinnabar transition-colors hover:border-cinnabar disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+                        >
+                          重试
+                        </button>
+                      </span>
+                    ) : (
+                      <span className={m.mode === "live" ? "whitespace-pre-wrap" : undefined}>{m.text}</span>
+                    )}
+                    {/* T66 F/G：live 答底——对照小窗来源 + 「未核」+ 剪贴板带走（纯文本恒有；补丁形仅有卡时）。 */}
+                    {m.mode === "live" && m.meta ? (
+                      <span className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[11px] text-muted">
+                        <span>
+                          {m.meta.pageWindow
+                            ? `对照 p.${m.meta.pageWindow.page} 小窗${m.meta.pageWindow.truncated ? "（已截断）" : ""}`
+                            : "无页小窗"}
+                          {" · 未核"}
+                        </span>
+                        <CopyTextButton
+                          text={buildTakeawayText(m.question, m.text, m.ctx, m.meta)}
+                          label="复制纯文本"
+                          className="rounded border border-line px-1.5 py-0.5 text-[11px] text-muted transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+                        />
+                        {m.ctx.card ? (
+                          <CopyTextButton
+                            text={buildSuggestPatchText(m.question, m.text, m.ctx, m.meta) ?? ""}
+                            label="复制为草稿补丁形"
+                            className="rounded border border-line px-1.5 py-0.5 text-[11px] text-muted transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+                          />
+                        ) : null}
+                      </span>
+                    ) : null}
                     {/* T33 D：行动链 muted 文字（非实心、非裸 URL）——对页/练/核可点；点练/核前兑现快照 return。
-                        T51 A：PlainLink（空池占位）渲染 muted 纯文——无 href 不可点、不写 return。 */}
-                    {m.links?.length ? (
+                        T51 A：PlainLink（空池占位）渲染 muted 纯文——无 href 不可点、不写 return。
+                        T66：pending 态不挂链（在途噪音）；live/stub/error 都挂（发送时快照）。 */}
+                    {m.links?.length && m.mode !== "pending" ? (
                       <span className="mt-1.5 flex flex-wrap items-baseline gap-x-4 gap-y-1">
                         {m.links.map((l) =>
                           "plain" in l ? (
@@ -517,10 +727,11 @@ export default function ClewPane() {
               />
               <button
                 onClick={() => send(draft)}
-                disabled={!draft.trim()}
+                disabled={!draft.trim() || sending}
+                aria-busy={sending || undefined}
                 className="shrink-0 rounded-lg bg-cinnabar px-4 py-2 text-sm text-white transition-opacity disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
               >
-                发送
+                {sending ? "发送中…" : "发送"}
               </button>
             </div>
           </div>
@@ -542,9 +753,9 @@ export default function ClewPane() {
         />
       )}
 
-      <p className="border-t border-line px-4 py-2 text-xs text-muted">
-        不做诊断 · 回答以教材页码为准
-      </p>
+      {/* T66 G：诚实脚注同源常量（lib/clew-suggest.ts）——不做诊断 · 回答≠已核 · 永不写 seed ·
+          页码以印刷页为准 · 小能力只读。禁掌握% / Due。 */}
+      <p className="border-t border-line px-4 py-2 text-xs text-muted">{CLEW_HONESTY_FOOTNOTE}</p>
     </aside>
   );
 }

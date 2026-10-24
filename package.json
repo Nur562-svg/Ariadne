@@ -11,6 +11,7 @@
     "density-check": "node scripts/extract-density-check.mjs",
     "qa-check": "node scripts/chapter-quality-check.mjs",
     "seed-apply-check": "node scripts/seed-apply-check.mjs",
+    "clew-check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test scripts/clew-suggest-check.mjs",
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
     "lint": "pnpm --filter web lint"
