@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { collectStudyAtoms, loadBookValidPages, loadBooks, loadCard, loadChapters } from "@/lib/entities";
+import { collectStudyAtoms, findPageByPrinted, loadBookValidPages, loadBooks, loadCard, loadChapters } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
+import { scopeExaminableCoverage, loadPageExaminable } from "@/lib/examinable-coverage-server";
 import type { StudyMode } from "@/lib/study";
 import StudySession from "@/components/StudySession";
 import StudyScopeCounts from "@/components/StudyScopeCounts";
@@ -325,6 +326,32 @@ async function StudyBody({
    */
   const studyReturnTo = { href: progressStudyHref, label: `学习环 · ${stripScopeLabel}` };
 
+  /**
+   * T58 B/I：scope 可考覆盖（**消费** T57 extract-page 暗页信号，勿另起第二套算法）——
+   * - 单卡 scope 跳过（卡级无「暗页章」意义，口径文档化：不装章级覆盖条）；
+   * - 章 scope = 单章；书 scope = 全书章折叠；本页 scope = 页所在章；裸 /study = 全部章折叠；
+   * - 缺 blocks/entities 章如实未检，整 scope 全未检 → null（不装 examinableRate 完美，
+   *   无 cards 不装假 0 暗）。数字与 pnpm page-check / 书架暗徽同源同真。
+   */
+  const pageOwner = pageNum != null ? findPageByPrinted(pageNum) : undefined;
+  const examChapterIds = scopedCard
+    ? null
+    : effChapter
+      ? [effChapter.id]
+      : pageNum != null
+        ? pageOwner?.chapterId
+          ? [pageOwner.chapterId]
+          : null
+        : activeBook
+          ? activeBook.chapterIds
+          : chapters.map((c) => c.id);
+  const examCoverage = examChapterIds ? scopeExaminableCoverage(examChapterIds) : null;
+  /**
+   * T58 D/I：本页可考性 hint（orphan 分型点名用）——只对孤儿页算（ghost 页 / 章未抽出
+   * → 不点名暗）；sparse 归 T56 口径只轻提，dark 才换暗页正文。
+   */
+  const pageExam = orphanStudy ? loadPageExaminable(pageNum) : null;
+
   return (
     <div className="mx-auto w-full max-w-3xl px-8 py-10">
       {/* 学习面薄桥：Clew 会话条显示学习范围。
@@ -556,17 +583,51 @@ async function StudyBody({
       </div>
 
       <p className="mt-6 text-sm text-muted">{atoms.length} 个知识原子</p>
+      {/* T58 B+C：页头可考覆盖条（消费 T57）——scope weak 才出，好范围/未检不吵；
+          一行同时说两件事：覆盖偏稀（B）+ 暗页未进可练池（C）。无掌握% / Due；
+          N=0 段逻辑与三档芯片不动。 */}
+      {examCoverage?.weak ? (
+        <p className="mt-1 text-xs leading-6 text-status-warn">
+          可考覆盖偏稀 · 暗{examCoverage.darkCount} 页未进可练池（实质页{" "}
+          {examCoverage.substantialPages} · 已cite {examCoverage.citedPages}）——池内原子 ≠
+          材料已覆盖；扉页/小结/跨章扉可能合理暗，pnpm page-check 可复核。
+        </p>
+      ) : null}
 
       {atoms.length === 0 ? (
         <div className="mt-8">
           {/* T43 B 空态正文分型：孤儿页/卡出界不把 /ingest 写成主因——各自点名真实原因与放宽，
               真无原子（非孤儿、非出界）才保留 /ingest 说明。 */}
           {orphanStudy ? (
-            <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
-              本页 p.{pageNum} 暂无可练知识原子——不是教材没导入，是这一印刷页没有卡引用它。
-              清本页放宽到{effChapter ? effChapter.title : (activeBook?.title ?? "全部书目")}
-              再练；同范围的核侧计数在上方进度条。
-            </p>
+            pageExam?.hint === "dark" ? (
+              /* T58 D：暗页 orphan 分型——本页有实质 OCR 却零 cite：不是页上没教材，
+                 是抽出未覆盖；点名字数 + 放宽/回 /ingest 复核（不新增主 CTA，放宽链保持）。 */
+              <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
+                本页有实质 OCR（{pageExam.chars} 字）却无任何卡 cite（暗页）——不是页上没教材，
+                是抽出未覆盖。可清本页放宽到
+                {effChapter ? effChapter.title : (activeBook?.title ?? "全部书目")}
+                再练，或回{" "}
+                <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
+                  /ingest
+                </Link>{" "}
+                看暗页条与重抽命令
+                {pageOwner?.chapterId ? (
+                  <>
+                    （<span className="mono">pnpm page-check -- --dark {pageOwner.chapterId}</span>）
+                  </>
+                ) : null}
+                。
+              </p>
+            ) : (
+              <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
+                本页 p.{pageNum} 暂无可练知识原子——不是教材没导入，是这一印刷页没有卡引用它。
+                {pageExam?.hint === "sparse"
+                  ? " 另：本页 OCR 偏稀（不足 40 字），空/稀页常为分隔页或漏扫。"
+                  : ""}
+                清本页放宽到{effChapter ? effChapter.title : (activeBook?.title ?? "全部书目")}
+                再练；同范围的核侧计数在上方进度条。
+              </p>
+            )
           ) : cardOutOfRange ? (
             <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
               卡《{scopedCard?.name_zh}》不在当前 book / chapter
@@ -684,6 +745,10 @@ async function StudyBody({
           loopKeys={stickyKeys}
           validPages={scopeBookValidPages}
           leaveReturnTo={studyReturnTo}
+          /* T58 E/I：scope 可考覆盖旁挂（单卡/未检 → weak=false 不吵）——完成态琥珀
+             一行「评完池 ≠ 材料可考完」；不改完成主 CTA，不写 verified。 */
+          examinableWeak={examCoverage?.weak ?? false}
+          darkCount={examCoverage?.darkCount ?? 0}
         />
       )}
     </div>

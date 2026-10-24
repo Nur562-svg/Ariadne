@@ -873,6 +873,16 @@ function OverviewPanel({
              练/核章行各自按真池门禁，不再凭 cardCount>0 就装两条都能进。 */
           const chAtoms = chCards.reduce((n, k) => n + k.atoms.length, 0);
           const chPending = chCards.reduce((n, k) => n + (pendingByCard?.[k.id] ?? 0), 0);
+          /* T58 H：章级抽出页覆盖（scoreExtractPageCoverage 与 pnpm page-check 同真）——
+             提升**一次计算**两处消费：T57 暗徽（F）+ 练本章 title 旁挂（H）。无卡/无页章
+             null（未检不装暗假 0）。 */
+          const chExaminable =
+            count > 0 && cardCount > 0
+              ? scoreExtractPageCoverage({
+                  pages: pages.filter((p) => p.chapterId === c.id),
+                  cards: chCards,
+                })
+              : null;
           return (
             <li key={c.id}>
               {/* 章行卡片容器（对齐 CardCard 容器模式）：主按钮（开章 OCR）占满左区，
@@ -914,6 +924,13 @@ function OverviewPanel({
                       <Link
                         href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(c.id)}&mode=all`}
                         onClick={rememberReturn}
+                        /* T58 H：练入口 title 旁挂——章 weak 时点名暗 D（练本章 ≠ 覆盖本章
+                           暗页）；好章不加 title 不吵。次级链语义不动。 */
+                        title={
+                          chExaminable?.weak
+                            ? `本章还有 ${chExaminable.darkCount} 个暗页（实质 OCR 未抽出原子）——练本章不覆盖暗页；pnpm page-check 可复核`
+                            : undefined
+                        }
                         className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                       >
                         练本章 →
@@ -962,16 +979,12 @@ function OverviewPanel({
                   );
                 })()}
                 {/* T57 F：章行暗页徽（与 T56 空/稀徽、T55 cite 徽三分列）——有 cards 且有
-                    OCR 页才实算（scoreExtractPageCoverage 与 pnpm page-check 同真：暗页 =
-                    chars≥40 实质页零 cite）；darkCount>0 → 琥珀短徽「暗D」；好章不吵；
-                    无 cards（未抽出）不装暗徽（未检 ≠ 零暗）。无掌握% / Due。 */}
+                    OCR 页才实算（chExaminable，T58 H 提升的同一份——与 pnpm page-check
+                    同真：暗页 = chars≥40 实质页零 cite）；darkCount>0 → 琥珀短徽「暗D」；
+                    好章不吵；无 cards（未抽出）不装暗徽（未检 ≠ 零暗）。无掌握% / Due。 */}
                 {(() => {
-                  if (count === 0 || cardCount === 0) return null;
-                  const epc = scoreExtractPageCoverage({
-                    pages: pages.filter((p) => p.chapterId === c.id),
-                    cards: chCards,
-                  });
-                  if (epc.darkCount === 0) return null;
+                  const epc = chExaminable;
+                  if (!epc || epc.darkCount === 0) return null;
                   return (
                     <span
                       title={`本章 ${epc.darkCount} 个实质 OCR 页未被任何卡 cite（暗页：${epc.darkPages

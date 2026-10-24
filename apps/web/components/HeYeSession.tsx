@@ -103,6 +103,7 @@ export default function HeYeSession({
   clearChapterHref,
   clearPageHref,
   orphanPage,
+  orphanDark,
   loopKeys,
   scopeKey,
   leaveReturnTo,
@@ -154,6 +155,12 @@ export default function HeYeSession({
    * 池空态主 CTA 换「清本页，换到本章核」，「去学习环」降次级（studyHref 父页已消毒无 page）。
    */
   orphanPage?: boolean;
+  /**
+   * T58 F/I：孤儿核**旁挂**暗页判定（父页 loadPageExaminable(pageNum).hint==='dark'）——
+   * 只在既有 orphan 句后补一句琥珀，**勿**新增 emptyKind:'dark'、**勿**改 orphan 主 CTA /
+   * 清本页契约、**勿**吞 card-out / true-empty；非暗/未检出不吵。
+   */
+  orphanDark?: boolean;
   /**
    * T29 E：父页算好的本页环键（g 清本页 / ⇧[ ⇧] 切章；与 sticky 键岛同源 stickyKeys）——
    * 仅当前真可用时传入；无本页过滤不列 g，无章芯片不列 ⇧[]，题内键恒保留。
@@ -344,6 +351,13 @@ export default function HeYeSession({
             <>
               本页没有待核 cite——没有「有页码但未抽查」的引用落在这一印刷页，或该页尚未解析
               OCR；清本页可放宽到本章 / 本书。
+              {/* T58 F：旁挂一句（勿吞 orphan 分型 / 主 CTA 契约）——页有实质 OCR
+                  却零抽出 cite 时点破「不是页上没教材」。 */}
+              {orphanDark ? (
+                <span className="text-status-warn">
+                  （旁挂）本页为暗页：实质 OCR 未抽出 cite——不是页上没教材，是抽出未覆盖。
+                </span>
+              ) : null}
             </>
           ) : emptyKind === "card-out" ? (
             <>

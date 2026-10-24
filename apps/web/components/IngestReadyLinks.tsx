@@ -24,6 +24,7 @@ export default function IngestReadyLinks({
   ocrPageCount,
   atomCount,
   pendingCount,
+  darkCount,
 }: {
   bookId: string;
   /** T49 A：该书已解析 OCR 印刷页数（loadBookValidPages；缺省当 0 · fail-closed）。 */
@@ -32,6 +33,12 @@ export default function IngestReadyLinks({
   atomCount?: number;
   /** T49 C：书级待核 cite 数（collectCiteQueue({bookId}) 同池族；缺省当 0）。 */
   pendingCount?: number;
+  /**
+   * T58 G/I：书级暗页数（宿主消费 T57 装配，与 ingest 暗页条/书架暗徽同数）——>0 时
+   * 「学习环」旁琥珀短徽「抽出偏稀 · 暗D」。只旁挂信号：不影响 T49 OCR/原子/待核
+   * 三门禁（atomCount===0 仍纯文不可点），不阻断打开书桌，无 Register 硬 4xx。
+   */
+  darkCount?: number;
 }) {
   function rememberUploadReturn() {
     saveReturn({ href: "/ingest", label: "上传", at: Date.now() });
@@ -78,6 +85,15 @@ export default function IngestReadyLinks({
           暂无原子
         </span>
       )}
+      {/* T58 G：学习环旁暗页短徽（书级 D；好书/未检不吵）——池内原子 ≠ 材料已覆盖。 */}
+      {(darkCount ?? 0) > 0 ? (
+        <span
+          title={`实质 OCR 页未被抽出 cite（暗页）${darkCount} 页——学习环练的是池内原子，不等于材料已覆盖；/ingest 暗页条与 pnpm page-check 可复核`}
+          className="mono rounded border border-amber-300 bg-status-warn-bg px-1.5 py-0.5 text-[10px] text-status-warn"
+        >
+          抽出偏稀 · 暗{darkCount}
+        </span>
+      ) : null}
       {(pendingCount ?? 0) > 0 ? (
         <Link
           href={`/review?book=${bookQ}&mode=open`}

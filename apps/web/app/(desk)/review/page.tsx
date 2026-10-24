@@ -9,6 +9,7 @@ import {
   loadChapters,
 } from "@/lib/entities";
 import { collectCiteQueue } from "@/lib/heye";
+import { loadPageExaminable } from "@/lib/examinable-coverage-server";
 import type { HeYeMode } from "@/lib/heye-store";
 import HeYeSession from "@/components/HeYeSession";
 import HeYeScopeCounts from "@/components/HeYeScopeCounts";
@@ -311,6 +312,13 @@ async function ReviewBody({
   /** 章范围空态用于清章回全书核页（T19/T20）：仅在章范围且非单卡时给出。 */
   const clearChapterHref = effChapter && !card ? `/review${qs({ chapter: null })}` : undefined;
 
+  /**
+   * T58 F/I：孤儿核旁挂暗页判定（**消费** T57；ghost 页 / 章未抽出 → 非 dark 不点名）——
+   * 只旁挂一句，emptyKind 三态与 orphan 主 CTA 契约不动。
+   */
+  const orphanDark =
+    orphanReview && loadPageExaminable(pageNum)?.hint === "dark";
+
   return (
     <div className="mx-auto w-full max-w-5xl px-8 py-10">
       {/* 核页面薄桥：Clew 会话条显示核页范围（书/章/页/卡）。
@@ -610,6 +618,8 @@ async function ReviewBody({
         clearChapterHref={clearChapterHref}
         clearPageHref={clearPageHref}
         orphanPage={orphanReview}
+        /* T58 F：orphan 旁挂暗页（hint==='dark' 才 true）；分型三态与 CTA 不动。 */
+        orphanDark={orphanDark}
         loopKeys={stickyKeys}
         leaveReturnTo={reviewReturnTo}
       />

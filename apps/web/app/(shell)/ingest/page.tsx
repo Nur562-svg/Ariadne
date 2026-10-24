@@ -476,6 +476,9 @@ export default function IngestPage() {
                               ocrPageCount={ocrPageCount}
                               atomCount={atomCount}
                               pendingCount={pendingCount}
+                              /* T58 G：ready 三连旁挂书级暗 D（与上方 T57 暗页条/书架暗徽
+                                 同数）——只短徽不阻断；T49 三门禁不动。 */
+                              darkCount={darkTotal}
                             />
                           ) : (
                             <RegisterMaterialButton

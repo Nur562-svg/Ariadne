@@ -106,6 +106,8 @@ export default function StudySession({
   scopeKey,
   validPages,
   leaveReturnTo,
+  examinableWeak,
+  darkCount,
 }: {
   /** 当前范围全池（未按档位过滤；档位在客户端按本机评分过滤）。 */
   atoms: StudyAtom[];
@@ -163,6 +165,14 @@ export default function StudySession({
    * key 仍 ariadne.desk.return.v1。
    */
   leaveReturnTo?: { href: string; label: string };
+  /**
+   * T58 E/I：scope 可考覆盖旁挂（父页消费 T57 装配；单卡/未检出省略 → 缺省 false/0）——
+   * 池非空且当前档评完时，完成卡下方琥珀一行「评完池 ≠ 材料已覆盖」。只提示；
+   * 不改完成主 CTA（不做成「去补暗」强推），不写 verified / 不 PATCH entities。
+   */
+  examinableWeak?: boolean;
+  /** T58 E：scope 暗页数（examinableWeak 为 true 时点名 暗{darkCount}）。 */
+  darkCount?: number;
 }) {
   const [grades, setGrades] = useState<GradeMap>({});
   const [order, setOrder] = useState<StudyAtom[]>([]);
@@ -335,6 +345,13 @@ export default function StudySession({
               ? `本范围有 ${atoms.length} 个原子，标「不熟」的是 ${pool.unknown}。先在「全部」或「未评」里标几张不熟，再回来只练它们。`
               : "当前范围没有可练的原子。"}
         </p>
+        {/* T58 E：评完族旁挂（池非空且本档评完）——「评完池」≠「材料可考完」。 */}
+        {ungradedDone && examinableWeak && (darkCount ?? 0) > 0 ? (
+          <p className="mt-2 text-xs leading-6 text-status-warn">
+            本机已评完池内原子 · 本范围仍有暗页未覆盖进原子（暗{darkCount}）——材料未全覆盖，
+            pnpm page-check 可复核。
+          </p>
+        ) : null}
         <StudyModeChips
           pool={pool}
           mode={mode}
@@ -473,6 +490,14 @@ export default function StudySession({
         <p className="mt-3 text-sm leading-7 text-foreground/90">
           共 {order.length} 个原子 · 本轮 认识 {run.known} · 不熟 {run.unknown}。
         </p>
+        {/* T58 E：完成态旁挂（父传 scope 可考覆盖；weak 才出）——评完的是池，
+            不等于材料已考完；不改「再来一轮」主 CTA，不新增大红。 */}
+        {examinableWeak && (darkCount ?? 0) > 0 ? (
+          <p className="mt-2 text-xs leading-6 text-status-warn">
+            本机已评完池内原子 · 本范围仍有暗页未覆盖进原子（暗{darkCount}）——材料未全覆盖，
+            pnpm page-check 可复核。
+          </p>
+        ) : null}
         {resumed ? (
           <p aria-live="polite" className="mt-2 text-xs leading-5 text-muted">
             已从本标签续上（完成态）；本轮 run 计数不持久化，从 0 起。
