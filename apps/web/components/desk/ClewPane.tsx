@@ -21,6 +21,7 @@ import {
   buildTakeawayText,
   splitStructuredPatch,
   type ClewAnswerMeta,
+  type ClewSeedBefore,
   type ClewSuggestContext,
   type SuggestPatchEntry,
 } from "@/lib/clew-suggest";
@@ -71,6 +72,8 @@ type Capability = {
   /** T68：三档可用性（芯片置灰用）+ 本机今日用量（底栏行）。 */
   tiers?: TierInfo[];
   usageToday?: number;
+  /** T69 F：本机今日用量分档计数（status.usage.byTier；缺 → 底栏退回总数形）。 */
+  usageByTier?: Record<string, number>;
 };
 /** T68 D：上次档选择的 sessionStorage 新键（不动 study/heye/atom-draft 任何既有键）。 */
 const CLEW_TIER_KEY = "ariadne.clew.tier.v1";
@@ -281,7 +284,7 @@ export default function ClewPane() {
           provider?: string | null;
           model?: string | null;
           tiers?: TierInfo[];
-          usage?: { today?: number };
+          usage?: { today?: number; byTier?: Record<string, number> };
         } | null) => {
           if (!alive) return;
           if (j && j.mode === "live") {
@@ -291,6 +294,8 @@ export default function ClewPane() {
               model: j.model ?? undefined,
               tiers: Array.isArray(j.tiers) ? j.tiers : undefined,
               usageToday: typeof j.usage?.today === "number" ? j.usage.today : undefined,
+              usageByTier:
+                j.usage?.byTier && typeof j.usage.byTier === "object" ? j.usage.byTier : undefined,
             });
           } else {
             setCap({ mode: "stub", tiers: Array.isArray(j?.tiers) ? j.tiers : undefined });
@@ -405,9 +410,20 @@ export default function ClewPane() {
     setSending(true);
     const ac = new AbortController();
     abortRef.current = ac;
-    /** T68 F：本机用量近似 bump——只对真打了上游的（200 / 502）+1；4xx/503/429 不计。 */
-    const bumpUsage = () => {
-      setCap((c) => (c && c.usageToday != null ? { ...c, usageToday: c.usageToday + 1 } : c));
+    /** T68 F / T69 F：本机用量近似 bump——只对真打了上游的（200 / 502）+1（总分 + 该档）；
+        4xx/503/429 不计。有 byTier 时分档同 bump；无（旧 status 形）保持总数形。 */
+    const bumpUsage = (t: string) => {
+      setCap((c) =>
+        c && c.usageToday != null
+          ? {
+              ...c,
+              usageToday: c.usageToday + 1,
+              ...(c.usageByTier
+                ? { usageByTier: { ...c.usageByTier, [t]: (c.usageByTier[t] ?? 0) + 1 } }
+                : {}),
+            }
+          : c,
+      );
     };
     try {
       const res = await fetch("/api/clew/suggest", {
@@ -417,7 +433,7 @@ export default function ClewPane() {
         signal: ac.signal,
       });
       if (!res.ok) {
-        if (res.status === 502) bumpUsage();
+        if (res.status === 502) bumpUsage(tierUsed);
         const j: Record<string, unknown> | null = await res.json().catch(() => null);
         if (res.status === 503 && j?.error === "no_provider") {
           updatePending({ mode: "stub", text: stubText, meta: { mode: "stub" } });
@@ -427,7 +443,7 @@ export default function ClewPane() {
         }
         return;
       }
-      bumpUsage();
+      bumpUsage(tierUsed);
       if (!res.body) {
         updatePending({ mode: "error", errorText: "响应无流体——原问已保留，可重试" });
         return;
@@ -436,6 +452,8 @@ export default function ClewPane() {
       const decoder = new TextDecoder();
       let buf = "";
       let allowed: string[] = [];
+      /** T69 D：meta 随白名单带来的 seed 现值（before 对齐；done 剥围栏时用）。 */
+      let seedBefore: ClewSeedBefore | null = null;
       let sawDone = false;
       let sawError: string | null = null;
       for (;;) {
@@ -455,13 +473,20 @@ export default function ClewPane() {
           }
           if (ev?.type === "meta") {
             allowed = Array.isArray(ev.incompleteTargets) ? (ev.incompleteTargets as string[]) : [];
+            const sb = ev.seedBefore;
+            seedBefore =
+              sb !== null && typeof sb === "object" && !Array.isArray(sb) ? (sb as ClewSeedBefore) : null;
             const pw = ev.pageWindow as { page: number; chars: number; truncated: boolean } | null | undefined;
+            const gp = Array.isArray(ev.groundPages)
+              ? (ev.groundPages as unknown[]).filter((x): x is number => typeof x === "number")
+              : undefined;
             updatePending({
               meta: {
                 mode: "live",
                 provider: typeof ev.provider === "string" ? ev.provider : undefined,
                 model: typeof ev.model === "string" ? ev.model : undefined,
                 ...(pw ? { pageWindow: { page: pw.page, chars: pw.chars, truncated: pw.truncated } } : {}),
+                ...(gp && gp.length > 1 ? { groundPages: gp } : {}),
               },
             });
           } else if (ev?.type === "delta" && typeof ev.text === "string") {
@@ -477,7 +502,7 @@ export default function ClewPane() {
         updatePending({ mode: "error", errorText: sawError ?? "上游流中断" });
       } else if (sawDone) {
         updatePending((cur) => {
-          const { answer, entries } = splitStructuredPatch(cur.text, allowed);
+          const { answer, entries } = splitStructuredPatch(cur.text, allowed, seedBefore);
           return { mode: "live", text: answer, ...(entries.length ? { patchEntries: entries } : {}) };
         });
       } else {
@@ -832,8 +857,10 @@ export default function ClewPane() {
                     ) : (
                       <span className={m.mode === "live" ? "whitespace-pre-wrap" : undefined}>{m.text}</span>
                     )}
-                    {/* T66 F/G + T67 E/F：live 答底——对照小窗来源 + 「未核」+ 剪贴板带走
-                        （纯文本恒有；补丁恒有卡时给；entries 非空=模型建议填空）。
+                    {/* T66 F/G + T67 E/F + T69 C·E：live 答底——对照小窗来源（>1 页标注同章有界）+
+                        「未核」+ 剪贴板带走（纯文本恒有；补丁恒有卡时给；entries 非空=模型建议填空）。
+                        T69 D：补丁条目逐条 before→after 一行（before=当前卡 seed 现值，空=（空））——
+                        人核面：是「填空」还是「改既有」一眼可比，全文在复制出的补丁 JSON 里。
                         「填入本机草稿（未核）」只认用户点击（mergeAtomDraft 同族 T55），永不静默写。 */}
                     {m.mode === "live" && m.meta ? (
                       <span className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[11px] text-muted">
@@ -841,6 +868,9 @@ export default function ClewPane() {
                           {m.meta.pageWindow
                             ? `对照 p.${m.meta.pageWindow.page} 小窗${m.meta.pageWindow.truncated ? "（已截断）" : ""}`
                             : "无页小窗"}
+                          {m.meta.groundPages?.length
+                            ? ` · 接地 p.${m.meta.groundPages.join("、p.")}（同章有界）`
+                            : ""}
                           {" · 未核"}
                           {m.patchEntries?.length ? ` · 补丁建议 ${m.patchEntries.length} 条` : ""}
                         </span>
@@ -875,6 +905,26 @@ export default function ClewPane() {
                             本浏览器存储不可用——草稿仅本次会话生效
                           </span>
                         ) : null}
+                      </span>
+                    ) : null}
+                    {/* T69 E：补丁建议人核明细——每条一行 before→after（before=seed 现值截显，
+                        空=（空）；全文见 title 与「复制为草稿补丁」JSON）。muted mono，不抢答面。 */}
+                    {m.mode === "live" && m.patchEntries?.length ? (
+                      <span className="mt-1 flex w-full flex-col gap-0.5 text-[11px] leading-5 text-muted">
+                        {m.patchEntries.map((e, k) => (
+                          <span
+                            key={`${e.target}|${e.field}|${k}`}
+                            className="mono break-all"
+                            title={`${e.target} · ${e.field}：${e.before ?? "（空）"} → ${e.after}`}
+                          >
+                            {e.target} · {e.field}：
+                            {e.before
+                              ? `${e.before.slice(0, 48)}${e.before.length > 48 ? "…" : ""} → `
+                              : "（空）→ "}
+                            {e.after.slice(0, 80)}
+                            {e.after.length > 80 ? "…" : ""}
+                          </span>
+                        ))}
                       </span>
                     ) : null}
                     {/* T33 D：行动链 muted 文字（非实心、非裸 URL）——对页/练/核可点；点练/核前兑现快照 return。
@@ -998,11 +1048,18 @@ export default function ClewPane() {
 
       {/* T66 G：诚实脚注同源常量（lib/clew-suggest.ts）——不做诊断 · 回答≠已核 · 永不写 seed ·
           页码以印刷页为准 · 小能力只读。禁掌握% / Due。
-          T68 F：本机今日用量次级行（status.usage 计数 + 本会话增量）——非云账单 · 非掌握度。 */}
+          T68 F / T69 F：本机今日用量次级行（status.usage 计数 + 本会话增量）——有 byTier 时给
+          分档括注（快 a · 推 b · 长 c），无则退回总数形；非云账单 · 非掌握度。 */}
       <p className="border-t border-line px-4 py-2 text-xs text-muted">
         {CLEW_HONESTY_FOOTNOTE}
         {cap?.usageToday != null ? (
-          <span className="ml-2 text-[11px]">本机今日 {cap.usageToday} 次 · 非云账单 · 非掌握度</span>
+          <span className="ml-2 text-[11px]">
+            本机今日 {cap.usageToday} 次
+            {cap.usageByTier
+              ? `（快 ${cap.usageByTier.fast ?? 0} · 推 ${cap.usageByTier.reasoning ?? 0} · 长 ${cap.usageByTier["long-context"] ?? 0}）`
+              : ""}
+            {" · 非云账单 · 非掌握度"}
+          </span>
         ) : null}
       </p>
     </aside>

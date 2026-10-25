@@ -1,6 +1,7 @@
 /**
- * T66 C / T67 C·D·E：Clew 只读建议——请求体校验 + 系统提示 + 书桌上下文拼装 + 剪贴板带走
- * + 流事件编码 + 结构化补丁解析（纯函数）。
+ * T66 C / T67 C·D·E / T69 A·B·C·D：Clew 只读建议——请求体校验 + 系统提示 + 书桌上下文拼装 +
+ * 按档 grounding 策略（long-context 同章有界多页）+ 剪贴板带走 + 流事件编码 + 结构化补丁解析
+ * （before 从 seed 只读对齐）（纯函数）。
  * 无 "use client"、无 import、无 fs、无 process.env：服务端 route 与客户端 ClewPane 共用形状，
  * scripts/clew-suggest-check.mjs 直接 import 本 .ts 单测（Node ≥ 23.6 原生剥类型）。
  *
@@ -15,6 +16,9 @@
  *   6. T67 结构化补丁：仅可对**服务端 grounding 列出的既有原子/字段**建议填空；解析侧
  *      （parseSuggestPatchEntries）target 白名单过滤——发明 id / 未知 field / verified 意图
  *      一律丢弃；进本机草稿永远要用户显式粘贴或点击（G），发送回调永不静默 setAtomDraft。
+ *   7. T69 Long-context 有界铁顶：接地扩窗**同章 only**（LONG_PAGES_MAX 页 / LONG_TOTAL_CHARS_MAX
+ *      字，常量写死）；单页仍 truncate；缺章/缺 blocks 诚实降级单页；fast/reasoning 恒单页。
+ *      扩窗是服务端自取，**不是**客户端作业——pages[] 作业形仍 422（铁合同 2）。
  */
 
 // ---- 形状 ----
@@ -46,6 +50,23 @@ export type ClewGrounding = {
     truncated: boolean;
     source: "server" | "client";
   };
+  /**
+   * T69 B：long-context 同章有界附加窗（fast/reasoning 无此键）。逐页 truncate +
+   * 总字顶装窗；只含除当前页外的同章页；缺章/缺 blocks → 不写（诚实降级单页）。
+   */
+  extraWindows?: { page: number; text: string; chars: number; truncated: boolean; source: "server" }[];
+  /**
+   * T69 C：接地策略实况（仅 long-context 真装成多页时写；prompt 标注与流 meta 同源）。
+   * pages 含当前页（升序）；pagesOmitted = 选出但因总字顶未装的页数（如实报，不装完整）。
+   */
+  ground?: {
+    mode: "chapter-bounded";
+    pages: number[];
+    totalChars: number;
+    maxPages: number;
+    maxTotalChars: number;
+    pagesOmitted: number;
+  };
   cardSummary?: {
     id: string;
     name_zh: string;
@@ -55,6 +76,8 @@ export type ClewGrounding = {
   };
   /** T67 D：当前卡 seed 口径不完备清单（仅既有 id / 下标；无卡或不完备=0 → undefined）。 */
   incomplete?: ClewIncompleteGrounding;
+  /** T69 D：白名单 target 的 seed 现值（补丁 before 对齐用；服务端只读导出，空 → null）。 */
+  seedBefore?: ClewSeedBefore;
 };
 
 /** 答面元信息（UI 短标 / 带走文本用）。 */
@@ -63,6 +86,8 @@ export type ClewAnswerMeta = {
   provider?: string;
   model?: string;
   pageWindow?: { page: number; chars: number; truncated: boolean };
+  /** T69 C：本次接地页平铺（>1 页 = long-context 同章有界；UI 次级标可选）。 */
+  groundPages?: number[];
 };
 
 /**
@@ -101,6 +126,72 @@ export const GROUND_FIELDS_MAX = 4;
 /** 结构化补丁：单条 after 截断 / 条数上限。 */
 export const PATCH_AFTER_MAX_CHARS = 500;
 export const PATCH_ENTRIES_MAX = 20;
+/**
+ * T69 A：Long-context 同章有界铁顶（常量写死，可微调）——接地扩窗**至多** 5 页、
+ * 总字数至多 ~12000（截断后计）；同章 only，永不整章全书塞 prompt。
+ */
+export const LONG_PAGES_MAX = 5;
+export const LONG_TOTAL_CHARS_MAX = 12_000;
+/** T69 D：补丁 before（seed 现值）截断——人核对照够读即可，不搬整段原文。 */
+export const SEED_BEFORE_MAX_CHARS = 200;
+
+// ---- T69 A：按档 grounding 策略（纯函数；route 与 clew-check 共用） ----
+
+export type GroundingPolicy = {
+  /** single = 三档同 tip 单页小窗；chapter-bounded = long-context 同章有界多页。 */
+  mode: "single" | "chapter-bounded";
+  maxPages: number;
+  maxTotalChars: number;
+};
+
+/**
+ * 按档接地策略：fast / reasoning 恒 single（1 页 / PAGE_TEXT_MAX_CHARS，与 T66–T68 完全一致）；
+ * long-context = chapter-bounded（LONG_PAGES_MAX 页 / LONG_TOTAL_CHARS_MAX 字）。
+ * 档 id 非法 → 按 single（不因未知档放宽顶）。
+ */
+export function groundingPolicyForTier(tier: string): GroundingPolicy {
+  return tier === "long-context"
+    ? { mode: "chapter-bounded", maxPages: LONG_PAGES_MAX, maxTotalChars: LONG_TOTAL_CHARS_MAX }
+    : { mode: "single", maxPages: 1, maxTotalChars: PAGE_TEXT_MAX_CHARS };
+}
+
+/**
+ * 选接地页（T69 A·B）：候选 = chapterPages（该章 blocks 里**有文本**的印刷页，服务端自取），
+ * 优先序 = 当前页 → 请求上下文 cite 页（须同章，跨章 cite 不采）→ 同章近邻补齐（按与当前页
+ * 距离，平手取低页）。去重后按 maxPages 硬顶，返回**升序阅读序**（优先序只决定谁入选）。
+ * chapterPages 空 / maxPages ≤ 0 → 空数组（缺章缺 blocks 诚实降级，不编页）。
+ */
+export function selectGroundPages(opts: {
+  currentPage?: number | null;
+  citePages?: readonly number[];
+  chapterPages: readonly number[];
+  maxPages: number;
+}): number[] {
+  const eligible = [...new Set(opts.chapterPages.filter((p) => isPrintedPage(p)))].sort((a, b) => a - b);
+  if (eligible.length === 0 || opts.maxPages <= 0) return [];
+  const chosen: number[] = [];
+  const take = (p: number) => {
+    if (chosen.length < opts.maxPages && !chosen.includes(p)) chosen.push(p);
+  };
+  const anchor =
+    opts.currentPage != null && eligible.includes(opts.currentPage) ? opts.currentPage : eligible[0];
+  if (anchor === opts.currentPage) take(anchor);
+  for (const p of new Set(opts.citePages ?? [])) {
+    if (eligible.includes(p)) take(p);
+  }
+  const rest = eligible
+    .filter((p) => !chosen.includes(p))
+    .sort((a, b) => Math.abs(a - anchor) - Math.abs(b - anchor) || a - b);
+  for (const p of rest) take(p);
+  return [...chosen].sort((a, b) => a - b);
+}
+
+/** 流 meta / 非流响应用的接地页平铺（含当前页；无任何窗 → 空数组）。 */
+export function groundPagesOf(g?: ClewGrounding): number[] {
+  if (!g) return [];
+  if (g.ground) return g.ground.pages;
+  return g.pageWindow ? [g.pageWindow.page] : [];
+}
 
 /** G：诚实脚注——ClewPane 底栏与 docs 同源一句（保留既有「以教材页码为准」口径）。 */
 export const CLEW_HONESTY_FOOTNOTE =
@@ -351,6 +442,23 @@ export function buildContextBlock(ctx: ClewSuggestContext, g?: ClewGrounding): s
         `${w.truncated ? `原文 ${w.chars} 字，只取前 ${PAGE_TEXT_MAX_CHARS} 字` : `${w.chars} 字`}】`,
     );
     lines.push(w.text);
+    // T69 C：long-context 同章有界附加窗——标注接地页 / 总字对顶 / 非全书；因字顶未装的页如实报数。
+    if (g.extraWindows?.length) {
+      const gr = g.ground;
+      const pages = (gr?.pages ?? [w.page, ...g.extraWindows.map((x) => x.page)]).slice().sort((a, b) => a - b);
+      lines.push("");
+      lines.push(
+        `【同章有界多页接地 · 非全书 · 页 p.${pages.join("、p.")} · 共 ${gr?.totalChars ?? "？"} 字 / 顶 ${gr?.maxTotalChars ?? LONG_TOTAL_CHARS_MAX} 字` +
+          `${gr && gr.pagesOmitted > 0 ? ` · 另有 ${gr.pagesOmitted} 页因总字顶未装` : ""}】`,
+      );
+      for (const x of g.extraWindows) {
+        lines.push(
+          `【p.${x.page} OCR 小窗 · 服务端自 blocks.json 取 · ` +
+            `${x.truncated ? `原文 ${x.chars} 字，只取前 ${PAGE_TEXT_MAX_CHARS} 字` : `${x.chars} 字`}】`,
+        );
+        lines.push(x.text);
+      }
+    }
   } else {
     lines.push("（本次没有页面原文小窗：只能按概念层面作答，不要编造页码）");
   }
@@ -375,8 +483,9 @@ export function buildPrompt(
 // ---- F：剪贴板带走（只生成字符串；永不写 store / 仓库） ----
 
 /**
- * T67 E：模型建议的结构化补丁条目（形状与 lib/atom-draft.ts DraftPatchEntry 兼容；
- * before 客户端无 seed 值可对 → null，人核/粘贴合并时以本机卡为准）。永不含 verified。
+ * T67 E / T69 D：模型建议的结构化补丁条目（形状与 lib/atom-draft.ts DraftPatchEntry 兼容）；
+ * before 从**当前卡 seed 只读**对齐（buildSeedBeforeMap 导出、parseSuggestPatchEntries 回填），
+ * 空字段为 null——建议仍只是建议，人核后才进草稿。永不含 verified。
  */
 export type SuggestPatchEntry = {
   target: string;
@@ -385,16 +494,58 @@ export type SuggestPatchEntry = {
   after: string;
 };
 
+/** T69 D：白名单 target → 各可补字段的 seed 现值（空 → null；截 SEED_BEFORE_MAX_CHARS）。 */
+export type ClewSeedBefore = Record<string, Partial<Record<SuggestPatchEntry["field"], string | null>>>;
+
+function cutSeedBefore(v: string | null | undefined): string | null {
+  const t = (v ?? "").trim();
+  return t ? t.slice(0, SEED_BEFORE_MAX_CHARS) : null;
+}
+
+/**
+ * 从当前卡 seed 只读导出白名单 target 的 before 值（T69 D）：atom → prompt/answer/citeQuote
+ * （cite.quote），field:<i> → value；空 → null；超长截断。发明 / 越界 target 不在白名单 →
+ * 不入 map（parseSuggestPatchEntries 回查不到 → null，且这类 target 本就整条丢弃）。
+ * 只读：不改卡、不写盘、不碰 verified。
+ */
+export function buildSeedBeforeMap(
+  card:
+    | {
+        atoms?: { id: string; prompt?: string; answer?: string; cite?: { quote?: string } }[];
+        fields?: { value?: string }[];
+      }
+    | undefined
+    | null,
+  allowedTargets: readonly string[],
+): ClewSeedBefore {
+  const out: ClewSeedBefore = {};
+  if (!card) return out;
+  for (const t of allowedTargets) {
+    if (t.startsWith("atom:")) {
+      const a = (card.atoms ?? []).find((x) => x.id === t.slice(5));
+      if (a) out[t] = { prompt: cutSeedBefore(a.prompt), answer: cutSeedBefore(a.answer), citeQuote: cutSeedBefore(a.cite?.quote) };
+    } else if (t.startsWith("field:")) {
+      const i = Number(t.slice(6));
+      const f = Number.isInteger(i) && i >= 0 ? (card.fields ?? [])[i] : undefined;
+      if (f) out[t] = { value: cutSeedBefore(f.value) };
+    }
+  }
+  return out;
+}
+
 const SUGGEST_PATCH_FIELDS = new Set(["prompt", "answer", "citeQuote", "value"]);
 
 /**
  * 校验模型/粘贴给出的 entries：只留 target ∈ allowedTargets、field 合法枚举、after 为非空
  * 字符串、无 verified/写入意图键的条目；after 截 PATCH_AFTER_MAX_CHARS；最多 PATCH_ENTRIES_MAX
  * 条（超出丢弃——宁少勿造）。allowedTargets 为空 → 全拒（无 grounding 就没有合法 target）。
+ * T69 D：before **只认** beforeByTarget（服务端 seed 只读导出）——模型自报的 before 键不读
+ * 不透传；查不到（含新增候选）→ null。永不影响 target 白名单与丢弃规则。
  */
 export function parseSuggestPatchEntries(
   raw: unknown,
   allowedTargets: readonly string[],
+  beforeByTarget?: ClewSeedBefore | null,
 ): SuggestPatchEntry[] {
   if (!Array.isArray(raw)) return [];
   const allowed = new Set(allowedTargets);
@@ -410,15 +561,21 @@ export function parseSuggestPatchEntries(
     if (typeof target !== "string" || !allowed.has(target)) continue; // 发明/未知 target 丢弃
     if (typeof field !== "string" || !SUGGEST_PATCH_FIELDS.has(field)) continue;
     if (typeof after !== "string" || !after.trim()) continue;
-    out.push({ target, field: field as SuggestPatchEntry["field"], before: null, after: after.slice(0, PATCH_AFTER_MAX_CHARS) });
+    out.push({
+      target,
+      field: field as SuggestPatchEntry["field"],
+      before: beforeByTarget?.[target]?.[field as SuggestPatchEntry["field"]] ?? null,
+      after: after.slice(0, PATCH_AFTER_MAX_CHARS),
+    });
   }
   return out;
 }
 
-/** 从答案全文剥**尾随**最后一个 ```json 围栏（中段围栏不剥——那是正文代码示例）。 */
+/** 从答案全文剥**尾随**最后一个 ```json 围栏（中段围栏不剥——那是正文代码示例）；before 对齐同 parseSuggestPatchEntries（T69 D）。 */
 export function splitStructuredPatch(
   fullText: string,
   allowedTargets: readonly string[],
+  beforeByTarget?: ClewSeedBefore | null,
 ): { answer: string; entries: SuggestPatchEntry[] } {
   const m = fullText.match(/```json\s*([\s\S]*?)\s*```\s*$/);
   if (!m) return { answer: fullText.trimEnd(), entries: [] };
@@ -435,7 +592,7 @@ export function splitStructuredPatch(
           Array.isArray((o.patch as Record<string, unknown>).entries)
         ? (o.patch as Record<string, unknown>).entries
         : null;
-    entries = parseSuggestPatchEntries(rawEntries, allowedTargets);
+    entries = parseSuggestPatchEntries(rawEntries, allowedTargets, beforeByTarget);
   } catch {
     entries = []; // 坏 JSON → 诚实无补丁（答案仍展示），不抛
   }
@@ -465,9 +622,11 @@ export function buildTakeawayText(
       ? `live · ${meta.provider ?? "?"}${meta.model ? ` / ${meta.model}` : ""}`
       : "stub · 未接模型";
   const win =
-    meta.pageWindow != null
-      ? `对照小窗：p.${meta.pageWindow.page}（${meta.pageWindow.truncated ? `前 ${PAGE_TEXT_MAX_CHARS} 字 / 共 ${meta.pageWindow.chars} 字` : `${meta.pageWindow.chars} 字`}）`
-      : "对照小窗：无";
+    meta.groundPages != null && meta.groundPages.length > 1
+      ? `对照小窗：p.${meta.groundPages.join("、p.")}（同章有界 · 非全书）`
+      : meta.pageWindow != null
+        ? `对照小窗：p.${meta.pageWindow.page}（${meta.pageWindow.truncated ? `前 ${PAGE_TEXT_MAX_CHARS} 字 / 共 ${meta.pageWindow.chars} 字` : `${meta.pageWindow.chars} 字`}）`
+        : "对照小窗：无";
   const where = contextLine(ctx);
   return [
     `【Clew 只读建议 · ${src} · 未核】`,
@@ -486,9 +645,9 @@ export function buildTakeawayText(
  * 「复制为草稿补丁」：对齐 lib/atom-draft.ts 的 `ariadne.atom-draft-patch.v1`
  * （schema / cardId / chapterId? / note / entries）。entries 可非空——但每条都出自
  * parseSuggestPatchEntries 白名单（仅既有 target，模型建议填空），不是发明的原子/字段改动；
- * before 恒 null（建议无 seed 原文可比，人核时以本机卡为准）；永不含 verified 翻改。
- * 问答在 note；用户自行粘贴到 DraftInbox 导入或卡详编辑器。无当前卡 → null。
- * 本函数只组字符串；永不 setAtomDraft / PATCH / writeFile。
+ * T69 D 起 before = 当前卡 seed 现值（空字段 null；截 SEED_BEFORE_MAX_CHARS）——人核时
+ * before→after 一眼可比；永不含 verified 翻改。问答在 note；用户自行粘贴到 DraftInbox
+ * 导入或卡详编辑器。无当前卡 → null。本函数只组字符串；永不 setAtomDraft / PATCH / writeFile。
  */
 export type ClewPatchEnvelope = {
   schema: "ariadne.atom-draft-patch.v1";
@@ -516,7 +675,7 @@ export function buildSuggestPatchEnvelope(
       `${ctx.page != null ? ` · 对照 p.${ctx.page}` : ""}\n` +
       `问：${question}\n答：${answer}` +
       (entries.length > 0
-        ? `\nentries：模型建议填空 ${entries.length} 条（仅既有原子/字段，人核后粘贴导入或手抄；before=null——以本机卡为准）`
+        ? `\nentries：模型建议填空 ${entries.length} 条（仅既有原子/字段，人核后粘贴导入或手抄；before=当前卡 seed 现值，空字段为 null）`
         : "\nentries 为空：无可建议填空的既有目标；要改 seed 请人核后在草稿编辑器手填"),
     entries,
   };
@@ -547,6 +706,10 @@ export type ClewStreamEvent =
       cardSummary: { id: string; name_zh: string } | null;
       /** 补丁 target 白名单（服务端 grounding 实算；空数组=本次无结构化目标）。 */
       incompleteTargets: string[];
+      /** T69 C：本次接地页平铺（含当前页；long-context 多页=同章有界；无窗 → 空数组）。 */
+      groundPages?: number[];
+      /** T69 D：白名单 target 的 seed 现值（before 对齐；无卡/无目标 → null）。 */
+      seedBefore?: ClewSeedBefore | null;
       readonly: true;
     }
   | { type: "delta"; text: string }

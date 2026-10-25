@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * T66 C/B 纯函数单测：直接 import apps/web/lib/clew-suggest.ts 与 clew-provider.ts
- * （Node ≥ 23.6 原生剥类型；两文件无 import / 无 fs / 无 env，可脱离 Next 跑）。
+ * T66 C/B + T67/T68/T69 纯函数单测：直接 import apps/web/lib/clew-suggest.ts 与
+ * clew-provider.ts / clew-usage.ts（Node ≥ 23.6 原生剥类型；文件无 import / 无 fs / 无 env，
+ * 可脱离 Next 跑）。
  *
  *   pnpm clew-check            # == node --test scripts/clew-suggest-check.mjs
  *
@@ -10,9 +11,17 @@
  *   - 缺问 / 空问 / 超长 → 400 / 413；白名单投影丢未知键与非法值
  *   - 页小窗截断报原字数；无小窗时上下文块如实写「没有页面原文小窗」
  *   - 系统提示含「不做医疗诊断」「没有写入权限」；永不出现「写入 seed」类指令
- *   - 带走文本含「未核」+ 脚注；补丁形 schema 对齐 ariadne.atom-draft-patch.v1 且 entries 恒空
+ *   - 带走文本含「未核」+ 脚注；补丁形 schema 对齐 ariadne.atom-draft-patch.v1
  *   - provider：缺钥 null；一档优先序；显式 CLEW_PROVIDER 缺对应钥 → null（不悄换）；
  *     publicProviderInfo 永不带 apiKey
+ *   - T69 A：按档 grounding 策略（fast/reasoning 恒单页 ≤1 页；long-context ≤ LONG_PAGES_MAX
+ *     页 / ≤ LONG_TOTAL_CHARS_MAX 字）；selectGroundPages 有序去重 / 当前页优先 / 跨章 cite 不采 /
+ *     硬顶 / 缺章空数组
+ *   - T69 B·C：extraWindows/ground 上下文块标注（同章有界 · 非全书 · 总字对顶 · 未装页如实报）；
+ *     groundPagesOf 平铺
+ *   - T69 D：buildSeedBeforeMap 有值/空→null/发明不入；parseSuggestPatchEntries before 只认
+ *     seed 导出（模型自报 before 不透传）、发明 target 仍丢弃；splitStructuredPatch 透传
+ *   - T69 F：countTodayByTier 分档计数 / 三键恒在 / 脏行丢
  * 不碰网络、不碰 data/、不写盘。
  */
 import test from "node:test";
@@ -587,4 +596,240 @@ test("parseUsageLine/countToday: 脏行丢；只计 ts ≥ 当日 0 点的行（
   // roundtrip
   const rt = U.parseUsageLine(U.buildUsageLine({ ts: 5, tier: "long-context", provider: "minimax", model: "m", ok: true }));
   assert.equal(rt.tier, "long-context");
+});
+
+// ---------------- T69 A：按档 grounding 策略（fast≤1 页；long≤顶） ----------------
+
+test("groundingPolicyForTier: fast/reasoning 恒 single（1 页 / PAGE_TEXT_MAX_CHARS）；未知档同 single", () => {
+  for (const t of ["fast", "reasoning", "mars", "", undefined]) {
+    const p = S.groundingPolicyForTier(t);
+    assert.deepEqual(p, { mode: "single", maxPages: 1, maxTotalChars: S.PAGE_TEXT_MAX_CHARS }, String(t));
+  }
+});
+
+test("groundingPolicyForTier: long-context = chapter-bounded 且铁顶不超标（≤5 页 / ≤12000 字）", () => {
+  const p = S.groundingPolicyForTier("long-context");
+  assert.equal(p.mode, "chapter-bounded");
+  assert.equal(p.maxPages, S.LONG_PAGES_MAX);
+  assert.equal(p.maxTotalChars, S.LONG_TOTAL_CHARS_MAX);
+  assert.ok(p.maxPages <= 5, "LONG_PAGES_MAX 铁顶 ≤5");
+  assert.ok(p.maxTotalChars <= 12_000 && p.maxTotalChars >= 4 * S.PAGE_TEXT_MAX_CHARS, "总字顶 ~12000 且至少容 4 满页");
+});
+
+test("selectGroundPages: 当前页优先入选 + 升序去重 + 硬顶；cite 须同章（跨章不采）；近邻补齐", () => {
+  const chapter = [2, 3, 4, 5, 6, 9, 12];
+  // 当前页 4 + cite 页 9（同章）入选；cite 100 跨章不采；近邻 3、5 补齐到 4 页，升序返回。
+  const r = S.selectGroundPages({ currentPage: 4, citePages: [100, 9, 4], chapterPages: chapter, maxPages: 4 });
+  assert.deepEqual(r, [3, 4, 5, 9]);
+  // 硬顶：maxPages 2 → 当前页 + 最近邻（3 距 1、5 距 1 平手取低页）
+  const capped = S.selectGroundPages({ currentPage: 4, chapterPages: chapter, maxPages: 2 });
+  assert.equal(capped.length, 2);
+  assert.ok(capped.includes(4) && capped.includes(3));
+  // 剩 1 个空位时：cite 页（请求上下文）优先于服务端近邻补齐
+  const tight = S.selectGroundPages({ currentPage: 4, citePages: [9], chapterPages: chapter, maxPages: 2 });
+  assert.deepEqual(tight, [4, 9]);
+  // 去重：cite 重复当前页 / 重复页只算一次；升序、无重复、不超顶
+  const dedup = S.selectGroundPages({ currentPage: 4, citePages: [4, 4, 5], chapterPages: chapter, maxPages: 5 });
+  assert.deepEqual(dedup, [2, 3, 4, 5, 6]);
+  assert.equal(new Set(dedup).size, dedup.length);
+  assert.ok(dedup.length <= 5);
+});
+
+test("selectGroundPages: 缺章（chapterPages 空）/ 非法页 / maxPages≤0 → 空数组（诚实降级，不编页）", () => {
+  assert.deepEqual(S.selectGroundPages({ currentPage: 4, chapterPages: [], maxPages: 5 }), []);
+  assert.deepEqual(S.selectGroundPages({ currentPage: 4, chapterPages: [0, -1, 3.5, "x"], maxPages: 5 }), []);
+  assert.deepEqual(S.selectGroundPages({ currentPage: 4, chapterPages: [3, 4, 5], maxPages: 0 }), []);
+  // 当前页不在章内 → 不采当前页，锚到最低页近邻补齐
+  const ghost = S.selectGroundPages({ currentPage: 99, chapterPages: [3, 4, 5], maxPages: 2 });
+  assert.deepEqual(ghost, [3, 4]);
+});
+
+// ---------------- T69 B·C：extraWindows / ground 上下文块标注 + 平铺 ----------------
+
+const G_MULTI = {
+  pageWindow: { page: 4, text: "当前页原文…", chars: 800, truncated: false, source: "server" },
+  extraWindows: [
+    { page: 3, text: "p3 原文…", chars: 700, truncated: false, source: "server" },
+    { page: 5, text: "p5 原文…", chars: 900, truncated: true, source: "server" },
+  ],
+  ground: { mode: "chapter-bounded", pages: [3, 4, 5], totalChars: 2400, maxPages: 5, maxTotalChars: 12_000, pagesOmitted: 1 },
+};
+
+test("buildContextBlock: 多页接地标注「同章有界 · 非全书」+ 页清单 + 总字对顶 + 未装页如实报数", () => {
+  const blk = S.buildContextBlock(
+    { book: { id: "b", title: "B" }, chapter: { id: "ch01", title: "C1" }, page: 4 },
+    G_MULTI,
+  );
+  assert.ok(blk.includes("【p.4 OCR 小窗 · 服务端自 blocks.json 取 · 800 字】"));
+  assert.ok(blk.includes("同章有界多页接地 · 非全书 · 页 p.3、p.4、p.5 · 共 2400 字 / 顶 12000 字"));
+  assert.ok(blk.includes("另有 1 页因总字顶未装"));
+  assert.ok(blk.includes("【p.3 OCR 小窗"));
+  assert.ok(blk.includes("【p.5 OCR 小窗 · 服务端自 blocks.json 取 · 原文 900 字"));
+  // fast/reasoning（无 extraWindows）不出现该标注——单页行为与 tip 一致
+  const single = S.buildContextBlock(
+    { page: 4 },
+    { pageWindow: { page: 4, text: "原文…", chars: 500, truncated: false, source: "server" } },
+  );
+  assert.ok(!single.includes("同章有界"));
+});
+
+test("groundPagesOf: ground.pages 平铺；单页回 [page]；无窗空数组", () => {
+  assert.deepEqual(S.groundPagesOf(G_MULTI), [3, 4, 5]);
+  assert.deepEqual(S.groundPagesOf({ pageWindow: { page: 7, text: "t", chars: 1, truncated: false, source: "client" } }), [7]);
+  assert.deepEqual(S.groundPagesOf({}), []);
+  assert.deepEqual(S.groundPagesOf(undefined), []);
+});
+
+// ---------------- T69 D：补丁 before 从 seed 只读对齐 ----------------
+
+const SEED_CARD = {
+  atoms: [
+    { id: "ch01:ag:2", prompt: "", answer: "既有答案", cite: { quote: "既有引文" } },
+    { id: "ch01:ag:3", prompt: "既有问法", answer: "", cite: undefined },
+  ],
+  fields: [
+    { label: "化学本质", value: "" },
+    { label: "别名", value: "既有值" },
+  ],
+};
+const ALLOWED_69 = ["atom:ch01:ag:2", "atom:ch01:ag:3", "field:0", "field:1"];
+
+test("buildSeedBeforeMap: 有值导出 / 空→null / 发明与越界不入 / citeQuote 取 cite.quote", () => {
+  const m = S.buildSeedBeforeMap(SEED_CARD, [...ALLOWED_69, "atom:ch01:invented:9", "field:9", "weird:1"]);
+  assert.deepEqual(m["atom:ch01:ag:2"], { prompt: null, answer: "既有答案", citeQuote: "既有引文" });
+  assert.deepEqual(m["atom:ch01:ag:3"], { prompt: "既有问法", answer: null, citeQuote: null });
+  assert.deepEqual(m["field:0"], { value: null });
+  assert.deepEqual(m["field:1"], { value: "既有值" });
+  assert.equal("atom:ch01:invented:9" in m, false, "发明 target 不入 map");
+  assert.equal("field:9" in m, false, "越界下标不入 map");
+  assert.equal("weird:1" in m, false);
+  assert.deepEqual(S.buildSeedBeforeMap(undefined, ALLOWED_69), {});
+  assert.deepEqual(S.buildSeedBeforeMap(null, ALLOWED_69), {});
+  // 超长截断 SEED_BEFORE_MAX_CHARS
+  const long = S.buildSeedBeforeMap(
+    { atoms: [{ id: "a", prompt: "长".repeat(S.SEED_BEFORE_MAX_CHARS + 50) }] },
+    ["atom:a"],
+  );
+  assert.equal(long["atom:a"].prompt.length, S.SEED_BEFORE_MAX_CHARS);
+});
+
+test("parseSuggestPatchEntries: before 只认 seed 导出（有值填 / 空 null / 查不到 null）；模型自报 before 不透传", () => {
+  const before = S.buildSeedBeforeMap(SEED_CARD, ALLOWED_69);
+  const out = S.parseSuggestPatchEntries(
+    [
+      { target: "atom:ch01:ag:2", field: "prompt", after: "建议问法" }, // 空 seed → null
+      { target: "atom:ch01:ag:2", field: "answer", after: "改既有答案" }, // 有值 → seed 现值
+      { target: "field:1", field: "value", after: "改既有值" },
+      { target: "atom:ch01:ag:3", field: "answer", before: "模型瞎报的 before", after: "x" }, // 自报 before 不透传
+      { target: "atom:ch01:invented:9", field: "prompt", after: "y" }, // 发明 → 整条丢弃
+    ],
+    ALLOWED_69,
+    before,
+  );
+  assert.equal(out.length, 4);
+  assert.deepEqual(out[0], { target: "atom:ch01:ag:2", field: "prompt", before: null, after: "建议问法" });
+  assert.equal(out[1].before, "既有答案");
+  assert.equal(out[2].before, "既有值");
+  assert.deepEqual(out[3], { target: "atom:ch01:ag:3", field: "answer", before: null, after: "x" });
+  // 无 map（旧调用形）→ 恒 null（向后兼容）
+  const legacy = S.parseSuggestPatchEntries([{ target: "atom:ch01:ag:2", field: "answer", after: "z" }], ALLOWED_69);
+  assert.equal(legacy[0].before, null);
+});
+
+test("splitStructuredPatch: 尾随围栏 entries 的 before 从 seed map 回填", () => {
+  const before = S.buildSeedBeforeMap(SEED_CARD, ALLOWED_69);
+  const text =
+    "答案。\n```json\n{\"entries\":[" +
+    '{"target":"atom:ch01:ag:2","field":"answer","after":"新答案"},' +
+    '{"target":"field:0","field":"value","after":"新值"}]}\n```';
+  const r = S.splitStructuredPatch(text, ALLOWED_69, before);
+  assert.equal(r.entries.length, 2);
+  assert.equal(r.entries[0].before, "既有答案");
+  assert.deepEqual(r.entries[1], { target: "field:0", field: "value", before: null, after: "新值" });
+  // 无 map 仍 null（T67 兼容）
+  const r2 = S.splitStructuredPatch(text, ALLOWED_69);
+  assert.equal(r2.entries[0].before, null);
+});
+
+test("buildSuggestPatchEnvelope: entries 非空时 note 写明 before=当前卡 seed 现值", () => {
+  const entries = [
+    { target: "atom:ch01:ag:2", field: "answer", before: "既有答案", after: "新答案" },
+  ];
+  const d = S.buildSuggestPatchEnvelope(
+    "q", "a",
+    { card: { id: "ag", name_zh: "抗原" } },
+    { mode: "live", provider: "zhipu", model: "m" },
+    entries,
+  );
+  assert.ok(d.note.includes("before=当前卡 seed 现值"));
+  assert.ok(!d.note.includes("before=null"));
+  assert.deepEqual(d.entries, entries);
+});
+
+test("buildTakeawayText: 多页接地时对照行标同章有界 · 非全书", () => {
+  const t = S.buildTakeawayText(
+    "q", "a",
+    { book: { id: "b", title: "B" }, page: 4 },
+    { mode: "live", provider: "zhipu", groundPages: [3, 4, 5] },
+  );
+  assert.ok(t.includes("对照小窗：p.3、p.4、p.5（同章有界 · 非全书）"));
+});
+
+// ---------------- T69 F：用量按档（纯计数） ----------------
+
+test("countTodayByTier: 分档计数 / 三键恒在 / 脏行丢 / 昨日不计", () => {
+  const day = U.startOfToday(1_800_000_000_000);
+  const lines = [
+    U.buildUsageLine({ ts: day + 1000, tier: "fast", provider: "zhipu", model: "m", ok: true }),
+    U.buildUsageLine({ ts: day + 2000, tier: "fast", provider: "zhipu", model: "m", ok: false, error: "upstream_error" }),
+    U.buildUsageLine({ ts: day + 3000, tier: "reasoning", provider: "zhipu", model: "m", ok: true }),
+    U.buildUsageLine({ ts: day + 4000, tier: "long-context", provider: "minimax", model: "m", ok: true }),
+    U.buildUsageLine({ ts: day + 5000, tier: "long-context", provider: "minimax", model: "m", ok: true }),
+    U.buildUsageLine({ ts: day - 1000, tier: "fast", provider: "zhipu", model: "m", ok: true }), // 昨日
+    "{broken",
+  ];
+  const by = U.countTodayByTier(lines, day);
+  assert.deepEqual(by, { fast: 2, reasoning: 1, "long-context": 2 });
+  // 总分 = 各档之和 = countToday 同口径
+  assert.equal(by.fast + by.reasoning + by["long-context"], U.countToday(lines, day));
+  // 空 / 全脏 → 三键 0
+  assert.deepEqual(U.countTodayByTier([], day), { fast: 0, reasoning: 0, "long-context": 0 });
+  assert.deepEqual(U.countTodayByTier(["nope", ""], day), { fast: 0, reasoning: 0, "long-context": 0 });
+});
+
+// ---------------- T69 C：流 meta 携带 groundPages / seedBefore（无钥） ----------------
+
+test("encodeClewStreamEvent: meta 带 groundPages/seedBefore 仍一行 NDJSON 且不泄钥", () => {
+  const seedBefore = S.buildSeedBeforeMap(SEED_CARD, ALLOWED_69);
+  const meta = S.encodeClewStreamEvent({
+    type: "meta",
+    tier: "long-context",
+    provider: "zhipu",
+    model: "glm-4.6",
+    pageWindow: { page: 4, chars: 800, truncated: false, source: "server" },
+    groundPages: [3, 4, 5],
+    cardSummary: { id: "ag", name_zh: "抗原" },
+    incompleteTargets: ALLOWED_69,
+    seedBefore,
+    readonly: true,
+  });
+  assert.ok(meta.endsWith("\n"));
+  const parsed = JSON.parse(meta);
+  assert.deepEqual(parsed.groundPages, [3, 4, 5]);
+  assert.deepEqual(parsed.seedBefore["field:1"], { value: "既有值" });
+  assert.ok(!meta.includes("apiKey"));
+  // fast 档 meta：groundPages 单页、seedBefore 可 null（可选键）
+  const fastMeta = S.encodeClewStreamEvent({
+    type: "meta",
+    tier: "fast",
+    provider: "zhipu",
+    model: "glm-4.5-flash",
+    pageWindow: null,
+    groundPages: [],
+    cardSummary: null,
+    incompleteTargets: [],
+    seedBefore: null,
+    readonly: true,
+  });
+  assert.deepEqual(JSON.parse(fastMeta).groundPages, []);
 });

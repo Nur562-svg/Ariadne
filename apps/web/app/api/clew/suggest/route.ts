@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText, streamText } from "ai";
-import { loadBooks, loadCard, loadChapterPages, type EntityCard } from "@/lib/entities";
+import { loadBooks, loadCard, loadChapterPages, type EntityCard, type PageDoc } from "@/lib/entities";
 import {
   CLEW_DEFAULT_TIER,
   publicProviderInfo,
@@ -18,9 +18,13 @@ import {
   STREAM_OVERALL_TIMEOUT_MS,
   UPSTREAM_TIMEOUT_MS,
   buildPrompt,
+  buildSeedBeforeMap,
   encodeClewStreamEvent,
+  groundPagesOf,
+  groundingPolicyForTier,
   incompleteTargets,
   parseSuggestBody,
+  selectGroundPages,
   truncatePageText,
   type ClewGrounding,
   type ClewIncompleteGrounding,
@@ -112,13 +116,19 @@ function buildIncompleteGrounding(card: EntityCard): ClewIncompleteGrounding | u
 }
 
 /**
- * 服务端只读 grounding：
- *  - 当前页 OCR 小窗：有 chapter → 该章 blocks.json；无 chapter 但有 book+page → 遍该书章文件找同页
- *    （仍是单页查找，不是整章抽取）；都找不到才用客户端 pageText；全部 truncatePageText。
- *  - 当前卡一行摘要 + T67 不完备清单：loadCard(id) 取 name/one_liner + 卡内 cite 页去重 ≤ 8。
+ * 服务端只读 grounding（T69 B：**按档**）：
+ *  - 单页主窗（三档同 tip 行为）：有 chapter → 该章 blocks.json；无 chapter 但有 book+page →
+ *    遍该书章文件找同页；都找不到才用客户端 pageText；全部 truncatePageText。
+ *  - T69 long-context 扩窗（chapter-bounded）：锚章 = 命中当前页的那章（同章 only）；
+ *    selectGroundPages 选页（当前页 → 请求上下文 cite 页∩同章 → 近邻补齐；硬页数顶），
+ *    逐页 truncate + 总字顶装窗（超顶页如实计入 pagesOmitted，不装完整）。缺章 / 缺 blocks /
+ *    读盘失败 → 诚实降级单页或无窗；fast / reasoning 恒单页（groundingPolicyForTier single）。
+ *  - 当前卡一行摘要 + T67 不完备清单：loadCard(id) 取 name/one_liner + 卡内 cite 页去重 ≤ 8；
+ *    T69 D：白名单 target 的 seed 现值只读导出（g.seedBefore，补丁 before 对齐用）。
  * 任何读盘失败 → 该项缺省（答面如实写「本次没有页面原文小窗」），不抛不假。
  */
-function buildGrounding(ctx: ClewSuggestContext): ClewGrounding {
+function buildGrounding(ctx: ClewSuggestContext, tier: ClewTierId): ClewGrounding {
+  const policy = groundingPolicyForTier(tier);
   const g: ClewGrounding = {};
   try {
     if (ctx.page != null) {
@@ -130,15 +140,59 @@ function buildGrounding(ctx: ClewSuggestContext): ClewGrounding {
       } else if (book) {
         chapterIds = book.chapterIds;
       }
+      let anchorPages: PageDoc[] | null = null;
+      let hit: PageDoc | undefined;
       for (const chId of chapterIds) {
-        const hit = loadChapterPages(chId).find((p) => p.page === ctx.page && p.text.trim());
-        if (hit) {
-          const t = truncatePageText(hit.text);
-          g.pageWindow = { page: ctx.page, text: t.text, chars: t.chars, truncated: t.truncated, source: "server" };
+        const ps = loadChapterPages(chId);
+        const h = ps.find((p) => p.page === ctx.page && p.text.trim());
+        if (h) {
+          anchorPages = ps;
+          hit = h;
           break;
         }
       }
-      if (!g.pageWindow && ctx.pageText) {
+      if (hit) {
+        const t = truncatePageText(hit.text);
+        g.pageWindow = { page: ctx.page, text: t.text, chars: t.chars, truncated: t.truncated, source: "server" };
+        // T69 B：long-context 同章有界多页（fast/reasoning policy.mode=single 不进——仍单页）。
+        if (policy.mode === "chapter-bounded" && anchorPages) {
+          const eligible = [...new Set(
+            anchorPages.filter((p) => p.page != null && p.text.trim()).map((p) => p.page as number),
+          )].sort((a, b) => a - b);
+          const selected = selectGroundPages({
+            currentPage: ctx.page,
+            citePages: ctx.citePages,
+            chapterPages: eligible,
+            maxPages: policy.maxPages,
+          });
+          const extras: NonNullable<ClewGrounding["extraWindows"]> = [];
+          let total = t.text.length;
+          let omitted = 0;
+          for (const pno of selected) {
+            if (pno === ctx.page) continue;
+            const doc = anchorPages.find((p) => p.page === pno);
+            if (!doc) continue;
+            const w = truncatePageText(doc.text);
+            if (total + w.text.length > policy.maxTotalChars) {
+              omitted++; // 总字顶：如实计数未装，不截半页装完整假象
+              continue;
+            }
+            extras.push({ page: pno, text: w.text, chars: w.chars, truncated: w.truncated, source: "server" });
+            total += w.text.length;
+          }
+          if (extras.length > 0) {
+            g.extraWindows = extras;
+            g.ground = {
+              mode: "chapter-bounded",
+              pages: [ctx.page, ...extras.map((w) => w.page)].sort((a, b) => a - b),
+              totalChars: total,
+              maxPages: policy.maxPages,
+              maxTotalChars: policy.maxTotalChars,
+              pagesOmitted: omitted,
+            };
+          }
+        }
+      } else if (ctx.pageText) {
         const t = truncatePageText(ctx.pageText);
         if (t.text) {
           g.pageWindow = { page: ctx.page, text: t.text, chars: t.chars, truncated: t.truncated, source: "client" };
@@ -165,6 +219,9 @@ function buildGrounding(ctx: ClewSuggestContext): ClewGrounding {
         };
         const inc = buildIncompleteGrounding(card);
         if (inc) g.incomplete = inc;
+        // T69 D：白名单 target 的 seed 现值（只读；空 → null；截 SEED_BEFORE_MAX_CHARS）。
+        const targets = incompleteTargets(g);
+        if (targets.length > 0) g.seedBefore = buildSeedBeforeMap(card, targets);
       }
     }
   } catch {
@@ -239,10 +296,11 @@ export async function POST(req: Request) {
   }
 
   const { question, context } = parsed.value;
-  const g = buildGrounding(context);
+  const g = buildGrounding(context, tier);
   const { system, prompt } = buildPrompt(question, context, g);
   const info = publicProviderInfo(provider)!;
   const targets = incompleteTargets(g);
+  const groundPages = groundPagesOf(g);
 
   const client = createOpenAICompatible({
     name: provider.name,
@@ -286,8 +344,10 @@ export async function POST(req: Request) {
         pageWindow: g.pageWindow
           ? { page: g.pageWindow.page, chars: g.pageWindow.chars, truncated: g.pageWindow.truncated, source: g.pageWindow.source }
           : null,
+        groundPages,
         cardSummary: g.cardSummary ? { id: g.cardSummary.id, name_zh: g.cardSummary.name_zh } : null,
         incompleteTargets: targets,
+        seedBefore: g.seedBefore ?? null,
         finishReason: result.finishReason,
         usage: {
           inputTokens: result.usage?.inputTokens ?? null,
@@ -421,8 +481,10 @@ export async function POST(req: Request) {
     pageWindow: g.pageWindow
       ? { page: g.pageWindow.page, chars: g.pageWindow.chars, truncated: g.pageWindow.truncated, source: g.pageWindow.source }
       : null,
+    groundPages,
     cardSummary: g.cardSummary ? { id: g.cardSummary.id, name_zh: g.cardSummary.name_zh } : null,
     incompleteTargets: targets,
+    seedBefore: g.seedBefore ?? null,
     readonly: true,
   } as const;
 

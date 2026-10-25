@@ -82,6 +82,22 @@ export function countToday(lines: string[], dayStart: number): number {
   return n;
 }
 
+/**
+ * T69 F：纯计数（按档）——行集里 ts ≥ dayStart 的各档条数；三档键恒在（缺 = 0）。
+ * 与 countToday 同口径（ok 与 fail 都算）；总分 = 各档之和。非掌握度 / 非 Due。
+ */
+export function countTodayByTier(
+  lines: string[],
+  dayStart: number,
+): Record<ClewTierId, number> {
+  const out: Record<ClewTierId, number> = { fast: 0, reasoning: 0, "long-context": 0 };
+  for (const line of lines) {
+    const l = parseUsageLine(line);
+    if (l && l.ts >= dayStart) out[l.tier]++;
+  }
+  return out;
+}
+
 // ---- 服务端 fs 面（route 专用；纯函数上方可单测） ----
 
 function usagePath(): string {
@@ -110,6 +126,17 @@ export function todayUsageCount(now = Date.now()): number {
     return countToday(fs.readFileSync(file, "utf8").split("\n"), startOfToday(now));
   } catch {
     return 0;
+  }
+}
+
+/** T69 F：读「本机今日」各档调用数（读失败 / 无文件 → 全 0 三键；不抛）。 */
+export function todayUsageByTier(now = Date.now()): Record<ClewTierId, number> {
+  try {
+    const file = usagePath();
+    if (!fs.existsSync(file)) return { fast: 0, reasoning: 0, "long-context": 0 };
+    return countTodayByTier(fs.readFileSync(file, "utf8").split("\n"), startOfToday(now));
+  } catch {
+    return { fast: 0, reasoning: 0, "long-context": 0 };
   }
 }
 
