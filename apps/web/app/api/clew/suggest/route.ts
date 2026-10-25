@@ -2,7 +2,13 @@ import { NextResponse } from "next/server";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText, streamText } from "ai";
 import { loadBooks, loadCard, loadChapterPages, type EntityCard } from "@/lib/entities";
-import { publicProviderInfo, resolveClewProvider } from "@/lib/clew-provider";
+import {
+  CLEW_DEFAULT_TIER,
+  publicProviderInfo,
+  resolveClewTier,
+  type ClewTierId,
+} from "@/lib/clew-provider";
+import { appendUsage, sessionCapReached } from "@/lib/clew-usage";
 import {
   ANSWER_MAX_OUTPUT_TOKENS,
   GROUND_ATOMS_MAX,
@@ -25,23 +31,25 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * T66 A / T67 A：Clew 只读建议 API——**POST only**。一问 + 当前书桌上下文 → 流式 live 文本
- * （NDJSON：meta → delta* → done｜error）或诚实错；`"stream": false` 走非流兼容枝（T66 JSON 形）。
+ * T66 A / T67 A / T68 C：Clew 只读建议 API——**POST only**。一问 + 当前书桌上下文（+ 可选 tier）
+ * → 流式 live 文本（NDJSON：meta → delta* → done｜error）或诚实错；`"stream": false` 走非流
+ * 兼容枝（T66 JSON 形）。body `tier` ∈ fast|reasoning|long-context（缺省 fast，文档写死）。
  *
- * 五禁（铁 · 本文件每行遵守；流式不改变任何一条）：
- *   1. 不写 entities：本路**零 fs 写**——不碰 data/cards/*.entities.json / blocks.json / config / data/。
- *      只读 loadBooks / loadChapterPages / loadCard 取当前页 OCR 小窗、当前卡一行摘要与
- *      **既有**不完备原子清单（T67 D grounding；只列 id/空标记，永不代写）。
+ * 五禁（铁 · 本文件每行遵守；流式/分档不改变任何一条）：
+ *   1. 不写 entities：本路 fs 写**仅限** data/qa/clew-usage.jsonl（T68 用量记数 · gitignored ·
+ *      非真源）；永不碰 data/cards/*.entities.json / blocks.json / config / data/ 其它文件。
+ *      只读 loadBooks / loadChapterPages / loadCard 取当前页 OCR 小窗、卡摘要与既有不完备清单。
  *   2. 不 verified：永不置 verified:true；响应只是复习提示，不是核对结论。
- *   3. 不 PATCH：不调 /api/entities 写路径、不调 /api/ingest 与 register；不落 atom-draft 仓
- *      ——结构化补丁只随流事件/JSON 交给**用户**，粘贴或点击导入永远发生在用户侧（G）。
+ *   3. 不 PATCH：不调 /api/entities 写路径、不调 /api/ingest 与 register；不落 atom-draft 仓。
  *   4. 不 bulk：chapters[] / pages[] / questions[] / extract·parse·ingest 作业形 → 4xx（parseSuggestBody）。
- *   5. 钥不入客户端：ZHIPU_API_KEY / MINIMAX_API_KEY 只在服务端 env；流事件与 JSON 只回
- *      provider name + model；上游错误经 redact 去钥 + 截断。缺钥 → 503 no_provider。
+ *   5. 钥不入客户端：只读服务端 env；响应/流事件只回 provider 名 + 模型名 + 档 id；上游错误经
+ *      redact 去钥 + 截断。**不串档（T68 铁）**：所选档缺钥 → 503（全缺 → no_provider·T66 兼容，
+ *      他档在 → tier_unavailable 点名档），永不静默换档打。
  *
+ * 可选自设顶 CLEW_SESSION_MAX_CALLS（正整数）：本机今日调用（各档共用计数）≥ 顶 → 429 session_cap。
  * 不做诊断 / 回答 ≠ 已核 / 页码只采信请求上下文：见 lib/clew-suggest.ts 系统提示。
- * fail-closed 流式：鉴权/上游错在首 chunk 前抛 → 502 JSON；中途断 → error 事件行，
- * 客户端保留已收文本 + 可重试。DEFER（不在本刀）：三档选择器、配额、Auto 路由、BYOK。
+ * fail-closed 流式：鉴权/上游错在首 delta 前抛 → 502 JSON；中途断 → error 事件行。
+ * DEFER（不在本刀）：LiteLLM 网关、Auto 路由、BYOK、云配额墙。
  */
 
 type Json = Record<string, unknown>;
@@ -171,6 +179,16 @@ function wantsNonStream(raw: unknown): boolean {
     && (raw as Record<string, unknown>).stream === false;
 }
 
+/** body 顶层可选 "tier"：缺省 fast；非法值 → 400 bad_tier（不悄当默认）。 */
+function parseTier(raw: unknown): { ok: true; tier: ClewTierId } | { ok: false; got: string } {
+  const o = raw !== null && typeof raw === "object" && !Array.isArray(raw)
+    ? (raw as Record<string, unknown>).tier
+    : undefined;
+  if (o === undefined || o === null || o === "") return { ok: true, tier: CLEW_DEFAULT_TIER };
+  if (o === "fast" || o === "reasoning" || o === "long-context") return { ok: true, tier: o };
+  return { ok: false, got: String(o) };
+}
+
 export async function POST(req: Request) {
   let raw: unknown;
   try {
@@ -182,15 +200,41 @@ export async function POST(req: Request) {
   if (!parsed.ok) {
     return reply(parsed.status, { ok: false, mode: "stub", error: parsed.error, message: parsed.message });
   }
+  const tierParsed = parseTier(raw);
+  if (!tierParsed.ok) {
+    return reply(400, {
+      ok: false,
+      mode: "stub",
+      error: "bad_tier",
+      message: `tier 须是 fast|reasoning|long-context（收到「${tierParsed.got.slice(0, 40)}”）`,
+    });
+  }
+  const tier = tierParsed.tier;
 
-  const provider = resolveClewProvider(process.env);
+  // 可选自设顶（各档共用计数；被挡的没调模型，不记用量）。
+  const capped = sessionCapReached(process.env);
+  if (capped != null) {
+    return reply(429, {
+      ok: false,
+      mode: "stub",
+      error: "session_cap",
+      message: `本机今日已调用 ${capped} 次（CLEW_SESSION_MAX_CALLS 自设顶已到）——明日自动恢复；非云端额度墙`,
+    });
+  }
+
+  const provider = resolveClewTier(process.env, tier);
   if (!provider) {
-    // fail-closed：缺钥明确 503，不装成功；ClewPane 据此降诚实 stub。
+    // 不串档（铁）：所选档缺可用配置 → 503。全缺（默认档也不可用）→ no_provider（T66 兼容，
+    // ClewPane 降诚实 stub）；仅所选档缺（他档在）→ tier_unavailable 点名档，永不静默换档。
+    const anyAlive = resolveClewTier(process.env, CLEW_DEFAULT_TIER) != null;
     return reply(503, {
       ok: false,
       mode: "stub",
-      error: "no_provider",
-      message: "服务端未配置 ZHIPU_API_KEY / MINIMAX_API_KEY——本面板降为诚实 stub（未接模型）",
+      error: anyAlive ? "tier_unavailable" : "no_provider",
+      tier,
+      message: anyAlive
+        ? `「${tier}」档未配置可用钥/厂商（CLEW_${tier === "long-context" ? "LONG" : tier.toUpperCase()}_PROVIDER 可指定）——不静默换其它档`
+        : "服务端未配置 ZHIPU_API_KEY / MINIMAX_API_KEY——本面板降为诚实 stub（未接模型）",
     });
   }
 
@@ -221,11 +265,21 @@ export async function POST(req: Request) {
       });
       const text = result.text.trim();
       if (!text) {
+        appendUsage({ ts: Date.now(), tier, provider: info.name, model: info.model, ok: false, error: "empty_answer" });
         return reply(502, { ok: false, mode: "stub", error: "empty_answer", message: "上游返回空文本" });
       }
+      appendUsage({
+        ts: Date.now(),
+        tier,
+        provider: info.name,
+        model: info.model,
+        ok: true,
+        tokens: { input: result.usage?.inputTokens ?? null, output: result.usage?.outputTokens ?? null },
+      });
       return reply(200, {
         ok: true,
         mode: "live",
+        tier,
         text,
         provider: info.name,
         model: info.model,
@@ -244,9 +298,18 @@ export async function POST(req: Request) {
     } catch (e) {
       const aborted = ac.signal.aborted;
       const r = redactError(e, provider.apiKey);
+      appendUsage({
+        ts: Date.now(),
+        tier,
+        provider: info.name,
+        model: info.model,
+        ok: false,
+        error: aborted ? "upstream_timeout" : "upstream_error",
+      });
       return reply(502, {
         ok: false,
         mode: "stub",
+        tier,
         error: aborted ? "upstream_timeout" : "upstream_error",
         message: aborted
           ? `上游超时（${Math.round(UPSTREAM_TIMEOUT_MS / 1000)}s）——原问已保留，可重试`
@@ -305,6 +368,7 @@ export async function POST(req: Request) {
     clearTimeout(overall);
     if (inactivity) clearTimeout(inactivity);
     const r = redactError(e, provider.apiKey);
+    appendUsage({ ts: Date.now(), tier, provider: info.name, model: info.model, ok: false, error: "upstream_error" });
     return reply(502, {
       ok: false,
       mode: "stub",
@@ -318,6 +382,7 @@ export async function POST(req: Request) {
   clearTimeout(overall);
   if (inactivity) clearTimeout(inactivity);
   if (preflightError != null) {
+    appendUsage({ ts: Date.now(), tier, provider: info.name, model: info.model, ok: false, error: "upstream_error" });
     return reply(502, {
       ok: false,
       mode: "stub",
@@ -331,6 +396,7 @@ export async function POST(req: Request) {
   if (firstDelta == null) {
     if (streamErr != null) {
       const r = redactError(streamErr, provider.apiKey);
+      appendUsage({ ts: Date.now(), tier, provider: info.name, model: info.model, ok: false, error: "upstream_error" });
       return reply(502, {
         ok: false,
         mode: "stub",
@@ -341,6 +407,7 @@ export async function POST(req: Request) {
         ...r,
       });
     }
+    appendUsage({ ts: Date.now(), tier, provider: info.name, model: info.model, ok: false, error: "empty_answer" });
     return reply(502, { ok: false, mode: "stub", error: "empty_answer", message: "上游返回空文本" });
   }
   // 成功起流：总时长闸从现在重开（inactivity 由 bump 管）。
@@ -348,6 +415,7 @@ export async function POST(req: Request) {
 
   const metaEvent = {
     type: "meta",
+    tier,
     provider: info.name,
     model: info.model,
     pageWindow: g.pageWindow
@@ -391,15 +459,32 @@ export async function POST(req: Request) {
         // onError 记到错（迭代器静默 done 的中途上游错）→ 发 error 行不发假 done：已收文本保留可重试。
         if (streamErr != null) {
           const r = redactError(streamErr, provider.apiKey);
+          appendUsage({ ts: Date.now(), tier, provider: info.name, model: info.model, ok: false, error: "upstream_error" });
           send({
             type: "error",
             message: `上游流中断——已收文本保留，可重试（${r.detail || "无详情"}${r.statusCode != null ? ` · 上游 ${r.statusCode}` : ""}）`,
           });
         } else {
+          appendUsage({
+            ts: Date.now(),
+            tier,
+            provider: info.name,
+            model: info.model,
+            ok: true,
+            ...(usage ? { tokens: { input: usage.inputTokens ?? null, output: usage.outputTokens ?? null } } : {}),
+          });
           send({ type: "done", ...(finishReason != null ? { finishReason } : {}), ...(usage ? { usage } : {}) });
         }
       } catch (e) {
         const r = redactError(e, provider.apiKey);
+        appendUsage({
+          ts: Date.now(),
+          tier,
+          provider: info.name,
+          model: info.model,
+          ok: false,
+          error: ac.signal.aborted ? "upstream_timeout" : "upstream_error",
+        });
         try {
           send({
             type: "error",

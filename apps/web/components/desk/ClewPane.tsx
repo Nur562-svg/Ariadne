@@ -30,6 +30,9 @@ import {
   mergeAtomDraft,
 } from "@/lib/atom-draft";
 
+/** T68 D：/api/clew/status 的档位行（不含钥）。 */
+type TierInfo = { id: string; label: string; zh?: string; available: boolean; provider?: string | null; model?: string | null };
+
 /** T33 D：stub 气泡内的 muted 行动链（对页/练/核）。returnTo 有值时点前写 return 短链。 */
 type ActionLink = { label: string; href: string; returnTo?: { href: string; label: string } };
 /**
@@ -55,11 +58,28 @@ type AssistantMsg = {
   meta?: ClewAnswerMeta;
   errorText?: string;
   patchEntries?: SuggestPatchEntry[];
+  /** T68 D：发送时快照的档（重试复用；live 短标点名）。 */
+  tier?: string;
 };
 type Msg = { role: "user"; text: string } | AssistantMsg | { role: "note"; text: string };
 type Tab = "chat" | "changes" | "queue";
-/** T66 G：/api/clew/status 探针结果（不调模型、不含钥）；null = 探测中。 */
-type Capability = { mode: "live" | "stub"; provider?: string; model?: string };
+/** T66 G / T68 B：/api/clew/status 探针结果（不调模型、不含钥）；null = 探测中。 */
+type Capability = {
+  mode: "live" | "stub";
+  provider?: string;
+  model?: string;
+  /** T68：三档可用性（芯片置灰用）+ 本机今日用量（底栏行）。 */
+  tiers?: TierInfo[];
+  usageToday?: number;
+};
+/** T68 D：上次档选择的 sessionStorage 新键（不动 study/heye/atom-draft 任何既有键）。 */
+const CLEW_TIER_KEY = "ariadne.clew.tier.v1";
+const TIER_IDS = ["fast", "reasoning", "long-context"] as const;
+const TIER_LABEL: Record<string, string> = {
+  fast: "Fast",
+  reasoning: "Reasoning",
+  "long-context": "Long-context",
+};
 
 /** T33 D：点气泡行动链时兑现发送时快照的 return（无快照 = 无可回上下文，不写）。 */
 function fireLinkReturn(l: ActionLink) {
@@ -235,22 +255,48 @@ export default function ClewPane() {
     }
     setFillStates((prev) => ({ ...prev, [i]: persisted ? "done" : "unpersisted" }));
   }
-  /** T66 G：挂载探一次 /api/clew/status（不调模型）；失败 → stub（fail-closed）。 */
+  /** T66 G / T68 B：挂载探一次 /api/clew/status（不调模型）；失败 → stub（fail-closed）。 */
   const [cap, setCap] = useState<Capability | null>(null);
+  /** T68 D：当前档（fast 缺省；sessionStorage 记上次选择；非法值回落 fast）。 */
+  const [tier, setTier] = useState<string>("fast");
   const threadRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // 恢复上次档选择：微任务里 set——不在 effect 体内同步 setState（级联渲染），也不进
+    // useState 初始化器（SSR/客户端初值不一致会 hydration mismatch；mount 后一帧生效即可）。
+    try {
+      const saved = window.sessionStorage.getItem(CLEW_TIER_KEY);
+      if (saved === "fast" || saved === "reasoning" || saved === "long-context") {
+        queueMicrotask(() => setTier(saved));
+      }
+    } catch {
+      /* 隐私模式读失败 → 缺省 fast */
+    }
     let alive = true;
     fetch("/api/clew/status", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
-      .then((j: { mode?: string; provider?: string | null; model?: string | null } | null) => {
-        if (!alive) return;
-        if (j && j.mode === "live") {
-          setCap({ mode: "live", provider: j.provider ?? undefined, model: j.model ?? undefined });
-        } else {
-          setCap({ mode: "stub" });
-        }
-      })
+      .then(
+        (j: {
+          mode?: string;
+          provider?: string | null;
+          model?: string | null;
+          tiers?: TierInfo[];
+          usage?: { today?: number };
+        } | null) => {
+          if (!alive) return;
+          if (j && j.mode === "live") {
+            setCap({
+              mode: "live",
+              provider: j.provider ?? undefined,
+              model: j.model ?? undefined,
+              tiers: Array.isArray(j.tiers) ? j.tiers : undefined,
+              usageToday: typeof j.usage?.today === "number" ? j.usage.today : undefined,
+            });
+          } else {
+            setCap({ mode: "stub", tiers: Array.isArray(j?.tiers) ? j.tiers : undefined });
+          }
+        },
+      )
       .catch(() => {
         if (alive) setCap({ mode: "stub" });
       });
@@ -258,6 +304,23 @@ export default function ClewPane() {
       alive = false;
     };
   }, []);
+
+  /** T68 D：选档（sessionStorage 记忆；新键，不动既有 storage）。 */
+  function pickTier(id: string) {
+    setTier(id);
+    try {
+      window.sessionStorage.setItem(CLEW_TIER_KEY, id);
+    } catch {
+      /* 写失败不影响本次会话选择 */
+    }
+  }
+
+  /** T68 D：档可用性——探针未回（null）不拦（服务端最终把关）；已回则按 tiers[].available。 */
+  function tierAvailable(id: string): boolean {
+    if (!cap?.tiers) return true;
+    const t = cap.tiers.find((x) => x.id === id);
+    return t ? t.available : true;
+  }
 
   // 审计结论（review-fix-integrity G）：外层曾同时订阅 study/heye 两 store 打 tick，
   // 但 ClewPane 自身渲染只消费 clew context（书/章/页/卡/表面），不读任何本机 store——
@@ -338,18 +401,23 @@ export default function ClewPane() {
    *  - 503 no_provider → 诚实 stub（stubReply 族）；其它 4xx/5xx → error（服务端短讯）。
    * 客户端永不写任何 store / 不 PATCH / 不碰钥；「填入本机草稿」只认用户点击（F）。
    */
-  async function run(q: string, ctx: ClewSuggestContext, stubText: string) {
+  async function run(q: string, ctx: ClewSuggestContext, stubText: string, tierUsed: string) {
     setSending(true);
     const ac = new AbortController();
     abortRef.current = ac;
+    /** T68 F：本机用量近似 bump——只对真打了上游的（200 / 502）+1；4xx/503/429 不计。 */
+    const bumpUsage = () => {
+      setCap((c) => (c && c.usageToday != null ? { ...c, usageToday: c.usageToday + 1 } : c));
+    };
     try {
       const res = await fetch("/api/clew/suggest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: q, context: ctx }),
+        body: JSON.stringify({ question: q, context: ctx, tier: tierUsed }),
         signal: ac.signal,
       });
       if (!res.ok) {
+        if (res.status === 502) bumpUsage();
         const j: Record<string, unknown> | null = await res.json().catch(() => null);
         if (res.status === 503 && j?.error === "no_provider") {
           updatePending({ mode: "stub", text: stubText, meta: { mode: "stub" } });
@@ -359,6 +427,7 @@ export default function ClewPane() {
         }
         return;
       }
+      bumpUsage();
       if (!res.body) {
         updatePending({ mode: "error", errorText: "响应无流体——原问已保留，可重试" });
         return;
@@ -433,6 +502,8 @@ export default function ClewPane() {
   function send(text: string) {
     const q = text.trim();
     if (!q || sending) return;
+    /** T68 D：所选档探针已判不可用 → 不发（置灰同源；探针未回不拦，服务端把关）。 */
+    if (!tierAvailable(tier)) return;
     /**
      * T33 D：stub 气泡附 muted 行动链——对页（有书+页）/ 去学习环 / 去核页（T31 回落链）。
      * 练/核链的 return payload 在发送时快照：气泡是历史，点旧气泡回「当时问的」上下文，
@@ -458,11 +529,11 @@ export default function ClewPane() {
     setMessages((prev) => [
       ...prev,
       { role: "user", text: q },
-      { role: "assistant", mode: "pending", text: "", links, question: q, ctx },
+      { role: "assistant", mode: "pending", text: "", links, question: q, ctx, tier },
     ]);
     setDraft("");
     scrollThread();
-    void run(q, ctx, stubReply(clew));
+    void run(q, ctx, stubReply(clew), tier);
   }
 
   /** T66 E：失败条重试——复用快照的问与上下文（不是当前页），气泡回 pending 再跑一次。 */
@@ -476,7 +547,7 @@ export default function ClewPane() {
         return { ...x, mode: "pending", errorText: undefined, patchEntries: undefined };
       }),
     );
-    void run(m.question, m.ctx, stubReply(clew));
+    void run(m.question, m.ctx, stubReply(clew), m.tier ?? tier);
   }
 
   const bookHref = clew.book ? `/desk?book=${encodeURIComponent(clew.book.id)}` : "/desk";
@@ -730,7 +801,7 @@ export default function ClewPane() {
                       className={`mono mr-1 text-[10px] ${m.mode === "error" ? "text-status-error" : "text-muted"}`}
                     >
                       {m.mode === "live"
-                        ? `live · ${m.meta?.provider ?? "模型"}`
+                        ? `live · ${m.tier ?? "fast"} · ${m.meta?.provider ?? "模型"}`
                         : m.mode === "pending"
                           ? "…"
                           : m.mode === "error"
@@ -836,6 +907,41 @@ export default function ClewPane() {
           </div>
 
           <div className="border-t border-line p-3">
+            {/* T68 D：档位芯片（status.tiers 驱动可用/置灰；选中朱砂 soft，对齐 Changes 筛选芯片
+                气质——一种处理一种含义，不引第二品牌色）。上次选择记 sessionStorage 新键
+                ariadne.clew.tier.v1（不动任何既有键）。置灰档不可发。 */}
+            <div className="mb-2 flex flex-wrap items-center gap-1.5" role="group" aria-label="Clew 档位">
+              {TIER_IDS.map((id) => {
+                const info = cap?.tiers?.find((t) => t.id === id);
+                const on = tier === id;
+                const usable = tierAvailable(id);
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => usable && pickTier(id)}
+                    disabled={!usable}
+                    aria-pressed={on}
+                    title={
+                      usable
+                        ? info?.model
+                          ? `${info.model}${info.provider ? ` · ${info.provider}` : ""}`
+                          : "默认档 fast"
+                        : "该档未配置可用钥（服务端 env）——不静默换档"
+                    }
+                    className={`rounded-full border px-2.5 py-0.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
+                      on
+                        ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
+                        : usable
+                          ? "border-line text-muted hover:border-cinnabar hover:text-cinnabar"
+                          : "cursor-not-allowed border-line text-muted opacity-40"
+                    }`}
+                  >
+                    {TIER_LABEL[id]}
+                  </button>
+                );
+              })}
+            </div>
             <div className="flex items-end gap-2">
               <textarea
                 value={draft}
@@ -853,7 +959,7 @@ export default function ClewPane() {
               />
               <button
                 onClick={() => send(draft)}
-                disabled={!draft.trim() || sending}
+                disabled={!draft.trim() || sending || !tierAvailable(tier)}
                 aria-busy={sending || undefined}
                 className="shrink-0 rounded-lg bg-cinnabar px-4 py-2 text-sm text-white transition-opacity disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
               >
@@ -891,8 +997,14 @@ export default function ClewPane() {
       )}
 
       {/* T66 G：诚实脚注同源常量（lib/clew-suggest.ts）——不做诊断 · 回答≠已核 · 永不写 seed ·
-          页码以印刷页为准 · 小能力只读。禁掌握% / Due。 */}
-      <p className="border-t border-line px-4 py-2 text-xs text-muted">{CLEW_HONESTY_FOOTNOTE}</p>
+          页码以印刷页为准 · 小能力只读。禁掌握% / Due。
+          T68 F：本机今日用量次级行（status.usage 计数 + 本会话增量）——非云账单 · 非掌握度。 */}
+      <p className="border-t border-line px-4 py-2 text-xs text-muted">
+        {CLEW_HONESTY_FOOTNOTE}
+        {cap?.usageToday != null ? (
+          <span className="ml-2 text-[11px]">本机今日 {cap.usageToday} 次 · 非云账单 · 非掌握度</span>
+        ) : null}
+      </p>
     </aside>
   );
 }

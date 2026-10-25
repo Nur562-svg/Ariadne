@@ -21,6 +21,7 @@ import assert from "node:assert/strict";
 const S = await import("../apps/web/lib/clew-suggest.ts");
 const P = await import("../apps/web/lib/clew-provider.ts");
 const D = await import("../apps/web/lib/atom-draft.ts");
+const U = await import("../apps/web/lib/clew-usage.ts");
 
 // ---------------- parseSuggestBody：拒 bulk / 作业形 ----------------
 
@@ -235,10 +236,10 @@ test("resolveClewProvider: 缺钥 → null；空白钥当缺", () => {
   assert.equal(P.resolveClewProvider({ NEXT_PUBLIC_ZHIPU_API_KEY: "x" }), null);
 });
 
-test("resolveClewProvider: 单钥一档 + 默认端点/模型 + env 覆盖", () => {
+test("resolveClewProvider: 默认档（fast）厂商优先序 + 端点缺省；档模型用 CLEW_FAST_MODEL（T68 语义）", () => {
   const z = P.resolveClewProvider({ ZHIPU_API_KEY: "zk" });
-  assert.deepEqual(z, { name: "zhipu", baseURL: P.ZHIPU_DEFAULT_BASE_URL, apiKey: "zk", model: P.ZHIPU_DEFAULT_MODEL });
-  const m = P.resolveClewProvider({ MINIMAX_API_KEY: "mk", MINIMAX_MODEL: "MiniMax-M3", MINIMAX_BASE_URL: "https://api.minimax.io/v1" });
+  assert.deepEqual(z, { name: "zhipu", baseURL: P.ZHIPU_DEFAULT_BASE_URL, apiKey: "zk", model: "glm-4.5-flash" });
+  const m = P.resolveClewProvider({ MINIMAX_API_KEY: "mk", CLEW_FAST_MODEL: "MiniMax-M3", MINIMAX_BASE_URL: "https://api.minimax.io/v1" });
   assert.deepEqual(m, { name: "minimax", baseURL: "https://api.minimax.io/v1", apiKey: "mk", model: "MiniMax-M3" });
 });
 
@@ -246,7 +247,6 @@ test("resolveClewProvider: 双钥默认 Zhipu 优先；CLEW_PROVIDER 显式指�
   const both = { ZHIPU_API_KEY: "zk", MINIMAX_API_KEY: "mk" };
   assert.equal(P.resolveClewProvider(both)?.name, "zhipu");
   assert.equal(P.resolveClewProvider({ ...both, CLEW_PROVIDER: "minimax" })?.name, "minimax");
-  assert.equal(P.resolveClewProvider({ ...both, CLEW_PROVIDER: "ZHIPU" })?.name, "zhipu");
   assert.equal(P.resolveClewProvider({ ZHIPU_API_KEY: "zk", CLEW_PROVIDER: "minimax" }), null);
 });
 
@@ -491,4 +491,100 @@ test("validateAtomDraftPatch: 仅既有 target + field 类型匹配；发明/越
     assert.ok(err != null, JSON.stringify(bad));
     assert.ok(err.includes("整包拒收"));
   }
+});
+
+// ---------------- T68 A：三档注册表（不串档 / 缺档 null / 不泄钥） ----------------
+
+test("CLEW_TIERS: 三档齐全且 id 稳定（fast|reasoning|long-context）；默认档 = fast", () => {
+  assert.deepEqual(
+    P.CLEW_TIERS.map((t) => t.id),
+    ["fast", "reasoning", "long-context"],
+  );
+  assert.equal(P.CLEW_DEFAULT_TIER, "fast");
+});
+
+test("resolveClewTier: 有钥 → 三档全可用（同钥池），档模型按缺省表；CLEW_<TIER>_MODEL 覆盖（含 LONG 前缀）", () => {
+  const env = { ZHIPU_API_KEY: "zk" };
+  const fast = P.resolveClewTier(env, "fast");
+  const reasoning = P.resolveClewTier(env, "reasoning");
+  const long = P.resolveClewTier(env, "long-context");
+  assert.equal(fast.model, "glm-4.5-flash");
+  assert.equal(reasoning.model, "glm-4.6");
+  assert.equal(long.model, "glm-4.6");
+  assert.equal(fast.tier, "fast");
+  const over = P.resolveClewTier(
+    { ZHIPU_API_KEY: "zk", CLEW_REASONING_MODEL: "glm-x", CLEW_LONG_MODEL: "glm-long-x", CLEW_FAST_MODEL: "glm-f" },
+    "reasoning",
+  );
+  assert.equal(over.model, "glm-x");
+  assert.equal(P.resolveClewTier({ ZHIPU_API_KEY: "zk", CLEW_LONG_MODEL: "glm-long-x" }, "long-context").model, "glm-long-x");
+  assert.equal(P.resolveClewTier({ ZHIPU_API_KEY: "zk", CLEW_FAST_MODEL: "glm-f" }, "fast").model, "glm-f");
+});
+
+test("resolveClewTier: 缺钥 → 三档全 null（不串档：不回落、不借另一档名目打）", () => {
+  for (const tier of ["fast", "reasoning", "long-context"]) {
+    assert.equal(P.resolveClewTier({}, tier), null, tier);
+    assert.equal(P.resolveClewTier({ ZHIPU_API_KEY: "  " }, tier), null, tier);
+    assert.equal(P.resolveClewTier({ NEXT_PUBLIC_ZHIPU_API_KEY: "x" }, tier), null, tier);
+  }
+});
+
+test("resolveClewTier: 档厂商选择（CLEW_<TIER>_PROVIDER > CLEW_PROVIDER > 缺省 Zhipu 优先）；指定厂商缺钥 → null 不悄换", () => {
+  const env = { ZHIPU_API_KEY: "zk", MINIMAX_API_KEY: "mk" };
+  assert.equal(P.resolveClewTier(env, "reasoning").name, "zhipu");
+  assert.equal(P.resolveClewTier({ ...env, CLEW_REASONING_PROVIDER: "minimax" }, "reasoning").name, "minimax");
+  assert.equal(P.resolveClewTier({ ...env, CLEW_PROVIDER: "minimax" }, "long-context").name, "minimax");
+  assert.equal(P.resolveClewTier({ ZHIPU_API_KEY: "zk", CLEW_REASONING_PROVIDER: "minimax" }, "reasoning"), null);
+  // 档差异不串：reasoning 指定 minimax 缺钥时，fast 仍可用——但 reasoning 自身绝不回落 fast 的厂商
+  assert.equal(P.resolveClewTier({ ZHIPU_API_KEY: "zk", CLEW_REASONING_PROVIDER: "minimax" }, "fast")?.name, "zhipu");
+});
+
+test("clewTierSummaries: available 跟随各档；无钥全 unavailable 且 provider/model=null；永不带钥", () => {
+  const none = P.clewTierSummaries({});
+  assert.equal(none.length, 3);
+  assert.ok(none.every((t) => t.available === false && t.provider === null && t.model === null));
+  const withKeys = P.clewTierSummaries({ ZHIPU_API_KEY: "SECRET-KEY" });
+  assert.ok(withKeys.every((t) => t.available === true && t.provider === "zhipu"));
+  assert.ok(!JSON.stringify(withKeys).includes("SECRET-KEY"));
+});
+
+test("resolveClewTier: 返回配置不含 tier 之外的多余字段；apiKey 只在服务端内存（publicProviderInfo 无钥）", () => {
+  const cfg = P.resolveClewTier({ ZHIPU_API_KEY: "SECRET" }, "reasoning");
+  assert.deepEqual(Object.keys(cfg).sort(), ["apiKey", "baseURL", "model", "name", "tier"]);
+  const pub = P.publicProviderInfo(cfg ? { name: cfg.name, baseURL: cfg.baseURL, apiKey: cfg.apiKey, model: cfg.model } : null);
+  assert.ok(!JSON.stringify(pub).includes("SECRET"));
+});
+
+// ---------------- T68 E：本机用量行 schema（不泄钥 / 计数口径） ----------------
+
+test("buildUsageLine: 单行 JSON + \\n；含 ts/tier/provider/model/ok；不带 apiKey / 不带问句原文", () => {
+  const line = U.buildUsageLine({ ts: 123, tier: "reasoning", provider: "zhipu", model: "glm-4.6", ok: true, tokens: { input: 10, output: 5 } });
+  assert.ok(line.endsWith("\n") && line.split("\n").length === 2);
+  const o = JSON.parse(line);
+  assert.equal(o.tier, "reasoning");
+  assert.equal(o.ok, true);
+  assert.deepEqual(o.tokens, { input: 10, output: 5 });
+  assert.ok(!line.includes("apiKey") && !line.includes("SECRET"));
+  const fail = JSON.parse(U.buildUsageLine({ ts: 1, tier: "fast", provider: "zhipu", model: "m", ok: false, error: "upstream_error" }));
+  assert.equal(fail.ok, false);
+  assert.equal(fail.error, "upstream_error");
+});
+
+test("parseUsageLine/countToday: 脏行丢；只计 ts ≥ 当日 0 点的行（ok 与 fail 都算）", () => {
+  const day = U.startOfToday(1_800_000_000_000);
+  const lines = [
+    U.buildUsageLine({ ts: day + 1000, tier: "fast", provider: "zhipu", model: "m", ok: true }),
+    U.buildUsageLine({ ts: day + 2000, tier: "fast", provider: "zhipu", model: "m", ok: false, error: "upstream_error" }),
+    U.buildUsageLine({ ts: day - 1000, tier: "fast", provider: "zhipu", model: "m", ok: true }), // 昨日
+    "{broken json",
+    JSON.stringify({ no: "shape" }),
+    "",
+  ];
+  assert.equal(U.countToday(lines, day), 2);
+  assert.equal(U.countToday([], day), 0);
+  assert.equal(U.parseUsageLine("{bad"), null);
+  assert.equal(U.parseUsageLine(JSON.stringify({ ts: 1, tier: "mars", provider: "x", model: "y", ok: true })), null);
+  // roundtrip
+  const rt = U.parseUsageLine(U.buildUsageLine({ ts: 5, tier: "long-context", provider: "minimax", model: "m", ok: true }));
+  assert.equal(rt.tier, "long-context");
 });

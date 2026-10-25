@@ -539,6 +539,8 @@ export function buildSuggestPatchText(
 export type ClewStreamEvent =
   | {
       type: "meta";
+      /** T68：本次调用的档（fast|reasoning|long-context）。 */
+      tier: string;
       provider: string;
       model: string;
       pageWindow: { page: number; chars: number; truncated: boolean; source: "server" | "client" } | null;

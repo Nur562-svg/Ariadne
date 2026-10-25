@@ -35,3 +35,5 @@ data/qa/*.extract-page.json
 data/qa/*.extract-density.json
 data/qa/*.quality-rollup.json
 data/qa/*.seed-apply-dryrun.json
+# T68 Clew 本机用量记数（append-only · 非真源 · 非云账单）
+data/qa/clew-usage.jsonl
