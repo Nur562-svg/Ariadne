@@ -6,6 +6,7 @@
 
 Clew 是书桌右栏的**只读复习助手**：一问 + 当前书/章/页/卡 → 流式答（可带「仅既有原子」的填空建议补丁）。
 它**永不**写 seed / entities / blocks / `verified:true`；带走只靠剪贴板或你显式点击「填入本机草稿」。
+补丁的 `before` 对齐为**当前卡 seed 现值**（空字段为 null）——只是建议，人核后才进草稿。
 三档只是**模型挡位**，不是权限层级：
 
 | 档 | id | 用途 | Zhipu 缺省模型 | 覆盖变量 |
@@ -15,6 +16,10 @@ Clew 是书桌右栏的**只读复习助手**：一问 + 当前书/章/页/卡 �
 | Long-context | `long-context` | 长页/长卡 | `glm-4.6` | `CLEW_LONG_MODEL` |
 
 Minimax 三档缺省都是 `MiniMax-M2`（档语义靠 `CLEW_<TIER>_MODEL` 覆盖区分）。
+
+接地按档（T69）：Long-context 档的服务端接地是**同章有界多页**（当前页 → 请求上下文 cite 页∩同章 →
+近邻补齐；至多 5 页、总 ~12000 字，常量写死；因字顶未装的页如实报数）——**不是**整章全书塞 prompt；
+Fast / Reasoning 仍是单页 OCR 小窗。扩窗是服务端自取，客户端 `pages[]` 作业形仍 422 拒收。
 
 ## 1. 接线（5 步）
 
@@ -41,7 +46,7 @@ curl -s http://localhost:3000/api/clew/status | jq
     { "id": "reasoning",    "label": "Reasoning",    "available": true, "provider": "zhipu", "model": "glm-4.6" },
     { "id": "long-context", "label": "Long-context", "available": true, "provider": "zhipu", "model": "glm-4.6" }
   ],
-  "usage": { "today": 0, "note": "本机记数 · 非云账单" }, "readonly": true }
+  "usage": { "today": 0, "byTier": { "fast": 0, "reasoning": 0, "long-context": 0 }, "note": "本机记数 · 非云账单" }, "readonly": true }
 ```
 
 - `mode:"stub"` + 全 `available:false` = 没读到钥（看 §4）。
@@ -57,7 +62,7 @@ curl -sN -X POST http://localhost:3000/api/clew/suggest \
   -d '{"question":"这一页讲什么？","tier":"fast","context":{"book":{"id":"immunology-3rd","title":"免疫学"},"chapter":{"id":"ch01","title":"概述"},"page":3}}'
 ```
 
-流式 NDJSON：`meta`（含 `tier`）→ `delta`* → `done`｜`error`。要 T66 式一次性 JSON 加 `"stream": false`。
+流式 NDJSON：`meta`（含 `tier` 与 `groundPages`——本次接地页平铺，多页 = Long-context 同章有界）→ `delta`* → `done`｜`error`。要 T66 式一次性 JSON 加 `"stream": false`。
 
 ## 4. 故障表
 
