@@ -1,15 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import type { StudyAtom } from "@/lib/entities";
-import {
-  countPoolGrades,
-  loadGrades,
-  subscribeStudyGrades,
-  type GradeMap,
-  type StudyMode,
-} from "@/lib/study";
+import { countPoolGrades, type StudyMode } from "@/lib/study";
+import { useStudyGrades } from "@/lib/use-study-grades";
 
 /**
  * /study sticky 档位 tablist 薄客户端岛（T41 A）。
@@ -19,10 +13,9 @@ import {
  * - unknown/ungraded 用 countPoolGrades 池计数（挂载后读 ariadne.study.v1 + 订阅广播）；
  * - n===0 且非当前档 → 纯文 span（aria-disabled + title，保 tab chrome 不可点）；
  * - 当前档无论 n 保持指示（aria-selected + bg-cinnabar text-white，恒可点自指刷新）。
- * 未 ready（首帧未读本机盘）：非当前档一律纯文——宁可少一帧可点，不渲染可点谎言。
  * T48 E：档位标签后缀标 N（与门控 countOf 同源，视觉对齐 T47 SectionToc 计数 mono 后缀）——
- * 练中看得见各档存量；未 ready（pool null）不显数字（省略，禁止「…」式含糊或造假正数）；
- * N=0 非当前档纯文降级契约不变（本刀只加展示，不改 T41 门禁）。
+ * 练中看得见各档存量；SSR/首帧空仓如实标 0（禁止「…」式含糊或造假正数，T71 起
+ * grades 无 null 态）；N=0 非当前档纯文降级契约不变（本刀只加展示，不改 T41 门禁）。
  * 视觉保持既有 sticky tab chrome（rounded-md tab，非 ModeChips 圆 pill）；空/完成态
  * StudyModeChips（T38 E）不动、不插进练中会话；StickyModeGate / ScopeCounts / 章芯片 /
  * 清本页 / CrossScopeReturnLink 均不在本岛职责内。
@@ -44,18 +37,15 @@ export default function StickyStudyModeTabs({
   /** 三档深链（study/page qs({ mode })，保留 card/book/chapter/page）。 */
   hrefs: { all: string; unknown: string; ungraded: string };
 }) {
-  const [grades, setGrades] = useState<GradeMap | null>(null);
+  // T71：共享 useSyncExternalStore 口——SSR/首帧空仓即合法口径（0 是真实空档读数，
+  // 不造假正数；落盘后微任务内切真值）。T48 的「未 ready 不显数字」随 null-grades
+  // 概念一并退役：空档如实标 0、非当前档 N=0 纯文降级契约不变。
+  const grades = useStudyGrades();
 
-  useEffect(() => {
-    setGrades(loadGrades());
-    return subscribeStudyGrades(() => setGrades(loadGrades()));
-  }, []);
-
-  const pool = grades ? countPoolGrades(atoms, grades) : null;
-  /** 门控计数：all=池全集；unknown/ungraded=本机档计数（未 ready → null，全部按空处理）。 */
+  const pool = countPoolGrades(atoms, grades);
+  /** 门控计数：all=池全集；unknown/ungraded=本机档计数（空仓 → 0，如实）。 */
   const countOf = (m: StudyMode): number | null => {
     if (m === "all") return atoms.length;
-    if (!pool) return null;
     return m === "unknown" ? pool.unknown : pool.ungraded;
   };
 
@@ -68,11 +58,11 @@ export default function StickyStudyModeTabs({
       {TABS.map(([m, label]) => {
         const n = countOf(m);
         const current = mode === m;
-        // T48 E：就绪档（n 非 null）后缀真 N（含 0——空档如实标 0，不造假正数）；未 ready 只显 label。
+        // T48 E：档计数后缀真 N（含 0——空档如实标 0，不造假正数）。
         const countTag = n != null ? (
           <span className="mono ml-1.5 text-[11px] font-normal">{n}</span>
         ) : null;
-        // 当前档恒保持指示（可点自指）；非当前且 N=0（含未 ready）→ 纯文，不进空池。
+        // 当前档恒保持指示（可点自指）；非当前且 N=0 → 纯文，不进空池。
         if (!current && (n === 0 || n == null)) {
           return (
             <span

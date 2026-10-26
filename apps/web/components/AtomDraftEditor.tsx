@@ -12,27 +12,13 @@ import {
   loadAtomDraftStore,
   mergeAtomDraft,
   setAtomDraft,
-  subscribeAtomDraftStore,
-  type AtomDraftStore,
 } from "@/lib/atom-draft";
+import { useAtomDraftStore } from "@/lib/use-atom-draft-store";
 
 const DIFF_ZH = { what: "识记", why: "机制", case: "应用" } as const;
 
 /** 三分列短句（H）：草稿 ≠ seed · ≠ heye 本机已对 · ≠ study 练分（多处复用，不另造措辞）。 */
 const DRAFT_DISCLAIMER = "草稿 ≠ seed 已核 · 草稿 ≠ heye 本机已对 · 草稿 ≠ study 练分";
-
-/** 订阅本机草稿仓（对齐 LocalProgressStrip 的读法：mount 后读 + 订阅重读；SSR 一律空）。 */
-function useAtomDraftStore(): { store: AtomDraftStore; ready: boolean } {
-  const [store, setStore] = useState<AtomDraftStore>({});
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    setStore(loadAtomDraftStore());
-    setReady(true);
-    const un = subscribeAtomDraftStore(() => setStore(loadAtomDraftStore()));
-    return un;
-  }, []);
-  return { store, ready };
-}
 
 /** 隐私模式写失败的可感错误行（H）：不装已持久化。 */
 function PersistWarn({ persisted }: { persisted: boolean | null }) {
@@ -89,6 +75,7 @@ function AtomDraftEditor({
 
   // 打开时以「seed ⊕ 已有草稿」为初值（草稿优先）；草稿为空串的字段回落 seed 文本，
   // 让编辑器始终从可读全文出发，而不是从空白吞掉 seed。
+  // T71 DEFER: form-seed — 非 uSES（受控表单初值一次性回填，留 effect）。
   useEffect(() => {
     if (seeded) return;
     const cur = loadAtomDraftStore()[key];
@@ -179,14 +166,13 @@ export function AtomDraftLine({
   /** seed 口径不完备（trim 空 prompt ∨ 空 answer，服务端按 T55 incompleteAtoms 同口径算）。 */
   incomplete?: boolean;
 }) {
-  const { store, ready } = useAtomDraftStore();
+  // T71：共享 useSyncExternalStore 口（空仓 entry=undefined → 差异/overlay 均回落 seed 原文，同旧 ready=false 分支）。
+  const store = useAtomDraftStore();
   const entry = store[atomDraftKey(cardId, atomId)];
-  const changed =
-    ready &&
-    atomDraftDiffers(
-      { prompt: seedPrompt, answer: seedAnswer, citeQuote: seedCiteQuote ?? null },
-      entry,
-    );
+  const changed = atomDraftDiffers(
+    { prompt: seedPrompt, answer: seedAnswer, citeQuote: seedCiteQuote ?? null },
+    entry,
+  );
   const display = applyAtomDraft(
     { id: atomId, prompt: seedPrompt, answer: seedAnswer, difficulty: seedDifficulty },
     entry,
@@ -198,7 +184,7 @@ export function AtomDraftLine({
       <div className="flex items-start justify-between gap-3">
         <p className="min-w-0 font-medium leading-7">
           <span className="mono mr-2 align-middle text-[11px] text-muted">{atomId}</span>
-          {ready ? display.prompt : seedPrompt}
+          {display.prompt}
         </p>
         <span className="flex shrink-0 items-center gap-2">
           {changed ? (
@@ -216,7 +202,7 @@ export function AtomDraftLine({
           显示答案
         </summary>
         <p className="mt-2 border-l-2 border-cinnabar/40 pl-3 text-sm leading-7">
-          {ready ? display.answer : seedAnswer}
+          {display.answer}
         </p>
       </details>
       <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -267,14 +253,16 @@ export function FieldDraftLine({
   seedValue: string;
 }) {
   const key = fieldDraftKey(cardId, fieldIndex);
-  const { store, ready } = useAtomDraftStore();
+  // T71：共享 useSyncExternalStore 口（空仓 entry=undefined → 回落 seed 原文，同旧 ready=false 分支）。
+  const store = useAtomDraftStore();
   const entry = store[key];
-  const changed = ready && fieldDraftDiffers(seedValue, entry);
+  const changed = fieldDraftDiffers(seedValue, entry);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(seedValue);
   const [seeded, setSeeded] = useState(false);
   const [persisted, setPersisted] = useState<boolean | null>(null);
 
+  // T71 DEFER: form-seed — 非 uSES（受控输入框初值一次性回填，留 effect）。
   useEffect(() => {
     if (seeded) return;
     const cur = loadAtomDraftStore()[key];
@@ -285,7 +273,7 @@ export function FieldDraftLine({
   return (
     <div>
       <p className="text-sm leading-7 text-foreground/90">
-        {ready && entry ? applyFieldDraft({ label: "", value: seedValue }, entry).value : seedValue}
+        {entry ? applyFieldDraft({ label: "", value: seedValue }, entry).value : seedValue}
         {changed ? (
           <span className="ml-2 rounded border border-amber-300 px-1.5 py-0.5 align-middle text-[11px] text-status-warn">
             已改草稿

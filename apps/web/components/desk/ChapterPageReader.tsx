@@ -164,6 +164,7 @@ export default function ChapterPageReader({
   const jumpInputRef = useRef<HTMLInputElement | null>(null);
 
   /** 章切换（芯片 / COP / 邻章）清掉跳页琥珀错，避免跨章残留。 */
+  // T71 DEFER: derived — 非 uSES（UI 派生 reset，留 effect）。
   useEffect(() => {
     setJumpError(null);
   }, [chapterId]);

@@ -30,6 +30,7 @@ export default function ProgressPortability() {
   const [msg, setMsg] = useState<{ kind: "ok" | "warn"; text: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  // T71 DEFER: form-seed — 非 uSES（导出计数一次性回填，留 effect）。
   useEffect(() => {
     const p = exportProgressPayload();
     setCounts({ study: Object.keys(p.study).length, heye: Object.keys(p.heye).length });

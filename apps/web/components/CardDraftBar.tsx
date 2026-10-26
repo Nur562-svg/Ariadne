@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CopyTextButton from "@/components/CopyTextButton";
 import {
   buildAtomDraftPatch,
@@ -8,10 +8,8 @@ import {
   cardDraftCount,
   clearCardDrafts,
   listIncompleteDraftTargets,
-  loadAtomDraftStore,
-  subscribeAtomDraftStore,
-  type AtomDraftStore,
 } from "@/lib/atom-draft";
+import { useAtomDraftStore } from "@/lib/use-atom-draft-store";
 import type { EntityCard } from "@/lib/entities";
 
 /** 三分列短句（H）：草稿 ≠ seed · ≠ heye 本机已对 · ≠ study 练分。 */
@@ -26,20 +24,10 @@ const DRAFT_DISCLAIMER_SHORT = "草稿 ≠ seed 已核 · ≠ heye 本机已对 
  * 质量分 / cite 徽 / 进度条都不读草稿——草稿只在此条与 overlay 显示说话。
  */
 export default function CardDraftBar({ card }: { card: EntityCard }) {
-  const [store, setStore] = useState<AtomDraftStore>({});
-  const [ready, setReady] = useState(false);
+  // T71：共享 useSyncExternalStore 口——空仓即合法首帧（count 如实 0）；无 effect 无 ready 门。
+  const store = useAtomDraftStore();
   const [armClear, setArmClear] = useState(false);
   const [clearPersisted, setClearPersisted] = useState<boolean | null>(null);
-
-  // mount 后读 + 订阅（对齐 LocalProgressStrip：SSR 渲 null，不碰 window）。
-  useEffect(() => {
-    setStore(loadAtomDraftStore());
-    setReady(true);
-    const un = subscribeAtomDraftStore(() => setStore(loadAtomDraftStore()));
-    return un;
-  }, []);
-
-  if (!ready) return null;
 
   const count = cardDraftCount(store, card.id);
   // 真改动口径（与补丁导出同源）：草稿存在但与 seed 逐字段 trim 相同 → 不算可导出改动。

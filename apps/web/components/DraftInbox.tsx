@@ -10,12 +10,11 @@ import {
   buildSeedApplyGuide,
   cardDraftCount,
   listDraftedCardIds,
-  loadAtomDraftStore,
   parseAtomDraftPatch,
-  subscribeAtomDraftStore,
   summarizeDraftStore,
   type AtomDraftStore,
 } from "@/lib/atom-draft";
+import { useAtomDraftStore } from "@/lib/use-atom-draft-store";
 import {
   exportAtomDraftPort,
   importAtomDraftPort,
@@ -57,25 +56,18 @@ export default function DraftInbox({
   /** E：seed 口径 incompleteAtoms>0 的卡摘要（Server T55 同口径实算；Client 交叉草稿态）。 */
   incompleteCardSummaries?: { id: string; name: string; incompleteAtoms: number; chapterId?: string }[];
 }) {
-  const [store, setStore] = useState<AtomDraftStore>({});
-  const [ready, setReady] = useState(false);
+  // T71：共享 useSyncExternalStore 口——空仓即合法首帧（空收件箱如实）；无 effect 无 ready 门。
+  const store = useAtomDraftStore();
   /** 草稿卡 seed 按需快照：id → card（null = 取不到）；fetchState 驱动按钮诚实态。 */
   const [seeds, setSeeds] = useState<Record<string, EntityCard | null>>({});
   const [fetchState, setFetchState] = useState<"idle" | "loading" | "done">("idle");
 
-  useEffect(() => {
-    setStore(loadAtomDraftStore());
-    setReady(true);
-    const un = subscribeAtomDraftStore(() => setStore(loadAtomDraftStore()));
-    return un;
-  }, []);
-
-  const draftedIds = ready ? listDraftedCardIds(store) : [];
+  const draftedIds = listDraftedCardIds(store);
   const draftedKey = draftedIds.join("\u0000");
 
   // 有草稿的卡才取 seed（只读 GET 自家 API；不触任何写路径）。集合变化才重取。
+  // T71 DEFER: one-shot fetch — 非 uSES（草稿集驱动的外部取数，留 effect）。
   useEffect(() => {
-    if (!ready) return;
     const ids = draftedKey ? (draftedKey.split("\u0000") as string[]) : [];
     if (ids.length === 0) {
       setSeeds({});
@@ -105,13 +97,13 @@ export default function DraftInbox({
     return () => {
       alive = false;
     };
-  }, [ready, draftedKey]);
+  }, [draftedKey]);
 
   // 草稿卡 seed 快照（只对有草稿的卡；fetch 完成前 summaries 为空 → 按钮诚实等待态）。
   const seedCards = draftedIds
     .map((id) => seeds[id])
     .filter((c): c is EntityCard => c != null);
-  const summaries = ready ? summarizeDraftStore(seedCards, store) : [];
+  const summaries = summarizeDraftStore(seedCards, store);
   const packText =
     fetchState === "done" && seedCards.length > 0
       ? JSON.stringify(buildAtomDraftPack(seedCards, store), null, 2)
@@ -126,11 +118,9 @@ export default function DraftInbox({
   // 只在 seed 拉取完成后判缺失（加载中不算「取不到」——不抬假错）。
   const missingSeedIds =
     fetchState === "done" ? draftedIds.filter((id) => seeds[id] == null) : [];
-  const incompleteNoDraft = ready
-    ? (incompleteCardSummaries ?? []).filter((s) => cardDraftCount(store, s.id) === 0)
-    : [];
-
-  if (!ready) return null;
+  const incompleteNoDraft = (incompleteCardSummaries ?? []).filter(
+    (s) => cardDraftCount(store, s.id) === 0,
+  );
 
   return (
     <section aria-label="本机草稿收件箱" className="mt-6">

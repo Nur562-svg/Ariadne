@@ -16,6 +16,7 @@ import {
   type HeYeMode,
   type HeYeStore,
 } from "@/lib/heye-store";
+import { useHeYeStore } from "@/lib/use-heye-store";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadReturn, saveReturn, type ReturnEntry } from "@/lib/return-stack";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
@@ -185,7 +186,9 @@ export default function HeYeSession({
    */
   leaveReturnTo?: { href: string; label: string };
 }) {
-  const [store, setStore] = useState<HeYeStore>({});
+  // T71：共享 useSyncExternalStore 口——store 只此一源（打标/撤销/清除走写 API + 订阅回流，
+  // 不再本地 setStore 镜像）；SSR/首帧空仓即合法口径，落盘后微任务内切真值。
+  const store = useHeYeStore();
   const [index, setIndex] = useState(0);
   /** 本标签续位标记（恢复游标时置位），用于诚实续练文案。 */
   const [resumed, setResumed] = useState(false);
@@ -202,15 +205,16 @@ export default function HeYeSession({
   const [ret, setRet] = useState<ReturnEntry | null>(null);
   const citeRef = useRef<HTMLElement | null>(null);
 
+  // T71 DEFER: one-shot — 非 uSES（return 短链一次性读，留 effect）。
   useEffect(() => {
     setRet(loadReturn());
   }, []);
 
-  // 挂载后读本机态（SSR 不读 localStorage，避免水合不一致）；换范围/档位由父级 key 重挂载。
-  // 同时恢复本标签会话游标并 clamp 到可见队列（filterItemsByMode 同步可用）。
+  // 挂载后恢复本标签会话游标并 clamp 到可见队列（filterItemsByMode 同步可用）。
+  // T71 DEFER: one-shot — 非 uSES（会话游标一次性恢复；store 本身已走 uSES，
+  // 这里直读一次盘面只为 clamp 基准，不订阅、不 setStore）。换范围/档位由父级 key 重挂载。
   useEffect(() => {
     const s = loadHeYeStore();
-    setStore(s);
     const saved = loadCursor("heye", scopeKey);
     if (saved != null) {
       const nv = filterItemsByMode(items, s, mode);
@@ -329,7 +333,7 @@ export default function HeYeSession({
         : `清除本范围（${scopeLabel}）的 ${scopedKeys.length} 条本机核页记录？本浏览器的全部核页记录都在此范围内。只清本浏览器（localStorage），不影响教材侧「抽查 verified」。`,
     );
     if (!ok) return;
-    setStore(clearHeYeMarks(scopedKeys));
+    clearHeYeMarks(scopedKeys);
     clearCursor("heye", scopeKey);
     setIndex(0);
     setResumed(false);
@@ -678,8 +682,8 @@ export default function HeYeSession({
     // T53 G：写标前压撤销栈（读盘面最新值当 prev，避免闭包陈旧；idx 记写标时游标）。
     const prev = loadHeYeStore();
     setUndoStack((st) => [...st, { keys: [cur.key], prevMarks: [prev[cur.key]], idx: i }]);
+    // T71：写 API 落盘 + 广播 → uSES 回流驱动 UI（advance 用返回值同步算下一游标）。
     const next = setHeYeMark(cur.key, s);
-    setStore(next);
     advance(next, cur.key);
   }
 
@@ -689,7 +693,6 @@ export default function HeYeSession({
     const prev = loadHeYeStore();
     setUndoStack((st) => [...st, { keys, prevMarks: keys.map((k) => prev[k]), idx: i }]);
     const next = setHeYeMarks(keys, "checked");
-    setStore(next);
     advance(next, cur.key);
   }
 
@@ -701,16 +704,15 @@ export default function HeYeSession({
   function undo() {
     const last = undoStack[undoStack.length - 1];
     if (!last) return;
-    let next = loadHeYeStore();
+    // T71：写 API 落盘 + 广播 → uSES 回流（返回值不再镜像进本地 state）。
     const toClear: string[] = [];
     for (let j = 0; j < last.keys.length; j++) {
       const k = last.keys[j];
       const prev = last.prevMarks[j];
-      if (prev) next = setHeYeMark(k, prev.s);
+      if (prev) setHeYeMark(k, prev.s);
       else toClear.push(k);
     }
-    if (toClear.length > 0) next = clearHeYeMarks(toClear);
-    setStore(next);
+    if (toClear.length > 0) clearHeYeMarks(toClear);
     setUndoStack((st) => st.slice(0, -1));
     setIndex(last.idx);
   }

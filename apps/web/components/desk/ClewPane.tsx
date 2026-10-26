@@ -4,13 +4,9 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useDeskContext } from "@/components/desk/DeskContext";
 import type { ClewContextData } from "@/components/desk/DeskContext";
-import { loadGrades, subscribeStudyGrades, type GradeMap } from "@/lib/study";
-import {
-  countPoolMarks,
-  loadHeYeStore,
-  subscribeHeYeStore,
-  type HeYeStore,
-} from "@/lib/heye-store";
+import { countPoolMarks } from "@/lib/heye-store";
+import { useStudyGrades } from "@/lib/use-study-grades";
+import { useHeYeStore } from "@/lib/use-heye-store";
 import { saveReturn } from "@/lib/return-stack";
 import LocalProgressStrip, { poolGrades } from "@/components/LocalProgressStrip";
 import { withQsMode } from "@/lib/qs-mode";
@@ -1332,28 +1328,13 @@ function ChangesPanel({
   /** T31 B：练/核 CTA 点前写 return 短链（回当前上下文）。 */
   rememberReturn: () => void;
 }) {
-  const [, setTick] = useState(0);
-  const [grades, setGrades] = useState<GradeMap>({});
-  const [heye, setHeYe] = useState<HeYeStore>({});
+  // T71：双仓共享 useSyncExternalStore 口（原 setTick 强制重渲染随订阅 effect 一并退役——
+  // 原串变化即新快照引用，时间戳行自动重排；原串不变本就无事可刷）。答面核账 / 流式 /
+  // 补丁 UI（T66–T70）不在本迁移职责内。
+  const grades = useStudyGrades();
+  const heye = useHeYeStore();
   /** T43 D：本地面 kind 筛选（全部｜练｜核）——只影响展示，不改本机记录、不新建 storage。 */
   const [kindFilter, setKindFilter] = useState<"all" | "study" | "heye">("all");
-
-  useEffect(() => {
-    setGrades(loadGrades());
-    setHeYe(loadHeYeStore());
-    const u1 = subscribeStudyGrades(() => {
-      setGrades(loadGrades());
-      setTick((n) => n + 1);
-    });
-    const u2 = subscribeHeYeStore(() => {
-      setHeYe(loadHeYeStore());
-      setTick((n) => n + 1);
-    });
-    return () => {
-      u1();
-      u2();
-    };
-  }, []);
 
   const acts: Act[] = [];
   /**
@@ -1656,30 +1637,10 @@ function QueuePanel({
   /** T31 B：练/核 CTA 点前写 return 短链（回当前上下文）。 */
   rememberReturn: () => void;
 }) {
-  const [grades, setGrades] = useState<GradeMap>({});
-  const [heye, setHeYe] = useState<HeYeStore>({});
-  const [ready, setReady] = useState(false);
-
-  // 只读双 store 的唯一消费者（外层 ClewPane 已收敛为单路订阅，见其审计注释）。
-  // T65 G：fail-closed——装载/订阅抛错仍 setReady(true)（空计数），绝不永挂「读取中」。
-  useEffect(() => {
-    try {
-      setGrades(loadGrades());
-      setHeYe(loadHeYeStore());
-      setReady(true);
-      const u1 = subscribeStudyGrades(() => setGrades(loadGrades()));
-      const u2 = subscribeHeYeStore(() => setHeYe(loadHeYeStore()));
-      return () => {
-        u1();
-        u2();
-      };
-    } catch {
-      setGrades({});
-      setHeYe({});
-      setReady(true);
-      return;
-    }
-  }, []);
+  // T71：双仓共享 useSyncExternalStore 口——空仓即合法首帧（计数如实 0，不造假正数）；
+  // getSnapshot 永不抛，T65「不永挂读取中」结构性成立（无 effect、无 ready 门）。
+  const grades = useStudyGrades();
+  const heye = useHeYeStore();
 
   const hasPool = (clew.progressAtoms?.length ?? 0) + (clew.progressItems?.length ?? 0) > 0;
   /**
@@ -1739,10 +1700,9 @@ function QueuePanel({
       </p>
 
       {/* T33 C：当前 progress* 池本机计数（与 Changes 内 compact Strip 同池同口径）；无池 → 全局。
-          T36 E：有池分段 N>0 可点进对应档（见 seg/studyModes/heyeModes）；N=0 纯文。 */}
-      {!ready ? (
-        <p className="mt-3 text-xs leading-6 text-muted">本机进度读取中…</p>
-      ) : hasPool ? (
+          T36 E：有池分段 N>0 可点进对应档（见 seg/studyModes/heyeModes）；N=0 纯文。
+          T71：uSES 口空仓即合法首帧（0 是真实空读数），ready 门与「读取中」瞬时态退役。 */}
+      {hasPool ? (
         <>
           <p className="mt-3 text-xs leading-6 text-muted" aria-label="当前范围本机标记计数">
             {clew.progressScopeLabel ? (

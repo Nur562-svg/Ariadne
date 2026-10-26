@@ -12,9 +12,9 @@ import {
   loadGrades,
   orderAtoms,
   saveGrade,
-  type GradeMap,
   type StudyMode,
 } from "@/lib/study";
+import { useStudyGrades } from "@/lib/use-study-grades";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadLastOpened } from "@/lib/last-opened";
 import { loadReturn, saveReturn, type ReturnEntry } from "@/lib/return-stack";
@@ -185,7 +185,9 @@ export default function StudySession({
   /** T60 E：scope 浅页数（densityWeak 为 true 时点名 浅{shallowCount}）。 */
   shallowCount?: number;
 }) {
-  const [grades, setGrades] = useState<GradeMap>({});
+  // T71：共享 useSyncExternalStore 口——grades 只此一源（评分/撤销走写 API + 订阅回流，
+  // 不再本地 setGrades 镜像）；SSR/首帧空仓即合法口径，落盘后微任务内切真值。
+  const grades = useStudyGrades();
   const [order, setOrder] = useState<StudyAtom[]>([]);
   const [ready, setReady] = useState(false);
   const [idx, setIdx] = useState(0);
@@ -210,6 +212,7 @@ export default function StudySession({
   const questionRef = useRef<HTMLElement | null>(null);
 
   /** 同书 last-opened 页码 + return 短链（客户端读，SSR 不读 localStorage/sessionStorage）。 */
+  // T71 DEFER: one-shot — 非 uSES（lastOpened/return 一次性读，留 effect）。
   useEffect(() => {
     const scopeBookId = deskBookId ?? activeBookId;
     if (scopeBookId) {
@@ -223,12 +226,14 @@ export default function StudySession({
     setRet(loadReturn());
   }, [deskBookId, activeBookId, validPages]);
 
-  // 挂载后读本机评分并冻结本轮队列（SSR 不读 localStorage，避免水合不一致）；
-  // 同时恢复本标签会话游标（clamp 到 [0, order.length]，>0 视为续练）。
+  // 挂载后冻结本轮队列（SSR 不读 localStorage，避免水合不一致）；同时恢复本标签会话
+  // 游标（clamp 到 [0, order.length]，>0 视为续练）。
+  // T71 DEFER: one-shot 冻结 — 非 uSES：order 只在 atoms/mode/scopeKey 变化时重算，
+  // **不随中途 grades 变化重滤重排**（合同：本轮 order 挂载时冻结）。此处直读一次
+  // 盘面当冻结基准（一次性读、不订阅）；grades 计数本身已走 uSES（见上）。
   useEffect(() => {
     const g = loadGrades();
     const ordered = orderAtoms(filterAtomsByMode(atoms, g, mode));
-    setGrades(g);
     setOrder(ordered);
     const saved = loadCursor("study", scopeKey);
     if (saved != null && saved > 0) {
@@ -461,8 +466,8 @@ export default function StudySession({
     const key = atomKey(cur);
     // 压撤销栈：读盘面最新值当 prev（避免闭包陈旧）；idx 记评分时游标，供 u/z 回退。
     setUndoStack((s) => [...s, { key, prev: loadGrades()[key]?.k ?? null, idx }]);
-    const next = saveGrade(key, k);
-    setGrades(next);
+    // T71：写 API 落盘 + 广播 → uSES 回流驱动计数（不再本地 setGrades 镜像）。
+    saveGrade(key, k);
     setRun((r) => ({ known: r.known + (k === 1 ? 1 : 0), unknown: r.unknown + (k === 0 ? 1 : 0) }));
     if (cur.cite?.page != null) setLastAtomPage(cur.cite.page);
     setRevealed(false);
@@ -487,7 +492,9 @@ export default function StudySession({
       else if (last.prev === 0) unknown += 1;
       return { known, unknown };
     });
-    setGrades(last.prev == null ? deleteGrade(last.key) : saveGrade(last.key, last.prev));
+    // T71：写 API 落盘 + 广播 → uSES 回流（返回值不再镜像进本地 state）。
+    if (last.prev == null) deleteGrade(last.key);
+    else saveGrade(last.key, last.prev);
     setUndoStack((s) => s.slice(0, -1));
     setRevealed(false);
     setIdx(last.idx);
@@ -495,9 +502,9 @@ export default function StudySession({
 
   function restart() {
     // 用最新本机评分重新过滤（如「不熟再练」里已转认识的不再出现），重置本轮。
+    // 显式重开是用户动作：直读一次盘面当冻结基准（grades 计数走 uSES，不镜像）。
     clearCursor("study", scopeKey);
     const g = loadGrades();
-    setGrades(g);
     setOrder(orderAtoms(filterAtomsByMode(atoms, g, mode)));
     setIdx(0);
     setRevealed(false);

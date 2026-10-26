@@ -1,19 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import {
-  atomKey,
-  loadGrades,
-  subscribeStudyGrades,
-  type GradeMap,
-} from "@/lib/study";
-import {
-  countPoolMarks,
-  loadHeYeStore,
-  subscribeHeYeStore,
-  type HeYeStore,
-} from "@/lib/heye-store";
+import { atomKey, type GradeMap } from "@/lib/study";
+import { countPoolMarks } from "@/lib/heye-store";
+import { useStudyGrades } from "@/lib/use-study-grades";
+import { useHeYeStore } from "@/lib/use-heye-store";
 import type { StudyScopeHrefs } from "@/components/StudyScopeCounts";
 import type { HeYeScopeHrefs } from "@/components/HeYeScopeCounts";
 import { saveReturn } from "@/lib/return-stack";
@@ -88,52 +79,11 @@ export default function LocalProgressStrip({
   /** T39 E：出发点 return 短链 payload（href 站内相对路径 + label）；有值时条末链与可点分段点前写入。 */
   returnTo?: { href: string; label: string };
 }) {
-  const [grades, setGrades] = useState<GradeMap>({});
-  const [heye, setHeYe] = useState<HeYeStore>({});
-  const [ready, setReady] = useState(false);
-  /** T65 G：装载失败（storage 读抛错等）——仍 ready，条降「本机暂无进度」，绝不永挂读取中。 */
-  const [loadFailed, setLoadFailed] = useState(false);
-
-  useEffect(() => {
-    // T65 G：fail-closed——loader 内部各有 try/catch，但订阅注册 / 未来改动若抛错也必须
-    // setReady(true)，绝不永挂「本机进度读取中…」；失败态静默空 store，不装掌握%。
-    try {
-      setGrades(loadGrades());
-      setHeYe(loadHeYeStore());
-      setReady(true);
-      const u1 = subscribeStudyGrades(() => setGrades(loadGrades()));
-      const u2 = subscribeHeYeStore(() => setHeYe(loadHeYeStore()));
-      return () => {
-        u1();
-        u2();
-      };
-    } catch {
-      setGrades({});
-      setHeYe({});
-      setLoadFailed(true);
-      setReady(true);
-      return;
-    }
-  }, []);
-
-  if (!ready) {
-    return (
-      <p className="text-xs text-muted">
-        {compact ? "本机进度读取中…" : "本机进度读取中…"}
-      </p>
-    );
-  }
-
-  if (loadFailed) {
-    return (
-      <p
-        className={`text-xs text-muted ${compact ? "leading-5" : "mt-2 leading-6"}`}
-        aria-label="本机学习与核页进度"
-      >
-        本机进度暂不可读（本机暂无进度） · 仅这个浏览器 · 非掌握度 · 与 seed verified 无关
-      </p>
-    );
-  }
+  // T71：双仓共享 useSyncExternalStore 口——空仓即合法首帧（计数如实 0，不造假正数）。
+  // T65 fail-closed 结构性成立：getSnapshot 永不抛（读失败 = 空仓快照 → 0 计数），
+  // 无 effect 无 ready 门，永不永挂「读取中」；「暂不可读」瞬时态随之退役（失败即空仓口径）。
+  const grades = useStudyGrades();
+  const heye = useHeYeStore();
 
   // 练：有池按池（认识/不熟/未评），无池只报全局已记录条数。
   const pool = atoms ? poolGrades(atoms, grades) : null;

@@ -1,16 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useSyncExternalStore } from "react";
+import { useMemo } from "react";
 import CopyCommand from "@/components/CopyCommand";
-import {
-  ATOM_DRAFT_STORE_KEY,
-  cardDraftCount,
-  listDraftedCardIds,
-  loadAtomDraftStore,
-  subscribeAtomDraftStore,
-  type AtomDraftStore,
-} from "@/lib/atom-draft";
+import { cardDraftCount, listDraftedCardIds } from "@/lib/atom-draft";
+import { useAtomDraftStore } from "@/lib/use-atom-draft-store";
 import {
   foldChapterRollups,
   rollupAllUnchecked,
@@ -45,29 +39,6 @@ function pct(x: number): string {
   return `${(x * 100).toFixed(0)}%`;
 }
 
-/**
- * G：本机草稿快照（useSyncExternalStore 口）——按 localStorage 原串缓存（同串同引用，
- * 快照不稳定会触发 React 重渲染循环）；SSR / 无 window 恒空对象（fail-closed，草稿列
- * 首帧全 0，无 hydration 错位）。订阅 T62 subscribeAtomDraftStore，不改键、不进 progress-port。
- */
-const EMPTY_DRAFT_STORE: AtomDraftStore = {};
-let draftSnapRaw: string | null | undefined;
-let draftSnapStore: AtomDraftStore = EMPTY_DRAFT_STORE;
-function getDraftSnapshot(): AtomDraftStore {
-  if (typeof window === "undefined") return EMPTY_DRAFT_STORE;
-  let raw: string | null = null;
-  try {
-    raw = window.localStorage.getItem(ATOM_DRAFT_STORE_KEY);
-  } catch {
-    raw = null; // 隐私模式读失败 = 无草稿可交叉
-  }
-  if (raw !== draftSnapRaw) {
-    draftSnapRaw = raw;
-    draftSnapStore = loadAtomDraftStore();
-  }
-  return draftSnapStore;
-}
-
 /** 未检 cell：fail-closed，缺 blocks/entities 不装完美 0。 */
 function UncheckedCell({ why }: { why: string }) {
   return (
@@ -92,8 +63,9 @@ export default function ChapterQualityCockpit({
   /** slim 卡索引（Server loadCards 派生 id/章——草稿列交叉 cardId→章，勿整库下传）。 */
   cardIndex: { id: string; chapterId?: string }[];
 }) {
-  // G：草稿交叉——订阅本机草稿键（T62 subscribeAtomDraftStore；server 快照恒空）。
-  const store = useSyncExternalStore(subscribeAtomDraftStore, getDraftSnapshot, () => EMPTY_DRAFT_STORE);
+  // G：草稿交叉——共享 useSyncExternalStore 口（T71 抽自本件的 draftSnap 私货，交叉列
+  // 数字不变；SSR/首帧空仓 → 草稿列如实 0）。
+  const store = useAtomDraftStore();
 
   /** 章 id → 本机草稿摘要（listDraftedCardIds ∩ 本章卡；entry 数 = cardDraftCount 求和）。 */
   const draftByChapter = useMemo(() => {

@@ -1,14 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import type { StudyAtom } from "@/lib/entities";
-import {
-  countPoolGrades,
-  loadGrades,
-  subscribeStudyGrades,
-  type GradeMap,
-} from "@/lib/study";
+import { countPoolGrades } from "@/lib/study";
+import { useStudyGrades } from "@/lib/use-study-grades";
 
 /** T35 C：三档深链（与 sticky 三档 / StudyModeChips 同一 qs({ mode }) 口径，由 study/page 下传）。 */
 export type StudyScopeHrefs = { all?: string; unknown?: string; ungraded?: string };
@@ -35,24 +30,9 @@ export default function StudyScopeCounts({
   /** T60 C：scope 浅页数（旁挂点名用，densityWeak 为 true 时才渲）。 */
   shallowCount?: number;
 }) {
-  const [grades, setGrades] = useState<GradeMap>({});
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    // T65 G：fail-closed——装载/订阅抛错仍 setReady(true)（空计数），绝不永挂「读取中」。
-    try {
-      setGrades(loadGrades());
-      setReady(true);
-      return subscribeStudyGrades(() => setGrades(loadGrades()));
-    } catch {
-      setReady(true);
-      return;
-    }
-  }, []);
-
-  if (!ready) {
-    return <p className="mt-2 text-xs text-muted">本机进度读取中…</p>;
-  }
+  // T71：共享 useSyncExternalStore 口——空仓即合法首帧（计数如实 0，不造假正数）；
+  // getSnapshot 永不抛，T65「不永挂读取中」结构性成立（无 effect、无 ready 门）。
+  const grades = useStudyGrades();
 
   const c = countPoolGrades(atoms, grades);
 

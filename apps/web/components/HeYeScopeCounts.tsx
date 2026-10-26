@@ -1,14 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import type { HeYeItem } from "@/lib/heye";
-import {
-  countPoolMarks,
-  loadHeYeStore,
-  subscribeHeYeStore,
-  type HeYeStore,
-} from "@/lib/heye-store";
+import { countPoolMarks } from "@/lib/heye-store";
+import { useHeYeStore } from "@/lib/use-heye-store";
 
 /** T35 D：三档深链（与 sticky 三档 / HeYeModeChips 同一 qs({ mode }) 口径，由 review/page 下传）。 */
 export type HeYeScopeHrefs = { open?: string; checked?: string; doubt?: string };
@@ -27,24 +22,9 @@ export default function HeYeScopeCounts({
   items: HeYeItem[];
   hrefs?: HeYeScopeHrefs;
 }) {
-  const [store, setStore] = useState<HeYeStore>({});
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    // T65 G：fail-closed——装载/订阅抛错仍 setReady(true)（空计数），绝不永挂「读取中」。
-    try {
-      setStore(loadHeYeStore());
-      setReady(true);
-      return subscribeHeYeStore(() => setStore(loadHeYeStore()));
-    } catch {
-      setReady(true);
-      return;
-    }
-  }, []);
-
-  if (!ready) {
-    return <span className="text-xs text-muted">本机进度读取中…</span>;
-  }
+  // T71：共享 useSyncExternalStore 口——空仓即合法首帧（计数如实 0，不造假正数）；
+  // getSnapshot 永不抛，T65「不永挂读取中」结构性成立（无 effect、无 ready 门）。
+  const store = useHeYeStore();
 
   const c = countPoolMarks(items, store);
 

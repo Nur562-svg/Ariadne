@@ -40,6 +40,7 @@ export default function ReturnNav({
   const [page, setPage] = useState<number | null>(pageHint ?? null);
   const [ret, setRet] = useState<ReturnEntry | null>(null);
 
+  // T71 DEFER: one-shot nav — 非 uSES（URL hint / last-opened 一次性采纳，留 effect）。
   useEffect(() => {
     if (pageHint != null) {
       setPage(pageHint);

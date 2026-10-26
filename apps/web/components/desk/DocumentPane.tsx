@@ -274,6 +274,7 @@ export default function DocumentPane({
    * T24 A 加分项：无 URL 深链（?page= / ?mode=）时，从 ariadne.desk.view.v1
    * 续住本标签页上次的中栏模式；URL 深链时 URL 胜出（不读桶）。
    */
+  // T71 DEFER: one-shot — 非 uSES（URL 无深链时一次性续住 view.v1，URL 胜出）。
   useEffect(() => {
     if (deepPage || initialMode) return;
     const saved = loadViewMode();
@@ -291,6 +292,7 @@ export default function DocumentPane({
       .filter((p) => p.chapterId === chId && p.page != null)
       .sort((a, b) => (a.page ?? 0) - (b.page ?? 0))[0]?.page ?? null;
 
+  // T71 DEFER: derived — 非 uSES（章首页派生 pageNo，留 effect）。
   useEffect(() => {
     if (pageNo == null && chapterId) setPageNo(firstPageOf(chapterId));
     // eslint-disable-next-line react-hooks/exhaustive-deps

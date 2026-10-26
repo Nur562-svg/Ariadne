@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { loadGrades, subscribeStudyGrades, type GradeMap } from "@/lib/study";
-import { loadHeYeStore, subscribeHeYeStore, type HeYeStore } from "@/lib/heye-store";
+import { useStudyGrades } from "@/lib/use-study-grades";
+import { useHeYeStore } from "@/lib/use-heye-store";
 
 /**
  * 本页卡轨「本机态」客户岛（Task 24 B）：每张卡只读 ariadne.study.v1 / ariadne.heye.v1，
@@ -28,23 +27,10 @@ export default function PageCardRailMarks({
   /** 点链前写 return（与轨「练」「核」同 rememberDeskReturn 口径——回书桌本页）。 */
   rememberReturn?: () => void;
 }) {
-  const [grades, setGrades] = useState<GradeMap>({});
-  const [heye, setHeYe] = useState<HeYeStore>({});
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    setGrades(loadGrades());
-    setHeYe(loadHeYeStore());
-    setReady(true);
-    const u1 = subscribeStudyGrades(() => setGrades(loadGrades()));
-    const u2 = subscribeHeYeStore(() => setHeYe(loadHeYeStore()));
-    return () => {
-      u1();
-      u2();
-    };
-  }, []);
-
-  if (!ready) return null;
+  // T71：双仓共享 useSyncExternalStore 口——SSR/首帧空仓 → 各类「—」（诚实空读数，
+  // 不造假正数）；落盘后微任务内切真值。无 effect 无 ready 门。
+  const grades = useStudyGrades();
+  const heye = useHeYeStore();
 
   const studyPrefix = `${cardId}/`;
   let known = 0;
