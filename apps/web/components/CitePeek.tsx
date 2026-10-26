@@ -116,7 +116,6 @@ export default function CitePeek({
       window.removeEventListener("resize", onReposition);
       window.removeEventListener("scroll", onReposition, true);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   // T25 C：焦点陷阱——双层防护。
@@ -192,7 +191,6 @@ export default function CitePeek({
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("focusin", pullBack, true);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   if (!cite) return null;

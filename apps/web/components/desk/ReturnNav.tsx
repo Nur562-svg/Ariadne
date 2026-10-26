@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { loadLastOpened } from "@/lib/last-opened";
-import { loadReturn, type ReturnEntry } from "@/lib/return-stack";
+import { loadReturnOnce } from "@/lib/return-stack";
+import { useClientOnce } from "@/lib/use-client-once";
 
 /**
  * 学习环回程短链（T23 A/B，客户端薄岛）：
@@ -37,24 +37,18 @@ export default function ReturnNav({
   /** 是否渲染「回到刚才」（sticky 工具带设 false，完成/空态设 true）。 */
   showReturn?: boolean;
 }) {
-  const [page, setPage] = useState<number | null>(pageHint ?? null);
-  const [ret, setRet] = useState<ReturnEntry | null>(null);
-
-  // T71 DEFER: one-shot nav — 非 uSES（URL hint / last-opened 一次性采纳，留 effect）。
-  useEffect(() => {
-    if (pageHint != null) {
-      setPage(pageHint);
-    } else if (bookId) {
-      const lo = loadLastOpened();
-      // T31 F：只信有表且页在表内的 lo.page；无表 / 脏页 → 不采用（回落 deskHref 书级）。
-      if (lo?.bookId === bookId && lo.page != null && validPages?.includes(lo.page)) {
-        setPage(lo.page);
-      } else {
-        setPage(null);
-      }
-    }
-    if (showReturn) setRet(loadReturn());
-  }, [bookId, pageHint, showReturn, validPages]);
+  // T72：一次性采纳改 noop-uSES（SSR/水合首帧恒 null 不水合错位，水合后读一次；
+  // props 变化重渲染即以新闭包重采——等价旧 effect 的 deps 重跑）。T31 F 消毒口径不变：
+  // 只信有表且页在表内的 lo.page；无表 / 脏页 / 无 pageHint → 不采用（回落 deskHref 书级）。
+  const adoptedPage = useClientOnce<number | null>(() => {
+    if (pageHint != null || !bookId) return null;
+    const lo = loadLastOpened();
+    return lo?.bookId === bookId && lo.page != null && validPages?.includes(lo.page)
+      ? lo.page
+      : null;
+  }, null);
+  const page = pageHint ?? adoptedPage;
+  const ret = useClientOnce(() => (showReturn ? loadReturnOnce() : null), null);
 
   const deskPageHref =
     page != null && bookId ? `/desk?book=${encodeURIComponent(bookId)}&page=${page}` : undefined;

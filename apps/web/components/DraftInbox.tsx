@@ -26,6 +26,9 @@ import type { EntityCard } from "@/lib/entities";
 const INBOX_DISCLAIMER =
   "草稿 ≠ seed 已核 · 收件箱/补丁包 ≠ 已落盘 · 草稿 ≠ heye 本机已对 · 草稿 ≠ study 练分";
 
+/** T72：空草稿集的稳定空 seed map（派生遮蔽陈旧快照用，引用恒定）。 */
+const EMPTY_SEEDS: Record<string, EntityCard | null> = {};
+
 const btnQuiet =
   "shrink-0 rounded border border-line px-1.5 py-0.5 text-xs text-muted transition-colors hover:border-foreground/40 focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none";
 
@@ -48,34 +51,33 @@ function downloadText(filename: string, text: string, mime: string) {
  * 0 真草稿不吵（仅 seed 口径不完备且无草稿的卡给次级 muted 引导 + 草稿带走折叠区）。
  */
 export default function DraftInbox({
-  cardIndex,
   incompleteCardSummaries,
 }: {
-  /** slim 卡索引（Server loadCards 派生：id/名/章——列表显示与回卡详链用）。 */
-  cardIndex: { id: string; nameZh: string; chapterId?: string }[];
   /** E：seed 口径 incompleteAtoms>0 的卡摘要（Server T55 同口径实算；Client 交叉草稿态）。 */
   incompleteCardSummaries?: { id: string; name: string; incompleteAtoms: number; chapterId?: string }[];
 }) {
   // T71：共享 useSyncExternalStore 口——空仓即合法首帧（空收件箱如实）；无 effect 无 ready 门。
   const store = useAtomDraftStore();
-  /** 草稿卡 seed 按需快照：id → card（null = 取不到）；fetchState 驱动按钮诚实态。 */
+  /** 草稿卡 seed 按需快照：id → card（null = 取不到）；只在 Promise 回调更新（异步）。 */
   const [seeds, setSeeds] = useState<Record<string, EntityCard | null>>({});
-  const [fetchState, setFetchState] = useState<"idle" | "loading" | "done">("idle");
 
   const draftedIds = listDraftedCardIds(store);
   const draftedKey = draftedIds.join("\u0000");
 
+  // T72：取数三态纯派生（零 state、零 effect 内同步 setState）：空草稿集 = idle；
+  // 有草稿且有 id 尚无 seed 快照 = loading（取数在途）；全部到齐（含取不到的 null）= done。
+  // 下游（按钮诚实态 / PatchPasteBlock）接口形状与取值时序不变。
+  const fetchState: "idle" | "loading" | "done" =
+    draftedIds.length === 0 ? "idle" : draftedIds.some((id) => !(id in seeds)) ? "loading" : "done";
+  /** 空草稿集 → 稳定空 map（遮蔽上一轮陈旧 seed 快照；有草稿才透传实快照）。 */
+  const effectiveSeeds = draftedIds.length === 0 ? EMPTY_SEEDS : seeds;
+
   // 有草稿的卡才取 seed（只读 GET 自家 API；不触任何写路径）。集合变化才重取。
-  // T71 DEFER: one-shot fetch — 非 uSES（草稿集驱动的外部取数，留 effect）。
+  // T72：空草稿集 early-return（消费者读上方派生空态）；setState 全在 Promise 回调。
   useEffect(() => {
     const ids = draftedKey ? (draftedKey.split("\u0000") as string[]) : [];
-    if (ids.length === 0) {
-      setSeeds({});
-      setFetchState("idle");
-      return;
-    }
+    if (ids.length === 0) return;
     let alive = true;
-    setFetchState("loading");
     Promise.allSettled(
       ids.map((id) =>
         fetch(`/api/entities/${encodeURIComponent(id)}`)
@@ -92,7 +94,6 @@ export default function DraftInbox({
         next[id] = card;
       }
       setSeeds(next);
-      setFetchState("done");
     });
     return () => {
       alive = false;
@@ -254,7 +255,7 @@ export default function DraftInbox({
       <DraftPortBlock store={store} />
       {/* T67 G：Clew 建议补丁粘贴导入（patch.v1；与上方 port.v1 分列——port 是整卡草稿带走，
           patch 是「建议填空」单卡合并。整包拒收：非法/错 schema/未知 target 一条不写）。 */}
-      <PatchPasteBlock seeds={seeds} fetchState={fetchState} />
+      <PatchPasteBlock seeds={effectiveSeeds} fetchState={fetchState} />
     </section>
   );
 }

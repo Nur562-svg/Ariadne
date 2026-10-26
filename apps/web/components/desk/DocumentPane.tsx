@@ -17,7 +17,8 @@ import {
   loadRecentBooks,
   touchLastOpened,
 } from "@/lib/last-opened";
-import { loadViewMode, saveViewMode } from "@/lib/view-continuity";
+import { loadViewMode, saveViewMode, type DeskViewMode } from "@/lib/view-continuity";
+import { useClientOnce } from "@/lib/use-client-once";
 import { saveReturn } from "@/lib/return-stack";
 import { deskPageHref } from "@/lib/ocr-page";
 import { citeOcrMiss } from "@/lib/cite-ocr-quality";
@@ -39,6 +40,15 @@ const KIND_ZH: Record<string, string> = {
 };
 
 type Mode = "cards" | "pages" | "split";
+
+/** 章首页码（模块层纯函数——lazy 初值与渲染期补位都要在 useState 声明前可用）。 */
+function firstPageOf(pages: PageDoc[], chId: string): number | null {
+  return (
+    pages
+      .filter((p) => p.chapterId === chId && p.page != null)
+      .sort((a, b) => (a.page ?? 0) - (b.page ?? 0))[0]?.page ?? null
+  );
+}
 
 /** TOC 段 → 卡片过滤规则（真数据；无假 Paper、无假核页）。 */
 function filterCards(section: SectionId, cards: EntityCard[]): EntityCard[] {
@@ -261,42 +271,47 @@ export default function DocumentPane({
     initialPage != null ? pages.find((p) => p.page === initialPage) : undefined;
   const invalidPage = initialPage != null && !deepPage;
 
-  const [mode, setMode] = useState<Mode>(
-    deepPage ? (initialMode ?? "pages") : (initialMode ?? "cards"),
+  // T72：模式拆「显式选择 pickedMode」（URL 深链 / 用户点击）+「一次性续住 adoptedMode」
+  // （无 URL 深链时读 view.v1，URL 胜出——T24 口径不变）。noop-uSES：SSR/水合首帧恒
+  // null（mode 回落 cards，与服务端 HTML 一致不水合错位），水合后读一次（sessionStorage
+  // 每标签页续住）；props 变化重渲染即以新闭包重采。
+  const [pickedMode, setPickedMode] = useState<Mode | null>(
+    deepPage ? (initialMode ?? "pages") : (initialMode ?? null),
   );
+  const adoptedMode = useClientOnce<DeskViewMode | null>(
+    () => (deepPage || initialMode ? null : loadViewMode()),
+    null,
+  );
+  const mode: Mode = pickedMode ?? adoptedMode ?? "cards";
   const [section, setSection] = useState<SectionId>("map");
   const [chapterId, setChapterId] = useState<string>(
     deepPage?.chapterId ?? chapters[0]?.id ?? "",
   );
-  const [pageNo, setPageNo] = useState<number | null>(deepPage?.page ?? null);
+  // T72：pageNo lazy 初值——深链页 ?? 当前章首页（pages/chapters 均服务端 props，
+  // 确定性求值，SSR/客户端同值不水合错位；旧挂载 effect 的补位改由下方渲染期调整承担）。
+  const [pageNo, setPageNo] = useState<number | null>(() =>
+    deepPage?.page != null
+      ? deepPage.page
+      : firstPageOf(pages, deepPage?.chapterId ?? chapters[0]?.id ?? ""),
+  );
+  // T72：章变化渲染期调整——pageNo 空时补章首页（替 [chapterId] effect；章芯片 /
+  // COP / 阅读器 onChapterChange(chId, null) 等一切章切换路径都覆盖，React 官方
+  // 「prop/state 变化时渲染期调整」形）。
+  const [prevChapterId, setPrevChapterId] = useState(chapterId);
+  if (prevChapterId !== chapterId) {
+    setPrevChapterId(chapterId);
+    if (pageNo == null) setPageNo(firstPageOf(pages, chapterId));
+  }
 
   /**
-   * T24 A 加分项：无 URL 深链（?page= / ?mode=）时，从 ariadne.desk.view.v1
-   * 续住本标签页上次的中栏模式；URL 深链时 URL 胜出（不读桶）。
+   * 模式变化即写回 view.v1（独立桶，与 session/return 分界）。T72：挂载首遍的
+   * 默认值（未选未采纳 mode=cards）不写回——避免在续住值采纳完成前把它冲掉；
+   * 采纳翻转或用户点击后照旧写回。
    */
-  // T71 DEFER: one-shot — 非 uSES（URL 无深链时一次性续住 view.v1，URL 胜出）。
   useEffect(() => {
-    if (deepPage || initialMode) return;
-    const saved = loadViewMode();
-    if (saved && saved !== "cards") setMode(saved);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  /** 模式变化即写回 view.v1（独立桶，与 session/return 分界）。 */
-  useEffect(() => {
+    if (pickedMode == null && adoptedMode == null) return;
     saveViewMode(mode);
-  }, [mode]);
-
-  const firstPageOf = (chId: string) =>
-    pages
-      .filter((p) => p.chapterId === chId && p.page != null)
-      .sort((a, b) => (a.page ?? 0) - (b.page ?? 0))[0]?.page ?? null;
-
-  // T71 DEFER: derived — 非 uSES（章首页派生 pageNo，留 effect）。
-  useEffect(() => {
-    if (pageNo == null && chapterId) setPageNo(firstPageOf(chapterId));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapterId]);
+  }, [pickedMode, adoptedMode, mode]);
 
   const visibleCards = useMemo(() => filterCards(section, cards), [section, cards]);
   const activeChapter = chapters.find((c) => c.id === chapterId);
@@ -360,9 +375,12 @@ export default function DocumentPane({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /** 当前页的 citing 卡与待核数（服务端索引表按 pageNo 查；翻页随动）。 */
-  const pageCitingCards =
-    readingPage != null && citingByPage ? (citingByPage[readingPage] ?? []) : [];
+  /** 当前页的 citing 卡与待核数（服务端索引表按 pageNo 查；翻页随动）。
+      T72：包 useMemo 稳引用（空档的 [] 不再逐渲染新建，下游 useMemo 依赖不漂移）。 */
+  const pageCitingCards = useMemo(
+    () => (readingPage != null && citingByPage ? (citingByPage[readingPage] ?? []) : []),
+    [readingPage, citingByPage],
+  );
   const pagePendingCount =
     readingPage != null && pendingByPage ? (pendingByPage[readingPage] ?? 0) : 0;
 
@@ -688,7 +706,7 @@ export default function DocumentPane({
               aria-selected={mode === m}
               aria-disabled={unusable || undefined}
               disabled={unusable}
-              onClick={() => setMode(m)}
+              onClick={() => setPickedMode(m)}
               title={unusable ? "本书尚无 OCR 印刷页——章页/分栏暂读不了；可看概览与实体卡" : undefined}
               className={`rounded-md px-5 py-1.5 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
                 unusable ? "cursor-not-allowed opacity-50 " : ""
@@ -711,7 +729,7 @@ export default function DocumentPane({
              title，这里双保险程序调用路径）；overview 恒可切。 */
           if (s !== "overview" && sectionCounts[s] === 0) return;
           setSection(s);
-          if (s === "overview" || s === "quiz") setMode("cards");
+          if (s === "overview" || s === "quiz") setPickedMode("cards");
         }}
         counts={sectionCounts}
       />
@@ -726,8 +744,8 @@ export default function DocumentPane({
           pendingByCard={pendingByCard}
           onOpenChapter={(chId) => {
             setChapterId(chId);
-            setPageNo(firstPageOf(chId));
-            setMode("pages");
+            setPageNo(firstPageOf(pages, chId));
+            setPickedMode("pages");
           }}
           rememberReturn={rememberDeskCardReturn}
         />

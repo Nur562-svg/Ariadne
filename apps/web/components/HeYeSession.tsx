@@ -18,7 +18,8 @@ import {
 } from "@/lib/heye-store";
 import { useHeYeStore } from "@/lib/use-heye-store";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
-import { loadReturn, saveReturn, type ReturnEntry } from "@/lib/return-stack";
+import { loadReturnOnce, saveReturn } from "@/lib/return-stack";
+import { useClientOnce } from "@/lib/use-client-once";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
 import CopyTextButton from "@/components/CopyTextButton";
@@ -201,14 +202,9 @@ export default function HeYeSession({
   const [undoStack, setUndoStack] = useState<
     { keys: string[]; prevMarks: (HeYeMark | undefined)[]; idx: number }[]
   >([]);
-  /** 「回到刚才」return 短链（出发写于书桌章页 / 卡枢纽）。 */
-  const [ret, setRet] = useState<ReturnEntry | null>(null);
+  /** 「回到刚才」return 短链（出发写于书桌章页 / 卡枢纽）。T72：noop-uSES 一次性采纳。 */
+  const ret = useClientOnce(loadReturnOnce, null);
   const citeRef = useRef<HTMLElement | null>(null);
-
-  // T71 DEFER: one-shot — 非 uSES（return 短链一次性读，留 effect）。
-  useEffect(() => {
-    setRet(loadReturn());
-  }, []);
 
   // 挂载后恢复本标签会话游标并 clamp 到可见队列（filterItemsByMode 同步可用）。
   // T71 DEFER: one-shot — 非 uSES（会话游标一次性恢复；store 本身已走 uSES，

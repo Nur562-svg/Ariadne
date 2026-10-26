@@ -164,10 +164,13 @@ export default function ChapterPageReader({
   const jumpInputRef = useRef<HTMLInputElement | null>(null);
 
   /** 章切换（芯片 / COP / 邻章）清掉跳页琥珀错，避免跨章残留。 */
-  // T71 DEFER: derived — 非 uSES（UI 派生 reset，留 effect）。
-  useEffect(() => {
+  // T72：prop 变化渲染期调整（React「You Might Not Need an Effect」形）——任何
+  // chapterId 变化路径（含父层直改章）都会清错；switchChapter 内的清错保留为等价防线。
+  const [prevJumpChapter, setPrevJumpChapter] = useState(chapterId);
+  if (prevJumpChapter !== chapterId) {
+    setPrevJumpChapter(chapterId);
     setJumpError(null);
-  }, [chapterId]);
+  }
 
   /** 出发进练/核前写 return 短链（回当前书桌章页，带印刷页）。 */
   const deskReturnHref =

@@ -17,7 +17,8 @@ import {
 import { useStudyGrades } from "@/lib/use-study-grades";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
 import { loadLastOpened } from "@/lib/last-opened";
-import { loadReturn, saveReturn, type ReturnEntry } from "@/lib/return-stack";
+import { loadReturnOnce, saveReturn } from "@/lib/return-stack";
+import { useClientOnce } from "@/lib/use-client-once";
 import { pageInOcr } from "@/lib/ocr-page";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
@@ -197,10 +198,6 @@ export default function StudySession({
   const [resumed, setResumed] = useState(false);
   /** 最近一个带页 cite 的原子页码（完成态回书桌本页的第一优先页源）。 */
   const [lastAtomPage, setLastAtomPage] = useState<number | null>(null);
-  /** loadLastOpened() 同书页码（第三优先页源，客户端回落）。 */
-  const [lastOpenedPage, setLastOpenedPage] = useState<number | null>(null);
-  /** 「回到刚才」return 短链（出发写于书桌/卡枢纽）。 */
-  const [ret, setRet] = useState<ReturnEntry | null>(null);
   /**
    * 本轮撤销栈（T25 B，薄；组件态，不跨会话持久化）：
    * 每次评分压入 { key, prev, idx }——prev=被覆盖的旧档（null=原无记录），idx=评分时游标。
@@ -211,20 +208,20 @@ export default function StudySession({
   >([]);
   const questionRef = useRef<HTMLElement | null>(null);
 
-  /** 同书 last-opened 页码 + return 短链（客户端读，SSR 不读 localStorage/sessionStorage）。 */
-  // T71 DEFER: one-shot — 非 uSES（lastOpened/return 一次性读，留 effect）。
-  useEffect(() => {
+  // T72：last-opened 页码 + return 短链改 noop-uSES 一次性采纳（SSR/水合首帧恒 null
+  // 不水合错位，水合后读一次；props 变化重渲染即以新闭包重采）。T32 E 消毒口径不变：
+  // 只信有表且页在表内的 lo.page——无表 / 脏页不采用，完成态不把幽灵 p.999 链进书桌；
+  // 页源优先级 lastAtomPage ?? deskPageHint 不变。
+  const lastOpenedPage = useClientOnce<number | null>(() => {
     const scopeBookId = deskBookId ?? activeBookId;
-    if (scopeBookId) {
-      const lo = loadLastOpened();
-      // T32 E：只信有表且页在表内的 lo.page（与 ReturnNav 同真）——无表 / 脏页不采用，
-      // 完成态不把幽灵 p.999 链进书桌；页源优先级 lastAtomPage ?? deskPageHint 不变。
-      const adopt =
-        lo?.bookId === scopeBookId && lo.page != null && validPages?.includes(lo.page);
-      setLastOpenedPage(adopt ? (lo.page as number) : null);
-    }
-    setRet(loadReturn());
-  }, [deskBookId, activeBookId, validPages]);
+    if (!scopeBookId) return null;
+    const lo = loadLastOpened();
+    return lo?.bookId === scopeBookId && lo.page != null && validPages?.includes(lo.page)
+      ? (lo.page as number)
+      : null;
+  }, null);
+  /** 「回到刚才」return 短链（出发写于书桌/卡枢纽）。 */
+  const ret = useClientOnce(loadReturnOnce, null);
 
   // 挂载后冻结本轮队列（SSR 不读 localStorage，避免水合不一致）；同时恢复本标签会话
   // 游标（clamp 到 [0, order.length]，>0 视为续练）。

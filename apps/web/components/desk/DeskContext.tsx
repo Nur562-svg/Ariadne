@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo, useRef, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
 /**
@@ -59,12 +59,13 @@ export function DeskContextProvider({
   children: ReactNode;
 }) {
   const [clew, setClew] = useState<ClewContextData>(initial);
-  /** 挂载一次即固定；不放进 clew state —— setClew 合并永远冲不掉它。 */
-  const sessionStartedAt = useRef<number>(Date.now());
-  const value = useMemo(
-    () => ({ clew, setClew, sessionStartedAt: sessionStartedAt.current }),
-    [clew],
-  );
+  /**
+   * 挂载一次即固定（lazy 初值，T72 替 useRef+render 读 .current 的 refs/purity 双错）；
+   * 不放进 clew state —— setClew 合并永远冲不掉它。时间戳不进渲染输出，SSR/客户端
+   * 各自取值不水合错位（与旧 ref 同性质）。
+   */
+  const [sessionStartedAt] = useState(() => Date.now());
+  const value = useMemo(() => ({ clew, setClew, sessionStartedAt }), [clew, sessionStartedAt]);
   return <DeskContext.Provider value={value}>{children}</DeskContext.Provider>;
 }
 

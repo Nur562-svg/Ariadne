@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   applyAtomDraft,
   applyFieldDraft,
@@ -67,25 +67,23 @@ function AtomDraftEditor({
   seedCiteQuote?: string;
 }) {
   const key = atomDraftKey(cardId, atomId);
-  const [prompt, setPrompt] = useState(seedPrompt);
-  const [answer, setAnswer] = useState(seedAnswer);
-  const [citeQuote, setCiteQuote] = useState(seedCiteQuote ?? "");
-  const [seeded, setSeeded] = useState(false);
-  const [persisted, setPersisted] = useState<boolean | null>(null);
-
-  // 打开时以「seed ⊕ 已有草稿」为初值（草稿优先）；草稿为空串的字段回落 seed 文本，
-  // 让编辑器始终从可读全文出发，而不是从空白吞掉 seed。
-  // T71 DEFER: form-seed — 非 uSES（受控表单初值一次性回填，留 effect）。
-  useEffect(() => {
-    if (seeded) return;
+  // T72：form-seed 改 lazy 初值——「seed ⊕ 已有草稿」（草稿非空优先；空串字段回落 seed
+  // 文本，编辑器始终从可读全文出发）。编辑器只在点开「编辑草稿（本机）」后挂载
+  // （纯客户端、无 SSR 面水合不参与）；每次点开重挂 → 初值重读，用户编辑中途不再
+  // 被 effect 冲掉。读盘失败（隐私模式）= 空草稿 → seed 原文（fail-closed）。
+  const [seeded0] = useState(() => {
     const cur = loadAtomDraftStore()[key];
-    if (cur) {
-      if (nonBlank(cur.prompt)) setPrompt(cur.prompt as string);
-      if (nonBlank(cur.answer)) setAnswer(cur.answer as string);
-      if (nonBlank(cur.citeQuote)) setCiteQuote(cur.citeQuote as string);
-    }
-    setSeeded(true);
-  }, [key, seeded]);
+    return {
+      prompt: cur && nonBlank(cur.prompt) ? (cur.prompt as string) : seedPrompt,
+      answer: cur && nonBlank(cur.answer) ? (cur.answer as string) : seedAnswer,
+      citeQuote:
+        cur && nonBlank(cur.citeQuote) ? (cur.citeQuote as string) : (seedCiteQuote ?? ""),
+    };
+  });
+  const [prompt, setPrompt] = useState(seeded0.prompt);
+  const [answer, setAnswer] = useState(seeded0.answer);
+  const [citeQuote, setCiteQuote] = useState(seeded0.citeQuote);
+  const [persisted, setPersisted] = useState<boolean | null>(null);
 
   return (
     <div className="mt-2 rounded-lg border border-amber-300/60 bg-status-warn-bg/40 px-3 py-2.5">
@@ -258,17 +256,14 @@ export function FieldDraftLine({
   const entry = store[key];
   const changed = fieldDraftDiffers(seedValue, entry);
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(seedValue);
-  const [seeded, setSeeded] = useState(false);
-  const [persisted, setPersisted] = useState<boolean | null>(null);
-
-  // T71 DEFER: form-seed — 非 uSES（受控输入框初值一次性回填，留 effect）。
-  useEffect(() => {
-    if (seeded) return;
+  // T72：form-seed 改 lazy 初值——草稿非空优先，空/读失败回落 seed。value 只喂
+  // 「点开后」的输入框（SSR/水合帧不渲染），lazy 读盘不产生水合错位；用户编辑
+  // 中途不再被 effect 冲掉。
+  const [value, setValue] = useState(() => {
     const cur = loadAtomDraftStore()[key];
-    if (cur && nonBlank(cur.value)) setValue(cur.value as string);
-    setSeeded(true);
-  }, [key, seeded]);
+    return cur && nonBlank(cur.value) ? (cur.value as string) : seedValue;
+  });
+  const [persisted, setPersisted] = useState<boolean | null>(null);
 
   return (
     <div>

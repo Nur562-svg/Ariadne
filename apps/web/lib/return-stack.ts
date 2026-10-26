@@ -52,6 +52,19 @@ export function loadReturn(): ReturnEntry | null {
   }
 }
 
+/**
+ * T72：每页载入读一次的会话级缓存（引用稳定——供 uSES getSnapshot 直用）。
+ * return 桶的写点都在「离面进练/核」的点前（saveReturn），消费面（会话/回程链）
+ * 挂载期间桶不变，与旧 mount-effect 一次性采纳等价；SSR / 读失败 = null。
+ */
+let returnOnceCache: ReturnEntry | null | undefined;
+
+export function loadReturnOnce(): ReturnEntry | null {
+  if (typeof window === "undefined") return null;
+  if (returnOnceCache === undefined) returnOnceCache = loadReturn();
+  return returnOnceCache;
+}
+
 /** 写 return 短链（覆盖旧值）；非法 href 忽略（parseEntry 拒收）。 */
 export function saveReturn(entry: ReturnEntry): void {
   const parsed = parseEntry(entry);

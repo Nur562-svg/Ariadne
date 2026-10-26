@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   exportProgressPayload,
   importProgressPayload,
   parseProgressPayload,
   type ProgressPayload,
 } from "@/lib/progress-port";
+import { useStudyGrades } from "@/lib/use-study-grades";
+import { useHeYeStore } from "@/lib/use-heye-store";
 
 /** 导出文件名后缀：本地日期 YYYYMMDD。 */
 function exportStamp(): string {
@@ -23,23 +25,16 @@ function exportStamp(): string {
  * 入口是书库效用区，不是设置营销页，也不塞进 Clew QueuePanel。
  */
 export default function ProgressPortability() {
-  /** 本机记录条数（挂载后读一次；导入成功后刷新）。null = 读取中。 */
-  const [counts, setCounts] = useState<{ study: number; heye: number } | null>(null);
+  // T72：计数改 T71 双仓 hook 渲染派生——SSR/首帧空仓 = 0（如实，不造假正数）；导入走
+  // importProgressPayload 内建的 notify*ExternalChange 广播自动回流，refreshCounts 手动
+  // 刷与「读取中」null 态一并退役（getSnapshot 永不抛，T65 不永挂承诺结构性成立）。
+  const grades = useStudyGrades();
+  const heye = useHeYeStore();
+  const counts = { study: Object.keys(grades).length, heye: Object.keys(heye).length };
   /** 已解析待确认的导入（选文件 → 解析通过 → 等用户选 merge/replace）。 */
   const [pending, setPending] = useState<ProgressPayload | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "warn"; text: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-
-  // T71 DEFER: form-seed — 非 uSES（导出计数一次性回填，留 effect）。
-  useEffect(() => {
-    const p = exportProgressPayload();
-    setCounts({ study: Object.keys(p.study).length, heye: Object.keys(p.heye).length });
-  }, []);
-
-  function refreshCounts() {
-    const p = exportProgressPayload();
-    setCounts({ study: Object.keys(p.study).length, heye: Object.keys(p.heye).length });
-  }
 
   function onExport() {
     const payload = exportProgressPayload();
@@ -83,7 +78,7 @@ export default function ProgressPortability() {
       return;
     }
     setPending(null);
-    refreshCounts();
+    // 计数经 notify*ExternalChange → uSES 回流自动刷新（T72），无需手动 refresh。
     setMsg({
       kind: "ok",
       text:
@@ -93,7 +88,7 @@ export default function ProgressPortability() {
     });
   }
 
-  const empty = counts != null && counts.study === 0 && counts.heye === 0;
+  const empty = counts.study === 0 && counts.heye === 0;
 
   return (
     <div className="mt-10 rounded-lg border border-line bg-card px-5 py-4">
@@ -110,15 +105,12 @@ export default function ProgressPortability() {
         ) : (
           <button
             onClick={onExport}
-            disabled={counts == null}
-            className="rounded-md border border-line px-3 py-1.5 text-sm text-foreground transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar disabled:opacity-50 motion-reduce:transition-none"
+            className="rounded-md border border-line px-3 py-1.5 text-sm text-foreground transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
           >
             导出本机进度
-            {counts ? (
-              <span className="ml-1.5 text-xs text-muted">
-                （练 {counts.study} · 核 {counts.heye}）
-              </span>
-            ) : null}
+            <span className="ml-1.5 text-xs text-muted">
+              （练 {counts.study} · 核 {counts.heye}）
+            </span>
           </button>
         )}
         <button
@@ -155,7 +147,7 @@ export default function ProgressPortability() {
               onClick={() => doImport("replace")}
               className="rounded-md border border-line px-3 py-1.5 text-xs text-status-warn hover:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
-              替换导入（覆盖本机{counts ? ` ${counts.study + counts.heye} ` : " "}条）
+              替换导入（覆盖本机 {counts.study + counts.heye} 条）
             </button>
             <button
               onClick={() => setPending(null)}

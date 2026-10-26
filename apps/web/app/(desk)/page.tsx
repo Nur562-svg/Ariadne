@@ -471,7 +471,7 @@ export default function Library() {
           Server 只读 loadCards 下传 slim 索引与 seed 口径 incomplete 摘要（T55 同口径）；
           Client 读 ariadne.atom-draft.v1，只对有草稿的卡按需只读 GET /api/entities/<id> 组包。
           与 ProgressPortability 分列：draft-port ≠ progress-port，草稿永不并进 study/heye 包。 */}
-      <DraftInbox cardIndex={draftCardIndex} incompleteCardSummaries={incompleteCardSummaries} />
+      <DraftInbox incompleteCardSummaries={incompleteCardSummaries} />
 
       {/* T63 E/I：书库效用区「章质检驾驶舱」——一章一眼并读六信号（cite 未见 / parse 空·稀 /
           暗 / 浅 / 不完备 / 草稿），深链既有补救面（卡详 / viewer / 可复制 CLI）。
