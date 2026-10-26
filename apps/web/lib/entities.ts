@@ -114,15 +114,81 @@ function readJson<T>(file: string): T | undefined {
   }
 }
 
+// ---- T74：进程内指纹门控 memo（只读加速层，不是任何可写路径）----
+//
+// 合同（与 fingerprintFile / ArtifactFingerprint 同口径的 mtimeMs+size）：
+// - key = 文件绝对路径；指纹 = `${floor(mtimeMs)}:${size}`。
+// - 命中 ⇔ 当前指纹非空且与缓存一致 ⇒ 返回上次解析结果（≡ 该指纹时刻磁盘内容的解析）。
+// - 失效（miss）⇔ 新增/删除/改写（mtimeMs 或 size 变）或 stat 不可读——不可读一律按
+//   变更处理重读，绝不把「读不到」当命中回旧数据；无 TTL / 无 revalidate 秒数充当新鲜度。
+// - 目录（data/cards、data/chapters）：文件名集合每调用 readdir 现取，增删文件天然 miss；
+//   省的是每文件 readFile+JSON.parse，stat/readdir 元数据照常付。
+// - 缓存文档 deepFreeze：调用方约定只读（已审计全库无就地改动）；冻结让任何未来的就地
+//   改动当场抛错，而不是静默污染缓存串成「陈旧绿卡 / 假计数」。
+// - 公共 API（loadCards/loadCard/loadChapters/loadBooks/loadChapterPages/loadAllChapterPages）
+//   签名与返回语义不变：bookId∩chapterId 交集、坏文件 skip+warn、isUsableCard 全保留；
+//   物料归因（fingerprintFile/snapshotArtifactBaseline/materialOwnsArtifact/deriveMaterialStage）
+//   不走本层、语义不动。
+
+type JsonMemoEntry = { fp: string | null; doc: unknown };
+
+const jsonMemo = new Map<string, JsonMemoEntry>();
+
+/** 只读命中/未命中计数（夹具与验收证据用；clearEntitiesCache 一并清零）。 */
+export const entitiesCacheStats = { hits: 0, misses: 0 };
+
+/** 夹具/测试钩子：清空进程内 JSON memo 并清零计数。纯读侧缓存，无任何可写数据路径。 */
+export function clearEntitiesCache(): void {
+  jsonMemo.clear();
+  entitiesCacheStats.hits = 0;
+  entitiesCacheStats.misses = 0;
+}
+
+function deepFreeze<T>(v: T): T {
+  if (v === null || typeof v !== "object") return v;
+  if (Array.isArray(v)) {
+    for (const x of v) deepFreeze(x);
+  } else {
+    for (const k of Object.keys(v as Record<string, unknown>)) {
+      deepFreeze((v as Record<string, unknown>)[k]);
+    }
+  }
+  Object.freeze(v);
+  return v;
+}
+
+/** 与 fingerprintFile 同口径的 stat 指纹键；缺失/不可读 → null（null 永不当作命中）。 */
+function statFingerprint(file: string): string | null {
+  try {
+    const st = fs.statSync(file);
+    return `${Math.floor(st.mtimeMs)}:${st.size}`;
+  } catch {
+    return null;
+  }
+}
+
+function readJsonMemoized<T>(file: string): T | undefined {
+  const fp = statFingerprint(file);
+  const prev = jsonMemo.get(file);
+  if (fp !== null && prev?.fp === fp) {
+    entitiesCacheStats.hits++;
+    return prev.doc as T | undefined;
+  }
+  entitiesCacheStats.misses++;
+  const doc = readJson<T>(file);
+  jsonMemo.set(file, { fp, doc: doc === undefined ? undefined : deepFreeze(doc) });
+  return doc;
+}
+
 export function loadChapters(): ChapterConfig[] {
   const file = path.join(repoRoot(), "config", "chapter.json");
-  const cfg = readJson<{ chapters?: ChapterConfig[] }>(file);
+  const cfg = readJsonMemoized<{ chapters?: ChapterConfig[] }>(file);
   return cfg?.chapters ?? [];
 }
 
 export function loadBooks(): BookConfig[] {
   const file = path.join(repoRoot(), "config", "books.json");
-  const cfg = readJson<{ books?: BookConfig[] }>(file);
+  const cfg = readJsonMemoized<{ books?: BookConfig[] }>(file);
   return cfg?.books ?? [];
 }
 
@@ -170,7 +236,9 @@ export function loadCards(opts?: { chapterId?: string; bookId?: string }): Entit
     if (allowed && !allowed.has(chapterId)) continue;
     // 逐文件韧性（review-fix-integrity F）：readJson 吞 parse 错返回 undefined →
     // skip + warn（不静默消失）；根非对象 / cards 非数组同理，绝不拖垮整站。
-    const doc = readJson<{ cards?: unknown }>(path.join(dir, f));
+    // T74：readJsonMemoized 指纹门控——坏文件缓存的是 undefined，指纹未变时命中返回
+    // undefined 走同一 warn 分支（同字节解析结果确定）；指纹变了（含改成好文件）必 miss 重读。
+    const doc = readJsonMemoized<{ cards?: unknown }>(path.join(dir, f));
     if (!doc || typeof doc !== "object" || !Array.isArray(doc.cards)) {
       console.warn(`[loadCards] data/cards/${f} 不是含 cards 数组的合法 JSON——整文件跳过`);
       continue;
@@ -197,14 +265,14 @@ export function loadCard(id: string): EntityCard | undefined {
 /** 卡文件级元信息（doc 顶层 book/scope），供 library 统计与 UI 派生，不硬编码。 */
 export function loadCardDocMeta(chapterId: string): { book?: string; scope?: string } | undefined {
   const file = path.join(repoRoot(), "data", "cards", `${chapterId}.entities.json`);
-  return readJson<{ book?: string; scope?: string }>(file);
+  return readJsonMemoized<{ book?: string; scope?: string }>(file);
 }
 
 /** 单章 pages（按印刷页）。边界页若跨章重复，以该章文件为准。 */
 export function loadChapterPages(chapterId = "ch01"): PageDoc[] {
   const file = path.join(repoRoot(), "data", "chapters", `${chapterId}.blocks.json`);
   if (!fs.existsSync(file)) return [];
-  const doc = readJson<ChapterDoc>(file);
+  const doc = readJsonMemoized<ChapterDoc>(file);
   return (doc?.pages ?? []).map((p) => ({ ...p, chapterId }));
 }
 
@@ -222,7 +290,7 @@ export function loadAllChapterPages(): PageDoc[] {
   const byPage = new Map<number, PageDoc>();
   for (const f of files) {
     const chapterId = f.replace(/\.blocks\.json$/, "");
-    const doc = readJson<ChapterDoc>(path.join(dir, f));
+    const doc = readJsonMemoized<ChapterDoc>(path.join(dir, f));
     for (const p of doc?.pages ?? []) {
       if (p.page == null) continue;
       if (!byPage.has(p.page)) {
