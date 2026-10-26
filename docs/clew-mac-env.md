@@ -19,6 +19,7 @@ Minimax 三档缺省都是 `MiniMax-M2`（档语义靠 `CLEW_<TIER>_MODEL` 覆�
 
 接地按档（T69）：Long-context 档的服务端接地是**同章有界多页**（当前页 → 请求上下文 cite 页∩同章 →
 近邻补齐；至多 5 页、总 ~12000 字，常量写死；因字顶未装的页如实报数）——**不是**整章全书塞 prompt；
+选出的扩页若**全部**因总字顶没装上，仍设 ground（只装当前页）并写明「另有 k 页因总字顶未装」，不把 omitted 丢成「没扩」。
 Fast / Reasoning 仍是单页 OCR 小窗。扩窗是服务端自取，客户端 `pages[]` 作业形仍 422 拒收。
 
 ## 1. 接线（5 步）
@@ -64,6 +65,8 @@ curl -sN -X POST http://localhost:3000/api/clew/suggest \
 
 流式 NDJSON：`meta`（含 `tier` 与 `groundPages`——本次接地页平铺，多页 = Long-context 同章有界）→ `delta`* → `done`｜`error`。要 T66 式一次性 JSON 加 `"stream": false`。
 
+`done`（以及 `"stream": false` 的 200）可选 `meta.audit`（`clew-answer-audit.v1`：接地 / 上下文 / 自标未核验 / 越窗未标 / 无此原子）。**审计 ≠ 核验**：`grounded` 只表示该页在本次给模型的窗内，不是「已核 / 正确 / verified」。审计抛错则 `meta.audit = { "error": "audit_unavailable" }`，答文照常下发，HTTP 状态不变。缺钥时的 stub 气泡用同一套纯函数在答面上核自己的页码（没给模型窗）。
+
 ## 4. 故障表
 
 | 现象 | 原因 | 处理 |
@@ -81,10 +84,12 @@ curl -sN -X POST http://localhost:3000/api/clew/suggest \
 
 ## 5. 用量文件（本机 · 非真源）
 
-`data/qa/clew-usage.jsonl`（已 `.gitignore`）：每行 `{ts,tier,provider,model,ok,error?,tokens?}`。
+`data/qa/clew-usage.jsonl`（已 `.gitignore`）：每行 `{ts,tier,provider,model,ok,error?,tokens?,auditUnmarkedOut?}`。
+`auditUnmarkedOut` 是可选数字（本次越窗未标条数）；没有这个键的旧行照常解析。
 不含问句原文、不含钥。它**不是**云账单、**不是**掌握度、**不是** Due；删了也不影响任何功能。
 
 ## 6. 铁合同（再说一遍）
 
 只读答 · 结构化补丁 ≠ 真写（人粘贴/人点击才进本机草稿）· 仅既有原子永不发明 id · 三档不悄换 ·
-永不 bulk · fail-closed · 不做诊断 · 钥只服务端 · 本机用量 ≠ 掌握% / Due。
+永不 bulk · fail-closed · 不做诊断 · 钥只服务端 · 本机用量 ≠ 掌握% / Due ·
+**审计 ≠ 核验**（核账只标注页码是否在本次窗内，不改答文、不写 verified）。
