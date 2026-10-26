@@ -31,6 +31,7 @@ const S = await import("../apps/web/lib/clew-suggest.ts");
 const P = await import("../apps/web/lib/clew-provider.ts");
 const D = await import("../apps/web/lib/atom-draft.ts");
 const U = await import("../apps/web/lib/clew-usage.ts");
+const A = await import("../apps/web/lib/clew-answer-audit.ts");
 
 // ---------------- parseSuggestBody：拒 bulk / 作业形 ----------------
 
@@ -832,4 +833,328 @@ test("encodeClewStreamEvent: meta 带 groundPages/seedBefore 仍一行 NDJSON �
     readonly: true,
   });
   assert.deepEqual(JSON.parse(fastMeta).groundPages, []);
+});
+
+// ---------------- T70 A–F：答面核账（纯函数）+ 全超顶 omitted + 用量可选键 + 旧事件形 ----------------
+
+const BASIS_WIN = A.buildAuditBasis({
+  groundPages: [3, 4],
+  contextPage: 4,
+  citePages: [9],
+  cardCitePages: [10],
+  atomIds: ["ch01:immunity:1"],
+  entityIds: ["immunity"],
+});
+
+test("extractAnswerRefs: p.N / p. N / P.N / 第N页", () => {
+  const ex = A.extractAnswerRefs("见 p.3、p. 4、P.5，还有第6页。");
+  assert.deepEqual(
+    ex.pageRefs.map((p) => p.page),
+    [3, 4, 5, 6],
+  );
+  assert.equal(ex.pageRefs[1].raw, "p. 4");
+  assert.equal(ex.pageRefs[2].raw, "P.5");
+  assert.equal(ex.pageRefs[3].raw, "第6页");
+  assert.equal(ex.idRefs.length, 0);
+});
+
+test("extractAnswerRefs: 全角数字与标点归一（ｐ．１２ / 第３页 / ｐｐ．１－２）", () => {
+  const ex = A.extractAnswerRefs("见ｐ．１２与第３页，区间ｐｐ．１－２。");
+  assert.deepEqual(
+    ex.pageRefs.map((p) => p.page),
+    [1, 2, 12, 3],
+  );
+  // raw 仍是原字符，不是归一层
+  assert.ok(ex.pageRefs.some((p) => p.raw.includes("ｐ")));
+  assert.ok(ex.pageRefs.some((p) => p.raw === "第３页"));
+});
+
+test("extractAnswerRefs: pp.N–M 展开到 ≤20（含端点、en dash）；恰好 20 页展开", () => {
+  const dash = A.extractAnswerRefs("范围 pp.3–5。");
+  assert.deepEqual(
+    dash.pageRefs.map((p) => p.page),
+    [3, 4, 5],
+  );
+  assert.ok(dash.pageRefs.every((p) => p.raw === "pp.3–5" && p.rangeTooWide !== true));
+  const wide20 = A.extractAnswerRefs("pp.1-20");
+  assert.equal(wide20.pageRefs.length, 20);
+  assert.equal(wide20.pageRefs[0].page, 1);
+  assert.equal(wide20.pageRefs[19].page, 20);
+  assert.ok(wide20.pageRefs.every((p) => !p.rangeTooWide));
+});
+
+test("extractAnswerRefs: 区间超过 20 页整段 rangeTooWide，不展开成 21 条", () => {
+  const ex = A.extractAnswerRefs("太宽 pp.1-21 结束");
+  assert.equal(ex.pageRefs.length, 1);
+  assert.equal(ex.pageRefs[0].rangeTooWide, true);
+  assert.equal(ex.pageRefs[0].page, 1);
+  assert.equal(ex.pageRefs[0].rangeEnd, 21);
+  assert.equal(ex.pageRefs[0].raw, "pp.1-21");
+  // 终点小于起点同样不展开
+  const rev = A.extractAnswerRefs("pp.8-3");
+  assert.equal(rev.pageRefs.length, 1);
+  assert.equal(rev.pageRefs[0].rangeTooWide, true);
+});
+
+test("extractAnswerRefs: 代码围栏与补丁围栏内的页码 / atom: 跳过", () => {
+  const text = "窗外 p.99。\n```\np.3 atom:ch01:immunity:1\n```\n正文 atom:ch01:immunity:1 与 p.4\n```json\n{\"target\":\"atom:ch01:other:9\"}\n```";
+  const ex = A.extractAnswerRefs(text);
+  assert.deepEqual(
+    ex.pageRefs.map((p) => p.page),
+    [99, 4],
+  );
+  assert.deepEqual(
+    ex.idRefs.map((r) => r.id),
+    ["ch01:immunity:1"],
+  );
+  assert.ok(!ex.idRefs.some((r) => r.id === "ch01:other:9"));
+});
+
+test("extractAnswerRefs: 自标——同句「未核验」「推测」或紧邻括号；下一句不算", () => {
+  const ex = A.extractAnswerRefs("机制见 p.12（未核验）。推测在第8页。见 p.9。未核验写在下一句。");
+  const byPage = Object.fromEntries(ex.pageRefs.map((p) => [p.page, p.selfMarked]));
+  assert.equal(byPage[12], true);
+  assert.equal(byPage[8], true);
+  assert.equal(byPage[9], false);
+});
+
+test("auditClewAnswer: 四类优先序（窗 > 上下文/卡 cite > 自标 > 越窗未标）", () => {
+  const text = "p.3 在窗。p.9 在请求上下文。p.10 是卡 cite。p.11（未核验）。p.12 越窗。";
+  const a = A.auditClewAnswer(text, BASIS_WIN);
+  const cls = Object.fromEntries(a.refs.filter((r) => r.kind === "page").map((r) => [r.page, r.class]));
+  assert.equal(cls[3], "grounded");
+  assert.equal(cls[9], "context");
+  assert.equal(cls[10], "context");
+  assert.equal(cls[11], "self_marked");
+  assert.equal(cls[12], "unmarked_out");
+  assert.equal(a.counts.grounded, 1);
+  assert.equal(a.counts.context, 2);
+  assert.equal(a.counts.self_marked, 1);
+  assert.equal(a.counts.unmarked_out, 1);
+  assert.equal(a.clean, false);
+  assert.equal(a.version, "clew-answer-audit.v1");
+  // 在窗内即使写了未核验，仍算 grounded（自标只对越窗生效）
+  const inside = A.auditClewAnswer("p.3（未核验）", BASIS_WIN);
+  assert.equal(inside.refs[0].class, "grounded");
+  assert.equal(inside.clean, true);
+});
+
+test("auditClewAnswer: unknown atom 精确匹配；相近 id 不模糊并到已知 id；entity 同理", () => {
+  const text = "atom:ch01:immunity:1 已知。atom:ch01:immunity:2 不是。atom:immunity 不是原子。entity:immunity 已知。entity:immunit 差一字。";
+  const a = A.auditClewAnswer(text, BASIS_WIN);
+  const ids = a.refs.filter((r) => r.kind !== "page");
+  const byRaw = Object.fromEntries(ids.map((r) => [r.raw, r.class]));
+  assert.equal(byRaw["atom:ch01:immunity:1"], "known");
+  assert.equal(byRaw["atom:ch01:immunity:2"], "unknown");
+  assert.equal(byRaw["atom:immunity"], "unknown");
+  assert.equal(byRaw["entity:immunity"], "known");
+  assert.equal(byRaw["entity:immunit"], "unknown");
+  assert.equal(a.counts.known, 2);
+  assert.equal(a.counts.unknown, 3);
+  assert.equal(a.clean, false);
+});
+
+test("auditClewAnswer: 去重按 (kind,值) 保留首个 index", () => {
+  const text = "先 p.12，后又 p.12。atom:nope 与 atom:nope。";
+  const a = A.auditClewAnswer(text, BASIS_WIN);
+  const pages = a.refs.filter((r) => r.kind === "page" && r.page === 12);
+  assert.equal(pages.length, 1);
+  assert.equal(pages[0].index, text.indexOf("p.12"));
+  const atoms = a.refs.filter((r) => r.kind === "atom" && r.id === "nope");
+  assert.equal(atoms.length, 1);
+  assert.equal(atoms[0].index, text.indexOf("atom:nope"));
+  assert.equal(a.counts.unmarked_out, 1);
+  assert.equal(a.counts.unknown, 1);
+});
+
+test("auditClewAnswer: 过宽区间不因起点在窗内被算成 grounded", () => {
+  const a = A.auditClewAnswer("整章 pp.3-30。", BASIS_WIN);
+  assert.equal(a.counts.range_too_wide, 1);
+  assert.equal(a.counts.grounded, 0);
+  assert.equal(a.counts.unmarked_out, 1);
+  assert.equal(a.clean, false);
+  const marked = A.auditClewAnswer("（未核验）pp.3-30。", BASIS_WIN);
+  assert.equal(marked.counts.self_marked, 1);
+  assert.equal(marked.counts.unmarked_out, 0);
+  assert.equal(marked.counts.range_too_wide, 1);
+});
+
+test("safeAuditClewAnswer: basis 抛错 → audit_unavailable，不是全绿", () => {
+  const boom = {
+    groundPages: {
+      [Symbol.iterator]() {
+        throw new Error("boom");
+      },
+    },
+    contextPages: [],
+    cardCitePages: [],
+    knownAtomIds: [],
+    knownEntityIds: [],
+  };
+  const r = A.safeAuditClewAnswer("p.3 全对", boom);
+  assert.deepEqual(r, { error: "audit_unavailable" });
+  assert.equal(A.isAuditUnavailable(r), true);
+  assert.equal(A.formatAuditTakeawayLine(r), "核账：不可用");
+});
+
+test("coerceClewAnswerAudit: 坏形 / 错版本 → 不可用；合法形原样通过", () => {
+  assert.deepEqual(A.coerceClewAnswerAudit(undefined), { error: "audit_unavailable" });
+  assert.deepEqual(A.coerceClewAnswerAudit({ clean: true }), { error: "audit_unavailable" });
+  assert.deepEqual(A.coerceClewAnswerAudit({ error: "audit_unavailable" }), { error: "audit_unavailable" });
+  const ok = A.auditClewAnswer("没有页码", BASIS_WIN);
+  assert.equal(A.coerceClewAnswerAudit(ok).clean, true);
+});
+
+test("segmentAnswerRefs: 拼接等于原文（不改字符）；越窗不可点；窗内可点", () => {
+  const text = "见 p.3 与 p.12。";
+  const audit = A.auditClewAnswer(text, BASIS_WIN);
+  const segs = A.segmentAnswerRefs(text, audit);
+  assert.equal(segs.map((s) => s.text).join(""), text);
+  const p3 = segs.find((s) => s.type === "page" && s.page === 3);
+  const p12 = segs.find((s) => s.type === "page" && s.page === 12);
+  assert.equal(p3.linkable, true);
+  assert.equal(p3.class, "grounded");
+  assert.equal(p12.linkable, false);
+  assert.equal(p12.class, "unmarked_out");
+  assert.equal(p12.text, "p.12");
+});
+
+test("relatedCardAtoms: cite 页落在接地∪上下文才列入，邻页不算，至多 6 条", () => {
+  const audit = A.auditClewAnswer("p.3 与 p.9 与 p.12", BASIS_WIN);
+  const atoms = [
+    { id: "a1", citePage: 3 },
+    { id: "a2", citePage: 9 },
+    { id: "a3", citePage: 12 }, // 越窗未标，不列
+    { id: "a4", citePage: 5 }, // 邻页，不模糊
+    { id: "a1", citePage: 3 }, // 重复 id
+    ...Array.from({ length: 8 }, (_, i) => ({ id: `x${i}`, citePage: 3 })),
+  ];
+  const rel = A.relatedCardAtoms(atoms, audit, 6);
+  assert.deepEqual(
+    rel.map((a) => a.id),
+    ["a1", "a2", "x0", "x1", "x2", "x3"],
+  );
+  assert.ok(!rel.some((a) => a.id === "a3" || a.id === "a4"));
+  assert.equal(A.existingStudyHrefForCard(undefined, "b"), null);
+  assert.equal(A.existingStudyHrefForCard("immunity", "immunology-3rd"), "/study?card=immunity&book=immunology-3rd&mode=all");
+  assert.equal(A.clewCitedPageHref("immunology-3rd", 3), "/desk?book=immunology-3rd&page=3");
+  assert.equal(A.clewCitedPageHref(undefined, 3), "/viewer/3");
+});
+
+test("assembleChapterGround: extras=0 且 omitted>0 仍设 ground；都没有则 undefined", () => {
+  const onlyOmitted = S.assembleChapterGround({
+    currentPage: 4,
+    extraPages: [],
+    omitted: 3,
+    totalChars: 3000,
+    maxPages: 5,
+    maxTotalChars: 12000,
+  });
+  assert.deepEqual(onlyOmitted, {
+    mode: "chapter-bounded",
+    pages: [4],
+    totalChars: 3000,
+    maxPages: 5,
+    maxTotalChars: 12000,
+    pagesOmitted: 3,
+  });
+  assert.equal(
+    S.assembleChapterGround({
+      currentPage: 4,
+      extraPages: [],
+      omitted: 0,
+      totalChars: 100,
+      maxPages: 5,
+      maxTotalChars: 12000,
+    }),
+    undefined,
+  );
+  const mixed = S.assembleChapterGround({
+    currentPage: 4,
+    extraPages: [3, 5],
+    omitted: 1,
+    totalChars: 2400,
+    maxPages: 5,
+    maxTotalChars: 12000,
+  });
+  assert.deepEqual(mixed.pages, [3, 4, 5]);
+  assert.equal(mixed.pagesOmitted, 1);
+});
+
+test("buildContextBlock: 全超顶 omitted 仍写「另有 k 页因总字顶未装」；单页小窗不写", () => {
+  const ground = S.assembleChapterGround({
+    currentPage: 4,
+    extraPages: [],
+    omitted: 2,
+    totalChars: 3000,
+    maxPages: 5,
+    maxTotalChars: 12000,
+  });
+  const blk = S.buildContextBlock(
+    { page: 4 },
+    { pageWindow: { page: 4, text: "原文", chars: 3000, truncated: true, source: "server" }, ground },
+  );
+  assert.ok(blk.includes("另有 2 页因总字顶未装"));
+  assert.ok(blk.includes("本次装入 p.4"));
+  assert.ok(!blk.includes("【p.5"));
+  const single = S.buildContextBlock(
+    { page: 4 },
+    { pageWindow: { page: 4, text: "原文", chars: 500, truncated: false, source: "server" } },
+  );
+  assert.ok(!single.includes("另有"));
+  assert.ok(!single.includes("同章有界"));
+});
+
+test("buildTakeawayText: 有审计写核账行；无审计写「核账：不可用」；答文不被改写", () => {
+  const audit = A.auditClewAnswer("见 p.3。越窗 p.99。atom:missing", BASIS_WIN);
+  const answer = "见 p.3。越窗 p.99。atom:missing";
+  const t = S.buildTakeawayText("q", answer, { page: 4 }, { mode: "live", provider: "zhipu", audit });
+  assert.ok(t.includes("核账：接地 1 · 越窗未标 1 · 无此原子 1（≠ 内容已核）"));
+  assert.ok(t.includes(`答：${answer}`));
+  const none = S.buildTakeawayText("q", answer, {}, { mode: "stub" });
+  assert.ok(none.includes("核账：不可用"));
+  assert.ok(none.includes(`答：${answer}`));
+  // 补丁 envelope 不夹核账、schema 不动
+  const env = S.buildSuggestPatchEnvelope("q", answer, { card: { id: "immunity", name_zh: "免疫" } }, { mode: "stub" });
+  assert.equal(env.schema, "ariadne.atom-draft-patch.v1");
+  assert.ok(!env.note.includes("核账"));
+});
+
+test("parseUsageLine: auditUnmarkedOut 可选；旧行无该键仍解析；today 分档计数不看它", () => {
+  const day = U.startOfToday(1_800_000_000_000);
+  const oldLine = U.buildUsageLine({ ts: day + 10, tier: "fast", provider: "zhipu", model: "m", ok: true });
+  assert.equal(JSON.parse(oldLine).auditUnmarkedOut, undefined);
+  const parsedOld = U.parseUsageLine(oldLine);
+  assert.equal(parsedOld.auditUnmarkedOut, undefined);
+  assert.equal(parsedOld.tier, "fast");
+  const neu = U.buildUsageLine({
+    ts: day + 20,
+    tier: "long-context",
+    provider: "zhipu",
+    model: "m",
+    ok: true,
+    auditUnmarkedOut: 2,
+  });
+  assert.equal(U.parseUsageLine(neu).auditUnmarkedOut, 2);
+  // 脏的 audit 字段不拒整行
+  const dirty = JSON.stringify({ ts: day + 30, tier: "reasoning", provider: "z", model: "m", ok: true, auditUnmarkedOut: "x" });
+  const d = U.parseUsageLine(dirty);
+  assert.equal(d.tier, "reasoning");
+  assert.equal(d.auditUnmarkedOut, undefined);
+  const by = U.countTodayByTier([oldLine, neu, dirty], day);
+  assert.deepEqual(by, { fast: 1, reasoning: 1, "long-context": 1 });
+});
+
+test("encodeClewStreamEvent: 旧 done 无 meta；新 done 带 meta.audit；meta 仍不泄钥", () => {
+  const oldDone = S.encodeClewStreamEvent({ type: "done", finishReason: "stop" });
+  assert.equal(JSON.parse(oldDone).meta, undefined);
+  assert.ok(oldDone.endsWith("\n"));
+  const audit = { error: "audit_unavailable" };
+  const neu = S.encodeClewStreamEvent({ type: "done", meta: { audit } });
+  assert.deepEqual(JSON.parse(neu).meta.audit, audit);
+  const withCounts = A.auditClewAnswer("p.4", BASIS_WIN);
+  const okDone = S.encodeClewStreamEvent({ type: "done", meta: { audit: withCounts } });
+  assert.equal(JSON.parse(okDone).meta.audit.version, "clew-answer-audit.v1");
+  assert.ok(!okDone.includes("apiKey"));
+  assert.ok(!okDone.includes("verified"));
 });

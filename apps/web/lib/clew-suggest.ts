@@ -1,9 +1,10 @@
 /**
- * T66 C / T67 C·D·E / T69 A·B·C·D：Clew 只读建议——请求体校验 + 系统提示 + 书桌上下文拼装 +
- * 按档 grounding 策略（long-context 同章有界多页）+ 剪贴板带走 + 流事件编码 + 结构化补丁解析
- * （before 从 seed 只读对齐）（纯函数）。
+ * T66 C / T67 C·D·E / T69 A·B·C·D / T70 D·F：Clew 只读建议——请求体校验 + 系统提示 + 书桌上下文拼装 +
+ * 按档 grounding 策略（long-context 同章有界多页；全超顶仍报 pagesOmitted）+ 剪贴板带走 +
+ * 流事件编码 + 结构化补丁解析（before 从 seed 只读对齐）（纯函数）。
  * 无 "use client"、无 import、无 fs、无 process.env：服务端 route 与客户端 ClewPane 共用形状，
- * scripts/clew-suggest-check.mjs 直接 import 本 .ts 单测（Node ≥ 23.6 原生剥类型）。
+ * scripts/clew-suggest-check.mjs 直接 import 本 .ts（Node ≥ 23.6 原生剥类型）。
+ * 核账纯函数在 clew-answer-audit.ts；本文件只留与它对齐的带走行，避免给本文件加 import。
  *
  * 铁合同（本文件每个函数都遵守；route.ts / ClewPane 同守）：
  *   1. 只读答：只产出提示串与文本；永不指示模型或调用方写 entities / blocks / verified:true / PATCH。
@@ -22,6 +23,46 @@
  */
 
 // ---- 形状 ----
+
+/**
+ * 与 clew-answer-audit.ts 的 ClewAnswerAudit / 失败形同构（本文件不 import 它）。
+ * 带走文本与流事件只透传，不在这里重算。
+ */
+export type ClewAnswerAuditWire =
+  | {
+      version: "clew-answer-audit.v1";
+      clean: boolean;
+      counts: {
+        grounded: number;
+        context: number;
+        self_marked: number;
+        unmarked_out: number;
+        known: number;
+        unknown: number;
+        range_too_wide: number;
+      };
+      refs: unknown[];
+    }
+  | { error: "audit_unavailable" };
+
+/** 与 clew-answer-audit ClewAuditBasis 同构。 */
+export type ClewAuditBasisWire = {
+  groundPages: number[];
+  contextPages: number[];
+  cardCitePages: number[];
+  knownAtomIds: string[];
+  knownEntityIds: string[];
+};
+
+/** 与 clew-answer-audit ClewCardAtomRef 同构。 */
+export type ClewCardAtomWire = { id: string; citePage: number | null };
+
+/** 与 formatAuditTakeawayLine 同句。无审计 / 失败 → 「核账：不可用」。 */
+function formatAuditTakeawayLine(audit: ClewAnswerAuditWire | undefined): string {
+  if (!audit || !("counts" in audit)) return "核账：不可用";
+  const c = audit.counts;
+  return `核账：接地 ${c.grounded} · 越窗未标 ${c.unmarked_out} · 无此原子 ${c.unknown}（≠ 内容已核）`;
+}
 
 /** 客户端可发的书桌上下文子集：DeskContext ClewContextData 的只读投影（不含 progress* 池）。 */
 export type ClewSuggestContext = {
@@ -78,6 +119,13 @@ export type ClewGrounding = {
   incomplete?: ClewIncompleteGrounding;
   /** T69 D：白名单 target 的 seed 现值（补丁 before 对齐用；服务端只读导出，空 → null）。 */
   seedBefore?: ClewSeedBefore;
+  /**
+   * T70 C：当前卡既有原子 / 实体 id 与 cite 页投影（loadCard 已读到的，不另开读盘）。
+   * 只给答面核账 basis，不进 prompt。
+   */
+  knownAtomIds?: string[];
+  knownEntityIds?: string[];
+  cardAtoms?: ClewCardAtomWire[];
 };
 
 /** 答面元信息（UI 短标 / 带走文本用）。 */
@@ -88,6 +136,13 @@ export type ClewAnswerMeta = {
   pageWindow?: { page: number; chars: number; truncated: boolean };
   /** T69 C：本次接地页平铺（>1 页 = long-context 同章有界；UI 次级标可选）。 */
   groundPages?: number[];
+  /** T70 D：选出但因总字顶未装的页数。0 / 缺省 = 没有这回事（fast/reasoning 不写）。 */
+  pagesOmitted?: number;
+  /**
+   * T70 C·F：服务端权威核账，或失败形。缺省 = 带走文本写「核账：不可用」。
+   * 审计 ≠ 核验；不改答文字符。
+   */
+  audit?: ClewAnswerAuditWire;
 };
 
 /**
@@ -191,6 +246,34 @@ export function groundPagesOf(g?: ClewGrounding): number[] {
   if (!g) return [];
   if (g.ground) return g.ground.pages;
   return g.pageWindow ? [g.pageWindow.page] : [];
+}
+
+/**
+ * T70 D：long-context 装窗收口。
+ * - 有附加窗 → ground（pages = 当前页 + 已装附加页，pagesOmitted 如实）。
+ * - 附加窗为空但 omitted>0 → **仍设** ground：pages=[当前页]，pagesOmitted=omitted。
+ *   选出的扩页全因总字顶未装时，不得把 omitted 丢成「没扩」。
+ * - 两者都没有 → undefined（单页，不写 ground；fast/reasoning 不调用本函数）。
+ */
+export function assembleChapterGround(opts: {
+  currentPage: number;
+  extraPages: readonly number[];
+  omitted: number;
+  totalChars: number;
+  maxPages: number;
+  maxTotalChars: number;
+}): NonNullable<ClewGrounding["ground"]> | undefined {
+  const extras = opts.extraPages.filter((p) => isPrintedPage(p) && p !== opts.currentPage);
+  if (extras.length === 0 && opts.omitted <= 0) return undefined;
+  const pages = [...new Set([opts.currentPage, ...extras])].filter((p) => isPrintedPage(p)).sort((a, b) => a - b);
+  return {
+    mode: "chapter-bounded",
+    pages,
+    totalChars: opts.totalChars,
+    maxPages: opts.maxPages,
+    maxTotalChars: opts.maxTotalChars,
+    pagesOmitted: opts.omitted > 0 ? opts.omitted : 0,
+  };
 }
 
 /** G：诚实脚注——ClewPane 底栏与 docs 同源一句（保留既有「以教材页码为准」口径）。 */
@@ -458,6 +541,13 @@ export function buildContextBlock(ctx: ClewSuggestContext, g?: ClewGrounding): s
         );
         lines.push(x.text);
       }
+    } else if (g.ground && g.ground.pagesOmitted > 0) {
+      // T70 D：扩页全因总字顶未装（extras=0, omitted>0）——仍诚实报数，不装成「只读了这一页所以没事」。
+      const gr = g.ground;
+      lines.push("");
+      lines.push(
+        `【同章有界 · 非全书 · 本次装入 p.${gr.pages.join("、p.")} · 另有 ${gr.pagesOmitted} 页因总字顶未装】`,
+      );
     }
   } else {
     lines.push("（本次没有页面原文小窗：只能按概念层面作答，不要编造页码）");
@@ -627,11 +717,15 @@ export function buildTakeawayText(
       : meta.pageWindow != null
         ? `对照小窗：p.${meta.pageWindow.page}（${meta.pageWindow.truncated ? `前 ${PAGE_TEXT_MAX_CHARS} 字 / 共 ${meta.pageWindow.chars} 字` : `${meta.pageWindow.chars} 字`}）`
         : "对照小窗：无";
+  const omitted =
+    meta.pagesOmitted != null && meta.pagesOmitted > 0 ? `另有 ${meta.pagesOmitted} 页因总字顶未装` : null;
   const where = contextLine(ctx);
   return [
     `【Clew 只读建议 · ${src} · 未核】`,
     where ? `上下文：${where}` : "上下文：书架 / 无书",
     win,
+    ...(omitted ? [omitted] : []),
+    formatAuditTakeawayLine(meta.audit),
     "",
     `问：${question}`,
     "",
@@ -708,12 +802,27 @@ export type ClewStreamEvent =
       incompleteTargets: string[];
       /** T69 C：本次接地页平铺（含当前页；long-context 多页=同章有界；无窗 → 空数组）。 */
       groundPages?: number[];
+      /** T70 D：全超顶 / 部分超顶未装页数（0 不写）。 */
+      pagesOmitted?: number;
       /** T69 D：白名单 target 的 seed 现值（before 对齐；无卡/无目标 → null）。 */
       seedBefore?: ClewSeedBefore | null;
+      /** T70：流式预览用的 basis（与 done.meta.audit 同源；可选，旧客户端忽略）。 */
+      auditBasis?: ClewAuditBasisWire;
+      /** T70：当前卡原子 id + cite 页（只读投影；答面「涉及的原子」用，不写草稿）。 */
+      cardAtoms?: ClewCardAtomWire[];
       readonly: true;
     }
   | { type: "delta"; text: string }
-  | { type: "done"; finishReason?: string; usage?: { inputTokens?: number | null; outputTokens?: number | null } }
+  | {
+      type: "done";
+      finishReason?: string;
+      usage?: { inputTokens?: number | null; outputTokens?: number | null };
+      /**
+       * T70 C：权威核账。可选键——旧 done 事件没有 meta，客户端当作「核账不可用」，
+       * 不涂绿。失败形 meta.audit = { error: "audit_unavailable" }，HTTP 状态不因此改变。
+       */
+      meta?: { audit: ClewAnswerAuditWire };
+    }
   | { type: "error"; message: string };
 
 /** 一行 NDJSON（结尾 \n）；ClewPane 按行 JSON.parse。 */

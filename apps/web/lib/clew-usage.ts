@@ -3,7 +3,8 @@ import path from "node:path";
 
 /**
  * T68 E：Clew 本机用量记数——**本刀唯一可写文件** `data/qa/clew-usage.jsonl`（.gitignore 已列；
- * 报告非真源）。append-only 单行 JSON：ts · tier · provider · model · ok | fail(code) · tokens?。
+ * 报告非真源）。append-only 单行 JSON：ts · tier · provider · model · ok | fail(code) · tokens?
+ * · auditUnmarkedOut?（T70 可选；缺字段的旧行照常解析）。
  * 永不写 entities / blocks / verified；不是云账单（不拉上游计量 API，只记本地调用事实）；
  * 非掌握度 / 非 Due。记数失败（盘只读等）只 warn 不影响答——用量是旁观者，不是门。
  * 可选 CLEW_SESSION_MAX_CALLS（服务端 env，正整数）：「本机今日」调用 ≥ 顶 → 429 session_cap
@@ -24,6 +25,11 @@ export type ClewUsageLine = {
   /** 失败时的错误码（upstream_error / upstream_timeout / empty_answer…）。 */
   error?: string;
   tokens?: { input?: number | null; output?: number | null };
+  /**
+   * T70 C：本次答核账的越窗未标条数（可选）。缺省 = 旧行 / 审计失败没数字。
+   * 不是掌握度、不是 Due；todayUsageByTier 不读它。
+   */
+  auditUnmarkedOut?: number;
 };
 
 /** 组一行（结尾 \n）；不带 apiKey / 不带问句原文（问题内容不进用量文件）。 */
@@ -58,6 +64,12 @@ export function parseUsageLine(line: string): ClewUsageLine | null {
                 : null,
             },
           }
+        : {}),
+      // 可选键：非负整数才收下；脏值丢掉该键，不因此拒整行（旧行没有这个字段）。
+      ...(typeof o.auditUnmarkedOut === "number" &&
+      Number.isInteger(o.auditUnmarkedOut) &&
+      o.auditUnmarkedOut >= 0
+        ? { auditUnmarkedOut: o.auditUnmarkedOut }
         : {}),
     };
   } catch {

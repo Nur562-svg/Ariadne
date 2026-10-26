@@ -26,6 +26,20 @@ import {
   type SuggestPatchEntry,
 } from "@/lib/clew-suggest";
 import {
+  buildAuditBasis,
+  clewCitedPageHref,
+  coerceClewAnswerAudit,
+  existingStudyHrefForCard,
+  isAuditUnavailable,
+  relatedCardAtoms,
+  safeAuditClewAnswer,
+  segmentAnswerRefs,
+  type ClewAnswerAudit,
+  type ClewAuditBasis,
+  type ClewAuditUnavailable,
+  type ClewCardAtomRef,
+} from "@/lib/clew-answer-audit";
+import {
   atomDraftKey,
   fieldDraftKey,
   mergeAtomDraft,
@@ -61,6 +75,16 @@ type AssistantMsg = {
   patchEntries?: SuggestPatchEntry[];
   /** T68 D：发送时快照的档（重试复用；live 短标点名）。 */
   tier?: string;
+  /**
+   * T70 E：核账。流式中 auditPreview=true（灰，纯函数预览）；done 后以服务端 meta.audit 覆盖。
+   * error 形 = 核账不可用，不出芯片。
+   */
+  audit?: ClewAnswerAudit | ClewAuditUnavailable;
+  auditPreview?: boolean;
+  /** 流式预览 basis（meta 事件带来；与服务端审计同源）。 */
+  auditBasis?: ClewAuditBasis;
+  /** 当前卡原子 id + cite 页（服务端已 load 的只读投影）。 */
+  cardAtoms?: ClewCardAtomRef[];
 };
 type Msg = { role: "user"; text: string } | AssistantMsg | { role: "note"; text: string };
 type Tab = "chat" | "changes" | "queue";
@@ -219,6 +243,154 @@ function pickSuggestContext(clew: ClewContextData): ClewSuggestContext {
     ...(clew.card ? { card: clew.card } : {}),
     ...(clew.surface ? { surface: clew.surface } : {}),
   };
+}
+
+function parseCardAtoms(raw: unknown): ClewCardAtomRef[] {
+  if (!Array.isArray(raw)) return [];
+  const out: ClewCardAtomRef[] = [];
+  for (const item of raw) {
+    if (item === null || typeof item !== "object") continue;
+    const o = item as Record<string, unknown>;
+    if (typeof o.id !== "string" || !o.id.trim()) continue;
+    const cite = o.citePage;
+    out.push({
+      id: o.id,
+      citePage: typeof cite === "number" && Number.isInteger(cite) && cite > 0 ? cite : null,
+    });
+  }
+  return out;
+}
+
+/** 气泡上已快照的 return（练/核链）。没有就不写——不另造回程。 */
+function bubbleReturnTo(m: AssistantMsg): { href: string; label: string } | undefined {
+  for (const l of m.links ?? []) {
+    if ("plain" in l) continue;
+    if (l.returnTo) return l.returnTo;
+  }
+  return undefined;
+}
+
+/**
+ * 答文页码就地标注。text 段与页码段拼接后等于原文；⚠ 是下标，不替换字符。
+ * 越窗不可点，title「本次未给模型此页」。预览全程用 muted，终态越窗才上琥珀。
+ */
+function AuditedProse({
+  text,
+  audit,
+  bookId,
+  preview,
+}: {
+  text: string;
+  audit?: ClewAnswerAudit | ClewAuditUnavailable;
+  bookId?: string;
+  preview?: boolean;
+}) {
+  if (!audit || isAuditUnavailable(audit)) return <>{text}</>;
+  const segs = segmentAnswerRefs(text, audit);
+  return (
+    <>
+      {segs.map((s, i) => {
+        if (s.type === "text") return <span key={i}>{s.text}</span>;
+        if (!s.linkable) {
+          return (
+            <span key={i} title="本次未给模型此页" className={preview ? undefined : "cite-unverified"}>
+              {s.text}
+              <sub className={preview ? "text-muted" : "text-status-warn"} aria-hidden="true">
+                ⚠
+              </sub>
+            </span>
+          );
+        }
+        return (
+          <Link
+            key={i}
+            href={clewCitedPageHref(bookId, s.page)}
+            className={
+              preview
+                ? "text-muted underline decoration-dotted underline-offset-4"
+                : "text-cinnabar no-underline hover:underline underline-offset-4"
+            }
+          >
+            {s.text}
+          </Link>
+        );
+      })}
+    </>
+  );
+}
+
+/** 答下一行：终态 clean 一句；否则五段计数。越窗未标 / 无此原子用琥珀，不用红、不用圆环。 */
+function AuditFace({
+  audit,
+  preview,
+  cardAtoms,
+  cardId,
+  bookId,
+  returnTo,
+}: {
+  audit?: ClewAnswerAudit | ClewAuditUnavailable;
+  preview?: boolean;
+  cardAtoms?: ClewCardAtomRef[];
+  cardId?: string;
+  bookId?: string;
+  returnTo?: { href: string; label: string };
+}) {
+  if (!audit) return null;
+  if (isAuditUnavailable(audit)) {
+    return <span className="mt-1 block text-[11px] leading-5 text-muted">核账不可用</span>;
+  }
+  const c = audit.counts;
+  const showClean = !preview && audit.clean && c.self_marked === 0 && c.range_too_wide === 0;
+  const related = preview ? [] : relatedCardAtoms(cardAtoms ?? [], audit, 6);
+  const studyHref = existingStudyHrefForCard(cardId, bookId);
+  const warn = (n: number) => (!preview && n > 0 ? "text-status-warn" : undefined);
+  return (
+    <span className="mt-1 flex w-full flex-col gap-0.5">
+      {showClean ? (
+        <span
+          className="text-[11px] leading-5 text-muted"
+          title={`接地 ${c.grounded} · 上下文 ${c.context} · 自标未核验 0 · 越窗未标 0 · 无此原子 0`}
+        >
+          页码均在本次窗/上下文内（≠ 内容已核）
+        </span>
+      ) : (
+        <span className={`text-[11px] leading-5 ${preview ? "text-muted" : "text-foreground/80"}`}>
+          接地 {c.grounded}
+          <span className="text-muted"> · </span>
+          上下文 {c.context}
+          <span className="text-muted"> · </span>
+          自标未核验 {c.self_marked}
+          <span className="text-muted"> · </span>
+          <span className={warn(c.unmarked_out)}>越窗未标 {c.unmarked_out}</span>
+          <span className="text-muted"> · </span>
+          <span className={warn(c.unknown)}>无此原子 {c.unknown}</span>
+        </span>
+      )}
+      {related.length > 0 ? (
+        <span className="text-[11px] leading-5 text-muted">
+          答涉及的当前卡原子
+          {related.map((a) =>
+            studyHref ? (
+              <Link
+                key={a.id}
+                href={studyHref}
+                onClick={() => {
+                  if (returnTo) saveReturn({ ...returnTo, at: Date.now() });
+                }}
+                className="mono ml-2 text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
+              >
+                {a.id}
+              </Link>
+            ) : (
+              <span key={a.id} className="mono ml-2">
+                {a.id}
+              </span>
+            ),
+          )}
+        </span>
+      ) : null}
+    </span>
+  );
 }
 
 /**
@@ -392,9 +564,20 @@ export default function ClewPane() {
     });
   }
 
-  /** T67 B：pending 气泡随流式 chunk 增量追加文本。 */
+  /** T67 B / T70 E：pending 气泡随流式 chunk 增长，并用同源纯函数做灰色核账预览。 */
   function appendPending(piece: string) {
-    updatePending((cur) => ({ text: cur.text + piece }));
+    updatePending((cur) => {
+      const text = cur.text + piece;
+      const basis =
+        cur.auditBasis ??
+        buildAuditBasis({
+          groundPages: cur.meta?.groundPages ?? (cur.meta?.pageWindow ? [cur.meta.pageWindow.page] : []),
+          contextPage: cur.ctx.page,
+          citePages: cur.ctx.citePages,
+          entityIds: cur.ctx.card ? [cur.ctx.card.id] : [],
+        });
+      return { text, audit: safeAuditClewAnswer(text, basis), auditPreview: true };
+    });
   }
 
   /**
@@ -436,7 +619,23 @@ export default function ClewPane() {
         if (res.status === 502) bumpUsage(tierUsed);
         const j: Record<string, unknown> | null = await res.json().catch(() => null);
         if (res.status === 503 && j?.error === "no_provider") {
-          updatePending({ mode: "stub", text: stubText, meta: { mode: "stub" } });
+          // T70 E：stub 文本也可能带页码。没给模型窗，ground 为空；请求页/cite 算上下文。
+          const audit = safeAuditClewAnswer(
+            stubText,
+            buildAuditBasis({
+              groundPages: [],
+              contextPage: ctx.page,
+              citePages: ctx.citePages,
+              entityIds: ctx.card ? [ctx.card.id] : [],
+            }),
+          );
+          updatePending({
+            mode: "stub",
+            text: stubText,
+            audit,
+            auditPreview: false,
+            meta: { mode: "stub", audit },
+          });
         } else {
           const msg = typeof j?.message === "string" ? j.message : `请求失败（HTTP ${res.status}）`;
           updatePending({ mode: "error", errorText: msg });
@@ -455,6 +654,7 @@ export default function ClewPane() {
       /** T69 D：meta 随白名单带来的 seed 现值（before 对齐；done 剥围栏时用）。 */
       let seedBefore: ClewSeedBefore | null = null;
       let sawDone = false;
+      let doneAuditRaw: unknown;
       let sawError: string | null = null;
       for (;;) {
         const { done, value } = await reader.read();
@@ -480,19 +680,37 @@ export default function ClewPane() {
             const gp = Array.isArray(ev.groundPages)
               ? (ev.groundPages as unknown[]).filter((x): x is number => typeof x === "number")
               : undefined;
+            const pagesOmitted =
+              typeof ev.pagesOmitted === "number" && Number.isInteger(ev.pagesOmitted) && ev.pagesOmitted > 0
+                ? ev.pagesOmitted
+                : undefined;
+            const basisRaw = ev.auditBasis;
+            const auditBasis =
+              basisRaw && typeof basisRaw === "object" && !Array.isArray(basisRaw)
+                ? buildAuditBasis(basisRaw as Parameters<typeof buildAuditBasis>[0])
+                : undefined;
+            const cardAtoms = parseCardAtoms(ev.cardAtoms);
             updatePending({
+              ...(auditBasis ? { auditBasis } : {}),
+              cardAtoms,
               meta: {
                 mode: "live",
                 provider: typeof ev.provider === "string" ? ev.provider : undefined,
                 model: typeof ev.model === "string" ? ev.model : undefined,
                 ...(pw ? { pageWindow: { page: pw.page, chars: pw.chars, truncated: pw.truncated } } : {}),
                 ...(gp && gp.length > 1 ? { groundPages: gp } : {}),
+                ...(pagesOmitted ? { pagesOmitted } : {}),
               },
             });
           } else if (ev?.type === "delta" && typeof ev.text === "string") {
             appendPending(ev.text);
           } else if (ev?.type === "done") {
             sawDone = true;
+            const meta = ev.meta;
+            doneAuditRaw =
+              meta && typeof meta === "object" && !Array.isArray(meta)
+                ? (meta as Record<string, unknown>).audit
+                : undefined;
           } else if (ev?.type === "error" && typeof ev.message === "string") {
             sawError = ev.message;
           }
@@ -503,7 +721,16 @@ export default function ClewPane() {
       } else if (sawDone) {
         updatePending((cur) => {
           const { answer, entries } = splitStructuredPatch(cur.text, allowed, seedBefore);
-          return { mode: "live", text: answer, ...(entries.length ? { patchEntries: entries } : {}) };
+          // 无 meta.audit / 坏形 → 不可用，不用流式预览凑一版全绿。
+          const audit = coerceClewAnswerAudit(doneAuditRaw);
+          return {
+            mode: "live",
+            text: answer,
+            audit,
+            auditPreview: false,
+            meta: { ...(cur.meta ?? { mode: "live" }), mode: "live", audit },
+            ...(entries.length ? { patchEntries: entries } : {}),
+          };
         });
       } else {
         updatePending({ mode: "error", errorText: "流提前结束（未收到 done）——已收文本保留，可重试" });
@@ -569,7 +796,7 @@ export default function ClewPane() {
     setMessages((prev) =>
       prev.map((x, i): Msg => {
         if (i !== index || x.role !== "assistant") return x;
-        return { ...x, mode: "pending", errorText: undefined, patchEntries: undefined };
+        return { ...x, mode: "pending", errorText: undefined, patchEntries: undefined, audit: undefined, auditPreview: false };
       }),
     );
     void run(m.question, m.ctx, stubReply(clew), m.tier ?? tier);
@@ -834,8 +1061,12 @@ export default function ClewPane() {
                             : "stub"}
                     </span>
                     {m.mode === "pending" ? (
-                      <span className="text-muted">
-                        {m.text ? m.text : "正在问模型（只读）…"}
+                      <span className="whitespace-pre-wrap text-muted">
+                        {m.text ? (
+                          <AuditedProse text={m.text} audit={m.audit} bookId={m.ctx.book?.id} preview />
+                        ) : (
+                          "正在问模型（只读）…"
+                        )}
                       </span>
                     ) : m.mode === "error" ? (
                       <span>
@@ -855,8 +1086,26 @@ export default function ClewPane() {
                         </span>
                       </span>
                     ) : (
-                      <span className={m.mode === "live" ? "whitespace-pre-wrap" : undefined}>{m.text}</span>
+                      <span className={m.mode === "live" ? "whitespace-pre-wrap" : undefined}>
+                        <AuditedProse text={m.text} audit={m.audit} bookId={m.ctx.book?.id} />
+                      </span>
                     )}
+                    {/* T70 E：流式灰预览；live/stub 终态以服务端（stub 为同源纯函数）为准。失败条不装核账。 */}
+                    {m.mode === "pending" && m.meta?.pagesOmitted ? (
+                      <span className="mt-1 block text-[11px] leading-5 text-muted">
+                        另有 {m.meta.pagesOmitted} 页因总字顶未装
+                      </span>
+                    ) : null}
+                    {m.mode === "pending" || m.mode === "live" || m.mode === "stub" ? (
+                      <AuditFace
+                        audit={m.audit}
+                        preview={m.mode === "pending" || m.auditPreview === true}
+                        cardAtoms={m.cardAtoms}
+                        cardId={m.ctx.card?.id}
+                        bookId={m.ctx.book?.id}
+                        returnTo={bubbleReturnTo(m)}
+                      />
+                    ) : null}
                     {/* T66 F/G + T67 E/F + T69 C·E：live 答底——对照小窗来源（>1 页标注同章有界）+
                         「未核」+ 剪贴板带走（纯文本恒有；补丁恒有卡时给；entries 非空=模型建议填空）。
                         T69 D：补丁条目逐条 before→after 一行（before=当前卡 seed 现值，空=（空））——
@@ -871,6 +1120,7 @@ export default function ClewPane() {
                           {m.meta.groundPages?.length
                             ? ` · 接地 p.${m.meta.groundPages.join("、p.")}（同章有界）`
                             : ""}
+                          {m.meta.pagesOmitted ? ` · 另有 ${m.meta.pagesOmitted} 页因总字顶未装` : ""}
                           {" · 未核"}
                           {m.patchEntries?.length ? ` · 补丁建议 ${m.patchEntries.length} 条` : ""}
                         </span>

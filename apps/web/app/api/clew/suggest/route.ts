@@ -17,6 +17,7 @@ import {
   STREAM_INACTIVITY_TIMEOUT_MS,
   STREAM_OVERALL_TIMEOUT_MS,
   UPSTREAM_TIMEOUT_MS,
+  assembleChapterGround,
   buildPrompt,
   buildSeedBeforeMap,
   encodeClewStreamEvent,
@@ -30,6 +31,7 @@ import {
   type ClewIncompleteGrounding,
   type ClewSuggestContext,
 } from "@/lib/clew-suggest";
+import { buildAuditBasis, safeAuditClewAnswer, type ClewAnswerAudit, type ClewAuditUnavailable } from "@/lib/clew-answer-audit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -180,17 +182,17 @@ function buildGrounding(ctx: ClewSuggestContext, tier: ClewTierId): ClewGroundin
             extras.push({ page: pno, text: w.text, chars: w.chars, truncated: w.truncated, source: "server" });
             total += w.text.length;
           }
-          if (extras.length > 0) {
-            g.extraWindows = extras;
-            g.ground = {
-              mode: "chapter-bounded",
-              pages: [ctx.page, ...extras.map((w) => w.page)].sort((a, b) => a - b),
-              totalChars: total,
-              maxPages: policy.maxPages,
-              maxTotalChars: policy.maxTotalChars,
-              pagesOmitted: omitted,
-            };
-          }
+          // T70 D：extras=0 且 omitted>0（扩页全超总字顶）仍设 ground，避免 pagesOmitted 被丢掉。
+          const assembled = assembleChapterGround({
+            currentPage: ctx.page,
+            extraPages: extras.map((w) => w.page),
+            omitted,
+            totalChars: total,
+            maxPages: policy.maxPages,
+            maxTotalChars: policy.maxTotalChars,
+          });
+          if (extras.length > 0) g.extraWindows = extras;
+          if (assembled) g.ground = assembled;
         }
       } else if (ctx.pageText) {
         const t = truncatePageText(ctx.pageText);
@@ -222,6 +224,19 @@ function buildGrounding(ctx: ClewSuggestContext, tier: ClewTierId): ClewGroundin
         // T69 D：白名单 target 的 seed 现值（只读；空 → null；截 SEED_BEFORE_MAX_CHARS）。
         const targets = incompleteTargets(g);
         if (targets.length > 0) g.seedBefore = buildSeedBeforeMap(card, targets);
+        // T70 C：核账 basis 用的既有 id（精确）。溢出占位行不是原子，不入集合。
+        const atomIds = (card.atoms ?? []).map((a) => a.id).filter((id) => id && !id.startsWith("（"));
+        g.knownAtomIds = atomIds;
+        g.knownEntityIds = [card.id];
+        g.cardAtoms = (card.atoms ?? [])
+          .filter((a) => a.id && !a.id.startsWith("（"))
+          .map((a) => ({
+            id: a.id,
+            citePage:
+              typeof a.cite?.page === "number" && Number.isInteger(a.cite.page) && a.cite.page > 0
+                ? a.cite.page
+                : null,
+          }));
       }
     }
   } catch {
@@ -301,6 +316,16 @@ export async function POST(req: Request) {
   const info = publicProviderInfo(provider)!;
   const targets = incompleteTargets(g);
   const groundPages = groundPagesOf(g);
+  // T70 C：basis 只来自本次 grounding + 已 sanitize 的上下文 + 本次 loadCard。零新读盘。
+  const auditBasis = buildAuditBasis({
+    groundPages,
+    contextPage: context.page,
+    citePages: context.citePages,
+    cardCitePages: g.cardSummary?.citePages,
+    atomIds: g.knownAtomIds,
+    entityIds: g.knownEntityIds,
+  });
+  const auditAnswer = (text: string): ClewAnswerAudit | ClewAuditUnavailable => safeAuditClewAnswer(text, auditBasis);
 
   const client = createOpenAICompatible({
     name: provider.name,
@@ -326,6 +351,9 @@ export async function POST(req: Request) {
         appendUsage({ ts: Date.now(), tier, provider: info.name, model: info.model, ok: false, error: "empty_answer" });
         return reply(502, { ok: false, mode: "stub", error: "empty_answer", message: "上游返回空文本" });
       }
+      // T70 C：审计失败不改 HTTP、不改答文。越窗未标数字可选写入用量行。
+      const audit = auditAnswer(text);
+      const unmarked = "error" in audit ? undefined : audit.counts.unmarked_out;
       appendUsage({
         ts: Date.now(),
         tier,
@@ -333,6 +361,7 @@ export async function POST(req: Request) {
         model: info.model,
         ok: true,
         tokens: { input: result.usage?.inputTokens ?? null, output: result.usage?.outputTokens ?? null },
+        ...(typeof unmarked === "number" ? { auditUnmarkedOut: unmarked } : {}),
       });
       return reply(200, {
         ok: true,
@@ -345,6 +374,7 @@ export async function POST(req: Request) {
           ? { page: g.pageWindow.page, chars: g.pageWindow.chars, truncated: g.pageWindow.truncated, source: g.pageWindow.source }
           : null,
         groundPages,
+        ...(g.ground && g.ground.pagesOmitted > 0 ? { pagesOmitted: g.ground.pagesOmitted } : {}),
         cardSummary: g.cardSummary ? { id: g.cardSummary.id, name_zh: g.cardSummary.name_zh } : null,
         incompleteTargets: targets,
         seedBefore: g.seedBefore ?? null,
@@ -353,6 +383,7 @@ export async function POST(req: Request) {
           inputTokens: result.usage?.inputTokens ?? null,
           outputTokens: result.usage?.outputTokens ?? null,
         },
+        meta: { audit },
         readonly: true,
       });
     } catch (e) {
@@ -482,9 +513,12 @@ export async function POST(req: Request) {
       ? { page: g.pageWindow.page, chars: g.pageWindow.chars, truncated: g.pageWindow.truncated, source: g.pageWindow.source }
       : null,
     groundPages,
+    ...(g.ground && g.ground.pagesOmitted > 0 ? { pagesOmitted: g.ground.pagesOmitted } : {}),
     cardSummary: g.cardSummary ? { id: g.cardSummary.id, name_zh: g.cardSummary.name_zh } : null,
     incompleteTargets: targets,
     seedBefore: g.seedBefore ?? null,
+    auditBasis,
+    ...(g.cardAtoms?.length ? { cardAtoms: g.cardAtoms } : {}),
     readonly: true,
   } as const;
 
@@ -492,6 +526,7 @@ export async function POST(req: Request) {
     async start(controller) {
       const enc = new TextEncoder();
       const send = (e: Parameters<typeof encodeClewStreamEvent>[0]) => controller.enqueue(enc.encode(encodeClewStreamEvent(e)));
+      let fullText = firstDelta;
       try {
         send(metaEvent);
         send({ type: "delta", text: firstDelta });
@@ -501,6 +536,7 @@ export async function POST(req: Request) {
           if (r.done) break;
           const p = r.value;
           if (p.type === "text-delta" && p.text) {
+            fullText += p.text;
             send({ type: "delta", text: p.text });
             bumpInactivity();
           } else if (p.type === "error") {
@@ -527,6 +563,9 @@ export async function POST(req: Request) {
             message: `上游流中断——已收文本保留，可重试（${r.detail || "无详情"}${r.statusCode != null ? ` · 上游 ${r.statusCode}` : ""}）`,
           });
         } else {
+          // T70 C：拼全文再审。失败只写 meta.audit.error，不改答文、不改已发出的 delta。
+          const audit = auditAnswer(fullText);
+          const unmarked = "error" in audit ? undefined : audit.counts.unmarked_out;
           appendUsage({
             ts: Date.now(),
             tier,
@@ -534,8 +573,14 @@ export async function POST(req: Request) {
             model: info.model,
             ok: true,
             ...(usage ? { tokens: { input: usage.inputTokens ?? null, output: usage.outputTokens ?? null } } : {}),
+            ...(typeof unmarked === "number" ? { auditUnmarkedOut: unmarked } : {}),
           });
-          send({ type: "done", ...(finishReason != null ? { finishReason } : {}), ...(usage ? { usage } : {}) });
+          send({
+            type: "done",
+            ...(finishReason != null ? { finishReason } : {}),
+            ...(usage ? { usage } : {}),
+            meta: { audit },
+          });
         }
       } catch (e) {
         const r = redactError(e, provider.apiKey);
