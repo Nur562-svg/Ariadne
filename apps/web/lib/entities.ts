@@ -469,12 +469,15 @@ export function collectStudyAtoms(opts?: {
 export function loadMaterials(): Material[] {
   const dir = path.join(repoRoot(), "data", "materials");
   if (!fs.existsSync(dir)) return [];
+  // T77：物料文件读走 readJsonMemoized（T74 同一 jsonMemo 键空间）；目录 readdir 仍每调用
+  // 现取——增删 .material.json 天然可见；坏文件缓存 undefined（指纹未变时命中返回 undefined
+  // 走同一 skip 分支），改写必 miss 重读。
   return fs
     .readdirSync(dir)
     .filter((f) => f.endsWith(".material.json"))
     .sort()
     .flatMap((f) => {
-      const m = readJson<Material>(path.join(dir, f));
+      const m = readJsonMemoized<Material>(path.join(dir, f));
       return m ? [m] : [];
     });
 }
@@ -482,14 +485,17 @@ export function loadMaterials(): Material[] {
 /** 章是否已有真实 OCR blocks（至少一页带正文文本）。无 blocks 一律不算 parsed。 */
 export function chapterHasBlocks(chapterId: string): boolean {
   const file = path.join(repoRoot(), "data", "chapters", `${chapterId}.blocks.json`);
-  const doc = readJson<ChapterDoc>(file);
+  // T77：与 loadChapterPages / loadAllChapterPages 同一绝对路径 → 同一 jsonMemo 键，
+  // ingest 同请求双通道（materialChapterHas* 先读、loadChapterPages 后读）第二读命中。
+  const doc = readJsonMemoized<ChapterDoc>(file);
   return !!doc?.pages?.some((p) => (p.text ?? "").trim().length > 0);
 }
 
 /** 章是否已有抽取产出的实体卡。 */
 export function chapterHasCards(chapterId: string): boolean {
   const file = path.join(repoRoot(), "data", "cards", `${chapterId}.entities.json`);
-  const doc = readJson<{ cards?: unknown[] }>(file);
+  // T77：与 loadCards 逐文件读同一绝对路径 → 同一 jsonMemo 键（跨通道命中，见上）。
+  const doc = readJsonMemoized<{ cards?: unknown[] }>(file);
   return !!doc?.cards?.length;
 }
 
