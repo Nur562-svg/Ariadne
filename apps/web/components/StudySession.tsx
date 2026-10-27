@@ -12,7 +12,6 @@ import {
   loadGrades,
   orderAtoms,
   saveGrade,
-  type StudyMode,
 } from "@/lib/study";
 import { useStudyGrades } from "@/lib/use-study-grades";
 import { clearCursor, loadCursor, saveCursor } from "@/lib/session-continuity";
@@ -22,62 +21,9 @@ import { useClientOnce } from "@/lib/use-client-once";
 import { pageInOcr } from "@/lib/ocr-page";
 import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
-
-/**
- * 档位芯片（T25 A + T26 C）：认识/不熟/未评 本机计数，可点切到对应档
- * （认识→全部、不熟→不熟再练、未评→未评；URL 规则与 sticky 三档一致）。
- * 当前档朱红 soft 高亮（对齐 HeYeModeChips）；扫视控件，非掌握色环；
- * 仅在空/完成态出现，练中不插队。
- * T38 E：本档 N=0 且非当前档 → 纯文 span（边框保留作扫视分组，无 hover、不可点进空池）；
- * N>0 仍 Link；当前档无论计数恒 Link + aria-current（档位指示不丢）。空/完成态主 CTA
- * 「切到全部 / 只练不熟」是切档主路径，不依赖这些芯片，故空芯片降级不断路。
- */
-function StudyModeChips({
-  pool,
-  mode,
-  hrefs,
-}: {
-  pool: { known: number; unknown: number; ungraded: number };
-  mode: StudyMode;
-  hrefs: { all: string; unknown: string; ungraded: string };
-}) {
-  const rows: { label: string; m: StudyMode; n: number; href: string; title: string }[] = [
-    { label: "认识", m: "all", n: pool.known, href: hrefs.all, title: "切到「全部」档" },
-    { label: "不熟", m: "unknown", n: pool.unknown, href: hrefs.unknown, title: "切到「不熟再练」档" },
-    { label: "未评", m: "ungraded", n: pool.ungraded, href: hrefs.ungraded, title: "切到「未评」档" },
-  ];
-  return (
-    <div className="mt-4 flex flex-wrap items-center gap-2">
-      <span className="text-xs text-muted">本范围本机：</span>
-      {rows.map(({ label, m, n, href, title }) =>
-        n === 0 && mode !== m ? (
-          <span
-            key={label}
-            aria-disabled="true"
-            title="本档暂无记录"
-            className="cursor-default rounded-full border border-line px-3 py-1 text-xs text-muted"
-          >
-            {label} {n}
-          </span>
-        ) : (
-          <Link
-            key={label}
-            href={href}
-            title={title}
-            aria-current={mode === m ? "true" : undefined}
-            className={`rounded-full border px-3 py-1 text-xs no-underline transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
-              mode === m
-                ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
-                : "border-line text-muted hover:border-cinnabar hover:text-cinnabar"
-            }`}
-          >
-            {label} {n}
-          </Link>
-        ),
-      )}
-    </div>
-  );
-}
+import type { StudySessionProps } from "@/components/study-session-props";
+import StudyEmptyMode from "@/components/StudyEmptyMode";
+import StudyEmptyPool from "@/components/StudyEmptyPool";
 
 /**
  * atom 自评环：prompt → 揭示 answer → 自评 认识/不熟 → 下一个。
@@ -111,81 +57,7 @@ export default function StudySession({
   darkCount,
   densityWeak,
   shallowCount,
-}: {
-  /** 当前范围全池（未按档位过滤；档位在客户端按本机评分过滤）。 */
-  atoms: StudyAtom[];
-  scopeLabel: string;
-  diffLabel: Record<string, string>;
-  /** 队列档位：all 全部｜ungraded 未评｜unknown 不熟再练。 */
-  mode: StudyMode;
-  /** 当前 ?book=（有值时 CiteChip 优先深链书桌章页）。 */
-  activeBookId?: string;
-  /** 章 → 书反查（books.json）：无 ?book= 时按 atom 所在章找书。 */
-  bookByChapter: Record<string, string>;
-  /** 完成态 / 空队列回链：书桌与核页（有书带 book 参数）。 */
-  deskHref: string;
-  reviewHref: string;
-  /**
-   * T51 I：交叉核链（核本卡 / 去核页）的对侧真池——父页按 reviewHref 同族
-   * collectCiteQueue 装配（study 页 = heyeItems.length，与 progressReview 同范围）；
-   * 缺省 0（fail-closed）。===0 时空/完成态核链降 muted 纯文不可点、不写
-   * leaveReturnTo；>0 保持链 + leaveReturnTo（T42 接线不拆）。
-   */
-  pendingCount?: number;
-  /** 单卡范围（/study?card=）：完成/空态改为「回本卡」「核本卡」，回书桌让位为次要链。 */
-  cardHref?: string;
-  /** 「只练不熟」与空队列回链：同范围切档 URL。 */
-  allHref: string;
-  unknownHref: string;
-  /** 档位芯片「未评」目标：同范围 ?mode=ungraded（T25 A）。 */
-  ungradedHref: string;
-  /**
-   * T28 C：本页档空的放宽链（清 page + mode=all，服务端拼好）——空档区次级文字链
-   * 「清本页，看本章全部 →」；仅有效 pageNum 时传入。仍只保留一颗实心主 CTA。
-   */
-  widenPageHref?: string;
-  /** 单卡首个有页 cite 页码（服务端给）：完成/空态回书桌本页的页来源之一。 */
-  deskPageHint?: number | null;
-  /** 当前范围书 id（scopeBook，含单卡反查）：回书桌本页 / last-opened 回落以它为准。 */
-  deskBookId?: string;
-  /**
-   * T29 E：父页算好的本页环键（g 清本页 / ⇧[ ⇧] 切章；与 sticky 键岛同源 stickyKeys）——
-   * 仅当前真可用时传入；无本页过滤不列 g，无章芯片不列 ⇧[]。题内裸 [ / ] 仍是回看/前进。
-   */
-  loopKeys?: [string, string][];
-  /** 续位作用域（与父级 remount key 一致）：`${card|all}:${book|all}:${chapter|all}:${mode}`。 */
-  scopeKey: string;
-  /**
-   * T32 E：该书已解析印刷页[]（服务端装配）——完成/空态「回书桌本页」的 lastOpened
-   * 回落页消毒：仅当 lo.page 在表内才采用；无表 / 脏页 → 不采用（与 ReturnNav 同真，
-   * 不盲信 localStorage）。页源优先级不变：lastAtomPage ?? deskPageHint ?? lastOpenedPage。
-   */
-  validPages?: number[];
-  /**
-   * T42 B/D：离面链（去核页/核本卡交叉 + 题头卡名开卡）点前的 return payload——
-   * 父传 studyReturnTo（与页头 Strip / sticky CrossScope 同一份，禁第二套）；缺省不写，
-   * 行为与前同。回书桌/回本卡链**不写**（那是回程不是进环，避免互谎）。
-   * key 仍 ariadne.desk.return.v1。
-   */
-  leaveReturnTo?: { href: string; label: string };
-  /**
-   * T58 E/I：scope 可考覆盖旁挂（父页消费 T57 装配；单卡/未检出省略 → 缺省 false/0）——
-   * 池非空且当前档评完时，完成卡下方琥珀一行「评完池 ≠ 材料已覆盖」。只提示；
-   * 不改完成主 CTA（不做成「去补暗」强推），不写 verified / 不 PATCH entities。
-   */
-  examinableWeak?: boolean;
-  /** T58 E：scope 暗页数（examinableWeak 为 true 时点名 暗{darkCount}）。 */
-  darkCount?: number;
-  /**
-   * T60 E/I：scope 浅密度旁挂（父页消费 T59 装配；单卡/未检出省略 → 缺省 false/0）——
-   * 池非空且当前档评完时，完成卡下方琥珀一句「评完池 ≠ 可考够」（浅页已 cite 但原子
-   * 极稀）。与 T58 暗句**并列不互吞**；只提示，不改完成主 CTA（不做成「去补浅」
-   * 强推），不写 verified / 不 PATCH entities。
-   */
-  densityWeak?: boolean;
-  /** T60 E：scope 浅页数（densityWeak 为 true 时点名 浅{shallowCount}）。 */
-  shallowCount?: number;
-}) {
+}: StudySessionProps) {
   // T71：共享 useSyncExternalStore 口——grades 只此一源（评分/撤销走写 API + 订阅回流，
   // 不再本地 setGrades 镜像）；SSR/首帧空仓即合法口径，落盘后微任务内切真值。
   const grades = useStudyGrades();
@@ -341,114 +213,33 @@ export default function StudySession({
     return <p className="mt-8 text-sm text-muted">正在读取本机自评进度…</p>;
   }
 
-  /** 队列空（档位过滤后无原子）：诚实说明 + 一颗主 CTA + 次级文字链 + 档位芯片（本机计数可切档）。
-   *  T28 C：文案必须报池大小与本档计数——池里有原子但本档为 0 时，禁止说成「这个范围没有原子」。
-   *  T52 B：标题与 HeYe 空态分型对称——ungraded 且未评归 0 是「评完」不是「没货」，升完成族
-   *  标题「本机已全部评过」（对齐 HeYe「本机已全部对过」/本组件「本轮完成」同族）；unknown 空
-   *  与 mode=all 防御空（atoms>0 却滤空，理论不可达）保持「这个队列是空的」，只报事实不装「有货」。 */
+  // ---- 空态分支（T79 机械抽至 StudyEmptyPool / StudyEmptyMode；ungradedDone 分型 /
+  // pendingCount 门禁 / T58·T60 旁挂 / 文案 / class / href 逐段同 tip）----
+
+  /** 队列空（档位过滤后无原子）：诚实说明 + 主 CTA + 次级链 + 档位芯片。 */
   if (order.length === 0) {
-    const ungradedDone = mode === "ungraded" && pool.ungraded === 0;
     return (
-      <section className="mt-10 rounded-lg border border-line bg-card p-6">
-        <h2 className="text-xl font-semibold">{ungradedDone ? "本机已全部评过" : "这个队列是空的"}</h2>
-        <p className="mt-3 text-sm leading-7 text-foreground/90">
-          {mode === "ungraded"
-            ? `本范围有 ${atoms.length} 个原子，未评的是 ${pool.ungraded}——都评过了，没有未评的原子可练。`
-            : mode === "unknown"
-              ? `本范围有 ${atoms.length} 个原子，标「不熟」的是 ${pool.unknown}。先在「全部」或「未评」里标几张不熟，再回来只练它们。`
-              : "当前范围没有可练的原子。"}
-        </p>
-        {/* T58 E：评完族旁挂（池非空且本档评完）——「评完池」≠「材料可考完」。 */}
-        {ungradedDone && examinableWeak && (darkCount ?? 0) > 0 ? (
-          <p className="mt-2 text-xs leading-6 text-status-warn">
-            本机已评完池内原子 · 本范围仍有暗页未覆盖进原子（暗{darkCount}）——材料未全覆盖，
-            pnpm page-check 可复核。
-          </p>
-        ) : null}
-        {/* T60 E：评完族浅旁挂（与 T58 暗句并列不互吞）——浅页已 cite 但原子极稀，
-            评完池 ≠ 可考够；主 CTA 不改「去补浅」，只给次级 /ingest 文字链。 */}
-        {ungradedDone && densityWeak && (shallowCount ?? 0) > 0 ? (
-          <p className="mt-2 text-xs leading-6 text-status-warn">
-            本机已评完池内原子 · 本范围仍有浅页可考密度不足（浅{shallowCount}）——池内原子 ≠
-            可考够，可回{" "}
-            <Link className="underline underline-offset-4" href="/ingest">
-              /ingest
-            </Link>{" "}
-            或 pnpm density-check 复核。
-          </p>
-        ) : null}
-        <StudyModeChips
-          pool={pool}
-          mode={mode}
-          hrefs={{ all: allHref, unknown: unknownHref, ungraded: ungradedHref }}
-        />
-        {/* T25 A densify：一颗朱红主 CTA，其余一律次级文字链（勿一排多颗实心按钮）。 */}
-        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
-          {mode !== "all" ? (
-            <Link
-              href={allHref}
-              className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90"
-            >
-              切到「全部」
-            </Link>
-          ) : null}
-          {/* T28 C：本页过滤时并列放宽链（清 page 落全部档；次级文字，不加第二颗实心）。 */}
-          {widenPageHref ? (
-            <Link
-              href={widenPageHref}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              清本页，看本章全部 →
-            </Link>
-          ) : null}
-          {cardHref ? (
-            <>
-              <Link
-                href={cardHref}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
-              >
-                回本卡 →
-              </Link>
-              {/* T42 B：交叉进核点前写 leaveReturnTo（回本学习环），与 sticky CrossScope 同真。
-                  T51 I：pendingCount（父传对侧真池，缺省 0）===0 降纯文「本卡暂无待核」；
-                  >0 保持链 + leaveReturnTo。 */}
-              {pendingCount > 0 ? (
-                <Link
-                  href={reviewHref}
-                  onClick={leaveReturnTo ? rememberLeave : undefined}
-                  className="text-sm text-muted no-underline hover:text-cinnabar"
-                >
-                  核本卡 →
-                </Link>
-              ) : (
-                <span className="text-sm text-muted" title="本卡暂无待核 cite">
-                  本卡暂无待核
-                </span>
-              )}
-            </>
-          ) : pendingCount > 0 ? (
-            <Link
-              href={reviewHref}
-              onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              去核页 →
-            </Link>
-          ) : (
-            <span className="text-sm text-muted" title="当前范围没有待核 cite">
-              暂无待核
-            </span>
-          )}
-          <Link href={deskBackHref} className="text-sm text-muted no-underline hover:text-cinnabar">
-            {deskBackLabel}
-          </Link>
-          {ret ? (
-            <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
-              回到刚才 →
-            </Link>
-          ) : null}
-        </div>
-      </section>
+      <StudyEmptyPool
+        mode={mode}
+        pool={pool}
+        atomTotal={atoms.length}
+        allHref={allHref}
+        unknownHref={unknownHref}
+        ungradedHref={ungradedHref}
+        widenPageHref={widenPageHref}
+        cardHref={cardHref}
+        pendingCount={pendingCount}
+        reviewHref={reviewHref}
+        deskBackHref={deskBackHref}
+        deskBackLabel={deskBackLabel}
+        ret={ret}
+        rememberLeave={rememberLeave}
+        leaveReturnTo={leaveReturnTo}
+        examinableWeak={examinableWeak}
+        darkCount={darkCount}
+        densityWeak={densityWeak}
+        shallowCount={shallowCount}
+      />
     );
   }
 
@@ -510,106 +301,32 @@ export default function StudySession({
     setUndoStack([]);
   }
 
+  /** 本轮完成：run 计数 + T58/T60 旁挂 + 续位提示 + 「再来一轮」+ 档位芯片。 */
   if (done || !cur) {
     return (
-      <section className="mt-10 rounded-lg border border-line bg-card p-6">
-        <h2 className="text-xl font-semibold">本轮完成</h2>
-        <p className="mt-3 text-sm leading-7 text-foreground/90">
-          共 {order.length} 个原子 · 本轮 认识 {run.known} · 不熟 {run.unknown}。
-        </p>
-        {/* T58 E：完成态旁挂（父传 scope 可考覆盖；weak 才出）——评完的是池，
-            不等于材料已考完；不改「再来一轮」主 CTA，不新增大红。 */}
-        {examinableWeak && (darkCount ?? 0) > 0 ? (
-          <p className="mt-2 text-xs leading-6 text-status-warn">
-            本机已评完池内原子 · 本范围仍有暗页未覆盖进原子（暗{darkCount}）——材料未全覆盖，
-            pnpm page-check 可复核。
-          </p>
-        ) : null}
-        {/* T60 E：完成态浅旁挂（densityWeak 且浅页>0 才出；与 T58 暗句并列不互吞）——
-            评完的是池内原子，浅页（已 cite 原子极稀）仍是可考密度缺口。 */}
-        {densityWeak && (shallowCount ?? 0) > 0 ? (
-          <p className="mt-2 text-xs leading-6 text-status-warn">
-            本机已评完池内原子 · 本范围仍有浅页可考密度不足（浅{shallowCount}）——池内原子 ≠
-            可考够，可回{" "}
-            <Link className="underline underline-offset-4" href="/ingest">
-              /ingest
-            </Link>{" "}
-            或 pnpm density-check 复核。
-          </p>
-        ) : null}
-        {resumed ? (
-          <p aria-live="polite" className="mt-2 text-xs leading-5 text-muted">
-            已从本标签续上（完成态）；本轮 run 计数不持久化，从 0 起。
-          </p>
-        ) : null}
-        <StudyModeChips
-          pool={pool}
-          mode={mode}
-          hrefs={{ all: allHref, unknown: unknownHref, ungraded: ungradedHref }}
-        />
-        {/* T25 A densify：一颗朱红主 CTA（再来一轮），其余一律次级文字链。 */}
-        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
-          <button
-            onClick={restart}
-            className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-opacity hover:opacity-90 motion-reduce:transition-none"
-          >
-            再来一轮
-          </button>
-          {mode !== "unknown" ? (
-            <Link
-              href={unknownHref}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              只练不熟 →
-            </Link>
-          ) : null}
-          {cardHref ? (
-            <>
-              <Link
-                href={cardHref}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
-              >
-                回本卡 →
-              </Link>
-              {/* T42 B：交叉进核点前写 leaveReturnTo（回本学习环），与 sticky CrossScope 同真。
-                  T51 I：完成态同门禁——pendingCount===0 纯文「本卡暂无待核」；>0 保持链。 */}
-              {pendingCount > 0 ? (
-                <Link
-                  href={reviewHref}
-                  onClick={leaveReturnTo ? rememberLeave : undefined}
-                  className="text-sm text-muted no-underline hover:text-cinnabar"
-                >
-                  核本卡 →
-                </Link>
-              ) : (
-                <span className="text-sm text-muted" title="本卡暂无待核 cite">
-                  本卡暂无待核
-                </span>
-              )}
-            </>
-          ) : pendingCount > 0 ? (
-            <Link
-              href={reviewHref}
-              onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              去核页 →
-            </Link>
-          ) : (
-            <span className="text-sm text-muted" title="当前范围没有待核 cite">
-              暂无待核
-            </span>
-          )}
-          <Link href={deskBackHref} className="text-sm text-muted no-underline hover:text-cinnabar">
-            {deskBackLabel}
-          </Link>
-          {ret ? (
-            <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
-              回到刚才 →
-            </Link>
-          ) : null}
-        </div>
-      </section>
+      <StudyEmptyMode
+        mode={mode}
+        pool={pool}
+        orderLength={order.length}
+        run={run}
+        resumed={resumed}
+        restart={restart}
+        allHref={allHref}
+        unknownHref={unknownHref}
+        ungradedHref={ungradedHref}
+        cardHref={cardHref}
+        pendingCount={pendingCount}
+        reviewHref={reviewHref}
+        deskBackHref={deskBackHref}
+        deskBackLabel={deskBackLabel}
+        ret={ret}
+        rememberLeave={rememberLeave}
+        leaveReturnTo={leaveReturnTo}
+        examinableWeak={examinableWeak}
+        darkCount={darkCount}
+        densityWeak={densityWeak}
+        shallowCount={shallowCount}
+      />
     );
   }
 
