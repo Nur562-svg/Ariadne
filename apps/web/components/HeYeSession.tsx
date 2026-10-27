@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { HeYeItem } from "@/lib/heye";
 import type { Cite, PageDoc } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import {
@@ -24,62 +23,9 @@ import { isEditableTarget, isPeekOpen } from "@/lib/keyboard";
 import SessionKeyHint from "@/components/SessionKeyHint";
 import CopyTextButton from "@/components/CopyTextButton";
 import { ocrNeighborhood, quoteInOcr } from "@/lib/cite-ocr-quality";
-
-/**
- * 档位芯片（T25 A）：待核/已对/存疑 本机计数，可点切档（URL 规则与 sticky 三档一致）；
- * 当前档高亮。扫视控件，非掌握色环；仅在池空/档内空态出现，核中不插队。
- * T38 E：本档 N=0 且非当前档 → 纯文 span（边框保留、无 hover，不假装能点进空池）；
- * N>0 且有 href 仍 Link；当前档无论计数保持指示（有 href 为 Link + 当前样式，无则
- * 当前样式 span）。空/完成态主 CTA「回待核档 / 去学习环」是切档主路径，不受影响。
- */
-function HeYeModeChips({
-  counts,
-  mode,
-  hrefs,
-}: {
-  counts: { open: number; checked: number; doubt: number };
-  mode: HeYeMode;
-  hrefs: Record<HeYeMode, string | undefined>;
-}) {
-  const rows: [HeYeMode, string, number][] = [
-    ["open", "待核", counts.open],
-    ["checked", "已对", counts.checked],
-    ["doubt", "存疑", counts.doubt],
-  ];
-  return (
-    <div className="mt-4 flex flex-wrap items-center gap-2">
-      {rows.map(([m, label, n]) => {
-        const text = `${label} ${n}`;
-        if (n === 0 && mode !== m) {
-          return (
-            <span
-              key={m}
-              aria-disabled="true"
-              title="本档暂无记录"
-              className="cursor-default rounded-full border border-line px-3 py-1 text-xs text-muted"
-            >
-              {text}
-            </span>
-          );
-        }
-        const cls = `rounded-full border px-3 py-1 text-xs no-underline transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
-          mode === m
-            ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
-            : "border-line text-muted hover:border-cinnabar hover:text-cinnabar"
-        }`;
-        return hrefs[m] ? (
-          <Link key={m} href={hrefs[m] as string} className={cls}>
-            {text}
-          </Link>
-        ) : (
-          <span key={m} className={cls}>
-            {text}
-          </span>
-        );
-      })}
-    </div>
-  );
-}
+import HeYeEmptyMode from "@/components/HeYeEmptyMode";
+import HeYeEmptyPool from "@/components/HeYeEmptyPool";
+import type { HeYeSessionProps } from "@/components/heye-session-props";
 
 /**
  * 核页对页会话（/review 中栏，客户端）：
@@ -110,83 +56,7 @@ export default function HeYeSession({
   loopKeys,
   scopeKey,
   leaveReturnTo,
-}: {
-  /** 全池待核队列（服务端 collectCiteQueue，已按页码排序；本机态过滤在客户端）。 */
-  items: HeYeItem[];
-  /** 队列涉及的 OCR 页（真 loadAllChapterPages 子集，按 page 索引）。 */
-  pages: PageDoc[];
-  /** 范围说明（全书库 / 某书书名 / 单卡卡名 / 章），用于副文。 */
-  scopeLabel: string;
-  /** 档位：待核｜已对｜存疑（本机态，非到期调度）。 */
-  mode: HeYeMode;
-  /** 单卡范围（/review?card=）：空队列/全部对过时链回本卡。 */
-  cardHref?: string;
-  /** 跨环学习链（有卡带 ?card=，否则 /study）。 */
-  studyHref?: string;
-  /**
-   * T52 C/E：服务端池空分型（review 页推导，对齐 study 的 orphan / cardOutOfRange / 真空
-   * 三型）——'orphan'=合法 pageNum · 非单卡 · 池空（页无 cite 或未解析 OCR）；
-   * 'card-out'=单卡在宽范围有待核、当前 book/chapter/page 过滤交集为空（越界）；
-   * 'true-empty'=真无待核数据（引导 /ingest · 书架，不装假池）。缺省 null → 通用句。
-   */
-  emptyKind?: "orphan" | "card-out" | "true-empty" | null;
-  /**
-   * T51 J：交叉练链（去学习环 / 去学习本卡）的对侧真池——父页按 studyHref 同范围
-   * collectStudyAtoms 装配（review 页：单卡=卡池、有效页非孤儿=页池、无页=章/书池）；
-   * 缺省 0（fail-closed）。===0 时空/完成态练链降 muted 纯文不可点、不写
-   * leaveReturnTo；>0 保持链 + leaveReturnTo（T42 接线不拆）。
-   */
-  atomCount?: number;
-  /** 单页范围（/review?page=）：空队列/全部对过时优先链回书桌本页（/desk?book=&page=）。 */
-  deskPageHref?: string;
-  /** 空档「回待核」链（同范围 ?mode=open）。 */
-  openHref?: string;
-  /** 档位芯片「已对」目标：同范围 ?mode=checked（T25 A）。 */
-  checkedHref?: string;
-  /** 档位芯片「存疑」目标：同范围 ?mode=doubt（T25 A）。 */
-  doubtHref?: string;
-  /** 章范围清章回全书核页（/review?chapter=null 等价）——池空/档空时限宽范围。 */
-  clearChapterHref?: string;
-  /**
-   * T28 A：本页过滤放宽链（/review?book=&chapter= 只删 page，留书/章/档）——
-   * 池空/档内空两处次级「清本页 →」；仅有效 pageNum 时由父页传入，不新增第二颗实心主按钮。
-   * T29 C：孤儿核（合法 page · 非单卡 · 池空）时它升为唯一朱红主 CTA，不再重复列次级。
-   */
-  clearPageHref?: string;
-  /**
-   * T29 C：孤儿核标志（父页服务端判定：合法 pageNum · 非单卡 · items.length===0）——
-   * 池空态主 CTA 换「清本页，换到本章核」，「去学习环」降次级（studyHref 父页已消毒无 page）。
-   */
-  orphanPage?: boolean;
-  /**
-   * T58 F/I：孤儿核**旁挂**暗页判定（父页 loadPageExaminable(pageNum).hint==='dark'）——
-   * 只在既有 orphan 句后补一句琥珀，**勿**新增 emptyKind:'dark'、**勿**改 orphan 主 CTA /
-   * 清本页契约、**勿**吞 card-out / true-empty；非暗/未检出不吵。
-   */
-  orphanDark?: boolean;
-  /**
-   * T60 F/I：匹配中 / sticky 页**旁挂**浅判定（父页 loadPageExaminable(pageNum)
-   * .hint==='shallow'，非 orphan 主题——浅页有 cite 才浅）——会话顶一句琥珀「本页
-   * 已抽出但原子偏稀（浅）」。**勿**新增 emptyKind:'shallow' / 'dark'、**勿**吞
-   * orphan×dark（T58 F）/ card-out / true-empty 分型；非浅不吵。只提示：本页 cite
-   * 核得完 ≠ 本页可考密度够。
-   */
-  pageShallow?: boolean;
-  /**
-   * T29 E：父页算好的本页环键（g 清本页 / ⇧[ ⇧] 切章；与 sticky 键岛同源 stickyKeys）——
-   * 仅当前真可用时传入；无本页过滤不列 g，无章芯片不列 ⇧[]，题内键恒保留。
-   */
-  loopKeys?: [string, string][];
-  /** 续位作用域（与父级 remount key 一致）：`${book|all}:${card|all}:${page|all}:${chapter|all}:${mode}`。 */
-  scopeKey: string;
-  /**
-   * T42 C/D：离面进练链（去学习环 / 去学习本卡 + 核中卡名开卡 / 在书桌打开 p.N）点前的
-   * return payload——父传 reviewReturnTo（与页头 Strip / sticky CrossScope 同一份，禁第二套）；
-   * 缺省不写。回本卡 / 回书桌本页 / 回书桌**不写**（那是回程不是进环，避免互谎）。
-   * key 仍 ariadne.desk.return.v1。
-   */
-  leaveReturnTo?: { href: string; label: string };
-}) {
+}: HeYeSessionProps) {
   // T71：共享 useSyncExternalStore 口——store 只此一源（打标/撤销/清除走写 API + 订阅回流，
   // 不再本地 setStore 镜像）；SSR/首帧空仓即合法口径，落盘后微任务内切真值。
   const store = useHeYeStore();
@@ -342,313 +212,53 @@ export default function HeYeSession({
     if (leaveReturnTo) saveReturn({ ...leaveReturnTo, at: Date.now() });
   }
 
-  // ---- 空态分支 ----
+  // ---- 空态分支（T78 机械抽至 HeYeEmptyPool / HeYeEmptyMode；emptyKind 分型 /
+  // orphan CTA 优先级 / atomCount 门禁 / 文案 / class / href 逐段同 tip）----
 
-  /**
-   * 服务端池空：本范围没有「有页码但未抽查」的引用。一颗主 CTA + 次级文字链 + 档位芯片。
-   * T52 C：chrome 对齐 Study 空态（卡片 section + h2「这个范围是空的」）——body 按
-   * emptyKind 分型说真话（orphan=页无 cite / 未解析 OCR · card-out=单卡被 book/chapter/page
-   * 滤空越界 · true-empty=真无数据引导 /ingest，不装假池）；CTA 行（含 T51 atomCount
-   * 门禁）与档位芯片原样，「去学习环 /study →」丑标签修正为「去学习环 →」（href 不变）。
-   */
+  /** 服务端池空：本范围没有「有页码但未抽查」的引用（emptyKind 三分型 + 主 CTA + 档位芯片）。 */
   if (items.length === 0) {
     return (
-      <section className="mt-10 rounded-lg border border-line bg-card p-6">
-        <h2 className="text-xl font-semibold">这个范围是空的</h2>
-        <p className="mt-3 text-sm leading-7 text-foreground/90">
-          {emptyKind === "orphan" ? (
-            <>
-              本页没有待核 cite——没有「有页码但未抽查」的引用落在这一印刷页，或该页尚未解析
-              OCR；清本页可放宽到本章 / 本书。
-              {/* T58 F：旁挂一句（勿吞 orphan 分型 / 主 CTA 契约）——页有实质 OCR
-                  却零抽出 cite 时点破「不是页上没教材」。 */}
-              {orphanDark ? (
-                <span className="text-status-warn">
-                  （旁挂）本页为暗页：实质 OCR 未抽出 cite——不是页上没教材，是抽出未覆盖。
-                </span>
-              ) : null}
-            </>
-          ) : emptyKind === "card-out" ? (
-            <>
-              本卡在更宽范围还有待核 cite，但当前 book / chapter / page 过滤把交集滤空了（越界）——
-              这里核不出它的引用；回本卡直接核，或清本页 / 换更宽范围。
-            </>
-          ) : (
-            <>
-              这个范围（{scopeLabel}）还没有待核 cite。先到{" "}
-              <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
-                /ingest
-              </Link>{" "}
-              上传并解析教材，或换一个更宽的范围。
-            </>
-          )}
-        </p>
-        <HeYeModeChips counts={counts} mode={mode} hrefs={modeChipHrefs} />
-        {/* T25 A densify：每分支只留一颗朱红主 CTA，其余次级文字链。
-            T29 C：孤儿核（合法 page · 非单卡 · 池空）且有清本页链 → 主 CTA = 清本页
-            （放宽到本章核，只删 page 留书/章/档）；「去学习环」降次级，用父页消毒过的
-            studyHref（无 page，不送回孤儿 URL）。非孤儿保持既有优先级。
-            T51 J：主/次「去学习环」「去学习本卡」吃 atomCount（父传 studyHref 同范围真池，
-            缺省 0）——===0 降 muted 纯文（同范围/本卡暂无原子）不可点、不写 leaveReturnTo；
-            回本卡 / 清本页 / 回书桌是回程或放宽链，不受池门禁。 */}
-        <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
-          {cardHref ? (
-            <Link
-              href={cardHref}
-              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-            >
-              回本卡 →
-            </Link>
-          ) : orphanPage && clearPageHref ? (
-            <Link
-              href={clearPageHref}
-              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-            >
-              清本页，换到本章核 →
-            </Link>
-          ) : deskPageHref ? (
-            atomCount > 0 ? (
-              <Link
-                href={studyHref ?? "/study"}
-                onClick={leaveReturnTo ? rememberLeave : undefined}
-                className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-              >
-                去学习环 →
-              </Link>
-            ) : (
-              <span className="text-sm text-muted" title="同范围暂无可练原子">
-                同范围暂无原子
-              </span>
-            )
-          ) : (
-            <Link
-              href="/desk"
-              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-            >
-              回书桌 →
-            </Link>
-          )}
-          {cardHref ? (
-            <>
-              {atomCount > 0 ? (
-                <Link
-                  href={studyHref ?? "/study"}
-                  onClick={leaveReturnTo ? rememberLeave : undefined}
-                  className="text-sm text-muted no-underline hover:text-cinnabar"
-                >
-                  去学习本卡 →
-                </Link>
-              ) : (
-                <span className="text-sm text-muted" title="本卡暂无可练原子">
-                  本卡暂无原子
-                </span>
-              )}
-              {deskPageHref ? (
-                <Link
-                  href={deskPageHref}
-                  className="text-sm text-muted no-underline hover:text-cinnabar"
-                >
-                  回书桌本页 →
-                </Link>
-              ) : null}
-            </>
-          ) : orphanPage ? (
-            atomCount > 0 ? (
-              <Link
-                href={studyHref ?? "/study"}
-                onClick={leaveReturnTo ? rememberLeave : undefined}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
-              >
-                去学习环 →
-              </Link>
-            ) : (
-              <span className="text-sm text-muted" title="同范围暂无可练原子">
-                同范围暂无原子
-              </span>
-            )
-          ) : deskPageHref ? (
-            <Link
-              href={deskPageHref}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              回书桌本页 →
-            </Link>
-          ) : atomCount > 0 ? (
-            <Link
-              href={studyHref ?? "/study"}
-              onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              去学习环 →
-            </Link>
-          ) : (
-            <span className="text-sm text-muted" title="同范围暂无可练原子">
-              同范围暂无原子
-            </span>
-          )}
-          {clearChapterHref ? (
-            <Link
-              href={clearChapterHref}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              清章看全章节 →
-            </Link>
-          ) : null}
-          {/* T28 A：本页过滤放宽（次级文字链，不加第二颗实心）。
-              T29 C：孤儿时已升主 CTA，不再重复列这条次级。 */}
-          {clearPageHref && !orphanPage ? (
-            <Link
-              href={clearPageHref}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              清本页 →
-            </Link>
-          ) : null}
-          {ret ? (
-            <Link
-              href={ret.href}
-              title={ret.label}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              回到刚才 →
-            </Link>
-          ) : null}
-        </div>
-      </section>
+      <HeYeEmptyPool
+        emptyKind={emptyKind}
+        scopeLabel={scopeLabel}
+        orphanDark={orphanDark}
+        counts={counts}
+        mode={mode}
+        modeChipHrefs={modeChipHrefs}
+        cardHref={cardHref}
+        studyHref={studyHref}
+        atomCount={atomCount}
+        deskPageHref={deskPageHref}
+        clearChapterHref={clearChapterHref}
+        clearPageHref={clearPageHref}
+        orphanPage={orphanPage}
+        ret={ret}
+        rememberLeave={rememberLeave}
+        leaveReturnTo={leaveReturnTo}
+      />
     );
   }
 
-  /**
-   * 档内空：open 空 = 本范围全标完（完成族标题 + 诚实绿条保留）；checked/doubt 空 =
-   * 独立短标题「这个档还没有本机记录」（T52 D：与池真空「这个范围是空的」不同句）。
-   * chrome 对齐 Study 空/完成卡片（section + h2）；CTA 行（含 T51 atomCount 门禁）原样。
-   */
+  /** 档内空：open 空 = 全标完完成绿条；checked/doubt 空 =「这个档还没有本机记录」。 */
   if (visible.length === 0) {
-    const backToOpen = mode !== "open" && openHref;
     return (
-      <section className="mt-10 rounded-lg border border-line bg-card p-6">
-        {mode === "open" ? (
-          <>
-            <h2 className="text-xl font-semibold">本机已全部对过</h2>
-            <p className="mt-3 rounded-lg border border-line bg-status-ok-bg px-4 py-3 text-sm leading-7 text-status-ok">
-              已对 {counts.checked} · 存疑 {counts.doubt}。这只影响本浏览器记录，
-              seed 的「抽查 verified」状态没有变。{" "}
-              <button onClick={resetStore} className="underline underline-offset-4 hover:text-foreground">
-                清除本机核页记录
-              </button>
-            </p>
-            <p className="mt-3 text-sm leading-7 text-muted">
-              这个范围（{scopeLabel}）没有待核（本机未标）的 cite。想复查的可在「已对 / 存疑」档里看。
-            </p>
-          </>
-        ) : (
-          <>
-            <h2 className="text-xl font-semibold">这个档还没有本机记录</h2>
-            <p className="mt-3 border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
-              这个范围还没有本机「{mode === "checked" ? "已对" : "存疑"}」记录。
-              先在「待核」档里逐条核对，标过的项会出现在这里。
-            </p>
-          </>
-        )}
-        <HeYeModeChips counts={counts} mode={mode} hrefs={modeChipHrefs} />
-        {/* T25 A densify：一颗主 CTA（回待核档 / 去学习环），其余次级文字链。
-            T51 J：档空/完成态练链同门禁——atomCount===0 主·次练链均降纯文
-            （本卡/同范围暂无原子），>0 保持 + leaveReturnTo；回程链不受池门禁。 */}
-        <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
-          {backToOpen ? (
-            <Link
-              href={openHref}
-              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-            >
-              回待核档 →
-            </Link>
-          ) : atomCount > 0 ? (
-            <Link
-              href={studyHref ?? "/study"}
-              onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
-            >
-              去学习环 →
-            </Link>
-          ) : (
-            <span className="text-sm text-muted" title="同范围暂无可练原子">
-              同范围暂无原子
-            </span>
-          )}
-          {backToOpen ? (
-            cardHref ? (
-              atomCount > 0 ? (
-                <Link
-                  href={studyHref ?? "/study"}
-                  onClick={leaveReturnTo ? rememberLeave : undefined}
-                  className="text-sm text-muted no-underline hover:text-cinnabar"
-                >
-                  去学习本卡 →
-                </Link>
-              ) : (
-                <span className="text-sm text-muted" title="本卡暂无可练原子">
-                  本卡暂无原子
-                </span>
-              )
-            ) : atomCount > 0 ? (
-              <Link
-                href={studyHref ?? "/study"}
-                onClick={leaveReturnTo ? rememberLeave : undefined}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
-              >
-                去学习环 →
-              </Link>
-            ) : (
-              <span className="text-sm text-muted" title="同范围暂无可练原子">
-                同范围暂无原子
-              </span>
-            )
-          ) : null}
-          {cardHref ? (
-            <Link href={cardHref} className="text-sm text-muted no-underline hover:text-cinnabar">
-              回本卡 →
-            </Link>
-          ) : null}
-          {deskPageHref ? (
-            <Link
-              href={deskPageHref}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              回书桌本页 →
-            </Link>
-          ) : (
-            <Link href="/desk" className="text-sm text-muted no-underline hover:text-cinnabar">
-              回书桌 →
-            </Link>
-          )}
-          {clearChapterHref ? (
-            <Link
-              href={clearChapterHref}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              清章看全章节 →
-            </Link>
-          ) : null}
-          {/* T28 A：本页过滤放宽（档内空同款次级链）。 */}
-          {clearPageHref ? (
-            <Link
-              href={clearPageHref}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              清本页 →
-            </Link>
-          ) : null}
-          {ret ? (
-            <Link
-              href={ret.href}
-              title={ret.label}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
-            >
-              回到刚才 →
-            </Link>
-          ) : null}
-        </div>
-      </section>
+      <HeYeEmptyMode
+        mode={mode}
+        counts={counts}
+        scopeLabel={scopeLabel}
+        modeChipHrefs={modeChipHrefs}
+        resetStore={resetStore}
+        openHref={openHref}
+        cardHref={cardHref}
+        studyHref={studyHref}
+        atomCount={atomCount}
+        deskPageHref={deskPageHref}
+        clearChapterHref={clearChapterHref}
+        clearPageHref={clearPageHref}
+        ret={ret}
+        rememberLeave={rememberLeave}
+        leaveReturnTo={leaveReturnTo}
+      />
     );
   }
 
