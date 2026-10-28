@@ -1,5 +1,3 @@
-import type { StudyAtom } from "@/lib/entities";
-
 /**
  * 学习环本机自评存取（客户端专用；与 lib/heye.ts 对称但只跑在浏览器）：
  * key 仍是 ariadne.study.v1 —— Record<`${cardId}/${atomId}`, { k: 0|1; t: number }>。
@@ -7,115 +5,23 @@ import type { StudyAtom } from "@/lib/entities";
  * 评分绝不回写 seed JSON，也不改变 cite / verified 语义。
  */
 
-export const STUDY_STORE_KEY = "ariadne.study.v1";
-
-export type GradeMap = Record<string, { k: 0 | 1; t: number }>;
-
-/** 队列三档：全部｜未评｜不熟再练（本机态过滤，非到期调度）。 */
-export type StudyMode = "all" | "ungraded" | "unknown";
-
-/** atomId 在卡内唯一；跨卡用 cardId 组合成全局键。 */
-export function atomKey(a: Pick<StudyAtom, "cardId" | "atomId">): string {
-  return `${a.cardId}/${a.atomId}`;
-}
-
-/** 读本机评分；SSR / 隐私模式读失败一律 {}，不抛。 */
-export function loadGrades(): GradeMap {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = window.localStorage.getItem(STUDY_STORE_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw) as GradeMap;
-    return parsed && typeof parsed === "object" ? parsed : {};
-  } catch {
-    return {};
-  }
-}
-
-/** 同页多个客户端组件（页头计数 / 学习会话）共享本机态的轻量订阅。 */
-const listeners = new Set<() => void>();
-
-export function subscribeStudyGrades(listener: () => void): () => void {
-  listeners.add(listener);
-  return () => {
-    listeners.delete(listener);
-  };
-}
-
-function emitGradesChanged() {
-  for (const l of listeners) l();
-}
-
-/** 进度导入（lib/progress-port）等绕过 saveGrade 的外部整键写入后广播，让订阅组件重读本机库。 */
-export function notifyGradesExternalChange(): void {
-  emitGradesChanged();
-}
-
-/**
- * 写一条评分并广播。返回最新 GradeMap；隐私模式写失败时仍返回内存态并广播，
- * 本机进度仅本会话有效，不阻塞自评。
+/*
+ * T92 desk-study-lib-split-01：本文件收口为 barrel——铁合同 header 留此，消费者入口不变
+ * （use-study-grades · progress-port · StudySession · StudyScopeCounts · LocalProgressStrip ·
+ * StickyStudyModeTabs · StudyModeChips · StudyEmptyPool · StudyEmptyMode · study-session-props ·
+ * study/page（type-only）一律 `from "@/lib/study"`）。
+ * 实现按既有分区机械抽出为三件，全部既有 named exports 经此 re-export 守恒：
+ *   lib/study-types.ts   STUDY_STORE_KEY / GradeMap / StudyMode（DAG 根：零 import；零 entities）
+ *   lib/study-persist.ts loadGrades / subscribeStudyGrades / notifyGradesExternalChange /
+ *                       saveGrade / deleteGrade（私有 listeners · emitGradesChanged 随行不外泄；
+ *                       ← types；禁 import pure / entities）
+ *   lib/study-pure.ts    atomKey / filterAtomsByMode / countPoolGrades / orderAtoms
+ *                       （← types type-only · StudyAtom type-only 自 @/lib/entities；
+ *                       无 window / localStorage）
+ * 三件彼此只有相对 `.ts` import（同 T83–T91：tsconfig allowImportingTsExtensions 已开）；
+ * saveGrade / deleteGrade「拼 next → try setItem → emit」先落盘后广播逐字未动
+ * （T71 use-study-grades 微任务订阅契约依赖此序）；StudyAtom 仍 type-only 引、不经 barrel 再导出。
  */
-export function saveGrade(key: string, k: 0 | 1): GradeMap {
-  const next: GradeMap = { ...loadGrades(), [key]: { k, t: Date.now() } };
-  try {
-    window.localStorage.setItem(STUDY_STORE_KEY, JSON.stringify(next));
-  } catch {
-    /* 写失败不阻塞；会话内仍可见 */
-  }
-  emitGradesChanged();
-  return next;
-}
-
-/**
- * 删除一条评分（T25 撤销用）：本评分为新增（无 prevGrade）时回退即删 key。
- * 隐私模式写失败不阻塞；广播让页头计数等订阅组件跟上。
- */
-export function deleteGrade(key: string): GradeMap {
-  const next = { ...loadGrades() };
-  delete next[key];
-  try {
-    window.localStorage.setItem(STUDY_STORE_KEY, JSON.stringify(next));
-  } catch {
-    /* 写失败不阻塞；返回值仍供本会话使用 */
-  }
-  emitGradesChanged();
-  return next;
-}
-
-/** 按队列档位过滤原子：ungraded = 无本机记录；unknown = 记录存在且 k===0（不熟）。 */
-export function filterAtomsByMode(
-  atoms: StudyAtom[],
-  grades: GradeMap,
-  mode: StudyMode,
-): StudyAtom[] {
-  if (mode === "ungraded") return atoms.filter((a) => !grades[atomKey(a)]);
-  if (mode === "unknown") return atoms.filter((a) => grades[atomKey(a)]?.k === 0);
-  return atoms;
-}
-
-/** 范围进度面：认识 / 不熟 / 未评（当前池子，本机态）。 */
-export function countPoolGrades(
-  atoms: StudyAtom[],
-  grades: GradeMap,
-): { known: number; unknown: number; ungraded: number } {
-  let known = 0;
-  let unknown = 0;
-  for (const a of atoms) {
-    const g = grades[atomKey(a)];
-    if (!g) continue;
-    if (g.k === 1) known++;
-    else unknown++;
-  }
-  return { known, unknown, ungraded: atoms.length - known - unknown };
-}
-
-/** 确定性顺序（章 → 卡 → 按 prompt），服务端/客户端一致，避免 hydration 错位。 */
-export function orderAtoms(atoms: StudyAtom[]): StudyAtom[] {
-  return atoms.slice().sort((a, b) => {
-    const byChapter = (a.chapterId ?? "").localeCompare(b.chapterId ?? "");
-    if (byChapter !== 0) return byChapter;
-    const byCard = a.cardId.localeCompare(b.cardId);
-    if (byCard !== 0) return byCard;
-    return a.prompt.localeCompare(b.prompt);
-  });
-}
+export * from "./study-types.ts";
+export * from "./study-persist.ts";
+export * from "./study-pure.ts";
