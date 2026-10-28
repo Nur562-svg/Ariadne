@@ -6,116 +6,23 @@
  * 不做 FSRS / Due；「本机已对/存疑」绝不回写 seed JSON，也不改变 cite / verified 语义。
  */
 
-export const HEYE_STORE_KEY = "ariadne.heye.v1";
-
-export type HeYeMark = { s: "checked" | "doubt"; t: number };
-export type HeYeStore = Record<string, HeYeMark>;
-
-/** 档位：待核（本机未标）｜已对｜存疑。本机态过滤，非到期调度。 */
-export type HeYeMode = "open" | "checked" | "doubt";
-
-export type HeYeFilterable = { key: string };
-
-/** 读本机核页记录；SSR / 隐私模式读失败一律 {}，不抛。 */
-export function loadHeYeStore(): HeYeStore {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = window.localStorage.getItem(HEYE_STORE_KEY);
-    if (!raw) return {};
-    const parsed = JSON.parse(raw) as HeYeStore;
-    return parsed && typeof parsed === "object" ? parsed : {};
-  } catch {
-    return {};
-  }
-}
-
-/** 写回 localStorage；隐私模式写失败不阻塞（会话内仍以返回值为准）。 */
-function saveHeYeStore(next: HeYeStore): HeYeStore {
-  try {
-    window.localStorage.setItem(HEYE_STORE_KEY, JSON.stringify(next));
-  } catch {
-    /* 写失败不阻塞；返回值仍供本会话使用 */
-  }
-  return next;
-}
-
-/** 同页多个组件（页头计数 / 核页会话）共享本机态的轻量订阅。 */
-const listeners = new Set<() => void>();
-
-export function subscribeHeYeStore(listener: () => void): () => void {
-  listeners.add(listener);
-  return () => {
-    listeners.delete(listener);
-  };
-}
-
-function emitHeYeStoreChanged() {
-  for (const l of listeners) l();
-}
-
-/** 进度导入（lib/progress-port）等绕过 setHeYeMark 的外部整键写入后广播，让订阅组件重读本机库。 */
-export function notifyHeYeExternalChange(): void {
-  emitHeYeStoreChanged();
-}
-
-/** 单条打标（写 localStorage + 广播），返回最新 store。 */
-export function setHeYeMark(key: string, s: HeYeMark["s"]): HeYeStore {
-  const next = { ...loadHeYeStore(), [key]: { s, t: Date.now() } as HeYeMark };
-  emitHeYeStoreChanged();
-  return saveHeYeStore(next);
-}
-
-/** 同页批量打标（只写本浏览器；多条 key 一次写入），返回最新 store。 */
-export function setHeYeMarks(keys: string[], s: HeYeMark["s"]): HeYeStore {
-  const next = { ...loadHeYeStore() };
-  const t = Date.now();
-  for (const k of keys) next[k] = { s, t } as HeYeMark;
-  emitHeYeStoreChanged();
-  return saveHeYeStore(next);
-}
-
-/**
- * 范围清除（review-fix-integrity G）：只删给定 keys（当前队列范围的 citeKey），
- * 其它书/范围的记录保留；keys 为空等价于无操作。与整钥 removeItem 不同，
- * 「清除本范围核页记录」不再误伤全局。
+/*
+ * T91 desk-heye-store-lib-split-01：本文件收口为 barrel——铁合同 header 留此，消费者入口不变
+ * （use-heye-store · progress-port · HeYeSession · HeYeScopeCounts · LocalProgressStrip ·
+ * StickyHeYeModeTabs · ClewQueuePanel · HeYeModeChips · HeYeEmptyPool · HeYeEmptyMode ·
+ * heye-session-props · review/page（type-only）一律 `from "@/lib/heye-store"`）。
+ * 实现按既有分区机械抽出为三件，全部既有 named exports 经此 re-export 守恒：
+ *   lib/heye-store-types.ts   HEYE_STORE_KEY / HeYeMark / HeYeStore / HeYeMode /
+ *                             HeYeFilterable（DAG 根：零 import）
+ *   lib/heye-store-persist.ts loadHeYeStore / subscribeHeYeStore / notifyHeYeExternalChange /
+ *                             setHeYeMark / setHeYeMarks / clearHeYeMarks（私有 save·emit·
+ *                             listeners 随行不外泄；← types；禁 import pure）
+ *   lib/heye-store-pure.ts    filterItemsByMode / countPoolMarks（← types type-only；
+ *                             无 window / localStorage）
+ * 三件彼此只有相对 `.ts` import（同 T83–T90：Node 原生 type-strip 直载不解析 `@/` 别名
+ * 也不补扩展名；tsconfig allowImportingTsExtensions 已开）；emit→save 顺序与
+ * clearHeYeMarks 范围清除口径逐字未动（T71 use-heye-store 订阅契约依赖 emit-then-save）。
  */
-export function clearHeYeMarks(keys: string[]): HeYeStore {
-  const next = { ...loadHeYeStore() };
-  let changed = false;
-  for (const k of keys) {
-    if (k in next) {
-      delete next[k];
-      changed = true;
-    }
-  }
-  if (changed) emitHeYeStoreChanged();
-  return saveHeYeStore(next);
-}
-
-/** 按档位过滤：open=无记录；checked=已对；doubt=存疑（保持传入顺序）。 */
-export function filterItemsByMode<T extends HeYeFilterable>(
-  items: T[],
-  store: HeYeStore,
-  mode: HeYeMode,
-): T[] {
-  if (mode === "checked") return items.filter((it) => store[it.key]?.s === "checked");
-  if (mode === "doubt") return items.filter((it) => store[it.key]?.s === "doubt");
-  return items.filter((it) => !store[it.key]);
-}
-
-/** 范围进度面：待核 / 已对 / 存疑（当前池子，本机态）。 */
-export function countPoolMarks<T extends HeYeFilterable>(
-  items: T[],
-  store: HeYeStore,
-): { open: number; checked: number; doubt: number } {
-  let open = 0;
-  let checked = 0;
-  let doubt = 0;
-  for (const it of items) {
-    const m = store[it.key];
-    if (!m) open++;
-    else if (m.s === "checked") checked++;
-    else doubt++;
-  }
-  return { open, checked, doubt };
-}
+export * from "./heye-store-types.ts";
+export * from "./heye-store-persist.ts";
+export * from "./heye-store-pure.ts";
