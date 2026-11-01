@@ -3,52 +3,18 @@ import type { Cite, EntityCard } from "@/lib/entities";
 import CitePeek from "@/components/CitePeek";
 import LocalProgressStrip from "@/components/LocalProgressStrip";
 import CardHubReturnLinks from "@/components/CardHubReturnLinks";
-import CardVsStudyLink from "@/components/CardVsStudyLink";
 import DeskOpenReturnLink from "@/components/DeskOpenReturnLink";
 import { withQsMode } from "@/lib/qs-mode";
 import { deskPageHref as buildDeskPageHref, pageInOcr } from "@/lib/ocr-page";
-import { citeOcrMiss, cardCiteMisses, enumerateCardCites, quoteInOcr } from "@/lib/cite-ocr-quality";
-import CopyTextButton from "@/components/CopyTextButton";
+import { citeOcrMiss } from "@/lib/cite-ocr-quality";
 import CardDraftBar from "@/components/CardDraftBar";
-import { AtomDraftLine, FieldDraftLine, FillAtomQuoteDraft } from "@/components/AtomDraftEditor";
-import { atomIncomplete } from "@/lib/atom-draft";
-
-/** 本卡全部 cite 来源的诚实汇总（cites + fields[].cite + atoms[].cite，按 page|verified|quote 去重）。 */
-function citeStats(card: EntityCard): {
-  total: number;
-  paged: number;
-  nullPage: number;
-  unverified: number;
-} {
-  const seen = new Set<string>();
-  let paged = 0;
-  let nullPage = 0;
-  let unverified = 0;
-  const all = [
-    ...card.cites,
-    ...card.fields.map((f) => f.cite),
-    ...card.atoms.map((a) => a.cite),
-  ];
-  for (const c of all) {
-    if (!c) continue;
-    const qk = (c.quote ?? "").trim().replace(/\s+/g, " ").slice(0, 60);
-    const key = `${c.page ?? "?"}|${c.verified ? 1 : 0}|${qk}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    if (c.page == null) nullPage++;
-    else paged++;
-    if (c.verified === false) unverified++;
-  }
-  return { total: paged + nullPage, paged, nullPage, unverified };
-}
-
-/** 本卡首个有页 cite 页码（cites → fields → atoms；全无页 → null）：「在书桌打开本页」定位用。 */
-function firstPagedCitePage(card: EntityCard): number | null {
-  for (const c of card.cites) if (c.page != null) return c.page;
-  for (const f of card.fields) if (f.cite?.page != null) return f.cite.page;
-  for (const a of card.atoms) if (a.cite?.page != null) return a.cite.page;
-  return null;
-}
+import {
+  citeStats,
+  firstPagedCitePage,
+  buildEntityCardMissModel,
+} from "@/lib/entity-card-detail-model";
+import { EntityCardCiteStatus } from "@/components/EntityCardCiteStatus";
+import { EntityCardDetailBody } from "@/components/EntityCardDetailBody";
 
 /**
  * 实体卡详情正文：/entities/[id]（shell-01）与 /desk/card/[id]（书桌 DocumentPane）共用。
@@ -56,6 +22,12 @@ function firstPagedCitePage(card: EntityCard): number | null {
  * desk-card-hub-01：上方加「练 / 核」枢纽动作条与 cite 诚实条——本卡不是死胡同详情，
  * 而是能练、能核、能回章页的连续面单元；诚实条只汇总 seed 自带 verified 标记，
  * 绝不把「本机核页 localStorage 态」伪造成教材抽查结论。
+ *
+ * T103 desk-entity-card-detail-split-01：552 行按 3 条既有缝诚实 MEGA-split：
+ * - lib/entity-card-detail-model.ts: citeStats / firstPagedCitePage / buildEntityCardMissModel
+ * - components/EntityCardCiteStatus.tsx: 「引用状态」section（aria-label 引用状态）
+ * - components/EntityCardDetailBody.tsx: 字段 · 易混点 · 知识原子三 section
+ * 本组件保留公共 props 面、返回链、header、「本卡操作」hub、进度条、草稿条与页脚 cite 行。
  */
 export function EntityCardDetail({
   card,
@@ -125,34 +97,10 @@ export function EntityCardDetail({
    * 页文本未装配（pageTextByPage undefined）→ 未检，诚实条不出「OCR 未见」列。
    */
   const ocrMissOf = (c?: Cite) => citeOcrMiss(c, pageTextByPage);
-  const ocrMissCount = (() => {
-    if (pageTextByPage == null) return null;
-    let n = 0;
-    for (const c of enumerateCardCites(card)) {
-      if (c.page == null || (c.quote ?? "").trim() === "") continue;
-      if (pageTextByPage[c.page] != null && !quoteInOcr(c.quote, pageTextByPage[c.page])) n++;
-    }
-    return n;
-  })();
-  /**
-   * T55 F/I：miss 明细（含 OCR 附近窗 + 启发式建议摘录，server 侧算优）——补救面板
-   * 逐条展示 + 复制建议摘录（剪贴板；人核后再贴）。只展示 + 复制：不自动 PATCH
-   * entities / 不写 verified / 不记本机核页标记。未装配页文本 → 空列表（未检）。
-   */
-  const missDetails =
-    pageTextByPage == null ? [] : cardCiteMisses(card, pageTextByPage).slice(0, 8);
-  /**
-   * T61 E：miss → 原子 quote 草稿目标（按 page + quote 前缀匹配回 atoms[].cite——
-   * cardCiteMisses 的 quote 截到 30 字，故去「…」后 startsWith 比对）。取首匹配原子，
-   * 按钮 title 点名原子 id，不静默写多条；找不到 → 不渲染「填入草稿 quote」（不猜目标）。
-   * 只写本机草稿 citeQuote——不写回 seed / 不翻 verified / 不记核页标记。
-   */
-  const atomTargetOfMiss = (page: number, quote: string) => {
-    const q = quote.replace(/…$/, "");
-    return card.atoms.find(
-      (a) => a.cite?.page === page && q.length > 0 && (a.cite?.quote ?? "").startsWith(q),
-    );
-  };
+  const { ocrMissCount, missDetails, atomTargetOfMiss } = buildEntityCardMissModel(
+    card,
+    pageTextByPage,
+  );
   /**
    * T35 A/B：卡枢纽练/核显式默认档（练 mode=all · 核 mode=open）——CardHubReturnLinks /
    * 本卡 Strip 消费同一对 href；本标签 sticky 停在非默认空档时从卡面进练/核仍落可见池。
@@ -163,7 +111,6 @@ export function EntityCardDetail({
   const reviewHref = deskBookId
     ? `/review?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(deskBookId)}&mode=open`
     : `/review?card=${encodeURIComponent(card.id)}&mode=open`;
-  const normName = (s: string) => s.trim().toLowerCase();
   /** 「在书桌打开本页」（仅书桌语境 + 首个有页 cite）：/desk?book=&page= 章页定位。 */
   const firstPage = firstPagedCitePage(card);
   /**
@@ -233,90 +180,13 @@ export function EntityCardDetail({
       </section>
 
       {/* cite 诚实条：有页 / p.? / seed 抽查未核计数；明确 seed verified ≠ 本机核页 localStorage 态。 */}
-      <section
-        aria-label="引用状态"
-        className="mt-4 rounded-lg border border-line bg-card px-4 py-3 text-sm leading-7"
-      >
-        {stats.total > 0 ? (
-          <>
-            <p className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <span className="text-muted">引用 {stats.total} 处</span>
-              <span className="text-muted">
-                有页 <span className="mono font-medium text-foreground">{stats.paged}</span>
-              </span>
-              <span className={stats.nullPage > 0 ? "text-status-warn" : "text-muted"}>
-                无页 p.?{" "}
-                <span className={`mono font-medium ${stats.nullPage > 0 ? "text-status-warn" : "text-foreground"}`}>
-                  {stats.nullPage}
-                </span>
-              </span>
-              <span className={stats.unverified > 0 ? "text-status-warn" : "text-muted"}>
-                教材抽查未核{" "}
-                <span className={`mono font-medium ${stats.unverified > 0 ? "text-status-warn" : "text-foreground"}`}>
-                  {stats.unverified}
-                </span>
-              </span>
-              {/* T54 F：机检「OCR 未见」——与 seed 抽查 verified 分列（另开信号，互不写入）；
-                  N=0 不吵；页文本未装配（未检）不出列。 */}
-              {ocrMissCount != null && ocrMissCount > 0 ? (
-                <span className="text-status-warn">
-                  OCR 未见{" "}
-                  <span className="mono font-medium text-status-warn">{ocrMissCount}</span>
-                </span>
-              ) : null}
-            </p>
-            <p className="mt-1 text-xs leading-6 text-muted">
-              「抽查未核」是教材数据（seed）自带的 verified 标记，未经本机对页——不计为已核；
-              你在核页标「本机已对」只存本浏览器，与这里的数字互不写入。本卡核页状态不在此条伪造。
-              {ocrMissCount != null
-                ? "「OCR 未见」是机检（引文与该页 OCR 原文的 bigram 覆盖 < 0.6，可能 OCR 误差或抽取出错）——不是 seed verified，也不写你的核页标记。"
-                : ""}
-              {missDetails.length > 0
-                ? " 建议摘录为启发式建议——人核后再贴；不会写回 seed / 改 verified / 记核页标记。"
-                : ""}
-            </p>
-          </>
-        ) : (
-          <p className="text-muted">本卡暂无引用记录（卡引用 / 字段 / 原子均无 cite）。</p>
-        )}
-        {/* T55 F：复制级补救——OCR 未见逐条展开（p.N · cov · quote · OCR 附近 mono +
-            复制建议摘录）。只展示 + 剪贴板，不自动改 seed；未检（无页文本）不渲。 */}
-        {missDetails.length > 0 ? (
-          <details className="mt-3 rounded-lg border border-amber-300/60 px-3 py-2">
-            <summary className="cursor-pointer select-none text-xs leading-6 text-status-warn focus-visible:outline-2 focus-visible:outline-cinnabar">
-              补救 · OCR 未见 {ocrMissCount} 条{ocrMissCount != null && ocrMissCount > missDetails.length ? `（列前 ${missDetails.length}）` : ""} · 建议摘录可复制
-            </summary>
-            <ul className="mt-1.5 space-y-2">
-              {missDetails.map((mm, i) => (
-                <li key={`${mm.page}:${i}`} className="text-xs leading-5 text-muted">
-                  <span className="mono">p.{mm.page}</span> · cov {mm.coverage} · “{mm.quote}”
-                  {mm.ocrSnippet ? (
-                    <span className="mono mt-0.5 block text-[11px] leading-5 text-foreground/80">
-                      OCR附近：{mm.ocrSnippet}
-                    </span>
-                  ) : null}
-                  {mm.suggestQuote ? (
-                    <span className="mt-0.5 flex flex-wrap items-baseline gap-2">
-                      <span className="min-w-0 flex-1">
-                        建议摘录（人核后再贴）：<span className="text-foreground/90">“{mm.suggestQuote}”</span>
-                      </span>
-                      {/* T61 E：建议摘录除复制外可一键「填入草稿 quote」——仍只写本机草稿
-                          （原子 cite.quote），未写回 seed / 不翻 verified。 */}
-                      {(() => {
-                        const tgt = atomTargetOfMiss(mm.page, mm.quote);
-                        return tgt ? (
-                          <FillAtomQuoteDraft cardId={card.id} atomId={tgt.id} quote={mm.suggestQuote} />
-                        ) : null;
-                      })()}
-                      <CopyTextButton text={mm.suggestQuote} label="复制建议摘录" />
-                    </span>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          </details>
-        ) : null}
-      </section>
+      <EntityCardCiteStatus
+        card={card}
+        stats={stats}
+        ocrMissCount={ocrMissCount}
+        missDetails={missDetails}
+        atomTargetOfMiss={atomTargetOfMiss}
+      />
 
       {/* 跨面本机进度：本卡原子（练）+ 本卡核池（核）；条末弱链进同范围练/核（不重复动作条主 CTA）。
           T36 C：本卡池分段可点——三档从条末 studyHref/reviewHref（?card=&book=&mode=* 同族）
@@ -351,170 +221,15 @@ export function EntityCardDetail({
           文字引导。无草稿且无不完备 → 不渲（不加空条 chrome）。 */}
       <CardDraftBar card={card} />
 
-      <section className="mt-8">
-        <h2 className="text-sm font-semibold text-muted">字段</h2>
-        {/* T47 F：0 字段诚实句——抽取未产出字段级信息，不渲空 dl 空壳。 */}
-        {card.fields.length === 0 ? (
-          <p className="mt-3 text-sm leading-7 text-muted">
-            本卡暂无字段——抽取未产出字段级信息，不伪造空表。
-          </p>
-        ) : (
-          <dl className="mt-3 space-y-3">
-            {card.fields.map((f, i) => (
-            <div key={i} className="rounded-lg border border-line bg-card p-4">
-              <div className="flex items-baseline justify-between gap-3">
-                <dt className="font-semibold">{f.label}</dt>
-                <span className="flex shrink-0 items-baseline gap-3">
-                  {/* T49 E：三处 CitePeek（字段/原子/页脚）下传本卡 pendingCiteCount（服务端
-                      collectCiteQueue({cardId}) 同数）——浮层「核本卡」与主条 CardHubReturnLinks
-                      同真：0 待核纯文不进空池；未装配（undefined）保持链。卡原子数无对应
-                      浮层 CTA，不传假数。 */}
-                  <CitePeek
-                    cite={f.cite}
-                    q={f.value.slice(0, 24)}
-                    deskBookId={deskBookId}
-                    cardId={card.id}
-                    pendingCiteCount={pendingCiteCount}
-                    ocrMiss={ocrMissOf(f.cite)}
-                  />
-                  {/* T33 E：字段 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（与原子 T30 C 同族
-                      muted 文字链，非实心；与 CitePeek 浮层内「在书桌打开」同目标，免开浮层一步）。
-                      T52 H：页落在未解析 OCR（bookValidPages 已装配且不含）→ 纯文「本页无 OCR」。 */}
-                  {f.cite?.page != null && deskBookId ? (
-                    ocrHas(f.cite.page) ? (
-                      <Link
-                        href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${f.cite.page}`}
-                        className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
-                      >
-                        对页 →
-                      </Link>
-                    ) : (
-                      <span className="text-xs text-muted" title="该印刷页尚未解析 OCR——书桌章页定位不了">
-                        本页无 OCR
-                      </span>
-                    )
-                  ) : null}
-                </span>
-              </div>
-              {/* T61 F：字段 value 草稿岛（最小面）——label 只读、CitePeek/对页行不动；
-                  overlay 显示 + 极简编辑器只进本机草稿。 */}
-              <dd className="mt-1.5">
-                <FieldDraftLine cardId={card.id} fieldIndex={i} seedValue={f.value} />
-              </dd>
-            </div>
-          ))}
-          </dl>
-        )}
-      </section>
-
-      {card.confusions?.length ? (
-        <section className="mt-10">
-          <h2 className="text-sm font-semibold text-muted">易混点</h2>
-          <ul className="mt-3 space-y-2">
-            {card.confusions.map((c, i) => {
-              const vsId =
-                deskBookId && confusionLinks ? confusionLinks[normName(c.vs)] : undefined;
-              return (
-                <li
-                  key={i}
-                  className="rounded-lg border border-cinnabar/30 bg-cinnabar-soft/60 p-4 text-sm leading-7"
-                >
-                  <span className="font-semibold text-cinnabar">
-                    vs{" "}
-                    {vsId ? (
-                      <Link
-                        href={`/desk/card/${encodeURIComponent(vsId)}`}
-                        className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
-                      >
-                        {c.vs}
-                      </Link>
-                    ) : (
-                      c.vs
-                    )}
-                  </span>
-                  <span className="mx-2 text-line">|</span>
-                  {c.tip}
-                  {/* T33 E 可选：易混对象已可深链 + 书桌语境 → muted「练易混卡」直跳该卡练面
-                      （次级文字，非第二颗实心；与卡枢纽「练这张卡」同目标，免绕卡页一步）。
-                      T35 B：显式 mode=all。
-                      T39 D：Server 组件不能挂 onClick——换薄客户端岛 CardVsStudyLink，
-                      点前 saveReturn 回**当前卡**枢纽（/desk/card/<本卡 id>，与主条
-                      CardHubReturnLinks 同口径）；href 由这里拼好原样传入，语义不变。
-                      T48 D：atomCount 由 confusionAtomCounts 查表（vs 卡 id）——0 原子岛内降纯文。 */}
-                  {vsId && deskBookId ? (
-                    <CardVsStudyLink
-                      href={`/study?card=${encodeURIComponent(vsId)}&book=${encodeURIComponent(deskBookId)}&mode=all`}
-                      fromCardId={card.id}
-                      fromCardName={card.name_zh}
-                      atomCount={confusionAtomCounts?.[vsId] ?? 0}
-                    />
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ) : null}
-
-      <section className="mt-10">
-        <h2 className="text-sm font-semibold text-muted">知识原子（{card.atoms.length}）</h2>
-        {/* T47 F：零原子诚实句——对齐卡枢纽/瓷砖「暂无原子」语义（练不进空池），不渲空 ol 空壳。 */}
-        {card.atoms.length === 0 ? (
-          <p className="mt-3 text-sm leading-7 text-muted">
-            本卡暂无知识原子——学习环不会为它出题（卡枢纽/瓷砖的「练」同为「暂无原子」不可点）。
-          </p>
-        ) : (
-          <ol className="mt-3 space-y-3">
-            {card.atoms.map((a) => (
-            <li key={a.id} className="rounded-lg border border-line p-4">
-              {/* T61 E：原子行草稿岛（客户端）——显示 seed ⊕ draft overlay 的 prompt/answer；
-                  有真改动草稿 → 琥珀「已改草稿」旁挂；seed 口径空 prompt/answer → 「待补草稿」
-                  入口；「编辑草稿」展开编辑器（prompt/answer/cite.quote 可编，id/difficulty/
-                  cite.page 只读）。下方 cite 行（CitePeek + 对页）保持服务端渲染，契约不变。 */}
-              <AtomDraftLine
-                cardId={card.id}
-                atomId={a.id}
-                seedPrompt={a.prompt}
-                seedAnswer={a.answer}
-                seedDifficulty={a.difficulty}
-                seedCitePage={a.cite?.page ?? null}
-                seedCiteQuote={a.cite?.quote}
-                incomplete={atomIncomplete(a)}
-              />
-              {a.cite ? (
-                <div className="mt-2 flex flex-wrap items-center gap-3">
-                  <CitePeek
-                    cite={a.cite}
-                    q={a.answer.slice(0, 24)}
-                    deskBookId={deskBookId}
-                    cardId={card.id}
-                    pendingCiteCount={pendingCiteCount}
-                    ocrMiss={ocrMissOf(a.cite)}
-                  />
-                  {/* T30 C：原子 cite 有页 + 书桌语境 → 次级「对页」直跳书桌该页（muted 文字链，
-                      非实心；与 CitePeek 浮层内「在书桌打开」同目标，这里免开浮层一步）。
-                      T52 H：页落在未解析 OCR → 纯文「本页无 OCR」（同字段/页脚三处同真）。 */}
-                  {a.cite.page != null && deskBookId ? (
-                    ocrHas(a.cite.page) ? (
-                      <Link
-                        href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${a.cite.page}`}
-                        className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
-                      >
-                        对页 →
-                      </Link>
-                    ) : (
-                      <span className="text-xs text-muted" title="该印刷页尚未解析 OCR——书桌章页定位不了">
-                        本页无 OCR
-                      </span>
-                    )
-                  ) : null}
-                </div>
-              ) : null}
-            </li>
-          ))}
-          </ol>
-        )}
-      </section>
+      <EntityCardDetailBody
+        card={card}
+        deskBookId={deskBookId}
+        pendingCiteCount={pendingCiteCount}
+        confusionLinks={confusionLinks}
+        confusionAtomCounts={confusionAtomCounts}
+        ocrMissOf={ocrMissOf}
+        ocrHas={ocrHas}
+      />
 
       <footer className="mt-10 border-t border-line pt-4 text-sm text-muted">
         引用：{" "}
