@@ -33,12 +33,12 @@ export default function SectionToc({
   counts?: Partial<Record<SectionId, number>>;
 }) {
   return (
-    <nav aria-label="六段讲义目录" className="mt-6 rounded-xl border border-line bg-card p-4">
+    <nav aria-label="六段讲义目录" className="mt-6">
       <div className="flex items-baseline justify-between">
-        <h2 className="text-sm font-semibold">六段讲义</h2>
+        <h2 className="text-xs font-medium text-muted">六段讲义</h2>
         <span className="text-xs text-muted">过渡文档 · 生成管线未接入（点击段落只看真数据）</span>
       </div>
-      <ol className="mt-3 flex flex-wrap gap-2">
+      <ol className="mt-2.5 flex flex-wrap gap-x-3 gap-y-1.5">
         {SECTIONS.map((s, i) => {
           const isActive = s.id === active;
           const count = counts?.[s.id];
@@ -60,12 +60,12 @@ export default function SectionToc({
                       : "本段暂无匹配实体卡"
                     : undefined
                 }
-                className={`rounded-full border px-3 py-1 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
+                className={`rounded-full border px-2.5 py-0.5 text-xs transition-colors focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none ${
                   isEmpty ? "cursor-not-allowed opacity-50 " : ""
                 }${
                   isActive
                     ? "border-cinnabar bg-cinnabar-soft font-medium text-cinnabar"
-                    : "border-line text-muted hover:text-foreground"
+                    : "border-transparent text-muted hover:text-foreground"
                 }`}
               >
                 {i + 1} {s.label}

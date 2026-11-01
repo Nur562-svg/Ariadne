@@ -84,13 +84,13 @@ export function ClewChatComposer({
           rows={2}
           placeholder="问点什么…（Enter 发送 · Shift+Enter 换行）"
           aria-label="Clew 输入"
-          className="min-h-[2.75rem] w-full resize-y rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6 outline-none transition-colors placeholder:text-muted focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+          className="min-h-[2.75rem] min-w-0 flex-1 resize-y rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6 outline-none transition-colors placeholder:text-muted focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
         />
         <button
           onClick={() => onSend(draft)}
           disabled={!draft.trim() || sending || !tierAvailable(tier)}
           aria-busy={sending || undefined}
-          className="shrink-0 rounded-lg bg-cinnabar px-4 py-2 text-sm text-white transition-opacity disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+          className="shrink-0 whitespace-nowrap rounded-lg bg-cinnabar px-4 py-2 text-sm text-white transition-opacity disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
         >
           {sending ? "发送中…" : "发送"}
         </button>
@@ -100,7 +100,7 @@ export function ClewChatComposer({
           <button
             type="button"
             onClick={onStop}
-            className="shrink-0 rounded-lg border border-line px-3 py-2 text-sm text-muted transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+            className="shrink-0 whitespace-nowrap rounded-lg border border-line px-3 py-2 text-sm text-muted transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
           >
             停止
           </button>

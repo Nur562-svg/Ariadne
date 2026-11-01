@@ -90,9 +90,12 @@ export default function ClewPane() {
       aria-label="Clew 问答面板"
     >
       <header className="border-b border-line px-4 pb-2 pt-4">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-sm font-semibold">Clew</h2>
-          <span className="text-xs text-muted">
+        <div className="flex items-baseline justify-between gap-2">
+          <h2 className="shrink-0 text-sm font-semibold">Clew</h2>
+          <span
+            className="min-w-0 truncate text-xs text-muted"
+            title={`${capLabel}${clew.page != null ? ` · p.${clew.page}` : ""}`}
+          >
             {capLabel}
             {clew.page != null ? ` · p.${clew.page}` : ""}
           </span>
@@ -148,7 +151,7 @@ export default function ClewPane() {
           {clew.surface ? (
             <span className="mono text-[10px]">面：{SURFACE_ZH[clew.surface] ?? clew.surface}</span>
           ) : null}
-          <span className="ml-auto text-[11px] text-muted">
+          <span className="ml-auto whitespace-nowrap text-[11px] text-muted">
             本地上下文 · {cap?.mode === "live" ? "小能力只读" : "未接模型"}
           </span>
         </div>

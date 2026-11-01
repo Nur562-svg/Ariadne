@@ -8,6 +8,7 @@ import { useHeYeStore } from "@/lib/use-heye-store";
 import type { StudyScopeHrefs } from "@/components/StudyScopeCounts";
 import type { HeYeScopeHrefs } from "@/components/HeYeScopeCounts";
 import { saveReturn } from "@/lib/return-stack";
+import HonestyDisclosure from "@/components/desk/HonestyDisclosure";
 
 /**
  * 池内练计数（只用 cardId/atomId 键；池原子无需完整 StudyAtom）。
@@ -59,6 +60,8 @@ export default function LocalProgressStrip({
   studyModeHrefs,
   heyeModeHrefs,
   returnTo,
+  foldDisclaimer,
+  foldExtra,
 }: {
   /** 范围池：练的原子（只要 cardId/atomId 做键）。缺省 → 全局已记录计数。 */
   atoms?: { cardId: string; atomId: string }[];
@@ -78,6 +81,10 @@ export default function LocalProgressStrip({
   heyeModeHrefs?: HeYeScopeHrefs;
   /** T39 E：出发点 return 短链 payload（href 站内相对路径 + label）；有值时条末链与可点分段点前写入。 */
   returnTo?: { href: string; label: string };
+  /** T100：折叠免责说明为 ⓘ（仅 DocumentPaneChrome 启用；默认 false 保持原样）。 */
+  foldDisclaimer?: boolean;
+  /** T100：折叠面板内附加说明（如六段讲义管线说明）。 */
+  foldExtra?: React.ReactNode;
 }) {
   // T71：双仓共享 useSyncExternalStore 口——空仓即合法首帧（计数如实 0，不造假正数）。
   // T65 fail-closed 结构性成立：getSnapshot 永不抛（读失败 = 空仓快照 → 0 计数），
@@ -162,8 +169,11 @@ export default function LocalProgressStrip({
     </>
   );
 
+  const disclaimerText = "仅这个浏览器 · 非掌握度 · 非 Due · 与 seed verified 无关";
+  const Comp = foldDisclaimer ? "div" : "p";
+
   return (
-    <p
+    <Comp
       className={`text-xs text-muted ${compact ? "leading-5" : "mt-2 leading-6"}`}
       aria-label="本机学习与核页进度"
     >
@@ -201,9 +211,13 @@ export default function LocalProgressStrip({
           </Link>
         )
       ) : null}
-      <span className="ml-2">
-        · 仅这个浏览器 · 非掌握度 · 非 Due · 与 seed verified 无关
-      </span>
-    </p>
+      {foldDisclaimer ? (
+        <span className="ml-2">
+          <HonestyDisclosure disclaimer={disclaimerText} extra={foldExtra} />
+        </span>
+      ) : (
+        <span className="ml-2">{`· ${disclaimerText}`}</span>
+      )}
+    </Comp>
   );
 }

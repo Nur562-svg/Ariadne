@@ -153,6 +153,8 @@ export default function DocumentPaneChrome({
             unknown: withQsMode(stripStudyHref, "unknown"),
             ungraded: withQsMode(stripStudyHref, "ungraded"),
           }}
+          foldDisclaimer
+          foldExtra="过渡文档 · 六段讲义生成管线未接入；章页是 OCR 原文，不是萃取讲义。"
           heyeModeHrefs={{
             open: withQsMode(stripReviewHref, "open"),
             checked: withQsMode(stripReviewHref, "checked"),
@@ -173,9 +175,6 @@ export default function DocumentPaneChrome({
         {readingPage != null && !studyPageScope && !reviewPageScope ? (
           <p className="text-xs text-muted">本页暂无引用卡 · 显示本章进度。</p>
         ) : null}
-        <p className="mt-1 text-sm text-muted">
-          过渡文档 · 六段讲义生成管线未接入；章页是 OCR 原文，不是萃取讲义。
-        </p>
         {/* T26 D：稀疏注册书诚实条——已注册但尚无卡/尚无 OCR 页；次级 /ingest 链，
             不阻断概览与模式切换（琥珀 = 稀疏/存疑族，不与朱砂动作色混用）。 */}
         {cards.length === 0 || pages.length === 0 ? (

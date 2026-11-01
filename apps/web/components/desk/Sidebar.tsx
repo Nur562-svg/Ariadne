@@ -147,8 +147,11 @@ export default function Sidebar({
                   : "text-foreground/85 hover:bg-background"
               }`}
             >
-              <span className="text-sm">{item.label}</span>
-              <span className={`text-xs ${active ? "text-cinnabar/80" : "text-muted"}`}>
+              <span className="shrink-0 whitespace-nowrap text-sm">{item.label}</span>
+              <span
+                className={`min-w-0 truncate text-xs ${active ? "text-cinnabar/80" : "text-muted"}`}
+                title={item.hint}
+              >
                 {item.hint}
               </span>
             </Link>
@@ -167,11 +170,12 @@ export default function Sidebar({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`rounded-md px-3 py-1.5 text-sm no-underline transition-colors motion-reduce:transition-none ${
+              className={`truncate rounded-md px-3 py-1.5 text-sm no-underline transition-colors motion-reduce:transition-none ${
                 active
                   ? "bg-cinnabar-soft text-cinnabar"
                   : "text-muted hover:bg-background hover:text-foreground"
               }`}
+              title={item.label}
             >
               {item.label}
             </Link>
