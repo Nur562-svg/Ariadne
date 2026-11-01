@@ -51,6 +51,14 @@ body {
   color: var(--foreground);
 }
 
+/* T102: 全站键盘焦点环（朱砂 2px）。base 层低于 Tailwind utilities，个别元素的 outline 工具类仍可覆盖。 */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--cinnabar);
+    outline-offset: 2px;
+  }
+}
+
 /* 未验证 citation：琥珀虚线下划线 */
 .cite-unverified {
   text-decoration: underline dashed var(--status-warn);

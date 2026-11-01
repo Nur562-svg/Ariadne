@@ -53,7 +53,7 @@ export default function Library() {
         </ol>
         <Link
           href="/ingest"
-          className="mt-10 inline-block rounded-md bg-cinnabar px-5 py-2.5 text-white no-underline"
+          className="mt-10 inline-block rounded-md bg-cinnabar px-5 py-2.5 text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
         >
           去导入教材 →
         </Link>
@@ -114,7 +114,7 @@ export default function Library() {
       />
 
       <p className="mt-10 text-sm text-muted">
-        导入新书：<Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">/ingest 上传 PDF</Link>
+        导入新书：<Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar">/ingest 上传 PDF</Link>
       </p>
     </div>
   );

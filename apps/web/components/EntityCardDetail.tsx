@@ -177,7 +177,7 @@ export function EntityCardDetail({
 
   return (
     <>
-      <Link href={backHref} className="text-sm text-muted no-underline hover:text-cinnabar">
+      <Link href={backHref} className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
         {backLabel}
       </Link>
 
@@ -283,7 +283,7 @@ export function EntityCardDetail({
             复制建议摘录）。只展示 + 剪贴板，不自动改 seed；未检（无页文本）不渲。 */}
         {missDetails.length > 0 ? (
           <details className="mt-3 rounded-lg border border-amber-300/60 px-3 py-2">
-            <summary className="cursor-pointer select-none text-xs leading-6 text-status-warn">
+            <summary className="cursor-pointer select-none text-xs leading-6 text-status-warn focus-visible:outline-2 focus-visible:outline-cinnabar">
               补救 · OCR 未见 {ocrMissCount} 条{ocrMissCount != null && ocrMissCount > missDetails.length ? `（列前 ${missDetails.length}）` : ""} · 建议摘录可复制
             </summary>
             <ul className="mt-1.5 space-y-2">
@@ -384,7 +384,7 @@ export function EntityCardDetail({
                     ocrHas(f.cite.page) ? (
                       <Link
                         href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${f.cite.page}`}
-                        className="text-xs text-muted no-underline hover:text-cinnabar"
+                        className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                       >
                         对页 →
                       </Link>
@@ -424,7 +424,7 @@ export function EntityCardDetail({
                     {vsId ? (
                       <Link
                         href={`/desk/card/${encodeURIComponent(vsId)}`}
-                        className="text-cinnabar no-underline hover:underline underline-offset-4"
+                        className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                       >
                         {c.vs}
                       </Link>
@@ -498,7 +498,7 @@ export function EntityCardDetail({
                     ocrHas(a.cite.page) ? (
                       <Link
                         href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${a.cite.page}`}
-                        className="text-xs text-muted no-underline hover:text-cinnabar"
+                        className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                       >
                         对页 →
                       </Link>
@@ -533,7 +533,7 @@ export function EntityCardDetail({
               ocrHas(c.page) ? (
                 <Link
                   href={`/desk?book=${encodeURIComponent(deskBookId)}&page=${c.page}`}
-                  className="text-xs text-muted no-underline hover:text-cinnabar"
+                  className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   对页 →
                 </Link>

@@ -121,7 +121,7 @@ export default function IngestMaterialQualityPanels({
         <div className="mt-3 rounded-lg border border-amber-300/60 px-3 py-2">
           {weakChapters.map(([chId, ck]) => (
             <details key={chId} className="py-1">
-              <summary className="cursor-pointer select-none text-xs leading-6 text-status-warn">
+              <summary className="cursor-pointer select-none text-xs leading-6 text-status-warn focus-visible:outline-2 focus-visible:outline-cinnabar">
                 补救 · {chId}：OCR未见 {ck.quality.ocrMiss} · 零原子卡{" "}
                 {ck.quality.zeroAtomCards} · 不完备原子 {ck.quality.incompleteAtoms}
               </summary>
@@ -131,7 +131,7 @@ export default function IngestMaterialQualityPanels({
                     <li key={`${mm.cardId}:${mm.page}:${i}`} className="text-xs leading-5 text-muted">
                       <Link
                         href={`/desk/card/${encodeURIComponent(mm.cardId)}`}
-                        className="mono mr-1 text-cinnabar no-underline hover:underline underline-offset-4"
+                        className="mono mr-1 text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                       >
                         {mm.cardId}
                       </Link>
@@ -156,7 +156,7 @@ export default function IngestMaterialQualityPanels({
                     <Link
                       key={id}
                       href={`/desk/card/${encodeURIComponent(id)}`}
-                      className="mono text-cinnabar no-underline hover:underline underline-offset-4"
+                      className="mono text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                     >
                       {id}
                     </Link>
@@ -179,7 +179,7 @@ export default function IngestMaterialQualityPanels({
                         <Link
                           key={id}
                           href={`/desk/card/${encodeURIComponent(id)}`}
-                          className="mono text-cinnabar no-underline hover:underline underline-offset-4"
+                          className="mono text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                         >
                           {id}
                         </Link>

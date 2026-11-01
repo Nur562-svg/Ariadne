@@ -295,7 +295,7 @@ export default function CitePeek({
                 <Link
                   href={deskPageLink}
                   onClick={rememberPeekReturn}
-                  className="text-cinnabar no-underline hover:underline underline-offset-4"
+                  className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   在书桌打开 →
                 </Link>
@@ -313,7 +313,7 @@ export default function CitePeek({
                   <Link
                     href={reviewPageHref}
                     onClick={rememberPeekReturn}
-                    className="text-muted no-underline hover:text-cinnabar"
+                    className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                   >
                     核本页 →
                   </Link>
@@ -328,7 +328,7 @@ export default function CitePeek({
                   <Link
                     href={studyPageHref}
                     onClick={rememberPeekReturn}
-                    className="text-muted no-underline hover:text-cinnabar"
+                    className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                   >
                     练本页 →
                   </Link>
@@ -343,7 +343,7 @@ export default function CitePeek({
                   <Link
                     href={reviewCardHref}
                     onClick={rememberPeekReturn}
-                    className="text-muted no-underline hover:text-cinnabar"
+                    className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                   >
                     核本卡 →
                   </Link>

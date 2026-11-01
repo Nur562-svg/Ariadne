@@ -28,7 +28,7 @@ export default function DeskOpenReturnLink({
     <Link
       href={href}
       onClick={returnTo ? () => saveReturn({ ...returnTo, at: Date.now() }) : undefined}
-      className="text-sm text-muted no-underline hover:text-cinnabar"
+      className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
     >
       {children}
     </Link>

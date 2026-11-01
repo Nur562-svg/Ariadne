@@ -32,7 +32,7 @@ export default function ChapterPageEmptyChapter({
           <button
             onClick={() => onSwitchChapter(nextReadable.id)}
             title={`下一章 ${nextReadable.id} · ${nextReadable.title}（首页 p.${nextReadable.page}）`}
-            className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90 motion-reduce:transition-none"
+            className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2 motion-reduce:transition-none"
           >
             下一有页章 {nextReadable.id} →
           </button>
@@ -41,7 +41,7 @@ export default function ChapterPageEmptyChapter({
           <button
             onClick={() => onSwitchChapter(prevReadable.id)}
             title={`上一章 ${prevReadable.id} · ${prevReadable.title}（末页 p.${prevReadable.page}）`}
-            className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90 motion-reduce:transition-none"
+            className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2 motion-reduce:transition-none"
           >
             上一有页章 {prevReadable.id} →
           </button>

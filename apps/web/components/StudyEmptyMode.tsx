@@ -91,7 +91,7 @@ export default function StudyEmptyMode({
         <p className="mt-2 text-xs leading-6 text-status-warn">
           本机已评完池内原子 · 本范围仍有浅页可考密度不足（浅{shallowCount}）——池内原子 ≠
           可考够，可回{" "}
-          <Link className="underline underline-offset-4" href="/ingest">
+          <Link className="underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar" href="/ingest">
             /ingest
           </Link>{" "}
           或 pnpm density-check 复核。
@@ -111,14 +111,14 @@ export default function StudyEmptyMode({
       <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
         <button
           onClick={restart}
-          className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-opacity hover:opacity-90 motion-reduce:transition-none"
+          className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2 motion-reduce:transition-none"
         >
           再来一轮
         </button>
         {mode !== "unknown" ? (
           <Link
             href={unknownHref}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             只练不熟 →
           </Link>
@@ -127,7 +127,7 @@ export default function StudyEmptyMode({
           <>
             <Link
               href={cardHref}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
+              className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               回本卡 →
             </Link>
@@ -137,7 +137,7 @@ export default function StudyEmptyMode({
               <Link
                 href={reviewHref}
                 onClick={leaveReturnTo ? rememberLeave : undefined}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
+                className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 核本卡 →
               </Link>
@@ -151,7 +151,7 @@ export default function StudyEmptyMode({
           <Link
             href={reviewHref}
             onClick={leaveReturnTo ? rememberLeave : undefined}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             去核页 →
           </Link>
@@ -160,11 +160,11 @@ export default function StudyEmptyMode({
             暂无待核
           </span>
         )}
-        <Link href={deskBackHref} className="text-sm text-muted no-underline hover:text-cinnabar">
+        <Link href={deskBackHref} className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
           {deskBackLabel}
         </Link>
         {ret ? (
-          <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar">
+          <Link href={ret.href} title={ret.label} className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
             回到刚才 →
           </Link>
         ) : null}

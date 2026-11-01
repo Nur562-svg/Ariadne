@@ -141,8 +141,8 @@ export default function RegisterMaterialButton({
           disabled={busy}
           className={
             weak && confirmWeak
-              ? "rounded-md border border-amber-300 bg-status-warn-bg px-4 py-2 text-sm text-status-warn transition-colors hover:opacity-90 disabled:opacity-50 motion-reduce:transition-none"
-              : "rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-colors hover:opacity-90 disabled:opacity-50 motion-reduce:transition-none"
+              ? "rounded-md border border-amber-300 bg-status-warn-bg px-4 py-2 text-sm text-status-warn transition-colors hover:opacity-90 disabled:opacity-50 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar"
+              : "rounded-md bg-cinnabar px-4 py-2 text-sm text-white transition-colors hover:opacity-90 disabled:opacity-50 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
           }
         >
           {busy
@@ -201,7 +201,7 @@ export default function RegisterMaterialButton({
             <Link
               href={`/desk?book=${encodeURIComponent(done)}`}
               onClick={rememberUploadReturn}
-              className="text-cinnabar no-underline hover:underline underline-offset-4"
+              className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               打开书桌 →
             </Link>
@@ -210,7 +210,7 @@ export default function RegisterMaterialButton({
               href={`/desk?book=${encodeURIComponent(done)}`}
               onClick={rememberUploadReturn}
               title="尚无 OCR 印刷页——章页/分栏暂读不了；可进桌看概览与实体卡"
-              className="text-muted no-underline hover:text-cinnabar"
+              className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               打开书桌（尚无 OCR）→
             </Link>
@@ -219,7 +219,7 @@ export default function RegisterMaterialButton({
             <Link
               href={`/study?book=${encodeURIComponent(done)}&mode=all`}
               onClick={rememberUploadReturn}
-              className="text-xs text-muted no-underline hover:text-cinnabar"
+              className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               学习环 →
             </Link>
@@ -232,7 +232,7 @@ export default function RegisterMaterialButton({
             <Link
               href={`/review?book=${encodeURIComponent(done)}&mode=open`}
               onClick={rememberUploadReturn}
-              className="text-xs text-muted no-underline hover:text-cinnabar"
+              className="text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               核页 →
             </Link>

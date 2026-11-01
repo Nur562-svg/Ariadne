@@ -58,14 +58,14 @@ export default function ReturnNav({
       {cardHref ? (
         <Link
           href={cardHref}
-          className="text-sm text-muted no-underline hover:text-cinnabar"
+          className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           回本卡 →
         </Link>
       ) : null}
       <Link
         href={deskPageHref ?? deskHref}
-        className={`text-sm no-underline hover:underline underline-offset-4 ${
+        className={`text-sm no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar ${
           deskPageHref ? "text-cinnabar" : "text-muted hover:text-cinnabar"
         }`}
       >
@@ -75,7 +75,7 @@ export default function ReturnNav({
         <Link
           href={ret.href}
           title={ret.label}
-          className="text-sm text-muted no-underline hover:text-cinnabar"
+          className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           回到刚才 →
         </Link>

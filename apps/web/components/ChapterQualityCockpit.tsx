@@ -76,7 +76,7 @@ export default function ChapterQualityCockpit({
   return (
     <section aria-label="章质检驾驶舱" className="mt-6">
       <details className="rounded-lg border border-line px-3 py-2">
-        <summary className="cursor-pointer select-none text-xs leading-6">
+        <summary className="cursor-pointer select-none text-xs leading-6 focus-visible:outline-2 focus-visible:outline-cinnabar">
           {fold.weakChapters > 0 ? (
             <span className="text-status-warn">
               章质检驾驶舱 · 弱章 {fold.weakChapters}/{fold.chapters}（{weakIds.join(" ")}）· 六信号分列

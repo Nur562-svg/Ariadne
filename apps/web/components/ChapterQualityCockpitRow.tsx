@@ -116,7 +116,7 @@ export default function ChapterQualityCockpitRow({
             <Link
               href={`/desk/card/${encodeURIComponent(draft.firstCardId ?? "")}`}
               title="本机草稿未写回 seed · 见上方草稿收件箱"
-              className="text-foreground/85 no-underline hover:text-cinnabar hover:underline underline-offset-4"
+              className="text-foreground/85 no-underline hover:text-cinnabar hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               {draft.draftedCardCount}卡·{draft.draftEntryCount}条
             </Link>
@@ -151,7 +151,7 @@ export default function ChapterQualityCockpitRow({
                     <Link
                       key={id}
                       href={`/desk/card/${encodeURIComponent(id)}`}
-                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4"
+                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                     >
                       {id}
                     </Link>
@@ -166,7 +166,7 @@ export default function ChapterQualityCockpitRow({
                     <Link
                       key={id}
                       href={`/desk/card/${encodeURIComponent(id)}`}
-                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4"
+                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                     >
                       {id}
                     </Link>
@@ -184,7 +184,7 @@ export default function ChapterQualityCockpitRow({
                     <Link
                       key={p}
                       href={`/viewer/${p}`}
-                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4"
+                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                     >
                       p.{p}
                     </Link>
@@ -198,7 +198,7 @@ export default function ChapterQualityCockpitRow({
                     <Link
                       key={p}
                       href={`/viewer/${p}`}
-                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4"
+                      className="mono text-foreground/80 no-underline hover:text-cinnabar hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                     >
                       p.{p}
                     </Link>

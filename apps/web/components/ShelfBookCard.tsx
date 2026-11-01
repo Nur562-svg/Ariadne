@@ -53,7 +53,7 @@ export default function ShelfBookCard({
         <h2 className="text-xl font-semibold text-foreground">
           <Link
             href={deskHref}
-            className="text-foreground no-underline hover:text-cinnabar"
+            className="text-foreground no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             {b.title}
           </Link>
@@ -65,7 +65,7 @@ export default function ShelfBookCard({
           {ocrPages > 0 ? (
             <Link
               href={deskHref}
-              className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
+              className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
             >
               打开书桌 →
             </Link>
@@ -74,13 +74,13 @@ export default function ShelfBookCard({
               <Link
                 href={deskHref}
                 title="尚无 OCR 印刷页——章页/分栏暂读不了；可进桌看概览与实体卡"
-                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:border-cinnabar hover:text-cinnabar"
+                className="rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 打开书桌（尚无 OCR）→
               </Link>
               <Link
                 href="/ingest"
-                className="text-sm text-muted no-underline hover:text-cinnabar"
+                className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 去解析 →
               </Link>
@@ -149,7 +149,7 @@ export default function ShelfBookCard({
       <p className="mt-2 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-sm">
         <Link
           href={`/entities?book=${encodeURIComponent(b.id)}`}
-          className="text-muted no-underline hover:text-cinnabar"
+          className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           卡浏览器 →
         </Link>

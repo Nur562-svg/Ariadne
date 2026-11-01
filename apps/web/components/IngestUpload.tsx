@@ -88,7 +88,7 @@ export default function IngestUpload() {
   }
 
   const inputCls =
-    "h-9 w-full rounded-md border border-line bg-background px-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted/70 focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none";
+    "h-9 w-full rounded-md border border-line bg-background px-2.5 text-sm text-foreground transition-colors placeholder:text-muted/70 focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none";
 
   return (
     <form ref={formRef} onSubmit={onSubmit} className="mt-3 space-y-5">
@@ -165,7 +165,7 @@ export default function IngestUpload() {
                 onClick={() => removeRow(i)}
                 disabled={rows.length === 1}
                 aria-label={`删除第 ${i + 1} 条章`}
-                className="text-muted transition-colors hover:text-cinnabar disabled:opacity-40"
+                className="text-muted transition-colors hover:text-cinnabar disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 ✕
               </button>
@@ -175,7 +175,7 @@ export default function IngestUpload() {
         <button
           type="button"
           onClick={addRow}
-          className="mt-2 text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+          className="mt-2 text-sm text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           + 添加一章
         </button>
@@ -195,7 +195,7 @@ export default function IngestUpload() {
         <button
           type="submit"
           disabled={busy}
-          className="rounded-md bg-cinnabar px-5 py-2 text-sm text-white transition-colors hover:opacity-90 disabled:opacity-50 motion-reduce:transition-none"
+          className="rounded-md bg-cinnabar px-5 py-2 text-sm text-white transition-colors hover:opacity-90 disabled:opacity-50 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
         >
           {busy ? "上传中…" : "上传并建档"}
         </button>

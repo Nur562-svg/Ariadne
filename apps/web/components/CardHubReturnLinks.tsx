@@ -49,7 +49,7 @@ export default function CardHubReturnLinks({
         <Link
           href={studyHref}
           onClick={remember ? rememberCardReturn : undefined}
-          className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90 motion-reduce:transition-none"
+          className="rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2 motion-reduce:transition-none"
         >
           练这张卡（{atomCount}）
         </Link>
@@ -66,7 +66,7 @@ export default function CardHubReturnLinks({
         <Link
           href={reviewHref}
           onClick={remember ? rememberCardReturn : undefined}
-          className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline transition-colors hover:border-cinnabar hover:text-cinnabar motion-reduce:transition-none"
+          className="rounded-md border border-line px-4 py-2 text-sm text-foreground no-underline transition-colors hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
         >
           核本卡 cite{pendingCiteCount != null && pendingCiteCount > 0 ? ` · ${pendingCiteCount}` : ""}
         </Link>

@@ -114,7 +114,7 @@ export default function LibraryContinuity({
         {ocrPages > 0 ? (
           <Link
             href={href}
-            className="text-sm font-medium text-cinnabar no-underline hover:underline underline-offset-4"
+            className="text-sm font-medium text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             继续上次：《{book.title}》 →
           </Link>
@@ -123,13 +123,13 @@ export default function LibraryContinuity({
             <Link
               href={href}
               title="尚无 OCR 印刷页——章页/分栏暂读不了；可进桌看概览与实体卡"
-              className="text-sm font-medium text-muted no-underline hover:text-cinnabar"
+              className="text-sm font-medium text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               继续上次：《{book.title}》（尚无 OCR）→
             </Link>
             <Link
               href="/ingest"
-              className="text-sm text-muted no-underline hover:text-cinnabar"
+              className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               去解析 →
             </Link>
@@ -144,7 +144,7 @@ export default function LibraryContinuity({
               last.page != null ? `&page=${last.page}` : ""
             }&mode=all`}
             onClick={rememberContinueReturn}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             学习环 →
           </Link>
@@ -164,7 +164,7 @@ export default function LibraryContinuity({
               last.page != null ? `&page=${last.page}` : ""
             }&mode=open`}
             onClick={rememberContinueReturn}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             核页 →
           </Link>

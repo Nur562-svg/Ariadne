@@ -72,7 +72,7 @@ export function AtomDraftLine({
         </span>
       </div>
       <details className="mt-2">
-        <summary className="cursor-pointer select-none text-sm text-muted hover:text-cinnabar">
+        <summary className="cursor-pointer select-none text-sm text-muted hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
           显示答案
         </summary>
         <p className="mt-2 border-l-2 border-cinnabar/40 pl-3 text-sm leading-7">

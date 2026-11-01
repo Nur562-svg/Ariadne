@@ -56,8 +56,8 @@ export function AuditedProse({
             href={clewCitedPageHref(bookId, s.page)}
             className={
               preview
-                ? "text-muted underline decoration-dotted underline-offset-4"
-                : "text-cinnabar no-underline hover:underline underline-offset-4"
+                ? "text-muted underline decoration-dotted underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
+                : "text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
             }
           >
             {s.text}

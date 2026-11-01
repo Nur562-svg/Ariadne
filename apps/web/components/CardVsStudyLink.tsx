@@ -53,7 +53,7 @@ export default function CardVsStudyLink({
     <Link
       href={href}
       onClick={rememberFromCardReturn}
-      className="ml-3 whitespace-nowrap text-xs text-muted no-underline hover:text-cinnabar"
+      className="ml-3 whitespace-nowrap text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
     >
       练易混卡 →
     </Link>

@@ -85,7 +85,7 @@ export default function ChapterPageStickyChrome({
               placeholder="页号"
               aria-label="印刷页号（回车跳页）"
               aria-keyshortcuts="g /"
-              className="w-14 rounded-lg border border-line bg-background px-2 py-1 text-sm text-foreground outline-none focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+              className="w-14 rounded-lg border border-line bg-background px-2 py-1 text-sm text-foreground focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             />
             <button
               type="submit"

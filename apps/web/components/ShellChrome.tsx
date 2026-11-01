@@ -13,15 +13,15 @@ export default function ShellChrome({ children }: { children: React.ReactNode })
         <div className="mx-auto flex max-w-5xl items-baseline justify-between px-6 py-3">
           <Link
             href="/desk"
-            className="mono text-sm tracking-widest text-foreground no-underline"
+            className="mono text-sm tracking-widest text-foreground no-underline focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             ARIADNE<span className="text-cinnabar">·</span>
           </Link>
           <nav className="flex items-baseline gap-4 text-sm" aria-label="返回">
-            <Link href="/desk" className="text-muted no-underline hover:text-cinnabar">
+            <Link href="/desk" className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
               ← 书桌
             </Link>
-            <Link href="/" className="text-muted no-underline hover:text-cinnabar">
+            <Link href="/" className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
               ← 书架
             </Link>
           </nav>

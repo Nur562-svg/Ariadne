@@ -84,7 +84,7 @@ export function ClewChatComposer({
           rows={2}
           placeholder="问点什么…（Enter 发送 · Shift+Enter 换行）"
           aria-label="Clew 输入"
-          className="min-h-[2.75rem] min-w-0 flex-1 resize-y rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6 outline-none transition-colors placeholder:text-muted focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+          className="min-h-[2.75rem] min-w-0 flex-1 resize-y rounded-lg border border-line bg-background px-3 py-2 text-sm leading-6 transition-colors placeholder:text-muted focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
         />
         <button
           onClick={() => onSend(draft)}

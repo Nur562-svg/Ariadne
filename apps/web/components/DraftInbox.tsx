@@ -126,7 +126,7 @@ export default function DraftInbox({
                 ) : null}
                 <Link
                   href={`/desk/card/${encodeURIComponent(s.cardId)}`}
-                  className="text-cinnabar no-underline hover:underline underline-offset-4"
+                  className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   回卡详 →
                 </Link>
@@ -201,7 +201,7 @@ export default function DraftInbox({
                 </span>
                 <Link
                   href={`/desk/card/${encodeURIComponent(s.id)}`}
-                  className="text-cinnabar no-underline hover:underline underline-offset-4"
+                  className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   到卡详开草稿 →
                 </Link>

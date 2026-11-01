@@ -57,7 +57,7 @@ export default function ChapterPageCardRail({
               <Link
                 href={studyPageHref}
                 onClick={rememberDeskReturn}
-                className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-xs text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 练本页（{pageAtomCount}）→
               </Link>
@@ -70,7 +70,7 @@ export default function ChapterPageCardRail({
               <Link
                 href={reviewPageHref}
                 onClick={rememberDeskReturn}
-                className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-xs text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 核本页（{pendingPageCount}）→
               </Link>
@@ -98,7 +98,7 @@ export default function ChapterPageCardRail({
                   <Link
                     href={`/desk/card/${encodeURIComponent(c.cardId)}`}
                     onClick={rememberDeskReturn}
-                    className="text-sm font-medium text-foreground no-underline hover:text-cinnabar"
+                    className="text-sm font-medium text-foreground no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                   >
                     {c.nameZh}
                   </Link>
@@ -111,7 +111,7 @@ export default function ChapterPageCardRail({
                     <Link
                       href={`/study?card=${encodeURIComponent(c.cardId)}&book=${encodeURIComponent(bookId)}&mode=all`}
                       onClick={rememberDeskReturn}
-                      className="ml-2 text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+                      className="ml-2 text-xs text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                     >
                       练
                     </Link>

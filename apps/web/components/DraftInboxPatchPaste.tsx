@@ -76,7 +76,7 @@ export default function DraftInboxPatchPaste({
 
   return (
     <details className="mt-3 rounded-lg border border-line px-3 py-2">
-      <summary className="cursor-pointer select-none text-xs leading-6 text-muted">
+      <summary className="cursor-pointer select-none text-xs leading-6 text-muted focus-visible:outline-2 focus-visible:outline-cinnabar">
         粘贴 Clew 草稿补丁导入（建议 · 未核 · schema ariadne.atom-draft-patch.v1）
       </summary>
       <div className="mt-2">

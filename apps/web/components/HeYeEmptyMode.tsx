@@ -67,7 +67,7 @@ export default function HeYeEmptyMode({
           <p className="mt-3 rounded-lg border border-line bg-status-ok-bg px-4 py-3 text-sm leading-7 text-status-ok">
             已对 {counts.checked} · 存疑 {counts.doubt}。这只影响本浏览器记录，
             seed 的「抽查 verified」状态没有变。{" "}
-            <button onClick={resetStore} className="underline underline-offset-4 hover:text-foreground">
+            <button onClick={resetStore} className="underline underline-offset-4 hover:text-foreground focus-visible:outline-2 focus-visible:outline-cinnabar">
               清除本机核页记录
             </button>
           </p>
@@ -92,7 +92,7 @@ export default function HeYeEmptyMode({
         {backToOpen ? (
           <Link
             href={openHref}
-            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
           >
             回待核档 →
           </Link>
@@ -100,7 +100,7 @@ export default function HeYeEmptyMode({
           <Link
             href={studyHref ?? "/study"}
             onClick={leaveReturnTo ? rememberLeave : undefined}
-            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
           >
             去学习环 →
           </Link>
@@ -115,7 +115,7 @@ export default function HeYeEmptyMode({
               <Link
                 href={studyHref ?? "/study"}
                 onClick={leaveReturnTo ? rememberLeave : undefined}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
+                className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 去学习本卡 →
               </Link>
@@ -128,7 +128,7 @@ export default function HeYeEmptyMode({
             <Link
               href={studyHref ?? "/study"}
               onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
+              className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               去学习环 →
             </Link>
@@ -139,26 +139,26 @@ export default function HeYeEmptyMode({
           )
         ) : null}
         {cardHref ? (
-          <Link href={cardHref} className="text-sm text-muted no-underline hover:text-cinnabar">
+          <Link href={cardHref} className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
             回本卡 →
           </Link>
         ) : null}
         {deskPageHref ? (
           <Link
             href={deskPageHref}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             回书桌本页 →
           </Link>
         ) : (
-          <Link href="/desk" className="text-sm text-muted no-underline hover:text-cinnabar">
+          <Link href="/desk" className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
             回书桌 →
           </Link>
         )}
         {clearChapterHref ? (
           <Link
             href={clearChapterHref}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             清章看全章节 →
           </Link>
@@ -167,7 +167,7 @@ export default function HeYeEmptyMode({
         {clearPageHref ? (
           <Link
             href={clearPageHref}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             清本页 →
           </Link>
@@ -176,7 +176,7 @@ export default function HeYeEmptyMode({
           <Link
             href={ret.href}
             title={ret.label}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             回到刚才 →
           </Link>

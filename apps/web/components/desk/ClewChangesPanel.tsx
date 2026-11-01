@@ -207,7 +207,7 @@ export function ChangesPanel({
               <Link
                 href={studyHref}
                 onClick={rememberReturn}
-                className="text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 去学习环自评 →
               </Link>
@@ -220,7 +220,7 @@ export function ChangesPanel({
               <Link
                 href={reviewHref}
                 onClick={rememberReturn}
-                className="text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 去核页对页 →
               </Link>
@@ -247,7 +247,7 @@ export function ChangesPanel({
                 <Link
                   href={studyHref}
                   onClick={rememberReturn}
-                  className="text-cinnabar no-underline hover:underline underline-offset-4"
+                  className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   去学习环自评 →
                 </Link>
@@ -260,7 +260,7 @@ export function ChangesPanel({
               <Link
                 href={reviewHref}
                 onClick={rememberReturn}
-                className="text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 去核页对页 →
               </Link>

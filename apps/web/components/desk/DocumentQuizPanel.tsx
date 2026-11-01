@@ -98,7 +98,7 @@ export default function QuizPanel({
           <Link
             href={studyHref}
             onClick={rememberReturn}
-            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
           >
             去学习环自评 →
           </Link>
@@ -106,7 +106,7 @@ export default function QuizPanel({
           <Link
             href={`/study?book=${encodeURIComponent(bookId)}&mode=all`}
             onClick={rememberReturn}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             本章暂无原子 · 去学习环放宽到本书 →
           </Link>
@@ -122,7 +122,7 @@ export default function QuizPanel({
           <Link
             href={reviewHref}
             onClick={rememberReturn}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             去核页 →
           </Link>

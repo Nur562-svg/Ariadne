@@ -150,7 +150,7 @@ export function QueuePanel({
           <Link
             href={reviewHref}
             onClick={rememberReturn}
-            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
           >
             打开核页工作台 →
           </Link>
@@ -166,7 +166,7 @@ export function QueuePanel({
           <Link
             href={studyHref}
             onClick={rememberReturn}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             去学习环 →
           </Link>

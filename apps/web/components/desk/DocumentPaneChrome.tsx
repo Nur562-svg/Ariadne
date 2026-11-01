@@ -113,7 +113,7 @@ export default function DocumentPaneChrome({
               <Link
                 href={`/study?book=${encodeURIComponent(book.id)}&chapter=${encodeURIComponent(chapterId)}&mode=all`}
                 onClick={rememberDeskCardReturn}
-                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 学习环 · 自评 →
               </Link>
@@ -129,7 +129,7 @@ export default function DocumentPaneChrome({
               <Link
                 href={stripStudyHref}
                 onClick={rememberDeskCardReturn}
-                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-sm text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 练本页 p.{readingPage} →
               </Link>
@@ -181,7 +181,7 @@ export default function DocumentPaneChrome({
           <p className="mt-3 rounded-lg border border-amber-300 bg-status-warn-bg px-4 py-3 text-sm leading-7 text-status-warn">
             {cards.length === 0 ? <>这本书已注册，但还没有萃取出的实体卡——各段会显示为空。</> : null}
             {pages.length === 0 ? <>这本书还没有解析出 OCR 印刷页——章页 / 分栏暂读不了。</> : null}
-            可到 <Link href="/ingest" className="underline underline-offset-4">/ingest</Link> 上传并解析教材。
+            可到 <Link href="/ingest" className="underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar">/ingest</Link> 上传并解析教材。
           </p>
         ) : null}
         {invalidPage ? (

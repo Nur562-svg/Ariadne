@@ -146,7 +146,7 @@ export default function ReviewPageChrome({ scope }: { scope: ReviewPageScope }) 
                   ·{" "}
                   <Link
                     href={deskPageHref}
-                    className="text-cinnabar no-underline hover:underline underline-offset-4"
+                    className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                   >
                     回书桌本页 →
                   </Link>
@@ -161,7 +161,7 @@ export default function ReviewPageChrome({ scope }: { scope: ReviewPageScope }) 
               ·{" "}
               <Link
                 href="/review"
-                className="text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 看全部 →
               </Link>
@@ -173,7 +173,7 @@ export default function ReviewPageChrome({ scope }: { scope: ReviewPageScope }) 
               ·{" "}
               <Link
                 href={cardHref}
-                className="text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 回本卡 →
               </Link>

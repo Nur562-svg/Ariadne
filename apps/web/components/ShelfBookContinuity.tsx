@@ -82,7 +82,7 @@ export default function ShelfBookContinuity({
     <span className="flex flex-wrap items-baseline gap-3">
       <Link
         href={deskPageHref}
-        className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+        className="text-sm text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
       >
         续开 p.{page} →
       </Link>
@@ -94,7 +94,7 @@ export default function ShelfBookContinuity({
         <Link
           href={`/study?book=${encodeURIComponent(bookId)}&page=${page}&mode=all`}
           onClick={rememberPageReturn}
-          className="text-sm text-muted no-underline hover:text-cinnabar"
+          className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           练本页 →
         </Link>
@@ -107,7 +107,7 @@ export default function ShelfBookContinuity({
         <Link
           href={`/review?book=${encodeURIComponent(bookId)}&page=${page}&mode=open`}
           onClick={rememberPageReturn}
-          className="text-sm text-muted no-underline hover:text-cinnabar"
+          className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           核本页 →
         </Link>
@@ -184,7 +184,7 @@ export function ShelfBookFooterLinks({
         <Link
           href={studyHref}
           onClick={rememberFooterReturn}
-          className="text-muted no-underline hover:text-cinnabar"
+          className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           学习环{page != null ? ` p.${page}` : ""} →
         </Link>
@@ -200,7 +200,7 @@ export function ShelfBookFooterLinks({
         <Link
           href={reviewHref}
           onClick={rememberFooterReturn}
-          className="text-muted no-underline hover:text-cinnabar"
+          className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           核页{page != null ? ` p.${page}` : ""} →
         </Link>

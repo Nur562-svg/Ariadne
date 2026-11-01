@@ -42,7 +42,7 @@ export default async function DeskPage({
         </p>
         <Link
           href="/ingest"
-          className="mt-8 inline-block rounded-md bg-cinnabar px-5 py-2.5 text-white no-underline"
+          className="mt-8 inline-block rounded-md bg-cinnabar px-5 py-2.5 text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
         >
           去导入教材 →
         </Link>

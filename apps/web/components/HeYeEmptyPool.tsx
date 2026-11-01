@@ -84,7 +84,7 @@ export default function HeYeEmptyPool({
         ) : (
           <>
             这个范围（{scopeLabel}）还没有待核 cite。先到{" "}
-            <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
+            <Link className="text-cinnabar underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar" href="/ingest">
               /ingest
             </Link>{" "}
             上传并解析教材，或换一个更宽的范围。
@@ -103,14 +103,14 @@ export default function HeYeEmptyPool({
         {cardHref ? (
           <Link
             href={cardHref}
-            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
           >
             回本卡 →
           </Link>
         ) : orphanPage && clearPageHref ? (
           <Link
             href={clearPageHref}
-            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
           >
             清本页，换到本章核 →
           </Link>
@@ -119,7 +119,7 @@ export default function HeYeEmptyPool({
             <Link
               href={studyHref ?? "/study"}
               onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
             >
               去学习环 →
             </Link>
@@ -131,7 +131,7 @@ export default function HeYeEmptyPool({
         ) : (
           <Link
             href="/desk"
-            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
           >
             回书桌 →
           </Link>
@@ -142,7 +142,7 @@ export default function HeYeEmptyPool({
               <Link
                 href={studyHref ?? "/study"}
                 onClick={leaveReturnTo ? rememberLeave : undefined}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
+                className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 去学习本卡 →
               </Link>
@@ -154,7 +154,7 @@ export default function HeYeEmptyPool({
             {deskPageHref ? (
               <Link
                 href={deskPageHref}
-                className="text-sm text-muted no-underline hover:text-cinnabar"
+                className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 回书桌本页 →
               </Link>
@@ -165,7 +165,7 @@ export default function HeYeEmptyPool({
             <Link
               href={studyHref ?? "/study"}
               onClick={leaveReturnTo ? rememberLeave : undefined}
-              className="text-sm text-muted no-underline hover:text-cinnabar"
+              className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               去学习环 →
             </Link>
@@ -177,7 +177,7 @@ export default function HeYeEmptyPool({
         ) : deskPageHref ? (
           <Link
             href={deskPageHref}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             回书桌本页 →
           </Link>
@@ -185,7 +185,7 @@ export default function HeYeEmptyPool({
           <Link
             href={studyHref ?? "/study"}
             onClick={leaveReturnTo ? rememberLeave : undefined}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             去学习环 →
           </Link>
@@ -197,7 +197,7 @@ export default function HeYeEmptyPool({
         {clearChapterHref ? (
           <Link
             href={clearChapterHref}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             清章看全章节 →
           </Link>
@@ -207,7 +207,7 @@ export default function HeYeEmptyPool({
         {clearPageHref && !orphanPage ? (
           <Link
             href={clearPageHref}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             清本页 →
           </Link>
@@ -216,7 +216,7 @@ export default function HeYeEmptyPool({
           <Link
             href={ret.href}
             title={ret.label}
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             回到刚才 →
           </Link>

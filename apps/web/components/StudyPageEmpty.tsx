@@ -43,7 +43,7 @@ export default function StudyPageEmpty({ scope }: { scope: StudyPageScope }) {
             是抽出未覆盖。可清本页放宽到
             {effChapter ? effChapter.title : (activeBook?.title ?? "全部书目")}
             再练，或回{" "}
-            <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
+            <Link className="text-cinnabar underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar" href="/ingest">
               /ingest
             </Link>{" "}
             看暗页条与重抽命令
@@ -76,7 +76,7 @@ export default function StudyPageEmpty({ scope }: { scope: StudyPageScope }) {
            导入 → 书架 → 打开一本书。回程只有下方 ReturnNav 的真实 /desk。 */
         <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
           书库还没有可练的知识原子——先到{" "}
-          <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
+          <Link className="text-cinnabar underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar" href="/ingest">
             /ingest
           </Link>{" "}
           导入并注册教材，再从书架打开一本书。
@@ -84,7 +84,7 @@ export default function StudyPageEmpty({ scope }: { scope: StudyPageScope }) {
       ) : (
         <p className="border-l-2 border-cinnabar/40 pl-4 text-sm leading-7 text-foreground/90">
           这个范围还没有知识原子。先到{" "}
-          <Link className="text-cinnabar underline underline-offset-4" href="/ingest">
+          <Link className="text-cinnabar underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar" href="/ingest">
             /ingest
           </Link>{" "}
           上传并解析教材，或换一个更宽的范围。
@@ -95,7 +95,7 @@ export default function StudyPageEmpty({ scope }: { scope: StudyPageScope }) {
           <>
             <Link
               href={cardHref}
-              className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+              className="text-sm text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               回本卡 →
             </Link>
@@ -124,7 +124,7 @@ export default function StudyPageEmpty({ scope }: { scope: StudyPageScope }) {
         {pageNum != null ? (
           <Link
             href={`/study${qs({ clearPage: true })}`}
-            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+            className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
           >
             {effChapter ? "换到本章全部 →" : activeBook ? "换到本书全部 →" : "换到全部书目 →"}
           </Link>
@@ -132,14 +132,14 @@ export default function StudyPageEmpty({ scope }: { scope: StudyPageScope }) {
           effChapter ? (
             <Link
               href={`/study${qs({ chapter: null })}`}
-              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
             >
               换到全部章节 →
             </Link>
           ) : (
             <Link
               href="/study"
-              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline"
+              className="rounded-md bg-cinnabar px-5 py-2.5 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
             >
               看全部书目 →
             </Link>

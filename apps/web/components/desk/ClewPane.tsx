@@ -129,21 +129,21 @@ export default function ClewPane() {
           {clew.book ? (
             <Link
               href={bookHref}
-              className="text-foreground/90 no-underline hover:text-cinnabar"
+              className="text-foreground/90 no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               《{clew.book.title}》
             </Link>
           ) : null}
           {clew.chapter ? <span>{clew.chapter.title}</span> : null}
           {clew.page != null ? (
-            <Link href={pageHref} className="mono text-cinnabar no-underline hover:underline underline-offset-4">
+            <Link href={pageHref} className="mono text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar">
               p.{clew.page}
             </Link>
           ) : null}
           {clew.card ? (
             <Link
               href={`/desk/card/${encodeURIComponent(clew.card.id)}`}
-              className="font-medium text-cinnabar no-underline hover:underline underline-offset-4"
+              className="font-medium text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               {clew.card.name_zh}
             </Link>

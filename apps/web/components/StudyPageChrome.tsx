@@ -231,7 +231,7 @@ export default function StudyPageChrome({ scope }: { scope: StudyPageScope }) {
             <div className="flex flex-wrap items-center gap-2">
               <Link
                 href={`/study${qs({ chapter: null })}`}
-                className={`rounded-full border px-3 py-1 text-sm no-underline ${
+                className={`rounded-full border px-3 py-1 text-sm no-underline focus-visible:outline-2 focus-visible:outline-cinnabar ${
                   !effChapter
                     ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
                     : "border-line text-muted hover:text-foreground"
@@ -243,7 +243,7 @@ export default function StudyPageChrome({ scope }: { scope: StudyPageScope }) {
                 <Link
                   key={c.id}
                   href={`/study${qs({ chapter: c.id })}`}
-                  className={`rounded-full border px-3 py-1 text-sm no-underline ${
+                  className={`rounded-full border px-3 py-1 text-sm no-underline focus-visible:outline-2 focus-visible:outline-cinnabar ${
                     effChapter?.id === c.id
                       ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
                       : "border-line text-muted hover:text-foreground"
@@ -327,7 +327,7 @@ export default function StudyPageChrome({ scope }: { scope: StudyPageScope }) {
         <p className="mt-1 text-xs leading-6 text-status-warn">
           本页已抽出但原子偏稀（{pageExam.atomCount} 原子 · {pageExam.chars} 字）·
           可考密度不足——练完本页 ≠ 本页可考够；可回{" "}
-          <Link className="underline underline-offset-4" href="/ingest">
+          <Link className="underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar" href="/ingest">
             /ingest
           </Link>
           {pageOwner?.chapterId ? (

@@ -118,7 +118,7 @@ async function EntityList({
           <Link
             key="all"
             href={`/entities${qs({ chapter: null })}`}
-            className={`rounded-full border px-3 py-1 text-sm no-underline ${
+            className={`rounded-full border px-3 py-1 text-sm no-underline focus-visible:outline-2 focus-visible:outline-cinnabar ${
               !activeChapter
                 ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
                 : "border-line text-muted hover:text-foreground"
@@ -130,7 +130,7 @@ async function EntityList({
             <Link
               key={c.id}
               href={`/entities${qs({ chapter: c.id })}`}
-              className={`rounded-full border px-3 py-1 text-sm no-underline ${
+              className={`rounded-full border px-3 py-1 text-sm no-underline focus-visible:outline-2 focus-visible:outline-cinnabar ${
                 activeChapter?.id === c.id
                   ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
                   : "border-line text-muted hover:text-foreground"
@@ -152,7 +152,7 @@ async function EntityList({
             <Link
               key={k}
               href={`/entities${qs(k === "全部" ? undefined : { kind: k })}`}
-              className={`rounded-full border px-3 py-1 text-sm no-underline ${
+              className={`rounded-full border px-3 py-1 text-sm no-underline focus-visible:outline-2 focus-visible:outline-cinnabar ${
                 isActive
                   ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
                   : zeroKind

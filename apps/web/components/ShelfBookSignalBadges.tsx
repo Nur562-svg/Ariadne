@@ -41,7 +41,7 @@ export default function ShelfBookSignalBadges({
             <span className="rounded border border-amber-300 bg-status-warn-bg px-2 py-0.5">
               质量偏弱 · {parts.join(" · ")}
             </span>
-            <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
+            <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
               去补救 →
             </Link>
           </p>
@@ -60,7 +60,7 @@ export default function ShelfBookSignalBadges({
               {bp.empty > 0 ? ` · 空 ${bp.empty}` : ""}
               {bp.sparse > 0 ? ` · 稀 ${bp.sparse}` : ""}
             </span>
-            <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
+            <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
               去补扫 →
             </Link>
           </p>
@@ -92,7 +92,7 @@ export default function ShelfBookSignalBadges({
                 ? ` · 浅页 ${bd.shallow}（本书占实质页 ${(bd.shallowRate * 100).toFixed(0)}%）`
                 : ""}
             </span>
-            <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar">
+            <Link href="/ingest" className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
               去重抽 →
             </Link>
             <span className="text-muted">弱章明细见下方章质检驾驶舱</span>

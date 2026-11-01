@@ -74,7 +74,7 @@ export default function ReviewPageSticky({ scope }: { scope: ReviewPageScope }) 
             <div className="flex flex-wrap items-center gap-2">
               <Link
                 href={`/review${qs({ chapter: null })}`}
-                className={`rounded-full border px-3 py-1 text-sm no-underline ${
+                className={`rounded-full border px-3 py-1 text-sm no-underline focus-visible:outline-2 focus-visible:outline-cinnabar ${
                   !effChapter
                     ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
                     : "border-line text-muted hover:text-foreground"
@@ -86,7 +86,7 @@ export default function ReviewPageSticky({ scope }: { scope: ReviewPageScope }) 
                 <Link
                   key={c.id}
                   href={`/review${qs({ chapter: c.id })}`}
-                  className={`rounded-full border px-3 py-1 text-sm no-underline ${
+                  className={`rounded-full border px-3 py-1 text-sm no-underline focus-visible:outline-2 focus-visible:outline-cinnabar ${
                     effChapter?.id === c.id
                       ? "border-cinnabar bg-cinnabar-soft text-cinnabar"
                       : "border-line text-muted hover:text-foreground"

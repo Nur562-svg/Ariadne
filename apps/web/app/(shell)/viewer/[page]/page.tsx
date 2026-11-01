@@ -64,10 +64,10 @@ async function ViewerBody({
 
   const backLinks = (
     <nav className="flex items-baseline gap-5 text-sm" aria-label="返回">
-      <Link href={deskHref} className="text-cinnabar no-underline hover:underline underline-offset-4">
+      <Link href={deskHref} className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar">
         ← 书桌
       </Link>
-      <Link href="/entities" className="text-muted no-underline hover:text-cinnabar">
+      <Link href="/entities" className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
         ← 全部实体卡
       </Link>
     </nav>
@@ -105,12 +105,12 @@ async function ViewerBody({
         </h1>
         <nav className="flex gap-3 text-sm">
           {prev ? (
-            <Link href={`/viewer/${prev.page}`} className="text-muted no-underline hover:text-cinnabar">
+            <Link href={`/viewer/${prev.page}`} className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
               ← p.{prev.page}
             </Link>
           ) : null}
           {next ? (
-            <Link href={`/viewer/${next.page}`} className="text-muted no-underline hover:text-cinnabar">
+            <Link href={`/viewer/${next.page}`} className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar">
               p.{next.page} →
             </Link>
           ) : null}
@@ -122,7 +122,7 @@ async function ViewerBody({
           {pageAtomCount > 0 ? (
             <Link
               href={`/study?book=${encodeURIComponent(deskBook.id)}&page=${pageNo}&mode=all`}
-              className="text-cinnabar no-underline hover:underline underline-offset-4"
+              className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               练本页 →
             </Link>
@@ -132,7 +132,7 @@ async function ViewerBody({
           {pagePendingCount > 0 ? (
             <Link
               href={`/review?book=${encodeURIComponent(deskBook.id)}&page=${pageNo}&mode=open`}
-              className="text-cinnabar no-underline hover:underline underline-offset-4"
+              className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               核本页 →
             </Link>

@@ -57,7 +57,7 @@ export default function IngestReadyLinks({
         <Link
           href={`/desk?book=${bookQ}`}
           onClick={rememberUploadReturn}
-          className="inline-block rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline"
+          className="inline-block rounded-md bg-cinnabar px-4 py-2 text-sm text-white no-underline focus-visible:outline-2 focus-visible:outline-cinnabar focus-visible:outline-offset-2"
         >
           打开书桌 →
         </Link>
@@ -67,13 +67,13 @@ export default function IngestReadyLinks({
             href={`/desk?book=${bookQ}`}
             onClick={rememberUploadReturn}
             title="尚无 OCR 印刷页——章页/分栏暂读不了；可进桌看概览与实体卡"
-            className="inline-block rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:border-cinnabar hover:text-cinnabar"
+            className="inline-block rounded-md border border-line px-4 py-2 text-sm text-muted no-underline hover:border-cinnabar hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             打开书桌（尚无 OCR）→
           </Link>
           <Link
             href="/ingest"
-            className="text-sm text-muted no-underline hover:text-cinnabar"
+            className="text-sm text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             去解析 →
           </Link>
@@ -83,7 +83,7 @@ export default function IngestReadyLinks({
         <Link
           href={`/study?book=${bookQ}&mode=all`}
           onClick={rememberUploadReturn}
-          className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+          className="text-sm text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           学习环 →
         </Link>
@@ -115,7 +115,7 @@ export default function IngestReadyLinks({
         <Link
           href={`/review?book=${bookQ}&mode=open`}
           onClick={rememberUploadReturn}
-          className="text-sm text-cinnabar no-underline hover:underline underline-offset-4"
+          className="text-sm text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
         >
           核页 →
         </Link>

@@ -47,7 +47,7 @@ export default function BookSwitcher({
 
   return (
     <details className="mt-1">
-      <summary className="cursor-pointer list-none text-xs text-muted transition-colors hover:text-cinnabar [&::-webkit-details-marker]:hidden">
+      <summary className="cursor-pointer list-none text-xs text-muted transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar [&::-webkit-details-marker]:hidden">
         换书 ▾
       </summary>
       <ul className="mt-1 space-y-0.5 border-l-2 border-line pl-3">
@@ -63,7 +63,7 @@ export default function BookSwitcher({
               <Link
                 href={href}
                 title={b.title}
-                className="block max-w-[16rem] truncate text-xs text-muted no-underline hover:text-cinnabar"
+                className="block max-w-[16rem] truncate text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 {/* T46 D：换书条目标停留页 p.N + 0 OCR 提示（与 Sidebar 换书同口径；href 不变）。 */}
                 {b.title}

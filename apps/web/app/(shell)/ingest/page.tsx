@@ -71,7 +71,7 @@ export default function IngestPage() {
       <p className="mt-10 text-sm leading-7 text-muted">
         诚实说明：状态由「本物料」磁盘事实推导（上传时快照 artifactBaseline；blocks/cards 相对基线变化且有正文/卡才算 parsed/extracted）——同名 seed 章不会让新上传显示 ready。
         尚无云端 OCR / MinerU 生产管线。
-        回 <Link className="text-cinnabar no-underline hover:underline underline-offset-4" href="/">书库</Link> 查看已注册书目。
+        回 <Link className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar" href="/">书库</Link> 查看已注册书目。
       </p>
     </main>
   );

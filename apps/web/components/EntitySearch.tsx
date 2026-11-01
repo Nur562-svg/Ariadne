@@ -101,7 +101,7 @@ export default function EntitySearch({
               }}
               placeholder="按名称 / 别名 / id"
               aria-label="搜索实体卡"
-              className="h-10 w-full rounded-lg border border-line bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
+              className="h-10 w-full rounded-lg border border-line bg-background px-3 text-sm text-foreground transition-colors placeholder:text-muted focus:border-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar motion-reduce:transition-none"
             />
             <button
               onClick={collapse}
@@ -172,7 +172,7 @@ export default function EntitySearch({
                     ? `/entities/${c.id}?kind=${encodeURIComponent(activeKind)}`
                     : `/entities/${c.id}`
                 }
-                className="block h-full no-underline"
+                className="block h-full no-underline focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 <div className="flex items-baseline justify-between gap-2">
                   <h2 className="text-lg font-semibold text-foreground">{c.name_zh}</h2>
@@ -200,7 +200,7 @@ export default function EntitySearch({
                   <Link
                     href={`/desk/card/${encodeURIComponent(c.id)}`}
                     onClick={rememberListReturn}
-                    className="text-muted no-underline hover:text-cinnabar"
+                    className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                   >
                     书桌打开 →
                   </Link>
@@ -210,7 +210,7 @@ export default function EntitySearch({
                         deskBookIds[c.id],
                       )}&mode=all`}
                       onClick={rememberListReturn}
-                      className="text-muted no-underline hover:text-cinnabar"
+                      className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                     >
                       练 →
                     </Link>
@@ -223,7 +223,7 @@ export default function EntitySearch({
                         deskBookIds[c.id],
                       )}&mode=open`}
                       onClick={rememberListReturn}
-                      className="text-muted no-underline hover:text-cinnabar"
+                      className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                     >
                       核 →
                     </Link>

@@ -54,7 +54,7 @@ export function CardCard({
   const primaryOcrMiss = citeOcrMiss(primaryCite, pageTextByPage);
   return (
     <div className="block h-full rounded-lg border border-line bg-card p-4 transition-shadow hover:shadow-md">
-      <Link href={`/desk/card/${card.id}`} className="block no-underline">
+      <Link href={`/desk/card/${card.id}`} className="block no-underline focus-visible:outline-2 focus-visible:outline-cinnabar">
         <div className="flex items-baseline justify-between gap-2">
           <h3 className="text-base font-semibold text-foreground">{card.name_zh}</h3>
           <span className="mono shrink-0 rounded border border-line px-1.5 py-0.5 text-[11px] text-muted">
@@ -117,7 +117,7 @@ export function CardCard({
               <Link
                 href={`/study?card=${encodeURIComponent(card.id)}&book=${encodeURIComponent(bookId)}&mode=all`}
                 onClick={rememberReturn}
-                className="text-xs text-cinnabar no-underline hover:underline underline-offset-4"
+                className="text-xs text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
               >
                 练 →
               </Link>

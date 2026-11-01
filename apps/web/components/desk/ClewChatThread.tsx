@@ -80,7 +80,7 @@ export function ClewChatThread({
               <p className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted">
                 <Link
                   href={pageHref}
-                  className="text-cinnabar no-underline hover:underline underline-offset-4"
+                  className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   回书桌{clew.page != null ? `本页` : "读实体卡/章页"}
                 </Link>
@@ -93,7 +93,7 @@ export function ClewChatThread({
                   <Link
                     href={studyHref}
                     onClick={rememberReturn}
-                    className="text-cinnabar no-underline hover:underline underline-offset-4"
+                    className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                   >
                     学习环自测
                   </Link>
@@ -105,7 +105,7 @@ export function ClewChatThread({
                   <Link
                     href={reviewHref}
                     onClick={rememberReturn}
-                    className="text-cinnabar no-underline hover:underline underline-offset-4"
+                    className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                   >
                     核页对页
                   </Link>
@@ -117,7 +117,7 @@ export function ClewChatThread({
                 另导入其他教材：
                 <Link
                   href="/ingest"
-                  className="ml-1 text-muted no-underline hover:text-cinnabar hover:underline underline-offset-4"
+                  className="ml-1 text-muted no-underline hover:text-cinnabar hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   /ingest →
                 </Link>
@@ -132,11 +132,11 @@ export function ClewChatThread({
                 {capIntro}书库为空——请带着页码对照的问题发问；先按这条路径走通：
               </p>
               <p className="mt-2 flex flex-wrap items-center gap-x-1 gap-y-1 text-xs text-muted">
-                <Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">导入教材</Link>
+                <Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar">导入教材</Link>
                 <span>→</span>
-                <Link href="/" className="text-cinnabar no-underline hover:underline underline-offset-4">书架打开</Link>
+                <Link href="/" className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar">书架打开</Link>
                 <span>→</span>
-                <Link href={bookHref} className="text-cinnabar no-underline hover:underline underline-offset-4">书桌读实体卡/章页</Link>
+                <Link href={bookHref} className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar">书桌读实体卡/章页</Link>
               </p>
             </>
           )}

@@ -127,7 +127,7 @@ export default function Sidebar({
   return (
     <aside className="flex h-full w-[248px] shrink-0 flex-col border-r border-line bg-card">
       <div className="px-5 pb-4 pt-5">
-        <Link href="/desk" className="mono text-sm tracking-widest text-foreground no-underline">
+        <Link href="/desk" className="mono text-sm tracking-widest text-foreground no-underline focus-visible:outline-2 focus-visible:outline-cinnabar">
           ARIADNE<span className="text-cinnabar">·</span>
         </Link>
         <p className="mt-1 text-xs text-muted">考前书桌</p>
@@ -141,7 +141,7 @@ export default function Sidebar({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`flex items-baseline justify-between gap-2 rounded-lg px-3 py-2 no-underline transition-colors motion-reduce:transition-none ${
+              className={`flex items-baseline justify-between gap-2 rounded-lg px-3 py-2 no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
                 active
                   ? "bg-cinnabar-soft font-semibold text-cinnabar"
                   : "text-foreground/85 hover:bg-background"
@@ -170,7 +170,7 @@ export default function Sidebar({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`truncate rounded-md px-3 py-1.5 text-sm no-underline transition-colors motion-reduce:transition-none ${
+              className={`truncate rounded-md px-3 py-1.5 text-sm no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
                 active
                   ? "bg-cinnabar-soft text-cinnabar"
                   : "text-muted hover:bg-background hover:text-foreground"
@@ -190,7 +190,7 @@ export default function Sidebar({
             <Link
               href={`/desk?book=${encodeURIComponent(current.id)}`}
               title={current.title}
-              className="mt-1 block truncate text-sm font-medium leading-6 text-foreground no-underline hover:text-cinnabar"
+              className="mt-1 block truncate text-sm font-medium leading-6 text-foreground no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               {current.title}
             </Link>
@@ -215,7 +215,7 @@ export default function Sidebar({
                     currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
                   }&mode=all`}
                   onClick={rememberDeskReturn}
-                  className="text-muted no-underline hover:text-cinnabar"
+                  className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   学习 →
                 </Link>
@@ -237,7 +237,7 @@ export default function Sidebar({
                     currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
                   }&mode=open`}
                   onClick={rememberDeskReturn}
-                  className="text-muted no-underline hover:text-cinnabar"
+                  className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   核页 →
                 </Link>
@@ -257,7 +257,7 @@ export default function Sidebar({
             {/* T22 D：多书换书入口（薄 disclosure，非书单墙）；换书保留被换下书的停留页（读最近栈 deskHref/page）。 */}
             {books && books.length >= 2 ? (
               <details className="mt-2">
-                <summary className="cursor-pointer list-none text-xs text-muted transition-colors hover:text-cinnabar [&::-webkit-details-marker]:hidden">
+                <summary className="cursor-pointer list-none text-xs text-muted transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar [&::-webkit-details-marker]:hidden">
                   换书 ▾
                 </summary>
                 <ul className="mt-1 space-y-0.5 border-l-2 border-line pl-3">
@@ -274,7 +274,7 @@ export default function Sidebar({
                           <Link
                             href={href}
                             title={b.title}
-                            className="block truncate text-xs text-muted no-underline hover:text-cinnabar"
+                            className="block truncate text-xs text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                           >
                             {/* T46 D：换书条目标停留页 p.N + 0 OCR 提示（与 BookSwitcher 同口径）。 */}
                             {b.title}
@@ -295,7 +295,7 @@ export default function Sidebar({
         ) : (
           <p className="text-xs leading-6 text-muted">
             书库为空 ·{" "}
-            <Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4">
+            <Link href="/ingest" className="text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar">
               去导入
             </Link>
           </p>

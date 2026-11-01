@@ -190,7 +190,7 @@ export default function LocalProgressStrip({
           <Link
             href={studyHref}
             onClick={returnTo ? rememberReturn : undefined}
-            className="ml-2 text-cinnabar no-underline hover:underline underline-offset-4"
+            className="ml-2 text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             练此范围 →
           </Link>
@@ -205,7 +205,7 @@ export default function LocalProgressStrip({
           <Link
             href={reviewHref}
             onClick={returnTo ? rememberReturn : undefined}
-            className="ml-1 text-cinnabar no-underline hover:underline underline-offset-4"
+            className="ml-1 text-cinnabar no-underline hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-cinnabar"
           >
             核此范围 →
           </Link>
