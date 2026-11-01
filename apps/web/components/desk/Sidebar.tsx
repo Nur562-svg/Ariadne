@@ -125,15 +125,16 @@ export default function Sidebar({
       : (current?.pendingCount ?? 0);
 
   return (
-    <aside className="flex h-full w-[248px] shrink-0 flex-col border-r border-line bg-card">
-      <div className="px-5 pb-4 pt-5">
+    <aside className="flex h-full min-h-0 w-[248px] shrink-0 flex-col border-r border-line bg-card">
+      <div className="shrink-0 px-5 pb-5 pt-5">
         <Link href="/desk" className="mono text-sm tracking-widest text-foreground no-underline focus-visible:outline-2 focus-visible:outline-cinnabar">
           ARIADNE<span className="text-cinnabar">·</span>
         </Link>
         <p className="mt-1 text-xs text-muted">考前书桌</p>
       </div>
 
-      <nav className="flex flex-col gap-1 px-3" aria-label="主导航">
+      <div className="min-h-0 flex-1 overflow-y-auto pb-4 pt-1">
+      <nav className="flex flex-col gap-1 px-2" aria-label="主导航">
         {PRIMARY.map((item) => {
           const active = isActive(pathname, item.href);
           return (
@@ -141,7 +142,7 @@ export default function Sidebar({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`flex items-baseline justify-between gap-2 rounded-lg px-3 py-2 no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
+              className={`flex min-h-9 items-baseline justify-between gap-2 rounded-lg px-3 py-2 no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
                 active
                   ? "bg-cinnabar-soft font-semibold text-cinnabar"
                   : "text-foreground/85 hover:bg-background"
@@ -160,9 +161,9 @@ export default function Sidebar({
       </nav>
 
       <div className="mt-6 px-5">
-        <p className="text-[11px] tracking-wider text-muted">入口</p>
+        <p className="text-[11px] leading-4 tracking-wider text-muted">入口</p>
       </div>
-      <nav className="mt-2 flex flex-col gap-0.5 px-3" aria-label="次级入口">
+      <nav className="mt-2 flex flex-col gap-1 px-2" aria-label="次级入口">
         {SECONDARY.map((item) => {
           const active = isActive(pathname, item.href);
           return (
@@ -170,7 +171,7 @@ export default function Sidebar({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`truncate rounded-md px-3 py-1.5 text-sm no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
+              className={`min-h-8 truncate rounded-lg px-3 py-1.5 text-sm no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
                 active
                   ? "bg-cinnabar-soft text-cinnabar"
                   : "text-muted hover:bg-background hover:text-foreground"
@@ -182,15 +183,16 @@ export default function Sidebar({
           );
         })}
       </nav>
+      </div>
 
-      <div className="mt-auto border-t border-line px-5 py-4">
+      <div className="shrink-0 border-t border-line px-5 py-4">
         {current ? (
           <>
-            <p className="text-[11px] text-muted">在读书目</p>
+            <p className="text-[11px] leading-4 tracking-wider text-muted">在读书目</p>
             <Link
               href={`/desk?book=${encodeURIComponent(current.id)}`}
               title={current.title}
-              className="mt-1 block truncate text-sm font-medium leading-6 text-foreground no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+              className="mt-2 block truncate text-sm font-medium leading-6 text-foreground no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
             >
               {current.title}
             </Link>
@@ -279,10 +281,10 @@ export default function Sidebar({
                             {/* T46 D：换书条目标停留页 p.N + 0 OCR 提示（与 BookSwitcher 同口径）。 */}
                             {b.title}
                             {entry?.page != null ? (
-                              <span className="mono ml-1.5 text-[10px] text-muted">p.{entry.page}</span>
+                              <span className="mono ml-1.5 text-[11px] text-muted">p.{entry.page}</span>
                             ) : null}
                             {(b.pages ?? 0) === 0 ? (
-                              <span className="ml-1.5 text-[10px] text-muted">无 OCR</span>
+                              <span className="ml-1.5 text-[11px] text-muted">无 OCR</span>
                             ) : null}
                           </Link>
                         </li>
