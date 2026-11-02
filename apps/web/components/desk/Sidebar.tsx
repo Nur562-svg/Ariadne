@@ -11,6 +11,14 @@ import {
   type LastOpened,
 } from "@/lib/last-opened";
 import { saveReturn } from "@/lib/return-stack";
+import {
+  IconDesk,
+  IconLayers,
+  IconReview,
+  IconShelf,
+  IconStudy,
+  IconUpload,
+} from "./SidebarIcons";
 
 /** 侧栏「在读书目」摘要（(desk) layout 服务端算好传入多书，客户端据 last-opened 选一本）。 */
 export type SidebarBook = {
@@ -31,15 +39,15 @@ export type SidebarBook = {
 };
 
 const PRIMARY = [
-  { href: "/desk", label: "书桌", hint: "实体卡 · 章页" },
-  { href: "/study", label: "学习", hint: "本机自评 · 不熟再练" },
-  { href: "/review", label: "复习", hint: "核页 · 本机对页" },
-  { href: "/", label: "书架", hint: "书库" },
+  { href: "/desk", label: "书桌", hint: "实体卡 · 章页", icon: IconDesk },
+  { href: "/study", label: "学习", hint: "本机自评 · 不熟再练", icon: IconStudy },
+  { href: "/review", label: "复习", hint: "核页 · 本机对页", icon: IconReview },
+  { href: "/", label: "书架", hint: "书库", icon: IconShelf },
 ] as const;
 
 const SECONDARY = [
-  { href: "/entities", label: "实体卡浏览器" },
-  { href: "/ingest", label: "导入教材" },
+  { href: "/entities", label: "实体卡浏览器", icon: IconLayers },
+  { href: "/ingest", label: "导入教材", icon: IconUpload },
 ] as const;
 
 function isActive(pathname: string, href: string) {
@@ -127,7 +135,7 @@ export default function Sidebar({
   return (
     <aside className="flex h-full min-h-0 w-[248px] shrink-0 flex-col border-r border-line bg-card">
       <div className="shrink-0 px-5 pb-5 pt-5">
-        <Link href="/desk" className="mono text-sm tracking-widest text-foreground no-underline focus-visible:outline-2 focus-visible:outline-cinnabar">
+        <Link href="/desk" className="text-[19px] font-semibold leading-7 tracking-[0.12em] text-foreground no-underline focus-visible:outline-2 focus-visible:outline-cinnabar">
           ARIADNE<span className="text-cinnabar">·</span>
         </Link>
         <p className="mt-1 text-xs text-muted">考前书桌</p>
@@ -142,26 +150,33 @@ export default function Sidebar({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-9 items-baseline justify-between gap-2 rounded-lg px-3 py-2 no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
+              className={`flex min-h-9 items-start gap-2.5 rounded-lg px-3 py-2 no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
                 active
-                  ? "bg-cinnabar-soft font-semibold text-cinnabar"
+                  ? "bg-cinnabar-soft font-semibold text-cinnabar shadow-[inset_2px_0_0_0_var(--cinnabar)]"
                   : "text-foreground/85 hover:bg-background"
               }`}
             >
-              <span className="shrink-0 whitespace-nowrap text-sm">{item.label}</span>
-              <span
-                className={`min-w-0 truncate text-xs ${active ? "text-cinnabar/80" : "text-muted"}`}
-                title={item.hint}
-              >
-                {item.hint}
+              <item.icon
+                className={`mt-0.5 size-4 shrink-0 ${active ? "text-cinnabar" : "text-muted"}`}
+              />
+              <span className="min-w-0 flex-1">
+                <span className="block whitespace-nowrap text-sm leading-5">{item.label}</span>
+                <span
+                  className={`mt-px block truncate text-xs font-normal leading-4 ${
+                    active ? "text-cinnabar" : "text-muted"
+                  }`}
+                  title={item.hint}
+                >
+                  {item.hint}
+                </span>
               </span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="mt-6 px-5">
-        <p className="text-[11px] leading-4 tracking-wider text-muted">入口</p>
+      <div className="mt-8 px-5">
+        <p className="text-xs font-semibold leading-4 tracking-[0.14em] text-muted">入口</p>
       </div>
       <nav className="mt-2 flex flex-col gap-1 px-2" aria-label="次级入口">
         {SECONDARY.map((item) => {
@@ -171,14 +186,17 @@ export default function Sidebar({
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
-              className={`min-h-8 truncate rounded-lg px-3 py-1.5 text-sm no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
+              className={`flex min-h-8 items-center gap-2.5 truncate rounded-lg px-3 py-1.5 text-sm no-underline transition-colors motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-cinnabar ${
                 active
-                  ? "bg-cinnabar-soft text-cinnabar"
+                  ? "bg-cinnabar-soft text-cinnabar shadow-[inset_2px_0_0_0_var(--cinnabar)]"
                   : "text-muted hover:bg-background hover:text-foreground"
               }`}
               title={item.label}
             >
-              {item.label}
+              <item.icon
+                className={`size-4 shrink-0 ${active ? "text-cinnabar" : "text-muted"}`}
+              />
+              <span className="min-w-0 truncate">{item.label}</span>
             </Link>
           );
         })}
@@ -188,7 +206,7 @@ export default function Sidebar({
       <div className="shrink-0 border-t border-line px-5 py-4">
         {current ? (
           <>
-            <p className="text-[11px] leading-4 tracking-wider text-muted">在读书目</p>
+            <p className="text-xs font-semibold leading-4 tracking-[0.14em] text-muted">在读书目</p>
             <Link
               href={`/desk?book=${encodeURIComponent(current.id)}`}
               title={current.title}
@@ -203,7 +221,7 @@ export default function Sidebar({
                 ? `${current.pages} OCR 页`
                 : "无 OCR 页"}
             </p>
-            <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+            <p className="mt-2.5 flex flex-wrap gap-x-1.5 gap-y-1 text-xs">
               {/* T31 D：合法停留页（消毒后）→ 学习/核页次级链带 page，落本页池；
                   练侧显式 mode=all 防 sticky 档位回补空档（与 Strip 深链同族）。
                   T37 C：恒拼默认档（练 mode=all · 核 mode=open，无页书级也写）——与
@@ -217,13 +235,13 @@ export default function Sidebar({
                     currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
                   }&mode=all`}
                   onClick={rememberDeskReturn}
-                  className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                  className="inline-flex min-h-7 items-center rounded-md px-2.5 py-1 text-muted no-underline hover:bg-background hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   学习 →
                 </Link>
               ) : (
                 <span
-                  className="text-muted"
+                  className="inline-flex min-h-7 items-center rounded-md px-2.5 py-1 text-muted"
                   title={
                     currentEntry?.page != null
                       ? "本印刷页暂无可练原子"
@@ -239,13 +257,13 @@ export default function Sidebar({
                     currentEntry?.page != null ? `&page=${currentEntry.page}` : ""
                   }&mode=open`}
                   onClick={rememberDeskReturn}
-                  className="text-muted no-underline hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
+                  className="inline-flex min-h-7 items-center rounded-md px-2.5 py-1 text-muted no-underline hover:bg-background hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar"
                 >
                   核页 →
                 </Link>
               ) : (
                 <span
-                  className="text-muted"
+                  className="inline-flex min-h-7 items-center rounded-md px-2.5 py-1 text-muted"
                   title={
                     currentEntry?.page != null
                       ? "本印刷页暂无待核 cite"
@@ -259,7 +277,7 @@ export default function Sidebar({
             {/* T22 D：多书换书入口（薄 disclosure，非书单墙）；换书保留被换下书的停留页（读最近栈 deskHref/page）。 */}
             {books && books.length >= 2 ? (
               <details className="mt-2">
-                <summary className="cursor-pointer list-none text-xs text-muted transition-colors hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar [&::-webkit-details-marker]:hidden">
+                <summary className="inline-flex min-h-7 cursor-pointer list-none items-center rounded-md px-2.5 py-1 text-xs text-muted transition-colors hover:bg-background hover:text-cinnabar focus-visible:outline-2 focus-visible:outline-cinnabar [&::-webkit-details-marker]:hidden">
                   换书 ▾
                 </summary>
                 <ul className="mt-1 space-y-0.5 border-l-2 border-line pl-3">
