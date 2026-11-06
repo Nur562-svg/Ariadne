@@ -1,16 +1,44 @@
 "use client";
 
 import { useSyncExternalStore, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import {
-  CLEW_DEFAULT_OPEN,
+  DESK_WIDE_MIN_PX,
+  defaultClewOpen,
   loadClewFold,
   saveClewFold,
   subscribeClewFold,
 } from "@/lib/clew-fold-persist";
 
+export const DESK_WIDE_QUERY = `(min-width: ${DESK_WIDE_MIN_PX}px)`;
+
+function subscribeWide(cb: () => void): () => void {
+  if (typeof window === "undefined" || !window.matchMedia) {
+    return () => {};
+  }
+  const mql = window.matchMedia(DESK_WIDE_QUERY);
+  mql.addEventListener("change", cb);
+  return () => {
+    mql.removeEventListener("change", cb);
+  };
+}
+
+function getWide(): boolean {
+  if (typeof window === "undefined" || !window.matchMedia) {
+    return true;
+  }
+  return window.matchMedia(DESK_WIDE_QUERY).matches;
+}
+
+export function useWideDesk(): boolean {
+  return useSyncExternalStore(subscribeWide, getWide, () => true);
+}
+
 export function useClewFold(): { open: boolean; setOpen: (v: boolean) => void } {
-  const choice = useSyncExternalStore(subscribeClewFold, loadClewFold, () => null);
-  const open = choice == null ? CLEW_DEFAULT_OPEN : choice === "open";
+  const stored = useSyncExternalStore(subscribeClewFold, loadClewFold, () => null);
+  const pathname = usePathname();
+  const wide = useWideDesk();
+  const open = stored != null ? stored === "open" : defaultClewOpen({ pathname, wide });
   const setOpen = useCallback((v: boolean) => {
     saveClewFold(v ? "open" : "folded");
   }, []);

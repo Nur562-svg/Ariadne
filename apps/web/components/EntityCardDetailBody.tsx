@@ -13,6 +13,7 @@ import CitePeek from "@/components/CitePeek";
 import CardVsStudyLink from "@/components/CardVsStudyLink";
 import { AtomDraftLine, FieldDraftLine } from "@/components/AtomDraftEditor";
 import { atomIncomplete } from "@/lib/atom-draft";
+import { FieldRowSelect, FieldSelectLabel } from "@/components/EntityCardSourceLink";
 
 export function EntityCardDetailBody({
   card,
@@ -53,9 +54,11 @@ export function EntityCardDetailBody({
         ) : (
           <dl className="mt-3 space-y-3">
             {card.fields.map((f, i) => (
-            <div key={i} className="rounded-lg border border-line bg-card p-4">
+            <FieldRowSelect key={i} index={i}>
               <div className="flex items-baseline justify-between gap-3">
-                <dt className="font-semibold">{f.label}</dt>
+                <dt className="font-semibold">
+                  <FieldSelectLabel index={i}>{f.label}</FieldSelectLabel>
+                </dt>
                 <span className="flex shrink-0 items-baseline gap-3">
                   {/* T49 E：三处 CitePeek（字段/原子/页脚）下传本卡 pendingCiteCount（服务端
                       collectCiteQueue({cardId}) 同数）——浮层「核本卡」与主条 CardHubReturnLinks
@@ -93,7 +96,7 @@ export function EntityCardDetailBody({
               <dd className="mt-1.5">
                 <FieldDraftLine cardId={card.id} fieldIndex={i} seedValue={f.value} />
               </dd>
-            </div>
+            </FieldRowSelect>
           ))}
           </dl>
         )}

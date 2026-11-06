@@ -59,3 +59,15 @@ export function subscribeClewFold(cb: () => void): () => void {
     window.removeEventListener("storage", onStorage);
   };
 }
+
+export const DESK_WIDE_MIN_PX = 1248;
+
+export function isDeskCardPath(pathname: string | null | undefined): boolean {
+  return !!pathname && pathname.startsWith("/desk/card/");
+}
+
+/** 有效默认：仅「卡页 且 宽屏」折叠；其余展开（= 106a 行为）。用户显式选择永远优先。 */
+export function defaultClewOpen(a: { pathname: string | null | undefined; wide: boolean }): boolean {
+  return !(isDeskCardPath(a.pathname) && a.wide);
+}
+

@@ -15,6 +15,7 @@ import {
 } from "@/lib/entity-card-detail-model";
 import { EntityCardCiteStatus } from "@/components/EntityCardCiteStatus";
 import { EntityCardDetailBody } from "@/components/EntityCardDetailBody";
+import HonestyDisclosure from "@/components/desk/HonestyDisclosure";
 
 /**
  * 实体卡详情正文：/entities/[id]（shell-01）与 /desk/card/[id]（书桌 DocumentPane）共用。
@@ -43,6 +44,7 @@ export function EntityCardDetail({
   pageTextByPage,
   openDeskReturnTo,
   returnTo,
+  foldHonesty = false,
 }: {
   card: EntityCard;
   backHref: string;
@@ -88,7 +90,15 @@ export function EntityCardDetail({
    * 不传 → 默认本卡枢纽，既有口径不回退）。
    */
   returnTo?: { href: string; label: string };
+  foldHonesty?: boolean;
 }) {
+  const practiceNote = (
+    <>
+      练：本卡 {card.atoms.length} 个原子逐个自评；核：把引用对着该页 OCR 原文核对。
+      两者的进度都只记本机浏览器，不回写教材数据。本机草稿（若有）同样只存本浏览器，
+      未写回教材数据。
+    </>
+  );
   const stats = citeStats(card);
   /**
    * T54 F/H：per-cite 机检（server 侧；quoteInOcr bigram≥0.6，与 cite-check 同真）——
@@ -172,11 +182,13 @@ export function EntityCardDetail({
             本页无 OCR
           </span>
         ) : null}
-        <p className="w-full text-xs leading-6 text-muted">
-          练：本卡 {card.atoms.length} 个原子逐个自评；核：把引用对着该页 OCR 原文核对。
-          两者的进度都只记本机浏览器，不回写教材数据。本机草稿（若有）同样只存本浏览器，
-          未写回教材数据。
-        </p>
+        {foldHonesty ? (
+          <span className="ml-auto">
+            <HonestyDisclosure disclaimer={practiceNote} />
+          </span>
+        ) : (
+          <p className="w-full text-xs leading-6 text-muted">{practiceNote}</p>
+        )}
       </section>
 
       {/* cite 诚实条：有页 / p.? / seed 抽查未核计数；明确 seed verified ≠ 本机核页 localStorage 态。 */}
@@ -186,6 +198,7 @@ export function EntityCardDetail({
         ocrMissCount={ocrMissCount}
         missDetails={missDetails}
         atomTargetOfMiss={atomTargetOfMiss}
+        foldNote={foldHonesty}
       />
 
       {/* 跨面本机进度：本卡原子（练）+ 本卡核池（核）；条末弱链进同范围练/核（不重复动作条主 CTA）。
@@ -215,6 +228,7 @@ export function EntityCardDetail({
           checked: withQsMode(reviewHref, "checked"),
           doubt: withQsMode(reviewHref, "doubt"),
         }}
+        foldDisclaimer={foldHonesty}
       />
       {/* T61 G：卡级草稿条（客户端岛；Server 读 seed，Client 读 draft ariadne.atom-draft.v1）。
           有草稿 → 计数 + 复制补丁 + 两击确认清除；无草稿但有 seed 口径不完备原子 → 次级
